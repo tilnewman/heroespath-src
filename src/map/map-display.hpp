@@ -19,6 +19,9 @@
 #include "map/tiles-panel.hpp"
 #include "misc/timing.hpp"
 #include "misc/vector-map.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/distance.hpp"
+#include "sfutil/primitives.hpp"
 #include "sfutil/size-and-scale.hpp"
 #include "sfutil/vertex.hpp"
 
@@ -40,6 +43,12 @@ namespace map
     using VertexVec_t = std::vector<sf::Vertex>;
     using VertQuadArray_t = std::array<sf::Vertex, sfutil::VERTS_PER_QUAD>;
 
+    // combines a source texture with a collection of vert quads
+    using IndexVertsPair_t = std::pair<std::size_t, VertexVec_t>;
+    using IndexVertsPairVec_t = std::vector<IndexVertsPair_t>;
+
+    class MapDisplay;
+
     // Respobsible for a source image, an offscreen RenderTexture where that soure image is drawn
     // to, and for drawing from that offscreen image to the screen.
     class ThreeStageImageManagerBase
@@ -50,23 +59,39 @@ namespace map
             , willDrawOnScreen_(true)
             , offScreenTexture_()
             , offScreenToOnScreenQuadVerts_()
+            , sourceToOffScreenDrawPairs_()
         {}
 
         virtual ~ThreeStageImageManagerBase() = default;
 
-        void SourceToOffScreen_Update() { willDrawOffScreen_ = SourceToOffScreen_Update_Impl(); }
+        void SourceToOffScreen_Update(const MapDisplay & MAP_DISPLAY)
+        {
+            sourceToOffScreenDrawPairs_.clear();
+            SourceToOffScreen_Update_Impl(MAP_DISPLAY, sourceToOffScreenDrawPairs_);
+            willDrawOffScreen_ = (sourceToOffScreenDrawPairs_.empty() == false);
+        }
 
-        void SourceToOffScreen_Draw()
+        void SourceToOffScreen_Draw(const MapDisplay & MAP_DISPLAY)
         {
             if (willDrawOffScreen_)
             {
                 offScreenTexture_.clear(sf::Color::Transparent);
-                SourceToOffScreen_Draw_Impl();
+
+                SourceToOffScreen_Draw_Impl(
+                    MAP_DISPLAY, sourceToOffScreenDrawPairs_, offScreenTexture_);
+
                 offScreenTexture_.display();
             }
         }
 
-        void OffScreenToOnScreen_Update() { willDrawOnScreen_ = OffScreenToOnScreen_Update_Impl(); }
+        void OffScreenToOnScreen_Update(const MapDisplay & MAP_DISPLAY)
+        {
+            willDrawOnScreen_ = OffScreenToOnScreen_Update_Impl(
+                MAP_DISPLAY,
+                willDrawOffScreen_,
+                offScreenToOnScreenQuadVerts_,
+                sourceToOffScreenDrawPairs_);
+        }
 
         void OffScreenToOnScreen_Draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
@@ -82,16 +107,115 @@ namespace map
             }
         }
 
-    protected:
-        virtual bool SourceToOffScreen_Update_Impl() = 0;
-        virtual void SourceToOffScreen_Draw_Impl() = 0;
-        virtual bool OffScreenToOnScreen_Update_Impl() = 0;
+        void UpdateAllAndDrawOffScreen(const MapDisplay & MAP_DISPLAY)
+        {
+            SourceToOffScreen_Update(MAP_DISPLAY);
+            SourceToOffScreen_Draw(MAP_DISPLAY);
+            OffScreenToOnScreen_Update(MAP_DISPLAY);
+        }
 
+        void MoveOffscreenTextureRects(const sf::Vector2f & MOVE_V)
+        {
+            sfutil::MoveVertexTexturesForQuad(&offScreenToOnScreenQuadVerts_[0], MOVE_V);
+        }
+
+    protected:
+        virtual void ResetBase(const sf::Vector2i & OFFSCREEN_TEXTURE_SIZE_V)
+        {
+            willDrawOffScreen_ = true;
+            willDrawOnScreen_ = true;
+            sourceToOffScreenDrawPairs_.clear();
+
+            const auto OFFSCREEN_TEXTURE_WIDTH { static_cast<unsigned>(
+                OFFSCREEN_TEXTURE_SIZE_V.x) };
+            const auto OFFSCREEN_TEXTURE_HEIGHT { static_cast<unsigned>(
+                OFFSCREEN_TEXTURE_SIZE_V.y) };
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                offScreenTexture_.create(OFFSCREEN_TEXTURE_WIDTH, OFFSCREEN_TEXTURE_HEIGHT),
+                "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
+                    << OFFSCREEN_TEXTURE_WIDTH << "x" << OFFSCREEN_TEXTURE_HEIGHT
+                    << ") for 'below' texture.");
+        }
+
+        virtual void SourceToOffScreen_Update_Impl(
+            const MapDisplay & MAP_DISPLAY, IndexVertsPairVec_t & drawPairs)
+            = 0;
+
+        virtual void SourceToOffScreen_Draw_Impl(
+            const MapDisplay & MAP_DISPLAY,
+            const IndexVertsPairVec_t & DRAW_PAIRS,
+            sf::RenderTexture & renderTexture)
+            = 0;
+
+        virtual bool OffScreenToOnScreen_Update_Impl(
+            const MapDisplay & MAP_DISPLAY,
+            const bool WILL_DRAW_OFFSCREEN,
+            VertQuadArray_t & offScreenToOnScreenQuadVerts,
+            const IndexVertsPairVec_t & DRAW_PAIRS)
+            = 0;
+
+    private:
         bool willDrawOffScreen_;
         bool willDrawOnScreen_;
-
         sf::RenderTexture offScreenTexture_;
         VertQuadArray_t offScreenToOnScreenQuadVerts_;
+        IndexVertsPairVec_t sourceToOffScreenDrawPairs_;
+    };
+
+    class ThreeStageImageManagerMapLayer : public ThreeStageImageManagerBase
+    {
+    public:
+        ThreeStageImageManagerMapLayer(const std::vector<sf::Texture> & MAP_TILE_TEXTURES)
+            : ThreeStageImageManagerBase()
+            , mapTileTextures_(MAP_TILE_TEXTURES)
+            , mapTileDraws_()
+        {}
+
+        virtual ~ThreeStageImageManagerMapLayer() = default;
+
+        void Reset(
+            const sf::Vector2i & OFFSCREEN_TEXTURE_SIZE_V, const TileDrawVec_t & MAP_TILE_DRAWS)
+        {
+            ResetBase(OFFSCREEN_TEXTURE_SIZE_V);
+            mapTileDraws_ = MAP_TILE_DRAWS;
+        }
+
+    protected:
+        void SourceToOffScreen_Update_Impl(
+            const MapDisplay & MAP_DISPLAY, IndexVertsPairVec_t & drawPairs) final;
+
+        void SourceToOffScreen_Draw_Impl(
+            const MapDisplay &,
+            const IndexVertsPairVec_t & DRAW_PAIRS,
+            sf::RenderTexture & renderTexture) final
+        {
+            sf::RenderStates renderStates { sf::RenderStates::Default };
+
+            for (const auto & INDEX_VERTS_PAIR : DRAW_PAIRS)
+            {
+                if (INDEX_VERTS_PAIR.second.empty() == false)
+                {
+                    renderStates.texture = &mapTileTextures_.at(INDEX_VERTS_PAIR.first);
+
+                    renderTexture.draw(
+                        &INDEX_VERTS_PAIR.second[0],
+                        INDEX_VERTS_PAIR.second.size(),
+                        sf::Quads,
+                        renderStates);
+                }
+            }
+        }
+
+        bool OffScreenToOnScreen_Update_Impl(
+            const MapDisplay & MAP_DISPLAY,
+            const bool WILL_DRAW_OFFSCREEN,
+            VertQuadArray_t & offScreenToOnScreenQuadVerts,
+            const IndexVertsPairVec_t & DRAW_PAIRS) final;
+
+    private:
+        const std::vector<sf::Texture> & mapTileTextures_;
+        TileDrawVec_t mapTileDraws_;
     };
 
     // Encapsulates a tiled map, along with the player's position.
@@ -100,10 +224,6 @@ namespace map
     private:
         static constexpr int EXTRA_OFFSCREEN_TILE_COUNT_ = 2;
         static constexpr float ONSCREEN_WALK_PAD_RATIO_ = 0.2f;
-
-        // combines a source texture with a collection of vert quads
-        using IndexVertsPair_t = std::pair<std::size_t, VertexVec_t>;
-        using IndexVertsPairVec_t = std::vector<IndexVertsPair_t>;
 
     public:
         MapDisplay(const MapDisplay &) = delete;
@@ -132,6 +252,23 @@ namespace map
 
         std::vector<sf::Sprite> & AvatarSprites() { return avatarSprites_; }
 
+        void AppendVertexesForTileDrawQuad(
+            std::vector<sf::Vertex> & vertexes, const TileDraw & TILE_DRAW) const;
+
+        const sf::Vector2f OnScreenPosFromMapPos(const sf::Vector2f &) const;
+        const sf::FloatRect OnScreenRectFromMapRect(const sf::FloatRect &) const;
+
+        const sf::Vector2f OnScreenPosFromOffScreenPos(const sf::Vector2f &) const;
+        const sf::FloatRect OnScreenRectFromOffScreenRect(const sf::FloatRect &) const;
+
+        const sf::Vector2f OffScreenPosFromMapPos(const sf::Vector2f &) const;
+        const sf::FloatRect OffScreenRectFromMapRect(const sf::FloatRect &) const;
+
+        const sf::FloatRect OnScreenRect() const { return onScreenRect_; }
+
+        const sf::FloatRect OffScreenTextureRect() const { return offScreenTextureRect_; }
+        const sf::IntRect OffScreenTileRect() const { return offScreenTileRectI_; }
+
     private:
         // returns true if any animations changed and need to be re-drawn
         bool UpdateAnimations(const float TIME_ELAPSED);
@@ -144,36 +281,18 @@ namespace map
         bool MoveRight(const float DISTANCE);
 
         // these functions set which sprites/textures will be drawn to offscreen
-        void SourceToOffScreen_Update_MapBelow();
         void SourceToOffScreen_Update_Avatars();
-        void SourceToOffScreen_Update_MapAbove();
         void SourceToOffScreen_Update_Animations();
 
-        bool SourceToOffScreen_Update_Map(
-            const TileDrawVec_t & TILE_DRAWS, IndexVertsPairVec_t & drawsPairs);
-
         // these functions draw from source sprite/textures to offscreen
-        void SourceToOffScreen_Draw_MapBelow();
         void SourceToOffScreen_Draw_Avatars();
-        void SourceToOffScreen_Draw_MapAbove();
         void SourceToOffScreen_Draw_Animations();
 
-        void SourceToOffScreen_Draw_Map(
-            sf::RenderTexture & renderTexture, const IndexVertsPairVec_t & DRAWS_PAIRS);
-
         // these functions set what from offscreen will be drawn onscreen
-        void OffScreenToOnScreen_Update_MapBelow();
         void OffScreenToOnScreen_Update_Avatars();
-        void OffScreenToOnScreen_Update_MapAbove();
         void OffScreenToOnScreen_Update_Animations();
 
-        void OffScreenToOnScreen_Draw_MapBelow(
-            sf::RenderTarget & target, sf::RenderStates states) const;
-
         void OffScreenToOnScreen_Draw_Avatars(
-            sf::RenderTarget & target, sf::RenderStates states) const;
-
-        void OffScreenToOnScreen_Draw_MapAbove(
             sf::RenderTarget & target, sf::RenderStates states) const;
 
         void OffScreenToOnScreen_Draw_Animations(
@@ -201,23 +320,11 @@ namespace map
             const sf::Vector2f & MAP_POS_V,
             const sf::Vector2i & MAP_SIZE_IN_TILES_V) const;
 
-        const sf::Vector2f OnScreenPosFromMapPos(const sf::Vector2f &) const;
-        const sf::FloatRect OnScreenRectFromMapRect(const sf::FloatRect &) const;
-
-        const sf::Vector2f OnScreenPosFromOffScreenPos(const sf::Vector2f &) const;
-        const sf::FloatRect OnScreenRectFromOffScreenRect(const sf::FloatRect &) const;
-
-        const sf::Vector2f OffScreenPosFromMapPos(const sf::Vector2f &) const;
-        const sf::FloatRect OffScreenRectFromMapRect(const sf::FloatRect &) const;
-
         void SetupAnimations();
 
         void StartAnimMusic();
         void StopAnimMusic();
         float CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const;
-
-        void AppendVertexesForTileDrawQuad(
-            std::vector<sf::Vertex> & vertexes, const TileDraw & TILE_DRAW) const;
 
         const VertexVec_t SpriteRectToVertexVec(const sf::FloatRect & RECT) const
         {
@@ -286,30 +393,20 @@ namespace map
         const float ANIM_SFX_DISTANCE_MAX_;
         const float ANIM_SFX_VOLUME_MIN_RATIO_;
 
-        IndexVertsPairVec_t sourceToOffScreenDrawsPairsBelow_;
         IndexVertsPairVec_t sourceToOffScreenDrawsPairsAvatar_;
-        IndexVertsPairVec_t sourceToOffScreenDrawsPairsAbove_;
         IndexVertsPairVec_t sourceToOffScreenDrawsPairsAnim_;
 
         // All of these share offScreenTextureRect_
-        sf::RenderTexture offScreenImageBelow_;
         sf::RenderTexture offScreenImageAvatar_;
-        sf::RenderTexture offScreenImageAbove_;
         sf::RenderTexture offScreenImageAnim_;
 
-        VertQuadArray_t offScreenToOnScreenVertsBelow_;
         VertQuadArray_t offScreenToOnScreenVertsAvatar_;
-        VertQuadArray_t offScreenToOnScreenVertsAbove_;
         VertQuadArray_t offScreenToOnScreenVertsAnim_;
 
-        bool willDrawOffScreenBelow_;
         bool willDrawOffScreenAvatar_;
-        bool willDrawOffScreenAbove_;
         bool willDrawOffScreenAnim_;
 
-        bool willDrawOnScreenBelow_;
         bool willDrawOnScreenAvatar_;
-        bool willDrawOnScreenAbove_;
         bool willDrawOnScreenAnim_;
 
         // these two variables are in centered map coordinates
@@ -330,8 +427,8 @@ namespace map
 
         std::vector<sf::Texture> mapTileTextures_;
 
-        TileDrawVec_t mapTileDrawsBelow_;
-        TileDrawVec_t mapTileDrawsAbove_;
+        ThreeStageImageManagerMapLayer imageManagerMapBelow_;
+        ThreeStageImageManagerMapLayer imageManagerMapAbove_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
