@@ -28,29 +28,27 @@ namespace gui
     class Ouroboros : public Entity
     {
     public:
+        explicit Ouroboros(const std::string & NAME, const bool WILL_MAKE_BLACK = false);
+        virtual ~Ouroboros();
+
         Ouroboros(const Ouroboros &) = delete;
         Ouroboros(Ouroboros &&) = delete;
         Ouroboros & operator=(const Ouroboros &) = delete;
         Ouroboros & operator=(Ouroboros &&) = delete;
-
-        explicit Ouroboros(const std::string & NAME, const bool WILL_MAKE_BLACK = false);
-        virtual ~Ouroboros();
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
         virtual bool UpdateTime(const float ELAPSED_TIME_SEC);
 
     private:
-        const float IMAGE_INITIAL_WIDTH_;
-        const float IMAGE_DRIFT_WIDTH_;
-        const float IMAGE_MIN_DRIFT_WIDTH_;
-        const float IMAGE_MAX_DRIFT_WIDTH_;
-        float rotation_;
+        const float IMAGE_DIMMENSION_INITIAL_;
+        const float IMAGE_DIMMENSION_MIN_;
+        const float IMAGE_DIMMENSION_MAX_;
         gui::CachedTexture cachedTexture_;
         sf::Sprite sprite_;
-        SliderDrift<float> sizeSliderDrift_;
-        SliderDrift<float> shadeSliderDrift_;
-        SliderDrift<float> rotSpeedSliderDrift_;
+        SliderDrift<float> sizeDrifter_;
+        SliderDrift<float> alphaDrifter_;
+        SliderDrift<float> rotationSpeedDrifter_;
     };
 
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
