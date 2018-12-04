@@ -37,10 +37,25 @@ namespace misc
 
     const std::string filesystem::CleanPath(const std::string & PATH_ORIG)
     {
+        static misc::VectorMap<std::string, std::string> cacheMap_;
+
+        if (cacheMap_.Empty())
+        {
+            cacheMap_.Reserve(4096);
+        }
+
+        auto cacheIter { cacheMap_.Find(PATH_ORIG) };
+
+        if (std::end(cacheMap_) != cacheIter)
+        {
+            return cacheIter->second;
+        }
+
         std::string pathStrToUse { misc::TrimWhitespaceCopy(PATH_ORIG) };
 
         if (pathStrToUse.empty())
         {
+            cacheMap_.Append(PATH_ORIG, "");
             return "";
         }
 
@@ -81,6 +96,7 @@ namespace misc
             }
         }
 
+        cacheMap_.Append(PATH_ORIG, cleanedStr);
         return cleanedStr;
     }
 

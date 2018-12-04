@@ -563,17 +563,15 @@ namespace gui
 
         try
         {
-            const auto PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_TO_TEXTURE_STR) };
-
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
+                (misc::filesystem::ExistsAndIsFile(PATH_TO_TEXTURE_STR)),
                 "Failed because that file either does not exist or is not a regular file."
-                    + M_HP_VAR_STR(PATH_TO_TEXTURE_STR) + M_HP_VAR_STR(PATH_STR_COMPLETE));
+                    + M_HP_VAR_STR(PATH_TO_TEXTURE_STR) + M_HP_VAR_STR(PATH_TO_TEXTURE_STR));
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                textureUPtr->loadFromFile(PATH_STR_COMPLETE),
+                textureUPtr->loadFromFile(PATH_TO_TEXTURE_STR),
                 "sf::Texture::loadFromFile(\""
-                    << PATH_STR_COMPLETE
+                    << PATH_TO_TEXTURE_STR
                     << "\") failed.  Check console output for information."
                         + M_HP_VAR_STR(PATH_TO_TEXTURE_STR));
         }
