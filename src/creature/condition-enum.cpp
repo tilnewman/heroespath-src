@@ -125,12 +125,19 @@ namespace creature
 
     const std::string Conditions::ImageDirectory()
     {
-        return misc::ConfigFile::Instance()->GetMediaPath("media-images-conditions-dir");
+        static std::string imageDir;
+
+        if (imageDir.empty())
+        {
+            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-conditions-dir");
+        }
+
+        return imageDir;
     }
 
     const std::string Conditions::ImagePath(const Enum ENUM)
     {
-        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
+        return misc::filesystem::CombinePaths(ImageDirectory(), ImageFilename(ENUM));
     }
 
     namespace condition

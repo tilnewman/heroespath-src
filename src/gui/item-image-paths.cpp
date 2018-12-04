@@ -45,8 +45,7 @@ namespace gui
 
     void ItemImagePaths::SetupFilesystemPaths()
     {
-        imageDirectoryPath_ = misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-items-dir"));
+        imageDirectoryPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-images-items-dir");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsDirectory(imageDirectoryPath_),
@@ -296,7 +295,7 @@ namespace gui
         }
         else
         {
-            return misc::filesystem::CombinePathsThenClean(imageDirectoryPath_, FILE_NAME);
+            return misc::filesystem::CombinePaths(imageDirectoryPath_, FILE_NAME);
         }
     }
 

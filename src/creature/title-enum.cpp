@@ -1353,12 +1353,19 @@ namespace creature
 
     const std::string Titles::ImageDirectory()
     {
-        return misc::ConfigFile::Instance()->GetMediaPath("media-images-titles-dir");
+        static std::string imageDir;
+
+        if (imageDir.empty())
+        {
+            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-titles-dir");
+        }
+
+        return imageDir;
     }
 
     const std::string Titles::ImagePath(const Enum ENUM)
     {
-        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
+        return misc::filesystem::CombinePaths(ImageDirectory(), ImageFilename(ENUM));
     }
 
 } // namespace creature

@@ -2473,7 +2473,7 @@ namespace avatar
                 : misc::ConfigFile::Instance()->GetMediaPath(
                     "media-images-avatar-nonplayer-dir")) };
 
-        return misc::filesystem::CombinePathsThenClean(
+        return misc::filesystem::CombinePaths(
             dirPathStr, misc::ToLowerCopy(Avatar::ToString(ENUM)) + ".png");
     }
 

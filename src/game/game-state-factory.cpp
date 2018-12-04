@@ -109,7 +109,7 @@ namespace game
 
         for (const auto & FILE_PATH_STR : misc::filesystem::FindFiles(
                  false,
-                 misc::filesystem::AppendPathsToCurrentThenClean(SAVED_HEROESPATH_DIR_NAME_),
+                 misc::filesystem::AppendPathsToCurrent(SAVED_HEROESPATH_DIR_NAME_),
                  SAVED_HEROESPATH_FILE_NAME_,
                  SAVED_HEROESPATH_FILE_EXT_))
         {
@@ -158,7 +158,7 @@ namespace game
 
         for (const auto & FILE_PATH_STR : misc::filesystem::FindFiles(
                  false,
-                 misc::filesystem::AppendPathsToCurrentThenClean(UNPLAYED_CHAR_DIR_NAME_),
+                 misc::filesystem::AppendPathsToCurrent(UNPLAYED_CHAR_DIR_NAME_),
                  "",
                  UNPLAYED_CHAR_FILE_EXT_))
         {
@@ -204,7 +204,7 @@ namespace game
     {
         for (const auto & FILE_PATH_STR : misc::filesystem::FindFiles(
                  false,
-                 misc::filesystem::AppendPathsToCurrentThenClean(UNPLAYED_CHAR_DIR_NAME_),
+                 misc::filesystem::AppendPathsToCurrent(UNPLAYED_CHAR_DIR_NAME_),
                  "",
                  UNPLAYED_CHAR_FILE_EXT_))
         {
@@ -247,7 +247,7 @@ namespace game
         const std::string & FILE_STR,
         const std::string & EXT_STR) const
     {
-        const auto DIR_PATH_STR { misc::filesystem::AppendPathsToCurrentThenClean(DIR_STR) };
+        const auto DIR_PATH_STR { misc::filesystem::AppendPathsToCurrent(DIR_STR) };
 
         auto makeFunctionDescStr { [&]() {
             std::ostringstream ss;

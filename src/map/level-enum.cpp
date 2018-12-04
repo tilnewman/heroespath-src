@@ -99,9 +99,14 @@ namespace map
 
     const std::string Level::Path(const Level::Enum LEVEL)
     {
-        return misc::filesystem::CombinePathsThenClean(
-            misc::ConfigFile::Instance()->GetMediaPath("media-maps-dir"),
-            ToString(LEVEL) + FILENAME_EXTENSION);
+        static std::string dirPath;
+
+        if (dirPath.empty())
+        {
+            dirPath = misc::ConfigFile::Instance()->GetMediaPath("media-maps-dir");
+        }
+
+        return misc::filesystem::CombinePaths(dirPath, ToString(LEVEL) + FILENAME_EXTENSION);
     }
 
     LevelType::Enum Level::Type(const Level::Enum LEVEL)

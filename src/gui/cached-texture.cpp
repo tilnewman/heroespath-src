@@ -108,7 +108,7 @@ namespace gui
     }
 
     CachedTexture::CachedTexture(const PathWrapper & PATH_WRAPPER, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::CleanPath(PATH_WRAPPER.path_str))
+        : path_(PATH_WRAPPER.path_str)
         , index_(0)
         , options_(OPTIONS)
         , texturePtr_(misc::NotNull(&alwaysEmptyTexture_))
@@ -225,7 +225,7 @@ namespace gui
 
     CachedTextures::CachedTextures(
         const PathWrapper & DIR_PATH_WRAPER, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::CleanPath(DIR_PATH_WRAPER.path_str))
+        : path_(DIR_PATH_WRAPER.path_str)
         , indexes_(TextureCache::Instance()->AddDirectoryByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}

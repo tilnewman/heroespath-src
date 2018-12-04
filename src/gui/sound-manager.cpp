@@ -616,7 +616,7 @@ namespace gui
     MusicUPtr_t SoundManager::OpenMusic(
         const std::string & MUSIC_FILE_NAME, const std::string & MUSIC_DIR_NAME) const
     {
-        const auto PATH_STR_COMPLETE { misc::filesystem::CombinePathsThenClean(
+        const auto PATH_STR_COMPLETE { misc::filesystem::CombinePaths(
             musicDirectoryPath_, MUSIC_DIR_NAME, MUSIC_FILE_NAME) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -638,7 +638,7 @@ namespace gui
 
     void SoundManager::CacheMusicInfo_CombatIntro()
     {
-        const auto DIR_PATH_STR { misc::filesystem::CombinePathsThenClean(
+        const auto DIR_PATH_STR { misc::filesystem::CombinePaths(
             musicDirectoryPath_, music::Directory(music::CombatIntro)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -942,7 +942,7 @@ namespace gui
 
     SoundBufferUPtr_t SoundManager::LoadSfxBuffer(const sound_effect::Enum ENUM) const
     {
-        const auto SOUND_FILE_PATH_STR { misc::filesystem::CombinePathsThenClean(
+        const auto SOUND_FILE_PATH_STR { misc::filesystem::CombinePaths(
             soundsDirectoryPath_, sound_effect::Directory(ENUM), sound_effect::Filename(ENUM)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(

@@ -127,7 +127,7 @@ namespace gui
         auto & fontUPtr { GetFontRef(FONT) };
         fontUPtr = std::make_unique<sf::Font>();
 
-        const auto PATH_STR_COMPLETE { misc::filesystem::CombinePathsThenClean(
+        const auto PATH_STR_COMPLETE { misc::filesystem::CombinePaths(
             fontsDirPathStr_, GuiFont::Path(FONT)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(

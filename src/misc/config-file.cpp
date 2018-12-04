@@ -109,7 +109,7 @@ namespace misc
             (RELATIVE_MEDIA_PATH_STR.empty() == false),
             "(key=\"" << KEY << "\") was not found in the config file.");
 
-        const auto ABSOLUTE_MEDIA_PATH_STR { misc::filesystem::CombinePathsThenClean(
+        const auto ABSOLUTE_MEDIA_PATH_STR { misc::filesystem::CombinePaths(
             mediaBasePath_, RELATIVE_MEDIA_PATH_STR) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(

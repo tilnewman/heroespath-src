@@ -169,7 +169,7 @@ namespace gui
         const auto SCREENSHOT_IMAGE { texture.copyToImage() };
 
         // establish the path
-        const auto DIR_PATH_STR { misc::filesystem::AppendPathsToCurrentThenClean("screenshots") };
+        const auto DIR_PATH_STR { misc::filesystem::AppendPathsToCurrent("screenshots") };
 
         // create directory if missing
         if (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR) == false)

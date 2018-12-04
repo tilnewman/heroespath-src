@@ -128,12 +128,19 @@ namespace song
 
     const std::string Songs::ImageDirectory()
     {
-        return misc::ConfigFile::Instance()->GetMediaPath("media-images-songs-dir");
+        static std::string imageDir;
+
+        if (imageDir.empty())
+        {
+            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-songs-dir");
+        }
+
+        return imageDir;
     }
 
     const std::string Songs::ImagePath(const Enum ENUM)
     {
-        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
+        return misc::filesystem::CombinePaths(ImageDirectory(), ImageFilename(ENUM));
     }
 
 } // namespace song

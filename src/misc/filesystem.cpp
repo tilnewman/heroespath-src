@@ -35,9 +35,9 @@ namespace misc
     // this value found by experiment to be a good high guess for the game
     const std::size_t filesystem::VECTOR_RESERVE_SIZE { 30 };
 
-    const std::string filesystem::CleanPath(const std::string & PATH_STR_ORIG)
+    const std::string filesystem::CleanPath(const std::string & PATH_ORIG)
     {
-        std::string pathStrToUse { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
+        std::string pathStrToUse { misc::TrimWhitespaceCopy(PATH_ORIG) };
 
         if (pathStrToUse.empty())
         {
@@ -86,95 +86,72 @@ namespace misc
 
     const std::string filesystem::CurrentDirectory()
     {
-        return CleanPath(bfs::current_path().string());
-    }
+        static std::string currentDir;
 
-    bool filesystem::EndsWithFileGuess(const std::string & PATH_STR_ORIG)
-    {
-        if (ExistsAndIsFile(PATH_STR_ORIG))
+        if (currentDir.empty())
         {
-            return true;
+            currentDir = CleanPath(bfs::current_path().string());
         }
 
-        if (ExistsAndIsDirectory(PATH_STR_ORIG))
-        {
-            return false;
-        }
-
-        return (WhatDoesBoostFilenameIndicatePathEndsWith(PATH_STR_ORIG) == LooksLike::File);
-    }
-
-    bool filesystem::EndsWithDirectoryGuess(const std::string & PATH_STR_ORIG)
-    {
-        if (ExistsAndIsFile(PATH_STR_ORIG))
-        {
-            return false;
-        }
-
-        if (ExistsAndIsDirectory(PATH_STR_ORIG))
-        {
-            return true;
-        }
-
-        return (WhatDoesBoostFilenameIndicatePathEndsWith(PATH_STR_ORIG) == LooksLike::Directory);
+        return currentDir;
     }
 
     const std::string
-        filesystem::Filename(const std::string & PATH_STR_ORIG, const bool WILL_EXCLUDE_EXTENSION)
+        filesystem::Filename(const std::string & PATH_ORIG, const bool WILL_EXCLUDE_EXTENSION)
     {
-        const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
+        const auto PATH_TRIMMED { misc::TrimWhitespaceCopy(PATH_ORIG) };
 
-        if (PATH_STR_TRIMMED.empty())
+        if (PATH_TRIMMED.empty())
         {
             return "";
         }
 
-        if (ExistsAndIsDirectory(PATH_STR_ORIG))
+        if (ExistsAndIsDirectory(PATH_TRIMMED))
         {
             return "";
         }
 
-        if (WhatDoesBoostFilenameIndicatePathEndsWith(PATH_STR_ORIG) == LooksLike::Directory)
+        const auto BOOST_FILE_NAME { GetBoostFilename(PATH_TRIMMED) };
+
+        if (BOOST_FILE_NAME.empty())
         {
             return "";
         }
 
-        const auto BOOST_FILE_NAME_STR { GetBoostFilename(PATH_STR_ORIG) };
-
-        if (BOOST_FILE_NAME_STR.empty())
+        if (WhatDoesBoostFilenameIndicatePathEndsWith(BOOST_FILE_NAME) == LooksLike::Directory)
         {
             return "";
         }
 
         if (WILL_EXCLUDE_EXTENSION)
         {
-            const auto FIRST_DOT_POSITION { BOOST_FILE_NAME_STR.find('.') };
-            return BOOST_FILE_NAME_STR.substr(0, FIRST_DOT_POSITION);
+            const auto FIRST_DOT_POSITION { BOOST_FILE_NAME.find('.') };
+            return BOOST_FILE_NAME.substr(0, FIRST_DOT_POSITION);
         }
         else
         {
-            return BOOST_FILE_NAME_STR;
+            return BOOST_FILE_NAME;
         }
     }
 
-    const std::string filesystem::Extension(
-        const std::string & PATH_STR_ORIG, const bool WILL_EXCLUDE_LEADING_DOT)
+    const std::string
+        filesystem::Extension(const std::string & PATH, const bool WILL_EXCLUDE_LEADING_DOT)
     {
-        const auto FILE_NAME_STR { Filename(PATH_STR_ORIG) };
+        const auto FILE_NAME { Filename(PATH) };
 
-        if (FILE_NAME_STR.empty())
+        if (FILE_NAME.empty())
         {
             return "";
         }
 
-        const auto FIRST_DOT_POSITION_INDEX { FILE_NAME_STR.find('.') };
+        const auto FIRST_DOT_POSITION_INDEX { FILE_NAME.find('.') };
 
         if (FIRST_DOT_POSITION_INDEX == std::string::npos)
         {
             return "";
         }
 
-        const auto EXTENSION { FILE_NAME_STR.substr(FIRST_DOT_POSITION_INDEX) };
+        const auto EXTENSION { FILE_NAME.substr(FIRST_DOT_POSITION_INDEX) };
 
         if (WILL_EXCLUDE_LEADING_DOT)
         {
@@ -193,128 +170,152 @@ namespace misc
         }
     }
 
-    bool filesystem::Exists(const std::string & PATH_STR_ORIG)
+    bool filesystem::Exists(const std::string & PATH_ORIG)
     {
-        const auto EXISTS_WHEN_ORIG { bfs::exists(bfs::path(PATH_STR_ORIG)) };
+        const auto PATH_TRIMMED { misc::TrimWhitespaceCopy(PATH_ORIG) };
 
-        const auto PATH_STR_CLEANED { bfs::path(CleanPath(PATH_STR_ORIG)) };
-        const auto EXISTS_WHEN_CLEANED { bfs::exists(bfs::path(PATH_STR_CLEANED)) };
+        if (PATH_TRIMMED.empty())
+        {
+            return false;
+        }
 
-        return (EXISTS_WHEN_ORIG || EXISTS_WHEN_CLEANED);
+        auto pathToUse { PATH_TRIMMED };
+        if (bfs::exists(bfs::path(pathToUse)))
+        {
+            return true;
+        }
+
+        pathToUse = CleanPath(pathToUse);
+
+        return bfs::exists(bfs::path(pathToUse));
     }
 
-    bool filesystem::ExistsAndIsFile(const std::string & FILE_PATH_STR)
+    bool filesystem::ExistsAndIsFile(const std::string & FILE_PATH_ORIG)
     {
-        return (Exists(FILE_PATH_STR) && bfs::is_regular_file(bfs::path(CleanPath(FILE_PATH_STR))));
+        const auto FILE_PATH_TRIMMED { misc::TrimWhitespaceCopy(FILE_PATH_ORIG) };
+
+        if (FILE_PATH_TRIMMED.empty())
+        {
+            return false;
+        }
+
+        auto boostPathToUse { bfs::path(FILE_PATH_TRIMMED) };
+
+        if (bfs::exists(boostPathToUse) == false)
+        {
+            boostPathToUse = bfs::path(CleanPath(FILE_PATH_TRIMMED));
+        }
+
+        return (bfs::exists(boostPathToUse) && bfs::is_regular_file(boostPathToUse));
     }
 
-    bool filesystem::ExistsAndIsDirectory(const std::string & DIR_PATH_STR)
+    bool filesystem::ExistsAndIsDirectory(const std::string & DIR_PATH_ORIG)
     {
-        return (Exists(DIR_PATH_STR) && bfs::is_directory(bfs::path(CleanPath(DIR_PATH_STR))));
+        const auto DIR_PATH_TRIMMED { misc::TrimWhitespaceCopy(DIR_PATH_ORIG) };
+
+        if (DIR_PATH_TRIMMED.empty())
+        {
+            return false;
+        }
+
+        auto boostPathToUse { bfs::path(DIR_PATH_TRIMMED) };
+
+        if (bfs::exists(boostPathToUse) == false)
+        {
+            boostPathToUse = bfs::path(CleanPath(DIR_PATH_TRIMMED));
+        }
+
+        return (bfs::exists(boostPathToUse) && bfs::is_directory(boostPathToUse));
     }
 
     const std::vector<std::string> filesystem::FindFiles(
         const bool IS_RECURSIVE,
-        const std::string & DIR_PATH_STR_ORIG,
+        const std::string & DIR_PATH,
         const std::string & FILENAME_PREFIX,
         const std::string & FILENAME_EXTENSION,
         const std::vector<std::string> & STRING_MATCHES_TO_EXCLUDE)
     {
-        const auto DIR_PATH_STR_CLEANED { CleanPath(DIR_PATH_STR_ORIG) };
-
-        if (DIR_PATH_STR_CLEANED.empty())
+        if (DIR_PATH.empty() || !ExistsAndIsDirectory(DIR_PATH))
         {
             return {};
         }
 
-        const bfs::path BOOST_PATH { DIR_PATH_STR_CLEANED };
-
-        if ((bfs::exists(BOOST_PATH) == false) || (bfs::is_directory(BOOST_PATH) == false))
-        {
-            return {};
-        }
+        const bfs::path BOOST_PATH { DIR_PATH };
 
         std::vector<std::string> filePathStrings;
         filePathStrings.reserve(VECTOR_RESERVE_SIZE);
 
         for (const auto & DIR_ENTRY : bfs::directory_iterator(BOOST_PATH))
         {
-            const auto ENTRY_PATH { DIR_ENTRY.path() };
+            const auto ENTRY_BOOST_PATH { DIR_ENTRY.path() };
 
-            if (IS_RECURSIVE && bfs::is_directory(ENTRY_PATH))
+            if (IS_RECURSIVE && bfs::is_directory(ENTRY_BOOST_PATH))
             {
-                for (const std::string & SUB_DIR_FILE_PATH_STR : FindFiles(
+                for (const std::string & SUB_DIR_FILE_PATH : FindFiles(
                          true,
-                         ENTRY_PATH.string(),
+                         ENTRY_BOOST_PATH.string(),
                          FILENAME_PREFIX,
                          FILENAME_EXTENSION,
                          STRING_MATCHES_TO_EXCLUDE))
                 {
-                    filePathStrings.emplace_back(SUB_DIR_FILE_PATH_STR);
+                    filePathStrings.emplace_back(SUB_DIR_FILE_PATH);
                 }
             }
 
-            if (bfs::is_regular_file(ENTRY_PATH) == false)
+            if (bfs::is_regular_file(ENTRY_BOOST_PATH) == false)
             {
                 continue;
             }
 
-            const auto FILE_NAME_STR { Filename(ENTRY_PATH.string()) };
+            const auto FILE_NAME { Filename(ENTRY_BOOST_PATH.string()) };
 
             namespace ba = boost::algorithm;
 
             if ((FILENAME_PREFIX.empty() == false)
-                && (ba::starts_with(FILE_NAME_STR, FILENAME_PREFIX) == false))
+                && (ba::starts_with(FILE_NAME, FILENAME_PREFIX) == false))
             {
                 continue;
             }
 
             if ((FILENAME_EXTENSION.empty() == false)
-                && (ba::ends_with(FILE_NAME_STR, FILENAME_EXTENSION) == false))
+                && (ba::ends_with(FILE_NAME, FILENAME_EXTENSION) == false))
             {
                 continue;
             }
 
-            if (misc::ContainsAnyOf(FILE_NAME_STR, STRING_MATCHES_TO_EXCLUDE, false))
+            if (misc::ContainsAnyOf(FILE_NAME, STRING_MATCHES_TO_EXCLUDE, false))
             {
                 continue;
             }
 
-            filePathStrings.emplace_back(CleanPath(ENTRY_PATH.string()));
+            filePathStrings.emplace_back(ENTRY_BOOST_PATH.string());
         }
 
         return filePathStrings;
     }
 
     const std::string filesystem::FindFirstAvailableNumberedFilenamePath(
-        const std::string & DIR_PATH_STR_ORIG,
+        const std::string & DIR_PATH,
         const std::string & FILE_NAME,
         const std::string & FILE_EXT,
         const std::string & NUMBER_SEPARATOR)
     {
-        const auto DIR_PATH_STR_CLEANED { CleanPath(DIR_PATH_STR_ORIG) };
-
-        if (DIR_PATH_STR_CLEANED.empty())
+        if (DIR_PATH.empty() || !ExistsAndIsDirectory(DIR_PATH))
         {
             return "";
         }
 
-        const bfs::path BOOST_DIR_PATH { DIR_PATH_STR_CLEANED };
-
-        if ((bfs::exists(BOOST_DIR_PATH) == false) || (bfs::is_directory(BOOST_DIR_PATH) == false))
-        {
-            return "";
-        }
+        const bfs::path BOOST_DIR_PATH { DIR_PATH };
 
         bfs::path filePath;
 
         const std::size_t MAX_ATTEMPT_COUNT { 10000000 };
         for (std::size_t i(1); i <= MAX_ATTEMPT_COUNT; ++i)
         {
-            const auto NEXT_NUMBERED_FILE_NAME_STR { MakeNumberedFilename(
+            const auto NEXT_NUMBERED_FILE_NAME { MakeNumberedFilename(
                 FILE_NAME, NUMBER_SEPARATOR, i, FILE_EXT) };
 
-            filePath = (BOOST_DIR_PATH / NEXT_NUMBERED_FILE_NAME_STR);
+            filePath = (BOOST_DIR_PATH / NEXT_NUMBERED_FILE_NAME);
 
             if (bfs::exists(filePath))
             {
@@ -328,67 +329,63 @@ namespace misc
 
         if (filePath.empty())
         {
-            const auto ZERO_NUMBERED_FILE_NAME_STR { MakeNumberedFilename(
+            const auto ZERO_NUMBERED_FILE_NAME { MakeNumberedFilename(
                 FILE_NAME, NUMBER_SEPARATOR, 0, FILE_EXT) };
 
             M_HP_LOG_ERR(
-                "misc::filesystem::FindFirstAvailableNumberedFilenamePath(dir_path_orig="
-                << DIR_PATH_STR_ORIG << ", dir_path_cleaned=\"" << DIR_PATH_STR_CLEANED
-                << "\", file_name=" << FILE_NAME << ", file_ext=" << FILE_EXT
+                "misc::filesystem::FindFirstAvailableNumberedFilenamePath(dir_path="
+                << DIR_PATH << "\", file_name=" << FILE_NAME << ", file_ext=" << FILE_EXT
                 << ", number_prefix=\"" << NUMBER_SEPARATOR
                 << "\") failed to find an available numbered filename (one that looks like this \""
                 << FILE_NAME << NUMBER_SEPARATOR << "#" << FILE_EXT << "\") after trying "
                 << MAX_ATTEMPT_COUNT
                 << " times.  So either there really are that many files there or something has "
                    "gone wrong.  Using zero for the number ("
-                << ZERO_NUMBERED_FILE_NAME_STR << ") and moving on...");
+                << ZERO_NUMBERED_FILE_NAME << ") and moving on...");
 
-            filePath = (BOOST_DIR_PATH / ZERO_NUMBERED_FILE_NAME_STR);
+            filePath = (BOOST_DIR_PATH / ZERO_NUMBERED_FILE_NAME);
         }
 
-        return CleanPath(filePath.string());
+        return filePath.string();
     }
 
     const std::vector<std::string> filesystem::SortByLastNumberInFilename(
-        const std::vector<std::string> & PATH_STR_VEC,
+        const std::vector<std::string> & PATH_VEC,
         const bool WILL_MISSING_NUMBERS_APPEAR_FIRST,
         const bool WILL_MISSING_NUMBERS_BE_REMOVED)
     {
-        if (PATH_STR_VEC.empty())
+        if (PATH_VEC.empty())
         {
             return {};
         }
 
         misc::VectorMap<int, std::string> lastNumberToPathStrMap;
-        lastNumberToPathStrMap.Reserve(PATH_STR_VEC.size());
+        lastNumberToPathStrMap.Reserve(PATH_VEC.size());
 
         std::vector<std::string> pathsWithoutNumbers;
         pathsWithoutNumbers.reserve(VECTOR_RESERVE_SIZE);
 
-        for (const auto & PATH_STR_ORIG : PATH_STR_VEC)
+        for (const auto & PATH : PATH_VEC)
         {
-            const auto PATH_STR_CLEANED { CleanPath(PATH_STR_ORIG) };
-
-            if (PATH_STR_CLEANED.empty())
+            if (PATH.empty())
             {
                 continue;
             }
 
-            const auto LAST_NUMBER_IN_FILE_NAME { misc::FindLastNumber(
-                Filename(PATH_STR_CLEANED)) };
+            const auto LAST_NUMBER_IN_FILE_NAME { misc::FindLastNumber(Filename(PATH)) };
 
             if (LAST_NUMBER_IN_FILE_NAME < 0)
             {
                 if (WILL_MISSING_NUMBERS_BE_REMOVED == false)
                 {
-                    pathsWithoutNumbers.emplace_back(PATH_STR_CLEANED);
+                    pathsWithoutNumbers.emplace_back(PATH);
                 }
 
                 continue;
             }
 
             // use Append() to allow duplicates
-            lastNumberToPathStrMap.Append(LAST_NUMBER_IN_FILE_NAME, PATH_STR_CLEANED);
+            lastNumberToPathStrMap.Append(LAST_NUMBER_IN_FILE_NAME, PATH);
         }
 
         std::sort(std::begin(lastNumberToPathStrMap), std::end(lastNumberToPathStrMap));
@@ -421,7 +418,7 @@ namespace misc
         return finalVec;
     }
 
-    const std::string filesystem::CombinePathsThenClean(
+    const std::string filesystem::CombinePaths(
         const std::string & PATH1,
         const std::string & PATH2,
         const std::string & PATH3,
@@ -429,21 +426,19 @@ namespace misc
     {
         bfs::path path;
 
-        auto addOrAppendPathIfNotEmpty = [&](const std::string & PATH_STR_ORIG) {
-            const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
-
-            if (PATH_STR_TRIMMED.empty() || (PATH_STR_TRIMMED == "."))
+        auto addOrAppendPathIfNotEmpty = [&](const std::string & PATH) {
+            if (PATH.empty() || (PATH == "."))
             {
                 return;
             }
 
             if (path.empty())
             {
-                path = bfs::path(PATH_STR_TRIMMED);
+                path = bfs::path(PATH);
             }
             else
             {
-                path /= PATH_STR_TRIMMED;
+                path /= PATH;
             }
         };
 
@@ -452,40 +447,29 @@ namespace misc
         addOrAppendPathIfNotEmpty(PATH3);
         addOrAppendPathIfNotEmpty(PATH4);
 
-        if (path.empty())
-        {
-            return "";
-        }
-        else
-        {
-            return CleanPath(path.string());
-        }
+        return path.string();
     }
 
-    const std::string filesystem::AppendPathsToCurrentThenClean(
+    const std::string filesystem::AppendPathsToCurrent(
         const std::string & PATH1, const std::string & PATH2, const std::string & PATH3)
     {
-        return CombinePathsThenClean(CurrentDirectory(), PATH1, PATH2, PATH3);
+        return CombinePaths(CurrentDirectory(), PATH1, PATH2, PATH3);
     }
 
     const std::string filesystem::LimitPathDept(
-        const std::string & PATH_STR_ORIG,
-        const std::size_t DEPTH_LIMIT,
-        const bool WILL_REMOVE_FROM_END)
+        const std::string & PATH, const std::size_t DEPTH_LIMIT, const bool WILL_REMOVE_FROM_END)
     {
         if (DEPTH_LIMIT < 1)
         {
             return "";
         }
 
-        const auto PATH_STR_CLEANED { CleanPath(PATH_STR_ORIG) };
-
-        if (PATH_STR_CLEANED.empty())
+        if (PATH.empty())
         {
             return "";
         }
 
-        const bfs::path BOOST_PATH { bfs::path(PATH_STR_CLEANED) };
+        const bfs::path BOOST_PATH { bfs::path(PATH) };
 
         std::vector<std::string> pathPartStrings;
         pathPartStrings.reserve(VECTOR_RESERVE_SIZE);
@@ -528,28 +512,16 @@ namespace misc
         return finalPathStr;
     }
 
-    bool filesystem::CreateDirectory(const std::string & PATH_STR_ORIG)
+    bool filesystem::CreateDirectory(const std::string & DIR_PATH_ORIG)
     {
-        const auto PATH_STR_CLEANED { CleanPath(PATH_STR_ORIG) };
-
-        if (PATH_STR_CLEANED.empty())
-        {
-            M_HP_LOG_ERR(MakeErrorString(
-                PATH_STR_ORIG, PATH_STR_CLEANED, "The given path was empty after cleaning."));
-
-            return false;
-        }
-
-        const bfs::path BOOST_PATH { PATH_STR_CLEANED };
+        const bfs::path BOOST_PATH { DIR_PATH_ORIG };
 
         if (bfs::exists(BOOST_PATH))
         {
             if (bfs::is_directory(BOOST_PATH))
             {
                 M_HP_LOG_WRN(MakeErrorString(
-                    PATH_STR_ORIG,
-                    PATH_STR_CLEANED,
-                    "Asked to create a directory that was already there."));
+                    DIR_PATH_ORIG, "Asked to create a directory that was already there."));
 
                 return true;
             }
@@ -563,7 +535,7 @@ namespace misc
                     + ", status_file_type=" + misc::ToString(bfs::status(BOOST_PATH).type())
                 };
 
-                M_HP_LOG_ERR(MakeErrorString(PATH_STR_ORIG, PATH_STR_CLEANED, ERROR_MESSAGE));
+                M_HP_LOG_ERR(MakeErrorString(DIR_PATH_ORIG, ERROR_MESSAGE));
                 return false;
             }
         }
@@ -572,8 +544,7 @@ namespace misc
 
         try
         {
-            const auto WAS_CREATED { bfs::create_directories(
-                bfs::path(PATH_STR_CLEANED), errorCode) };
+            const auto WAS_CREATED { bfs::create_directories(BOOST_PATH, errorCode) };
 
             if (WAS_CREATED && !errorCode)
             {
@@ -582,8 +553,7 @@ namespace misc
             else
             {
                 M_HP_LOG_ERR(MakeErrorString(
-                    PATH_STR_ORIG,
-                    PATH_STR_CLEANED,
+                    DIR_PATH_ORIG,
                     "create_directory() returned " + misc::ToString(WAS_CREATED),
                     errorCode));
             }
@@ -591,8 +561,7 @@ namespace misc
         catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_ERR(MakeErrorString(
-                PATH_STR_ORIG,
-                PATH_STR_CLEANED,
+                DIR_PATH_ORIG,
                 "boost::filesystem::create_directory() is what threw.",
                 errorCode,
                 EXCEPTION.what()));
@@ -601,25 +570,19 @@ namespace misc
         return false;
     }
 
-    bool filesystem::Delete(const std::string & PATH_STR_ORIG)
+    bool filesystem::Delete(const std::string & PATH)
     {
-        const auto PATH_STR_CLEANED { CleanPath(PATH_STR_ORIG) };
-
-        if (PATH_STR_CLEANED.empty())
+        if (PATH.empty())
         {
-            M_HP_LOG_ERR(MakeErrorString(
-                PATH_STR_ORIG, PATH_STR_CLEANED, "(The given path was empty after cleaning.)"));
-
+            M_HP_LOG_ERR(MakeErrorString(PATH, "(The given path was empty after cleaning.)"));
             return false;
         }
 
-        const bfs::path BOOST_PATH { PATH_STR_CLEANED };
+        const bfs::path BOOST_PATH { PATH };
 
         if (bfs::exists(BOOST_PATH) == false)
         {
-            M_HP_LOG_WRN(MakeErrorString(
-                PATH_STR_ORIG, PATH_STR_CLEANED, "Failed because nothing exists at that path."));
-
+            M_HP_LOG_WRN(MakeErrorString(PATH, "Failed because nothing exists at that path."));
             return true;
         }
 
@@ -638,7 +601,7 @@ namespace misc
 
         try
         {
-            const auto DELETE_COUNT { bfs::remove_all(bfs::path(PATH_STR_CLEANED), errorCode) };
+            const auto DELETE_COUNT { bfs::remove_all(BOOST_PATH, errorCode) };
 
             if ((DELETE_COUNT > 0) && !errorCode)
             {
@@ -647,8 +610,7 @@ namespace misc
             else
             {
                 M_HP_LOG_ERR(MakeErrorString(
-                    PATH_STR_ORIG,
-                    PATH_STR_CLEANED,
+                    PATH,
                     "remove_all() returned " + misc::ToString(DELETE_COUNT)
                         + ", meaning that many things were deleted." + makeExtraErrorInfoString(),
                     errorCode));
@@ -657,8 +619,7 @@ namespace misc
         catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_ERR(MakeErrorString(
-                PATH_STR_ORIG,
-                PATH_STR_CLEANED,
+                PATH,
                 "boost::filesystem::remove_all() is what threw" + makeExtraErrorInfoString(),
                 errorCode,
                 EXCEPTION.what()));
@@ -668,8 +629,7 @@ namespace misc
     }
 
     const std::string filesystem::MakeErrorString(
-        const std::string & PATH_ORIG,
-        const std::string & PATH_CLEANED,
+        const std::string & PATH,
         const std::string & MESSAGE,
         const boost::system::error_code & ERROR_CODE,
         const std::string & EXCEPTION)
@@ -693,14 +653,9 @@ namespace misc
             finalStr += M_HP_VAR_STR(MESSAGE);
         }
 
-        if (PATH_ORIG.empty() == false)
+        if (PATH.empty() == false)
         {
-            finalStr += M_HP_VAR_STR(PATH_ORIG);
-        }
-
-        if (PATH_CLEANED.empty() == false)
-        {
-            finalStr += M_HP_VAR_STR(PATH_CLEANED);
+            finalStr += M_HP_VAR_STR(PATH);
         }
 
         if (BOOST_SYSTEM_ERROR.empty() == false)
@@ -725,23 +680,21 @@ namespace misc
         return FILE_NAME + NUMBER_PREFIX + misc::ToString(NUMBER) + FILE_EXTENSION;
     }
 
-    bool filesystem::IsWindowsDriveNameWithoutTrailingSlash(const std::string & PATH_STR_ORIG)
+    bool filesystem::IsWindowsDriveNameWithoutTrailingSlash(const std::string & PATH_TRIMMED)
     {
-        const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
-
-        if (PATH_STR_TRIMMED.size() < 2)
+        if (PATH_TRIMMED.size() < 2)
         {
             return false;
         }
 
-        if (PATH_STR_TRIMMED.back() != ':')
+        if (PATH_TRIMMED.back() != ':')
         {
             return false;
         }
 
-        for (std::size_t charIndex(0); charIndex < (PATH_STR_TRIMMED.size() - 1); ++charIndex)
+        for (std::size_t charIndex(0); charIndex < (PATH_TRIMMED.size() - 1); ++charIndex)
         {
-            if (misc::IsAlpha(PATH_STR_TRIMMED.at(charIndex)) == false)
+            if (misc::IsAlpha(PATH_TRIMMED.at(charIndex)) == false)
             {
                 return false;
             }
@@ -755,47 +708,42 @@ namespace misc
         return static_cast<char>(bfs::path::preferred_separator);
     }
 
-    const std::string filesystem::GetBoostFilename(const std::string & PATH_STR_ORIG)
+    const std::string filesystem::GetBoostFilename(const std::string & PATH_TRIMMED)
     {
-        const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
-        return bfs::path(PATH_STR_TRIMMED).filename().string();
+        return bfs::path(PATH_TRIMMED).filename().string();
     }
 
     filesystem::LooksLike
-        filesystem::WhatDoesBoostFilenameIndicatePathEndsWith(const std::string & PATH_STR_ORIG)
+        filesystem::WhatDoesBoostFilenameIndicatePathEndsWith(const std::string & BOOST_FILE_NAME)
     {
-        const auto BOOST_FILE_NAME_STR { GetBoostFilename(PATH_STR_ORIG) };
-
-        if (BOOST_FILE_NAME_STR.empty())
+        if (BOOST_FILE_NAME.empty())
         {
             return LooksLike::Unknown;
         }
-        else
+
+        // only need to handle possible output of boost::filesystem::filename() here
+
+        if (IsSeparator(BOOST_FILE_NAME.back()))
         {
-            // only need to handle possible output of boost::filesystem::filename() here
-
-            if (IsSeparator(BOOST_FILE_NAME_STR.back()))
-            {
-                return LooksLike::Directory;
-            }
-
-            if ((BOOST_FILE_NAME_STR == ".") || (BOOST_FILE_NAME_STR == ".."))
-            {
-                return LooksLike::Directory;
-            }
-
-            if (IsWindowsDriveNameWithoutTrailingSlash(BOOST_FILE_NAME_STR))
-            {
-                return LooksLike::Directory;
-            }
-
-            if (EndsWithSeparatorFollowedByDots(BOOST_FILE_NAME_STR))
-            {
-                return LooksLike::Directory;
-            }
-
-            return LooksLike::File;
+            return LooksLike::Directory;
         }
+
+        if ((BOOST_FILE_NAME == ".") || (BOOST_FILE_NAME == ".."))
+        {
+            return LooksLike::Directory;
+        }
+
+        if (IsWindowsDriveNameWithoutTrailingSlash(BOOST_FILE_NAME))
+        {
+            return LooksLike::Directory;
+        }
+
+        if (EndsWithSeparatorFollowedByDots(BOOST_FILE_NAME))
+        {
+            return LooksLike::Directory;
+        }
+
+        return LooksLike::File;
     }
 
     bool filesystem::IsSeparator(const char CHAR)
@@ -803,16 +751,14 @@ namespace misc
         return ((CHAR == PreferredSeparatorChar()) || (CHAR == '\\') || (CHAR == '/'));
     }
 
-    bool filesystem::EndsWithSeparatorFollowedByDots(const std::string & PATH_STR_ORIG)
+    bool filesystem::EndsWithSeparatorFollowedByDots(const std::string & PATH_TRIMMED)
     {
-        const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
-
-        if (PATH_STR_TRIMMED.size() < 2 || (PATH_STR_TRIMMED.back() != '.'))
+        if (PATH_TRIMMED.size() < 2 || (PATH_TRIMMED.back() != '.'))
         {
             return false;
         }
 
-        for (auto revIter(std::crbegin(PATH_STR_TRIMMED)); revIter != std::crend(PATH_STR_TRIMMED);
+        for (auto revIter(std::crbegin(PATH_TRIMMED)); revIter != std::crend(PATH_TRIMMED);
              ++revIter)
         {
             const auto CHAR { *revIter };
@@ -828,13 +774,13 @@ namespace misc
         return false;
     }
 
-    const std::string filesystem::SlashesToPreferredSeparator(const std::string & PATH_STR_ORIG)
+    const std::string filesystem::SlashesToPreferredSeparator(const std::string & PATH_ORIG)
     {
         const std::string BLACK_SLASH_STR { "\\" };
         const std::string FORWARD_SLASH_STR { "/" };
         const std::string PREFERRED_SEPARATOR_STR(1, PreferredSeparatorChar());
 
-        std::string newPath { PATH_STR_ORIG };
+        std::string newPath { PATH_ORIG };
 
         if (PREFERRED_SEPARATOR_STR != BLACK_SLASH_STR)
         {

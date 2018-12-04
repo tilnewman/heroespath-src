@@ -26,6 +26,8 @@ namespace heroespath
 // type but they were both std::strings, so this is just a hack wrapper to change the type
 struct PathWrapper
 {
+    PathWrapper() = delete;
+
     explicit PathWrapper(const std::string & PATH_STR)
         : path_str(PATH_STR)
     {}

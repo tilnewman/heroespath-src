@@ -153,7 +153,7 @@ namespace popup
             }
         }
 
-        return misc::filesystem::CombinePathsThenClean(windowTextureDirectoryPath_, filename);
+        return misc::filesystem::CombinePaths(windowTextureDirectoryPath_, filename);
     }
 
     const gui::TextInfo PopupManager::TextInfoDefault(

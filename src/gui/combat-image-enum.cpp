@@ -140,12 +140,19 @@ namespace gui
 
     const std::string CombatImageType::ImageDirectory()
     {
-        return misc::ConfigFile::Instance()->GetMediaPath("media-images-combat-dir");
+        static std::string imageDir;
+
+        if (imageDir.empty())
+        {
+            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-combat-dir");
+        }
+
+        return imageDir;
     }
 
     const std::string CombatImageType::ImagePath(const Enum ENUM)
     {
-        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
+        return misc::filesystem::CombinePaths(ImageDirectory(), ImageFilename(ENUM));
     }
 
 } // namespace gui

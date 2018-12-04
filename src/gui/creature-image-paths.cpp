@@ -33,8 +33,8 @@ namespace gui
 
     void CreatureImagePaths::SetupFilesystemPaths()
     {
-        imageDirectoryPath_ = misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-creatures-dir"));
+        imageDirectoryPath_
+            = misc::ConfigFile::Instance()->GetMediaPath("media-images-creatures-dir");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsDirectory(imageDirectoryPath_),
@@ -277,7 +277,7 @@ namespace gui
 
     const std::string CreatureImagePaths::PathFromFilename(const std::string & FILENAME)
     {
-        return misc::filesystem::CombinePathsThenClean(imageDirectoryPath_, FILENAME);
+        return misc::filesystem::CombinePaths(imageDirectoryPath_, FILENAME);
     }
 
     const std::string CreatureImagePaths::FilenameRandom(const creature::Creature & CREATURE)

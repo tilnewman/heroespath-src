@@ -55,8 +55,8 @@ namespace map
 
     void Parser::SetupFilesystemPaths()
     {
-        tileTextureDirectoryPath_ = misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath("media-maps-tile-dir"));
+        tileTextureDirectoryPath_
+            = misc::ConfigFile::Instance()->GetMediaPath("media-maps-tile-dir");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsDirectory(tileTextureDirectoryPath_),
@@ -264,7 +264,7 @@ namespace map
         const std::string FILE_RELATIVE_PATH { misc::filesystem::Filename(
             FetchXMLAttribute<std::string>(IMAGE_PROPTREE, "source")) };
 
-        const std::string FILE_COMPLETE_PATH { misc::filesystem::CombinePathsThenClean(
+        const std::string FILE_COMPLETE_PATH { misc::filesystem::CombinePaths(
             tileTextureDirectoryPath_, FILE_RELATIVE_PATH) };
 
         const std::string TILES_PANEL_NAME { FetchXMLAttribute<std::string>(

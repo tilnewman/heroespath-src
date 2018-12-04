@@ -175,12 +175,19 @@ namespace spell
 
     const std::string Spells::ImageDirectory()
     {
-        return misc::ConfigFile::Instance()->GetMediaPath("media-images-spells-dir");
+        static std::string imageDir;
+
+        if (imageDir.empty())
+        {
+            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-spells-dir");
+        }
+
+        return imageDir;
     }
 
     const std::string Spells::ImagePath(const Enum ENUM)
     {
-        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
+        return misc::filesystem::CombinePaths(ImageDirectory(), ImageFilename(ENUM));
     }
 
 } // namespace spell

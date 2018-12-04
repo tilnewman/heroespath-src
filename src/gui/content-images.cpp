@@ -23,16 +23,14 @@ namespace gui
 
     void ContentImage::SetupFilesystemPaths()
     {
-        todoPath_ = misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-misc-todo"));
+        todoPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-images-misc-todo");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsFile(todoPath_),
             "Default todo content image path does not exist or is not a file."
                 + M_HP_VAR_STR(todoPath_));
 
-        errorPath_ = misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-misc-error"));
+        errorPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-images-misc-error");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsFile(errorPath_),
