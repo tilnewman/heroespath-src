@@ -100,6 +100,16 @@ namespace misc
 
     void TrimWhitespace(std::string & str)
     {
+        if (str.empty())
+        {
+            return;
+        }
+
+        if (!IsWhitespace(str.front()) && !IsWhitespace(str.back()))
+        {
+            return;
+        }
+
         TrimIf(str, [](const char CH) { return !IsWhitespace(CH); });
     }
 
@@ -112,6 +122,16 @@ namespace misc
 
     void TrimNonDisplayable(std::string & str)
     {
+        if (str.empty())
+        {
+            return;
+        }
+
+        if (IsDisplayable(str.front()) && IsDisplayable(str.back()))
+        {
+            return;
+        }
+
         TrimIf(str, [](const char CH) { return IsDisplayable(CH); });
     }
 
@@ -124,6 +144,16 @@ namespace misc
 
     void TrimWhitespaceAndNonDisplayable(std::string & str)
     {
+        if (str.empty())
+        {
+            return;
+        }
+
+        if (!IsWhitespaceOrNonDisplayable(str.front()) && !IsWhitespaceOrNonDisplayable(str.back()))
+        {
+            return;
+        }
+
         TrimIf(str, [](const char CH) { return !IsWhitespaceOrNonDisplayable(CH); });
     }
 
