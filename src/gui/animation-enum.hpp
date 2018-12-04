@@ -63,9 +63,12 @@ namespace gui
         static const std::string ToString(const Enum);
         static const std::string MediaPathKey(const Enum);
         static bool IsMultiTexture(const Enum);
-        static const sf::Vector2f SizePair(const Enum);
         static float TimePerFrameSec(const Enum);
         static const MusicEnumVec_t Sfx(const Enum);
+
+        // returns frame size for AnimationSingle and the common full texture size for
+        // AnimationMults
+        static const sf::Vector2f ImageSize(const Enum);
     };
 
 } // namespace gui

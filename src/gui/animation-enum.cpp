@@ -348,7 +348,7 @@ namespace gui
         }
     }
 
-    const sf::Vector2f Animations::SizePair(const Enum ENUM)
+    const sf::Vector2f Animations::ImageSize(const Enum ENUM)
     {
         switch (ENUM)
         {

@@ -59,6 +59,25 @@ namespace sfutil
             (static_cast<float>(VT.y) * static_cast<float>(VU.y))) };
     }
 
+    // zero divisors result in zeros
+    template <typename T, typename U>
+    constexpr const sf::Vector2<T> VectorDiv(const sf::Vector2<T> & VT, const sf::Vector2<U> & VU)
+    {
+        float x { 0.0f };
+        if (misc::IsRealZero(VU.x) == false)
+        {
+            x = (VT.x / VU.x);
+        }
+
+        float y { 0.0f };
+        if (misc::IsRealZero(VU.y) == false)
+        {
+            y = (VT.y / VU.y);
+        }
+
+        return sf::Vector2<T> { sf::Vector2f(x, y) };
+    }
+
     // returns a copy of V scaled by SCALE_V, same as (V.x * SCALE_V.x) and (V.y * SCALE_V.y)
     template <
         typename T,

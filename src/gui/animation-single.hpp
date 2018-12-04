@@ -11,8 +11,7 @@
 //
 #include "gui/animation-base.hpp"
 #include "gui/cached-texture.hpp"
-
-#include <SFML/Graphics/Sprite.hpp>
+#include "misc/log-macros.hpp"
 
 #include <vector>
 
@@ -21,43 +20,79 @@ namespace heroespath
 namespace gui
 {
 
-    // An animation that is sourced from a single texture
+    // An animation that gets its frames from a single image
     class AnimationSingleTexture : public Animation
     {
     public:
-        AnimationSingleTexture(const AnimationSingleTexture &) = delete;
-        AnimationSingleTexture(AnimationSingleTexture &&) = delete;
-        AnimationSingleTexture & operator=(const AnimationSingleTexture &) = delete;
-        AnimationSingleTexture & operator=(AnimationSingleTexture &&) = delete;
-
         AnimationSingleTexture(
             const Animations::Enum ENUM,
             const sf::FloatRect & REGION,
             const float TIME_PER_FRAME_SEC,
             const sf::BlendMode & BLEND_MODE,
             const sf::Color & COLOR_FROM,
-            const sf::Color & COLOR_TO);
+            const sf::Color & COLOR_TO)
+            : Animation(ENUM, REGION, TIME_PER_FRAME_SEC, BLEND_MODE, COLOR_FROM, COLOR_TO)
+            , cachedTexture_(gui::Animations::MediaPathKey(ENUM))
+            , frameRects_()
+        {
+            FindAllFrames(ENUM);
+        }
 
-        virtual ~AnimationSingleTexture();
+        virtual ~AnimationSingleTexture() = default;
 
-        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+        std::size_t FrameCount() const final { return frameRects_.size(); }
 
-        void SetEntityPos(const float LEFT, const float TOP) override;
-        void SetEntityRegion(const sf::FloatRect & R) override;
-        void MoveEntityPos(const float HORIZ, const float VERT) override;
+    private:
+        void FindAllFrames(const Animations::Enum ENUM)
+        {
+            const sf::Vector2i TEXTURE_SIZE_V(cachedTexture_.Get().getSize());
+            const sf::Vector2i FRAME_SIZE_V(gui::Animations::ImageSize(ENUM));
 
-        std::size_t FrameCount() const override { return rects_.size(); }
+            for (int vert(0); vert < TEXTURE_SIZE_V.y; vert += FRAME_SIZE_V.y)
+            {
+                for (int horiz(0); horiz < TEXTURE_SIZE_V.x; horiz += FRAME_SIZE_V.x)
+                {
+                    frameRects_.emplace_back(sf::IntRect(sf::Vector2i(horiz, vert), FRAME_SIZE_V));
+                }
+            }
 
-        const sf::Vector2f OrigSize() const override { return origSizeV_; }
+            const auto RECT_COUNT_EXPECTED { static_cast<std::size_t>(
+                (TEXTURE_SIZE_V.x / FRAME_SIZE_V.x) * (TEXTURE_SIZE_V.y / FRAME_SIZE_V.y)) };
 
-        // returns true if frame count wrapped around back to zero
-        bool UpdateTime(const float SECONDS) override;
+            if ((RECT_COUNT_EXPECTED != frameRects_.size()) || frameRects_.empty())
+            {
+                M_HP_LOG_ERR(
+                    "Failed to create the expected number "
+                    "of frames or any frames at all."
+                    + M_HP_VAR_STR(Animations::ToString(ENUM)) + M_HP_VAR_STR(frameRects_.size())
+                    + M_HP_VAR_STR(RECT_COUNT_EXPECTED) + M_HP_VAR_STR(TEXTURE_SIZE_V)
+                    + M_HP_VAR_STR(FRAME_SIZE_V));
+            }
+        }
 
-    protected:
+        const sf::Texture & GetTexture(const std::size_t) const final
+        {
+            return cachedTexture_.Get();
+        }
+
+        const sf::IntRect GetTextureRect(const std::size_t FRAME_INDEX) const final
+        {
+            if (frameRects_.empty())
+            {
+                return sf::IntRect();
+            }
+            else if (FRAME_INDEX < frameRects_.size())
+            {
+                return frameRects_[FRAME_INDEX];
+            }
+            else
+            {
+                return frameRects_.front();
+            }
+        }
+
         CachedTexture cachedTexture_;
-        sf::Sprite sprite_;
-        sf::Vector2f origSizeV_;
-        std::vector<sf::IntRect> rects_; // rects_.size() == frame count
+        std::vector<sf::IntRect> frameRects_;
     };
 
 } // namespace gui

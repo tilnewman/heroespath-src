@@ -13,8 +13,7 @@
 #include "gui/animation-enum.hpp"
 #include "gui/entity.hpp"
 
-#include <SFML/Graphics/BlendMode.hpp>
-#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <vector>
@@ -24,16 +23,10 @@ namespace heroespath
 namespace gui
 {
 
-    // Responsible for state and operations common to all animations in the game that work by
-    // showing a changing image at a given frame rate.
+    // A base class for both types of animations.
     class Animation : public Entity
     {
     public:
-        Animation(const Animation &) = delete;
-        Animation(Animation &&) = delete;
-        Animation & operator=(const Animation &) = delete;
-        Animation & operator=(Animation &&) = delete;
-
         Animation(
             const Animations::Enum ENUM,
             const sf::FloatRect & REGION,
@@ -44,11 +37,26 @@ namespace gui
 
         virtual ~Animation();
 
+        Animation(const Animation &) = delete;
+        Animation(Animation &&) = delete;
+        Animation & operator=(const Animation &) = delete;
+        Animation & operator=(Animation &&) = delete;
+
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+
+        void SetEntityPos(const sf::Vector2f & V) override { SetEntityPos(V.x, V.y); }
+        void SetEntityPos(const float LEFT, const float TOP) override;
+        void SetEntityRegion(const sf::FloatRect & R) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
+
+        // returns true if frame count wrapped around back to zero
+        bool UpdateTime(const float SECONDS) override;
+
+        const sf::Vector2f OrigSize() const { return origSizeV_; }
+
         virtual std::size_t FrameCount() const = 0;
 
-        virtual const sf::Vector2f OrigSize() const = 0;
-
-        std::size_t CurrentFrame() const { return currentFrame_; }
+        std::size_t CurrentFrame() const { return frameIndex_; }
 
         float TimePerFrame() const { return timePerFrameSec_; }
 
@@ -68,18 +76,22 @@ namespace gui
 
         void RandomVaryTimePerFrame();
 
-    protected:
+    private:
+        virtual const sf::Texture & GetTexture(const std::size_t FRAME_INDEX) const = 0;
+        virtual const sf::IntRect GetTextureRect(const std::size_t FRAME_INDEX) const = 0;
+        void SetupSprite();
+
         Animations::Enum which_;
         sf::BlendMode blendMode_;
         float timePerFrameSec_;
-
-        // counts up to total then restarts at zero
-        std::size_t currentFrame_;
-
+        std::size_t frameIndex_;
         float frameTimerSec_;
         sf::Color colorFrom_;
         sf::Color colorTo_;
+        sf::Sprite sprite_;
+        sf::Vector2f origSizeV_;
         bool isFinished_;
+        bool hasAlreadyUpdated_;
     };
 
     using AnimationUPtr_t = std::unique_ptr<Animation>;

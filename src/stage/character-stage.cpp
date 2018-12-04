@@ -104,7 +104,12 @@ namespace stage
         , smokeAnimSliderDriftX_()
         , smokeAnimSliderDriftY_()
         , background_()
-        , smokeAnimUPtr_()
+        , smokeAnimUPtr_(gui::AnimationFactory::Make(
+              gui::Animations::SmokeSwirl,
+              sfutil::MapByRes(1.0f, 3.0f),
+              0.035f,
+              sf::Color::White,
+              sf::BlendAlpha))
         , backButtonUPtr_(std::make_unique<gui::MainMenuButton>(
               stage::Stage::Previous, gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this), -1.0f))
         , saveButtonUPtr_(std::make_unique<gui::MainMenuButton>(
@@ -874,13 +879,6 @@ namespace stage
 
     void CharacterStage::Setup_SmokeAnimation(const float ATTRIB_BOX_TOP)
     {
-        smokeAnimUPtr_ = gui::AnimationFactory::Make(
-            gui::Animations::SmokeSwirl,
-            sfutil::MapByRes(1.0f, 3.0f),
-            0.035f,
-            sf::Color::White,
-            sf::BlendAlpha);
-
         EntityAdd(smokeAnimUPtr_);
 
         const auto DRIFT_LIMIT_LEFT { StageRegion().width * 0.65f };

@@ -143,6 +143,7 @@ namespace gui
         ~CachedTextures();
 
         const std::vector<std::size_t> Indexes() const { return indexes_; }
+        bool Empty() const { return indexes_.empty(); }
         std::size_t Size() const { return indexes_.size(); }
         const std::string Path() const { return path_; }
         const ImageOptions Options() const { return options_; }
