@@ -106,7 +106,7 @@ namespace misc
 
         if (currentDir.empty())
         {
-            currentDir = CleanPath(bfs::current_path().string());
+            currentDir = bfs::current_path().string();
         }
 
         return currentDir;
@@ -195,15 +195,7 @@ namespace misc
             return false;
         }
 
-        auto pathToUse { PATH_TRIMMED };
-        if (bfs::exists(bfs::path(pathToUse)))
-        {
-            return true;
-        }
-
-        pathToUse = CleanPath(pathToUse);
-
-        return bfs::exists(bfs::path(pathToUse));
+        return bfs::exists(bfs::path(PATH_TRIMMED));
     }
 
     bool filesystem::ExistsAndIsFile(const std::string & FILE_PATH_ORIG)
@@ -215,14 +207,9 @@ namespace misc
             return false;
         }
 
-        auto boostPathToUse { bfs::path(FILE_PATH_TRIMMED) };
+        const auto BOOST_PATH { bfs::path(FILE_PATH_TRIMMED) };
 
-        if (bfs::exists(boostPathToUse) == false)
-        {
-            boostPathToUse = bfs::path(CleanPath(FILE_PATH_TRIMMED));
-        }
-
-        return (bfs::exists(boostPathToUse) && bfs::is_regular_file(boostPathToUse));
+        return (bfs::exists(BOOST_PATH) && bfs::is_regular_file(BOOST_PATH));
     }
 
     bool filesystem::ExistsAndIsDirectory(const std::string & DIR_PATH_ORIG)
@@ -234,14 +221,9 @@ namespace misc
             return false;
         }
 
-        auto boostPathToUse { bfs::path(DIR_PATH_TRIMMED) };
+        const auto BOOST_PATH { bfs::path(DIR_PATH_TRIMMED) };
 
-        if (bfs::exists(boostPathToUse) == false)
-        {
-            boostPathToUse = bfs::path(CleanPath(DIR_PATH_TRIMMED));
-        }
-
-        return (bfs::exists(boostPathToUse) && bfs::is_directory(boostPathToUse));
+        return (bfs::exists(BOOST_PATH) && bfs::is_directory(BOOST_PATH));
     }
 
     const std::vector<std::string> filesystem::FindFiles(
