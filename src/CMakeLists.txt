@@ -41,7 +41,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
 
-    set(custom_link_flags "${custom_link_flags} -pthread")
+    set(custom_link_flags ${custom_link_flags} -pthread)
 
     #Valgrind stuff here
     option(VALGRIND_BUILD "Build flags customized for Valgrind" OFF)
