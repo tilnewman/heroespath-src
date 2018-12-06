@@ -51,7 +51,7 @@ namespace gui
         {
             if (cachedTextures_.Empty())
             {
-                return sf::Texture();
+                return defaultEmptyTexture_;
             }
             else if (FRAME_INDEX < cachedTextures_.Size())
             {
@@ -69,6 +69,7 @@ namespace gui
         }
 
         gui::CachedTextures cachedTextures_;
+        sf::Texture defaultEmptyTexture_;
     };
 
 } // namespace gui
