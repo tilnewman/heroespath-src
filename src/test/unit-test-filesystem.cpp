@@ -37,10 +37,9 @@ struct Help
         , TEST_DIR_PATH_STR { CombinePaths(bfs::current_path().string(), TEST_DIR_NAME_STR) }
         , LOG_FILES_IN_FIRST_DIR_ONLY { "log-1.txt", "log-2.txt", "log-3.txt", "log-5.txt" }
         , IMAGE_FILES_IN_FIRST_DIR_ONLY { "image1.png" }
-        , JUNK_FILES_IN_FIRST_DIR_ONLY { ".DS_Store", "junk.htm", "junk.html", "sample.gif" }
-        , ALL_FILES_IN_FIRST_DIR_ONLY { ".DS_Store", "image1.png", "junk.htm",
-                                        "junk.html", "log-1.txt",  "log-2.txt",
-                                        "log-3.txt", "log-5.txt",  "sample.gif" }
+        , JUNK_FILES_IN_FIRST_DIR_ONLY { "junk.htm", "junk.html", "sample.gif" }
+        , ALL_FILES_IN_FIRST_DIR_ONLY { "image1.png", "junk.htm",  "junk.html", "log-1.txt",
+                                        "log-2.txt",  "log-3.txt", "log-5.txt", "sample.gif" }
         , LOG_FILES_RECURSIVE { "log-1.txt", "log-2.txt", "log-3.txt", "log-4.txt",
                                 "log-5.txt", "log-6.txt", "log-7.txt" }
         , IMAGE_FILES_RECURSIVE { "image1.png", "image2.png", "image3.png" }
@@ -1086,6 +1085,26 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__FindFiles)
     BOOST_CHECK(
         help.KeepOnlyFilenameAndStdSort(filesystem::FindFiles(false, help.NON_EMPTY_DIR_PATH_STR))
         == help.ALL_FILES_IN_FIRST_DIR_ONLY);
+
+    for (const auto & FILE : filesystem::FindFiles(false, help.NON_EMPTY_DIR_PATH_STR))
+    {
+        std::cout << "\n" << FILE;
+    }
+
+    std::cout << std::endl;
+
+    for (const auto & FILE :
+         help.KeepOnlyFilenameAndStdSort(filesystem::FindFiles(false, help.NON_EMPTY_DIR_PATH_STR)))
+    {
+        std::cout << "\n" << FILE;
+    }
+
+    std::cout << std::endl;
+
+    for (const auto & FILE : help.ALL_FILES_IN_FIRST_DIR_ONLY)
+    {
+        std::cout << "\n" << FILE;
+    }
 
     BOOST_CHECK(
         help.KeepOnlyFilenameAndStdSort(
