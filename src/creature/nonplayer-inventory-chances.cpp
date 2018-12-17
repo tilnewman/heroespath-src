@@ -46,39 +46,39 @@ namespace creature
 
         ChanceFactory::ChanceFactory()
             : masterRankMax_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-rankclass-Master-rankmax"))
+                "rankclass-Master-rankmax"))
             , clothingChanceMin_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-inventory-clothing-chance-min"))
+                  "inventory-clothing-chance-min"))
             , clothingChanceMax_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-inventory-clothing-chance-max"))
+                  "inventory-clothing-chance-max"))
             , materialPrimaryChanceCool_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-material-primary-chance-base-Cool-onein"))
+                  "material-primary-chance-base-Cool-onein"))
             , materialPrimaryChanceMetal_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-material-primary-chance-base-Metal-onein"))
+                  "material-primary-chance-base-Metal-onein"))
             , materialPrimaryChancePrecious_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-material-primary-chance-base-Precious-onein"))
+                  "material-primary-chance-base-Precious-onein"))
             , collectorMaterialChanceIncreaseCool_(
                   misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                      "heroespath-material-collector-chance-base-increase-Cool"))
+                      "material-collector-chance-base-increase-Cool"))
             , collectorMaterialChanceIncreaseMetal_(
                   misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                      "heroespath-material-collector-chance-base-increase-Metal"))
+                      "material-collector-chance-base-increase-Metal"))
             , collectorMaterialChanceIncreasePrecious_(
                   misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                      "heroespath-material-collector-chance-base-increase-Precious"))
+                      "material-collector-chance-base-increase-Precious"))
             , collectorMaterialChancePerCool_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-material-collector-chance-per-divisor-Cool"))
+                  "material-collector-chance-per-divisor-Cool"))
             , collectorMaterialChancePerMetal_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-material-collector-chance-per-divisor-Metal"))
+                  "material-collector-chance-per-divisor-Metal"))
             , collectorMaterialChancePerPrecious_(
                   misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                      "heroespath-material-collector-chance-per-divisor-Precious"))
+                      "material-collector-chance-per-divisor-Precious"))
             , materialSecondaryChanceCool_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-material-secondary-chance-base-Cool-onein"))
+                  "material-secondary-chance-base-Cool-onein"))
             , materialSecondaryChanceMetal_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-material-secondary-chance-base-Metal-onein"))
+                  "material-secondary-chance-base-Metal-onein"))
             , materialSecondaryChancePrecious_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-material-secondary-chance-base-Precious-onein"))
+                  "material-secondary-chance-base-Precious-onein"))
             , materialChanceMapCool_(Make_MaterialChanceMapCool())
             , materialChanceMapMetal_(Make_MaterialChanceMapMetal())
             , materialChanceMapPrecious_(Make_MaterialChanceMapPrecious())
@@ -156,7 +156,7 @@ namespace creature
         void ChanceFactory::Make_Coins(
             const Profile & PROFILE, Coin_t & coinsMin_OutParam, Coin_t & coinsMax_OutParam) const
         {
-            const auto KEY_STR { "heroespath-nonplayer-coins-bounds-"
+            const auto KEY_STR { "nonplayer-coins-bounds-"
                                  + wealth_type::ToString(PROFILE.wealthType) };
 
             const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
@@ -1024,7 +1024,7 @@ namespace creature
             float & silkChance) const
         {
             std::ostringstream ss;
-            ss << "heroespath-inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType)
+            ss << "inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType)
                << "-chances";
 
             const auto WEARABLE_STR_BASE { ss.str() };
@@ -1172,7 +1172,7 @@ namespace creature
             // adjustments that make more wealth equal better chances for special materials
             const auto WEALTH_CHANCE_ADJUSTMENT {
                 misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "heroespath-material-wealth-chance-base-adjustment-"
+                    "material-wealth-chance-base-adjustment-"
                     + wealth_type::ToString(PROFILE.wealthType))
             };
 
@@ -1322,7 +1322,7 @@ namespace creature
 
             // adjustments that make more wealth equal better chances for special materials
             const auto WEALTH_CHANCE_ADJUSTMENT(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-material-wealth-chance-base-adjustment-"
+                "material-wealth-chance-base-adjustment-"
                 + wealth_type::ToString(PROFILE.wealthType)));
 
             chanceCool += WEALTH_CHANCE_ADJUSTMENT;
@@ -1468,7 +1468,7 @@ namespace creature
                     item::material::Gold,     item::material::Pearl };
 
             return Make_MaterialChanceMap(
-                "heroespath-material-chance-base-cool-", "-onein", MATERIAL_VEC);
+                "material-chance-base-cool-", "-onein", MATERIAL_VEC);
         }
 
         const MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapPrecious() const
@@ -1480,7 +1480,7 @@ namespace creature
                     item::material::Sapphire, item::material::Diamond };
 
             return Make_MaterialChanceMap(
-                "heroespath-material-chance-base-precious-", "-onein", MATERIAL_VEC);
+                "material-chance-base-precious-", "-onein", MATERIAL_VEC);
         }
 
         const MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapMetal() const
@@ -1491,7 +1491,7 @@ namespace creature
                     item::material::Platinum };
 
             return Make_MaterialChanceMap(
-                "heroespath-material-chance-base-metal-", "-onein", MATERIAL_VEC);
+                "material-chance-base-metal-", "-onein", MATERIAL_VEC);
         }
 
         const ClothingChances ChanceFactory::Make_ClothingMaterialChances(
@@ -1502,7 +1502,7 @@ namespace creature
             Make_MaterialChancesSecondary(PROFILE, CHARACTER_PTR, itemChancesBase.mat_map_sec);
 
             std::ostringstream ss;
-            const std::string KEY_BASE { "heroespath-inventory-clothing-" };
+            const std::string KEY_BASE { "inventory-clothing-" };
             ss << KEY_BASE << wealth_type::ToString(PROFILE.wealthType) << "-chances-";
             const auto WEARABLE_STR_BASE { ss.str() };
 
@@ -1740,7 +1740,7 @@ namespace creature
                 const auto ROLE { static_cast<role::Enum>(i) };
 
                 const auto ROLE_STR { role::ToString(ROLE) };
-                const auto KEY_STR { "heroespath-nonplayer-armor-chances-role-" + ROLE_STR };
+                const auto KEY_STR { "nonplayer-armor-chances-role-" + ROLE_STR };
                 const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
                 const std::vector<std::string> ARMOR_CHANCES_VEC { misc::SplitByChars(
@@ -1857,7 +1857,7 @@ namespace creature
             namespace ba = boost::algorithm;
 
             const auto ROLE_STR { role::ToString(ROLE) };
-            const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
+            const std::string KEY_STR("nonplayer-weapon-chances-role-" + ROLE_STR);
 
             const auto VALUE_STR_LOWER { misc::ToLowerCopy(
                 misc::ConfigFile::Instance()->Value(KEY_STR)) };

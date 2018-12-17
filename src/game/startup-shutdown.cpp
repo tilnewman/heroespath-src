@@ -303,11 +303,11 @@ namespace game
         map::Parser::SetupFilesystemPaths();
 
         popup::PopupManager::SetTexturesDirectoryPaths(
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-accents-dir"));
+            misc::ConfigFile::Instance()->GetMediaPath("media-image-background-dir"),
+            misc::ConfigFile::Instance()->GetMediaPath("media-image-accent-dir"));
 
         gui::SoundManager::SetSoundsDirectory(
-            misc::ConfigFile::Instance()->GetMediaPath("media-sounds-dir"),
+            misc::ConfigFile::Instance()->GetMediaPath("media-sound-dir"),
             misc::ConfigFile::Instance()->GetMediaPath("media-music-dir"));
 
         gui::CreatureImagePaths::SetupFilesystemPaths();

@@ -137,9 +137,9 @@ namespace gui
             , emitTimerDurationSec_(0.0f)
             , durationTimerSec_(0.0f)
             , isFinished_(false)
-            , cloudCachedTexture1_("media-images-misc-cloud1")
-            , cloudCachedTexture2_("media-images-misc-cloud2")
-            , cloudCachedTexture3_("media-images-misc-cloud3")
+            , cloudCachedTexture1_("media-image-misc-cloud1")
+            , cloudCachedTexture2_("media-image-misc-cloud2")
+            , cloudCachedTexture3_("media-image-misc-cloud3")
             , cloudVec_()
         {
             cloudVec_.reserve(static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);

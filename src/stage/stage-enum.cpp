@@ -121,8 +121,6 @@ namespace stage
         }
     }
 
-    bool Stage::HasFadedImage(const Stage::Enum STAGE) { return (STAGE == Stage::Load); }
-
     bool Stage::IsPlayable(const Stage::Enum STAGE)
     {
         return (

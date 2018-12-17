@@ -104,11 +104,11 @@ namespace game
         sf::Vector2i prevMousePosV_;
         MouseThisFrame frameMouseInfo_;
         std::vector<sf::Event> toLogEvents_;
-        misc::TimeTrials componentFramerateTrials_;
-        std::size_t componentFrameRateTrialsIndexAudio_;
-        std::size_t componentFrameRateTrialsIndexUpdate_;
-        std::size_t componentFrameRateTrialsIndexDraw_;
-        std::size_t componentFrameRateTrialsIndexDisplay_;
+        // misc::TimeTrials componentFramerateTrials_;
+        // std::size_t componentFrameRateTrialsIndexAudio_;
+        // std::size_t componentFrameRateTrialsIndexUpdate_;
+        // std::size_t componentFrameRateTrialsIndexDraw_;
+        // std::size_t componentFrameRateTrialsIndexDisplay_;
     };
 
 } // namespace game

@@ -9,7 +9,6 @@
 //
 // map-display.hpp
 //
-#include "gui/animation-base.hpp"
 #include "gui/animation-factory.hpp"
 #include "gui/cached-texture.hpp"
 #include "gui/direction-enum.hpp"

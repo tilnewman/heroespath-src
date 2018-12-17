@@ -40,9 +40,9 @@ namespace stage
               "InnStage'sBackground",
               StageRegion(),
               gui::BoxEntityInfo(gui::CachedTexture(
-                  "media-images-backgrounds-tile-darkknot",
+                  "media-image-background-tile-darkknot",
                   gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
-        , candleCachedTexture_("media-images-candle")
+        , candleCachedTexture_("media-image-candle")
         , candleSprite_(candleCachedTexture_.Get())
         , candleAnimUPtr_()
         , ouroborosUPtr_()
@@ -70,10 +70,8 @@ namespace stage
         sfutil::FitAndCenterTo(candleSprite_, CANDLE_REGION_CONSTRAINTS);
 
         // candle anim
-        candleAnimUPtr_ = gui::AnimationFactory::Make(gui::Animations::CandleFlame, 1.0f, 0.05f);
-
+        candleAnimUPtr_ = gui::AnimationFactory::Make(gui::Animations::CandleFlame);
         candleAnimUPtr_->SetEntityPos(CANDLE_POS_V - sf::Vector2f(25.0f, 90.0f));
-
         EntityAdd(candleAnimUPtr_);
     }
 

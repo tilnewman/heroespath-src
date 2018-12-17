@@ -12,6 +12,8 @@
 #include "misc/key-value-file.hpp"
 #include "misc/not-null.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
+
 #include <memory>
 #include <string>
 
@@ -40,6 +42,8 @@ namespace misc
         void Initialize();
 
         const std::string GetMediaPath(const std::string & KEY) const;
+
+        const sf::IntRect GetTextureRect(const std::string & KEY) const;
 
     private:
         static const std::string MEDIA_BASE_PATH_KEY_FOR_WINDOWS_;

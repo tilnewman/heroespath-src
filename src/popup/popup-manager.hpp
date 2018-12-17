@@ -65,7 +65,7 @@ namespace popup
         bool Test(stage::IStagePtr_t iStagePtr);
 
         // throws range error on invalid PopupImage::Enum
-        const std::string BackgroundImagePath(const PopupImage::Enum IMAGE) const;
+        const std::string BackgroundImageConfigFileKey(const PopupImage::Enum IMAGE) const;
 
         static sf::Color Color_Font() { return fontColor_; }
 
@@ -181,7 +181,7 @@ namespace popup
 
         const PopupInfo CreateResolutionChangePopupInfo(const gui::TextInfo & TEXT_INFO) const;
 
-        gui::CachedTexture LoadRandomAccentImage() const;
+        const std::string RandomAccentImagePath() const;
 
         void LoadAccentImagePaths();
 

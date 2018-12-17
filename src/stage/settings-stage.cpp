@@ -15,6 +15,7 @@
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
 #include "gui/gui-images.hpp"
+#include "gui/menu-image-enum.hpp"
 #include "gui/sound-manager.hpp"
 #include "gui/text-info.hpp"
 #include "misc/config-file.hpp"
@@ -47,16 +48,13 @@ namespace stage
         , SLIDER_LENGTH_VERT_(160.0f)
         , hasStageAlreadyBeenSetup_(false)
         , prevAALevel_(gui::Display::Instance()->AntialiasLevel())
-        , screenBgBox_(
-              "SettingsStage'sBackground",
-              StageRegion(),
-              gui::BoxEntityInfo(gui::CachedTexture(
-                  "media-images-backgrounds-tile-darkknot",
-                  gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
-        , stageTitle_("media-images-buttons-mainmenu-settings-normal")
+        , background_()
+        , stageTitle_(gui::MenuImage::Settings)
         , bottomSymbol_()
         , backButtonUPtr_(std::make_unique<gui::MainMenuButton>(
-              stage::Stage::Previous, gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this), -1.0f))
+              gui::MenuImage::Back,
+              stage::Stage::Previous,
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this)))
         , settingsBoxUPtr_()
         , resLabelTextRegionUPtr_()
         //, resRadioButtonSetUPtr_()
@@ -201,7 +199,7 @@ namespace stage
 
     void SettingsStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(screenBgBox_, states);
+        target.draw(background_, states);
         target.draw(stageTitle_, states);
         target.draw(bottomSymbol_, states);
         target.draw(*settingsBoxUPtr_, states);
@@ -284,7 +282,7 @@ namespace stage
 
         bgBoxbgInfo.SetupImage(
             gui::CachedTexture(
-                "media-images-backgrounds-tile-wood",
+                "media-image-background-tile-wood",
                 gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.06f));
 

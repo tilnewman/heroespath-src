@@ -4,13 +4,13 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_GUI_ANIMATIONBASE_HPP_INCLUDED
-#define HEROESPATH_GUI_ANIMATIONBASE_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_ANIMATION_HPP_INCLUDED
+#define HEROESPATH_GUI_ANIMATION_HPP_INCLUDED
 //
-// animation-base.hpp
-//  A class responsible for common state and operation of all animation objects.
+// animation.hpp
 //
 #include "gui/animation-enum.hpp"
+#include "gui/cached-texture.hpp"
 #include "gui/entity.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -23,9 +23,14 @@ namespace heroespath
 namespace gui
 {
 
-    // A base class for both types of animations.
+    // Responsible for loading animation image files (basically simple sprite sheets) and displaying
+    // them in timely order to create animations.
     class Animation : public Entity
     {
+        using RectsVec_t = std::vector<sf::IntRect>;
+        using IndexRectPair_t = std::pair<std::size_t, sf::IntRect>;
+        using IndexRectVec_t = std::vector<IndexRectPair_t>;
+
     public:
         Animation(
             const Animations::Enum ENUM,
@@ -34,8 +39,6 @@ namespace gui
             const sf::BlendMode & BLEND_MODE,
             const sf::Color & COLOR_FROM,
             const sf::Color & COLOR_TO);
-
-        virtual ~Animation();
 
         Animation(const Animation &) = delete;
         Animation(Animation &&) = delete;
@@ -53,32 +56,26 @@ namespace gui
         bool UpdateTime(const float SECONDS) override;
 
         const sf::Vector2f OrigSize() const { return origSizeV_; }
-
-        virtual std::size_t FrameCount() const = 0;
-
+        std::size_t FrameCount() const { return frameIndexRects_.size(); }
         std::size_t CurrentFrame() const { return frameIndex_; }
-
         float TimePerFrame() const { return timePerFrameSec_; }
-
         void TimePerFrameSet(const float TBF) { timePerFrameSec_ = TBF; }
-
         void TimePerFrameAdj(const float ADJ) { timePerFrameSec_ += ADJ; }
-
-        void ColorTransition(const sf::Color & FROM, const sf::Color & TO)
-        {
-            colorFrom_ = FROM;
-            colorTo_ = TO;
-        }
-
         bool IsFinished() const { return isFinished_; }
-
         Animations::Enum Which() const { return which_; }
 
+        void ColorTransition(const sf::Color & FROM, const sf::Color & TO);
         void RandomVaryTimePerFrame();
 
     private:
-        virtual const sf::Texture & GetTexture(const std::size_t FRAME_INDEX) const = 0;
-        virtual const sf::IntRect GetTextureRect(const std::size_t FRAME_INDEX) const = 0;
+        const IndexRectVec_t MakeFrameIndexRects(
+            const gui::CachedTextures &,
+            const sf::Vector2i & FRAME_SIZE_V,
+            const sf::IntRect & TRIM) const;
+
+        const RectsVec_t FrameRectsInTextureOfSize(
+            const sf::Vector2i & TEXTURE_SIZE_V, const sf::Vector2i & FRAME_SIZE_V) const;
+
         void SetupSprite();
 
         Animations::Enum which_;
@@ -91,7 +88,8 @@ namespace gui
         sf::Sprite sprite_;
         sf::Vector2f origSizeV_;
         bool isFinished_;
-        bool hasAlreadyUpdated_;
+        gui::CachedTextures cachedTextures_;
+        IndexRectVec_t frameIndexRects_;
     };
 
     using AnimationUPtr_t = std::unique_ptr<Animation>;
@@ -100,4 +98,4 @@ namespace gui
 } // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_GUI_ANIMATIONBASE_HPP_INCLUDED
+#endif // HEROESPATH_GUI_ANIMATION_HPP_INCLUDED

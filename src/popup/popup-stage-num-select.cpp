@@ -118,7 +118,7 @@ namespace popup
             gui::Justified::Left);
 
         gui::BoxEntityInfo boxInfo;
-        boxInfo.SetupImage(gui::CachedTexture("media-images-backgrounds-tile-wood"));
+        boxInfo.SetupImage(gui::CachedTexture("media-image-background-tile-wood"));
         boxInfo.SetupBorder(true);
         boxInfo.focus_colors = gui::FocusColors(sf::Color::White);
 

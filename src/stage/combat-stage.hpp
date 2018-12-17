@@ -103,7 +103,6 @@ namespace stage
     // A Stage class that allows camping characters
     class CombatStage
         : public stage::StageBase
-
         , public misc::PopupCallback_t::IHandler_t
         , public gui::ImageTextEntity::Callback_t::IHandler_t
         , public CombatStageListBox_t::Callback_t::IHandler_t

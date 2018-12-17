@@ -250,26 +250,39 @@ namespace popup
 
     void PopupStageSpellbook::SetupLeftAccentImage()
     {
-        accent1CachedTextureOpt_ = popup::PopupManager::Instance()->LoadRandomAccentImage();
-        accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
+        const auto ACCENT_IMAGE_PATH { PopupManager::Instance()->RandomAccentImagePath() };
 
-        sfutil::FitAndReCenter(
-            accentSprite1_,
-            sfutil::ScaleAndReCenterCopy(pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+        if (ACCENT_IMAGE_PATH.empty() == false)
+        {
+            accent1CachedTextureOpt_
+                = gui::CachedTexture(PathWrapper(ACCENT_IMAGE_PATH), AccentImageOptions());
 
-        accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
+            accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
+
+            sfutil::FitAndCenterTo(
+                accentSprite1_,
+                sfutil::ScaleAndReCenterCopy(pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+
+            accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
+        }
     }
 
     void PopupStageSpellbook::SetupRightAccentImage()
     {
-        accent2CachedTextureOpt_ = popup::PopupManager::Instance()->LoadRandomAccentImage();
-        accentSprite2_.setTexture(accent2CachedTextureOpt_->Get(), true);
+        const auto ACCENT_IMAGE_PATH { PopupManager::Instance()->RandomAccentImagePath() };
 
-        sfutil::FitAndReCenter(
-            accentSprite2_,
-            sfutil::ScaleAndReCenterCopy(pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+        if (ACCENT_IMAGE_PATH.empty() == false)
+        {
+            accent2CachedTextureOpt_
+                = gui::CachedTexture(PathWrapper(ACCENT_IMAGE_PATH), AccentImageOptions());
+            accentSprite2_.setTexture(accent2CachedTextureOpt_->Get(), true);
 
-        accentSprite2_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
+            sfutil::FitAndCenterTo(
+                accentSprite2_,
+                sfutil::ScaleAndReCenterCopy(pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+
+            accentSprite2_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
+        }
     }
 
     void PopupStageSpellbook::SetupPlayerImage()

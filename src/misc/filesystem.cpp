@@ -29,7 +29,7 @@ namespace misc
     namespace bfs = boost::filesystem;
 
     const std::vector<std::string> filesystem::COMMON_FILE_NAME_PARTS_TO_EXCLUDE_VEC_ {
-        ".txt", ".DS_Store", "sample.gif", ".html", ".htm"
+        ".txt", ".DS_Store", "sample.gif", ".html", ".htm", "thumbs.db"
     };
 
     // this value found by experiment to be a good high guess for the game

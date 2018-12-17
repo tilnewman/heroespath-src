@@ -25,7 +25,7 @@ namespace interact
             Interact::Conversation,
             InteractionBase::MakeTextInfo(NPC_PTR->ConversationPoint().Text(), Text::Dialog),
             MakeButtonVecFromButtonEnumVec(NPC_PTR->ConversationPoint().Buttons()),
-            "media-images-misc-talk",
+            "media-image-misc-talk",
             gui::sound_effect::Count,
             gui::sound_effect::Count,
             NPC_SPRITE)

@@ -60,7 +60,7 @@ namespace item
             ArmorDetails armorDetails;
 
             // lookup detail value string in the GameDataFile
-            const std::string KEY_STR("heroespath-item-armor-details-" + ARMOR_NAME);
+            const std::string KEY_STR("item-armor-details-" + ARMOR_NAME);
             const std::string VALUE_STR(misc::ConfigFile::Instance()->Value(KEY_STR));
 
             // break the line of text into comma separated field strings

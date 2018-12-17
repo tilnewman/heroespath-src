@@ -49,19 +49,11 @@ void TestEnumImageLoading()
         const auto ENUM_VALUE { static_cast<typename EnumWrapper_t::Enum>(index) };
         const gui::CachedTexture CACHED_TEXTURE { gui::LoadAndCacheImage(ENUM_VALUE) };
         const sf::Texture & TEXTURE { CACHED_TEXTURE.Get() };
-        const auto STANDARD_DIMMENSION_U { gui::ContentImage::DimmensionU() };
 
         std::ostringstream ss;
         ss << "TestImageLoading<" << boost::typeindex::type_id<EnumWrapper_t>().pretty_name()
            << "> on image with index/value=" << index
            << ", enum=" << EnumWrapper_t::ToString(ENUM_VALUE);
-
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            ((TEXTURE.getSize().x == STANDARD_DIMMENSION_U)
-             || (TEXTURE.getSize().y == STANDARD_DIMMENSION_U)),
-            ss.str() << ", found the image was an incorrect size=" << TEXTURE.getSize().x << "x"
-                     << TEXTURE.getSize().y << ".  Both dimensions should have been "
-                     << STANDARD_DIMMENSION_U << ".");
 
         M_HP_LOG(ss.str() << ".");
 

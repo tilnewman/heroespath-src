@@ -793,7 +793,7 @@ namespace combat
             // separate chance to retreat if daunted
             if ((CREATURE_DECIDING_PTR->HasCondition(creature::Conditions::Daunted)
                  && (misc::random::Float() < misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                         "heroespath-fight-chance-daunted-will-retreat"))))
+                         "fight-chance-daunted-will-retreat"))))
             {
                 return TurnActionInfo(TurnAction::Retreat);
             }
@@ -801,7 +801,7 @@ namespace combat
             // separate chance to retreat if panicked
             if ((CREATURE_DECIDING_PTR->HasCondition(creature::Conditions::Panic)
                  && (misc::random::Float() < misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                         "heroespath-fight-chance-panicked-will-retreat"))))
+                         "fight-chance-panicked-will-retreat"))))
             {
                 return TurnActionInfo(TurnAction::Retreat);
             }
@@ -1328,7 +1328,7 @@ namespace combat
         else if (
             ARE_ANY_TARGETS_UNCONSCIOUS
             && (misc::random::Float(1.0f) < misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "heroespath-fight-chance-enemies-ignore-unconscious")))
+                    "fight-chance-enemies-ignore-unconscious")))
         {
             // most of the time, don't consider unconscious targets
             pVec_OutParam = creature::Algorithms::FindByHasCondition(

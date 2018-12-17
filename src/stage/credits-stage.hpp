@@ -14,6 +14,7 @@
 #include "gui/cached-texture.hpp"
 #include "gui/colored-rect.hpp"
 #include "gui/music-enum.hpp"
+#include "gui/stage-title.hpp"
 #include "stage/credit.hpp"
 #include "stage/stage-base.hpp"
 
@@ -59,8 +60,7 @@ namespace stage
         static const float SCROLL_SPEED_MULT_;
         static const float SCROLL_SPEED_MAX_;
 
-        gui::CachedTexture titleCachedTexture_;
-        sf::Sprite bpTitleSprite_;
+        gui::StageTitle stageTitle_;
         gui::BoxEntityUPtr_t boxUPtr_;
         gui::BoxEntityUPtr_t boxBorderUPtr_;
         CreditUVec_t creditUVec_;

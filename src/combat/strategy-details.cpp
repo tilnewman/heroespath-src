@@ -87,7 +87,7 @@ namespace combat
                 const auto RACE_STR(creature::race::ToString(RACE_ENUM));
 
                 std::ostringstream keySS;
-                keySS << "heroespath-nonplayer-combat-strategy-race-" << RACE_STR;
+                keySS << "nonplayer-combat-strategy-race-" << RACE_STR;
                 const std::string KEY(keySS.str());
 
                 const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));
@@ -205,7 +205,7 @@ namespace combat
                 const auto ROLE_STR(creature::role::ToString(ROLE_ENUM));
 
                 std::ostringstream keySS;
-                keySS << "heroespath-nonplayer-combat-strategy-adjustment-role-" << ROLE_STR;
+                keySS << "nonplayer-combat-strategy-adjustment-role-" << ROLE_STR;
                 const std::string KEY(keySS.str());
 
                 const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));

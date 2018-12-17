@@ -104,8 +104,8 @@ BOOST_AUTO_TEST_CASE(HelperFunctionTests)
     heroespath::misc::ConfigFile::Acquire();
     heroespath::misc::ConfigFile::Instance()->Initialize();
 
-    const std::string IMAGE1_PATH_KEY("media-images-logos-sound");
-    const std::string IMAGE2_PATH_KEY("media-images-logos-avalontrees");
+    const std::string IMAGE1_PATH_KEY("media-image-misc-todo");
+    const std::string IMAGE2_PATH_KEY("media-image-misc-x");
 
     BOOST_CHECK(areImagesEqual(quickLoadByKey(IMAGE1_PATH_KEY), quickLoadByKey(IMAGE1_PATH_KEY)));
 
@@ -153,9 +153,9 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
 
     TextureCache & tc = *heroespath::gui::TextureCache::Instance();
 
-    const std::string IMAGE1_PATH_KEY("media-images-logos-sound");
-    const std::string IMAGE2_PATH_KEY("media-images-logos-avalontrees");
-    const std::string IMAGE3_PATH_KEY("media-images-logos-terrain");
+    const std::string IMAGE1_PATH_KEY("media-image-misc-todo");
+    const std::string IMAGE2_PATH_KEY("media-image-misc-x");
+    const std::string IMAGE3_PATH_KEY("media-image-misc-talk");
 
     const std::string IMAGE1_PATH { heroespath::misc::filesystem::CleanPath(
         misc::ConfigFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY)) };
@@ -166,11 +166,11 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
     const std::string IMAGE3_PATH(heroespath::misc::filesystem::CleanPath(
         heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGE3_PATH_KEY)));
 
-    const std::size_t IMAGES1_COUNT(33);
-    const std::size_t IMAGES2_COUNT(22);
+    const std::size_t IMAGES1_COUNT(12);
+    const std::size_t IMAGES2_COUNT(6);
 
-    const std::string IMAGES1_DIR_KEY("media-anim-images-dir-orbcharge");
-    const std::string IMAGES2_DIR_KEY("media-anim-images-dir-orbshimmer");
+    const std::string IMAGES1_DIR_KEY("media-image-spell-dir");
+    const std::string IMAGES2_DIR_KEY("media-image-song-dir");
 
     const std::string IMAGES1_DIR_PATH(heroespath::misc::filesystem::CleanPath(
         heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGES1_DIR_KEY)));

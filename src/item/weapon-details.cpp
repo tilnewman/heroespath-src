@@ -72,7 +72,7 @@ namespace item
             WeaponDetails weaponDetails;
 
             // lookup detail value string in the GameDataFile
-            const auto KEY_STR { "heroespath-item-weapon-details-" + WEAPON_NAME };
+            const auto KEY_STR { "item-weapon-details-" + WEAPON_NAME };
             const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
             // break the line of text into comma separated field strings

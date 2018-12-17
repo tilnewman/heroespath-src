@@ -123,5 +123,43 @@ namespace misc
         return ABSOLUTE_MEDIA_PATH_STR;
     }
 
+    const sf::IntRect ConfigFile::GetTextureRect(const std::string & KEY) const
+    {
+        const auto VALUE_STR { Value(KEY + "-texture-rect") };
+
+        if (VALUE_STR.empty())
+        {
+            return sf::IntRect();
+        }
+
+        const auto NUMBER_STR_VEC { misc::SplitByChars(VALUE_STR) };
+
+        if (NUMBER_STR_VEC.size() != 4)
+        {
+            return sf::IntRect();
+        }
+
+        sf::IntRect rect;
+        rect.left = misc::ToNumber(NUMBER_STR_VEC.at(0), -1);
+        rect.top = misc::ToNumber(NUMBER_STR_VEC.at(1), -1);
+        rect.width = misc::ToNumber(NUMBER_STR_VEC.at(2), -1);
+        rect.height = misc::ToNumber(NUMBER_STR_VEC.at(3), -1);
+
+        if ((rect.left < 0) || (rect.top < 0) || (rect.width < 0) || (rect.height < 0))
+        {
+            return sf::IntRect();
+        }
+
+        const int NUMBER_TOO_LARGE { 10000 };
+
+        if ((rect.left >= NUMBER_TOO_LARGE) || (rect.top >= NUMBER_TOO_LARGE)
+            || (rect.width >= NUMBER_TOO_LARGE) || (rect.height >= NUMBER_TOO_LARGE))
+        {
+            return sf::IntRect();
+        }
+
+        return rect;
+    }
+
 } // namespace misc
 } // namespace heroespath

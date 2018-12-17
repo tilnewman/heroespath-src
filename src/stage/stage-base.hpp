@@ -109,8 +109,7 @@ namespace stage
 
         void TestingStrAppend(const std::string &) override;
         void TestingStrIncrement(const std::string &) override;
-        void TestingImageSet(
-            const std::string &, const bool WILL_CHECK_FOR_OUTLINE = false) override;
+        void TestingImageSet(const std::string &) override;
 
         void PerformNextTest() override {}
         void ClearAllEntities() override;

@@ -13,6 +13,8 @@
 
 #include "creature/creature.hpp"
 #include "creature/title.hpp"
+#include "game/game-state.hpp"
+#include "game/game.hpp"
 #include "gui/box-entity-info.hpp"
 #include "gui/box-entity.hpp"
 #include "gui/display.hpp"
@@ -96,50 +98,48 @@ namespace popup
         }
 
         // TODO
-
         iStagePtr->TestingStrAppend("popup::PopupManager::Test()  ALL TESTS PASSED.");
-
         return true;
     }
 
-    const std::string PopupManager::BackgroundImagePath(const PopupImage::Enum IMAGE) const
+    const std::string PopupManager::BackgroundImageConfigFileKey(const PopupImage::Enum IMAGE) const
     {
-        std::string filename { "" };
+        std::string filename { "media-image-background-paper-popup-" };
         switch (IMAGE)
         {
             case PopupImage::Banner:
             {
-                filename = "paper-banner.png";
+                filename += "banner";
                 break;
             }
             case PopupImage::Regular:
             {
-                filename = "paper-regular.png";
+                filename += "medium";
                 break;
             }
             case PopupImage::RegularSidebar:
             {
-                filename = "paper-regular-bar.png";
+                filename += "medium-bar";
                 break;
             }
             case PopupImage::Large:
             {
-                filename = "paper-large.png";
+                filename += "large";
                 break;
             }
             case PopupImage::LargeSidebar:
             {
-                filename = "paper-large-bar.png";
+                filename += "large-bar";
                 break;
             }
             case PopupImage::Spellbook:
             {
-                filename = "spellbook.png";
+                filename += "spell-book";
                 break;
             }
             case PopupImage::MusicSheet:
             {
-                filename = "music-sheet.png";
+                filename += "music-sheet";
                 break;
             }
             case PopupImage::Count:
@@ -153,7 +153,7 @@ namespace popup
             }
         }
 
-        return misc::filesystem::CombinePaths(windowTextureDirectoryPath_, filename);
+        return filename;
     }
 
     const gui::TextInfo PopupManager::TextInfoDefault(
@@ -218,10 +218,17 @@ namespace popup
         const std::vector<std::string> & INVALID_MSG_VEC,
         const std::size_t INITIAL_SELECTION) const
     {
+        gui::CachedTextureVec_t partyImages;
+        for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+        {
+            partyImages.emplace_back(gui::LoadAndCacheImage(
+                CREATURE_PTR, gui::ImageOptions::InvertedCharacterOptions()));
+        }
+
         auto popupInfo { CreateImageSelectionPopupInfo(
             POPUP_NAME,
             PROMPT_TEXT,
-            gui::CachedTextureVec_t(),
+            partyImages,
             INITIAL_SELECTION,
             gui::sound_effect::PromptGeneric,
             gui::FontManager::Instance()->Size_Smallish()) };
@@ -498,23 +505,26 @@ namespace popup
             gui::sound_effect::PromptQuestion);
     }
 
-    gui::CachedTexture PopupManager::LoadRandomAccentImage() const
+    const std::string PopupManager::RandomAccentImagePath() const
     {
-        return gui::CachedTexture(
-            PathWrapper(misc::Vector::SelectRandom(accentPaths_)),
-            gui::ImageOptions(
-                ((misc::random::Bool()) ? gui::ImageOpt::Default : gui::ImageOpt::FlipHoriz)));
+        if (accentPaths_.empty())
+        {
+            return "";
+        }
+        else
+        {
+            return misc::Vector::SelectRandom(accentPaths_);
+        }
     }
 
     void PopupManager::LoadAccentImagePaths()
     {
-        accentPaths_
-            = misc::filesystem::FindFiles(false, accentTextureDirectoryPath_, "accent-", ".png");
+        accentPaths_ = misc::filesystem::FindFiles(false, accentTextureDirectoryPath_, "", ".png");
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (accentPaths_.empty() == false),
-            "popup::PopupManager::LoadAccentImagePaths() failed to load any files from: "
-                << accentTextureDirectoryPath_);
+        if (accentPaths_.empty())
+        {
+            M_HP_LOG_ERR("Failed to find any images." + M_HP_VAR_STR(accentTextureDirectoryPath_));
+        }
     }
 
 } // namespace popup

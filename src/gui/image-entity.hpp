@@ -26,12 +26,13 @@ namespace heroespath
 namespace gui
 {
 
-    // Responsible for being an Entity that has different images for different MouseStates.
-    // Use this class when you need different images for different MouseStates.  The
-    // global bounds of each sprite could be different, but so far I have not found a situation
-    // where that is a good idea.  Sync() keeps entityRegion_ equal to the current sprite's
-    // global bounds, which might be different if the sprites do not line up.  If they don't,
-    // you can use MinimallyEnclosingRegion() to find the rect that contains them all.
+    // Responsible for being an Entity that has different images for each MouseState, execept for
+    // MouseState::Disabled which uses the Up image faded out with alpha. Use this class when you
+    // need different images for different MouseStates.  The global bounds of each sprite could be
+    // different, but so far I have not found a situation where that is a good idea.  Sync() keeps
+    // entityRegion_ equal to the current sprite's global bounds, which might be different if the
+    // sprites do not line up.  If they don't, you can use MinimallyEnclosingRegion() to find the
+    // rect that contains them all.
     class ImageEntity : public Entity
     {
     public:
@@ -44,7 +45,7 @@ namespace gui
             const gui::CachedTextureOpt_t & TEXTURE_UP_OPT = boost::none,
             const gui::CachedTextureOpt_t & TEXTURE_DOWN_OPT = boost::none,
             const gui::CachedTextureOpt_t & TEXTURE_OVER_OPT = boost::none,
-            const gui::CachedTextureOpt_t & TEXTURE_DISABLED_OPT = boost::none,
+            const ColorValueOpt_t & DISABLED_COLOR_ALPHA_OPT = boost::none,
             const bool WILL_DRAW_UP_IF_MISSING = false,
             const ColorOpt_t & COLOR_OPT = boost::none,
             const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION = false);
@@ -110,6 +111,9 @@ namespace gui
         void WillDraw(const bool WILL_DRAW) { willDraw_ = WILL_DRAW; }
 
     private:
+        const ColorOpt_t MakeDisabledColorOpt(
+            const ColorOpt_t & COLOR_OPT, const ColorValueOpt_t & ALPHA_OPT) const;
+
         MouseImageInfo mouseImageInfo_;
         sf::Sprite sprite_;
         bool willDraw_;

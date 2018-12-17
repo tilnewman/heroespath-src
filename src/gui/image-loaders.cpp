@@ -137,7 +137,7 @@ namespace gui
         const gui::CombatImageType::Enum WHICH_COMBAT_IMAGE, const gui::ImageOptions & OPTIONS)
     {
         return CachedTexture(
-            PathWrapper(gui::CombatImageType::ImagePath(WHICH_COMBAT_IMAGE)), OPTIONS);
+            gui::CombatImageType::RandomConfigFileKey(WHICH_COMBAT_IMAGE), OPTIONS);
     }
 
 } // namespace gui

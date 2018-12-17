@@ -43,7 +43,7 @@ namespace map
 
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
         : WALK_SFX_VOLUME_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-            "heroespath-sound-map-walk-sfx-volume-ratio"))
+            "sound-map-walk-sfx-volume-ratio"))
         , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(REGION))
         , interactionManager_(interactionManager)
         , collisionVec_()
@@ -62,7 +62,7 @@ namespace map
         , walkSfx_(gui::sound_effect::Count)
         , walkSfxIsWalking_(false)
         , sfxTimer_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-              "heroespath-sound-map-sfx-time-between-updates"))
+              "sound-map-sfx-time-between-updates"))
         , AVATAR_TO_AVATAR_COLLISION_DETECTION_RECT_HEIGHT_(
               player_.CurrentSprite().getGlobalBounds().height * 0.333f)
     {}

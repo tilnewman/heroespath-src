@@ -2467,11 +2467,8 @@ namespace avatar
 
     const std::string Avatar::ImagePath(const Avatar::Enum ENUM)
     {
-        std::string dirPathStr { (
-            (Avatar::IsPlayer(ENUM))
-                ? misc::ConfigFile::Instance()->GetMediaPath("media-images-avatar-player-dir")
-                : misc::ConfigFile::Instance()->GetMediaPath(
-                    "media-images-avatar-nonplayer-dir")) };
+        std::string dirPathStr { misc::ConfigFile::Instance()->GetMediaPath(
+            "media-image-avatar-dir") };
 
         return misc::filesystem::CombinePaths(
             dirPathStr, misc::ToLowerCopy(Avatar::ToString(ENUM)) + ".png");

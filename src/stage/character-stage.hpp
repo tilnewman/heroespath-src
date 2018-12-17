@@ -162,7 +162,7 @@ namespace stage
         void CreateStatModifers();
         void ApplyStatModifiersToStatSetBase();
 
-        float GetStatPosTop(const creature::Traits::Enum STAT) const; // returns <0.0f on error
+        // float GetStatPosTop(const creature::Traits::Enum STAT) const; // returns <0.0f on error
         bool AreAnyStatsIgnored() const;
         void HandleAttributeDragging(const sf::Vector2f & MOUSE_POS_V);
         void ProduceAnimatingDigits(const float ELAPSED_TIME_SECONDS);
@@ -178,24 +178,24 @@ namespace stage
         void SetMenuButtonsDisabledWhileStatsAreAnimating(const bool WILL_DISABLE);
 
     private:
-        static const creature::Trait_t STAT_INVALID_;
-        static const creature::Trait_t STAT_INITIAL_MAX_;
-        //
-        static const sf::Color LIGHT_TEXT_COLOR_;
-        static const sf::Color DESC_TEXT_COLOR_;
-        //
-        static const std::string POPUP_NAME_NONAMEERROR_;
-        static const std::string POPUP_NAME_MISSINGATTRIBS_;
-        static const std::string POPUP_NAME_CREATECONFIRM_;
-        static const std::string POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_;
-        static const std::string POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_;
-        static const std::string POPUP_NAME_HELP_1_;
-        static const std::string POPUP_NAME_HELP_2_;
-        static const std::string POPUP_NAME_HELP_3_;
-        static const std::string POPUP_NAME_IMAGE_SELECTION_;
-        //
-        static const float SMOKE_ANIM_SPEED_MIN_;
-        static const float SMOKE_ANIM_SPEED_MAX_;
+        // const creature::Trait_t STAT_INVALID_;
+        // const creature::Trait_t STAT_INITIAL_MAX_;
+
+        const sf::Color LIGHT_TEXT_COLOR_;
+        const sf::Color DESC_TEXT_COLOR_;
+
+        const std::string POPUP_NAME_NONAMEERROR_;
+        const std::string POPUP_NAME_MISSINGATTRIBS_;
+        const std::string POPUP_NAME_CREATECONFIRM_;
+        const std::string POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_;
+        const std::string POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_;
+        const std::string POPUP_NAME_HELP_1_;
+        const std::string POPUP_NAME_HELP_2_;
+        const std::string POPUP_NAME_HELP_3_;
+        const std::string POPUP_NAME_IMAGE_SELECTION_;
+
+        const float SMOKE_ANIM_SPEED_MIN_;
+        const float SMOKE_ANIM_SPEED_MAX_;
         //
         const unsigned int DESC_TEXT_FONT_SIZE_;
         const unsigned int RADIO_BUTTON_TEXT_SIZE_;

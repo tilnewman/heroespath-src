@@ -58,8 +58,7 @@ namespace stage
             const std::string & TITLE_TEXT,
             const std::string & CONTENT_TEXT,
             const gui::Animations::Enum ANIM_ENUM,
-            const float ANIM_SIZE_HORIZ,
-            const float ANIM_FRAME_TIME_SEC);
+            const float ANIM_SIZE_HORIZ);
 
         // use to create general image credits
         Credit(
@@ -85,8 +84,7 @@ namespace stage
             const std::string & CONTENT_TEXT,
             const MediaType::Enum MEDIA_TYPE,
             const float MEDIA_SIZE_HORIZ = 0.0f,
-            const gui::Animations::Enum ANIM_ENUM = gui::Animations::Count,
-            const float ANIM_FRAME_TIME_SEC = 0.0f);
+            const gui::Animations::Enum ANIM_ENUM = gui::Animations::Count);
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS);

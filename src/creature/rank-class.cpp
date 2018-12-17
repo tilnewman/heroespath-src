@@ -31,7 +31,7 @@ namespace creature
             const rank_class::Enum RANK_ENUM { static_cast<rank_class::Enum>(i) };
 
             std::ostringstream ss;
-            ss << "heroespath-rankclass-" << ToString(RANK_ENUM) << "-rankmax";
+            ss << "rankclass-" << ToString(RANK_ENUM) << "-rankmax";
 
             rankCumulative += Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(ss.str()));
 
@@ -53,7 +53,7 @@ namespace creature
         {
             min = Rank_t(
                 misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                    "heroespath-rankclass-" + ToString(Master) + "-rankmax")
+                    "rankclass-" + ToString(Master) + "-rankmax")
                 + 1);
         }
         else if (ENUM == Novice)
@@ -61,18 +61,18 @@ namespace creature
             min = 1_rank;
 
             max = Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-rankclass-" + ToString(Novice) + "-rankmax"));
+                "rankclass-" + ToString(Novice) + "-rankmax"));
         }
         else
         {
             min = Rank_t(
                 misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                    "heroespath-rankclass-" + ToString(static_cast<rank_class::Enum>(ENUM - 1))
+                    "rankclass-" + ToString(static_cast<rank_class::Enum>(ENUM - 1))
                     + "-rankmax")
                 + 1);
 
             max = Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-rankclass-" + ToString(ENUM) + "-rankmax"));
+                "rankclass-" + ToString(ENUM) + "-rankmax"));
         }
 
         return RankRange_t(min, max);

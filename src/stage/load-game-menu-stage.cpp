@@ -39,17 +39,17 @@ namespace stage
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
               gui::GuiFont::Handwriting })
-        , stageTitle_("media-images-buttons-mainmenu-load-normal")
+        , stageTitle_(gui::MenuImage::Resume)
         , backgroundBox_(
               "LoadGameStage'sBackground",
               StageRegion(),
               gui::BoxEntityInfo(gui::CachedTexture(
-                  "media-images-backgrounds-tile-darkknot",
+                  "media-image-background-tile-darkknot",
                   gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
         , backButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              gui::MenuImage::Back,
               stage::Stage::Previous,
               gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              1.0f,
               sf::Vector2f(200.0f, sfutil::DisplaySize().y - 100.0f)))
         , screenSizeV_(sfutil::DisplaySize())
         , gsListBoxRect_(

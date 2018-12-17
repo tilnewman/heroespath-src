@@ -16,6 +16,7 @@
 #include "gui/horiz-symbol.hpp"
 #include "gui/image-text-entity.hpp"
 #include "gui/list-box.hpp"
+#include "gui/main-menu-background.hpp"
 #include "gui/main-menu-buttons.hpp"
 #include "gui/ouroboros.hpp"
 #include "gui/slider-colored-rect.hpp"
@@ -59,13 +60,13 @@ namespace stage
         using PartyListBoxUPtr_t = std::unique_ptr<PartyListBox_t>;
 
     public:
+        PartyStage();
+        virtual ~PartyStage();
+
         PartyStage(const PartyStage &) = delete;
         PartyStage(PartyStage &&) = delete;
         PartyStage & operator=(const PartyStage &) = delete;
         PartyStage & operator=(PartyStage &&) = delete;
-
-        PartyStage();
-        virtual ~PartyStage();
 
         const std::string HandleCallback(
             const PartyListBox_t::Callback_t::Packet_t & PACKET,
@@ -116,9 +117,6 @@ namespace stage
         void SetupMouseOverPositionsAndDimmensions(const creature::CreaturePtr_t);
         bool DeleteCharacterIfSelected(PartyListBox_t &);
 
-        const gui::MouseImageInfo MakeMouseImageInfoForMenuButton(
-            const std::string & IMAGE_PATH_KEY_UP, const std::string & IMAGE_PATH_KEY_OVER);
-
     private:
         static const std::string POPUP_NAME_STR_NOT_ENOUGH_CHARS_;
         static const std::string POPUP_NAME_STR_TOO_MANY_CHARS_;
@@ -146,10 +144,10 @@ namespace stage
 
         gui::BoxEntityInfo listBoxInfo_;
         gui::StageTitle stageTitle_;
-        gui::BoxEntity backgroundBox_;
+        gui::MainMenuBackground background_;
         gui::MainMenuButtonUPtr_t backButtonUPtr_;
-        gui::ImageTextEntityUPtr_t startButtonUPtr_;
-        gui::ImageTextEntityUPtr_t deleteButtonUPtr_;
+        gui::MainMenuButtonUPtr_t startButtonUPtr_;
+        gui::MainMenuButtonUPtr_t deleteButtonUPtr_;
         PartyListBoxUPtr_t characterListBoxUPtr_;
         PartyListBoxUPtr_t partyListBoxUPtr_;
         gui::TextRegionUPtr_t insTextRegionUPtr_;

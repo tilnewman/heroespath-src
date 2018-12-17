@@ -157,14 +157,14 @@ namespace spell
     const std::string Spells::ShortDesc(const Spells::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-spell-" << ToString(ENUM) << "-short-desc";
+        keySS << "spell-" << ToString(ENUM) << "-short-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
     const std::string Spells::ExtraDesc(const Spells::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-spell-" << ToString(ENUM) << "-extra-desc";
+        keySS << "spell-" << ToString(ENUM) << "-extra-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
@@ -179,7 +179,7 @@ namespace spell
 
         if (imageDir.empty())
         {
-            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-spells-dir");
+            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-image-spell-dir");
         }
 
         return imageDir;

@@ -126,11 +126,11 @@ namespace gui
             , durationTimerSec_(0.0f)
             , isFinished_(false)
             , sparkCachedTexture1_(
-                  "media-images-misc-spark1", ImageOptions(ImageOpt::Default, sf::Color::Black))
+                  "media-image-misc-spark1", ImageOptions(ImageOpt::Default, sf::Color::Black))
             , sparkCachedTexture2_(
-                  "media-images-misc-spark2", ImageOptions(ImageOpt::Default, sf::Color::Black))
+                  "media-image-misc-spark2", ImageOptions(ImageOpt::Default, sf::Color::Black))
             , sparkCachedTexture3_(
-                  "media-images-misc-spark3", ImageOptions(ImageOpt::Default, sf::Color::Black))
+                  "media-image-misc-spark3", ImageOptions(ImageOpt::Default, sf::Color::Black))
             , sparkVec_()
         {
             sparkVec_.reserve(static_cast<std::size_t>((1.0f / SEC_PER_EMIT_) * DURATION_SEC) + 2);

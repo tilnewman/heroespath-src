@@ -3117,7 +3117,7 @@ namespace item
     {
         const auto SEC_MATERIAL_ARMOR_ADJ_RATIO {
             misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-item-secondary-material-armor-adj-ratio")
+                "item-secondary-material-armor-adj-ratio")
         };
 
         return Armor_t::Make(

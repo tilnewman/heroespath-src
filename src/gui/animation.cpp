@@ -7,11 +7,13 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// animation-base.cpp
+// animation.cpp
 //
-#include "animation-base.hpp"
+#include "animation.hpp"
+
 #include "gui/cached-texture.hpp"
 #include "misc/random.hpp"
+#include "sfutil/fitting.hpp"
 #include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -39,13 +41,25 @@ namespace gui
         , sprite_()
         , origSizeV_(gui::Animations::ImageSize(ENUM))
         , isFinished_(false)
-        , hasAlreadyUpdated_(false)
+        , cachedTextures_(PathWrapper(Animations::MediaPath(ENUM)))
+        , frameIndexRects_()
     {
         entityRegion_.width = ((misc::IsRealZero(REGION.width)) ? origSizeV_.x : REGION.width);
         entityRegion_.height = ((misc::IsRealZero(REGION.height)) ? origSizeV_.y : REGION.height);
-    }
 
-    Animation::~Animation() = default;
+        frameIndexRects_ = MakeFrameIndexRects(
+            cachedTextures_, sf::Vector2i { origSizeV_ }, gui::Animations::TextureRectTrim(ENUM));
+
+        if (frameIndexRects_.empty())
+        {
+            M_HP_LOG_ERR(
+                "Failed to load/find any animation frames."
+                + M_HP_VAR_STR(Animations::ToString(ENUM)) + M_HP_VAR_STR(cachedTextures_.Path())
+                + M_HP_VAR_STR(origSizeV_));
+        }
+
+        SetupSprite();
+    }
 
     void Animation::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
@@ -78,12 +92,6 @@ namespace gui
             return false;
         }
 
-        if (false == hasAlreadyUpdated_)
-        {
-            hasAlreadyUpdated_ = true;
-            SetupSprite();
-        }
-
         frameTimerSec_ += SECONDS;
         while (frameTimerSec_ > timePerFrameSec_)
         {
@@ -101,6 +109,12 @@ namespace gui
         return isFinished_;
     }
 
+    void Animation::ColorTransition(const sf::Color & FROM, const sf::Color & TO)
+    {
+        colorFrom_ = FROM;
+        colorTo_ = TO;
+    }
+
     void Animation::RandomVaryTimePerFrame()
     {
         const auto VARY_SEC_MAX { 0.02f };
@@ -108,11 +122,76 @@ namespace gui
         timePerFrameSec_ += misc::random::Float(VARY_SEC_MAX);
     }
 
+    const Animation::IndexRectVec_t Animation::MakeFrameIndexRects(
+        const gui::CachedTextures & CACHED_TEXTURES,
+        const sf::Vector2i & FRAME_SIZE_V,
+        const sf::IntRect & TRIM) const
+    {
+        IndexRectVec_t indexRects;
+
+        const auto TEXTURE_COUNT { CACHED_TEXTURES.Size() };
+        for (std::size_t textureIndex(0); textureIndex < TEXTURE_COUNT; ++textureIndex)
+        {
+            const auto & CACHED_TEXTURE { CACHED_TEXTURES.At(textureIndex) };
+            const sf::Vector2i TEXTURE_SIZE_V { CACHED_TEXTURE.getSize() };
+            const auto FRAME_RECTS { FrameRectsInTextureOfSize(TEXTURE_SIZE_V, FRAME_SIZE_V) };
+
+            if (FRAME_RECTS.empty())
+            {
+                M_HP_LOG_ERR(
+                    "Failed to calculate frame rects for texture."
+                    + M_HP_VAR_STR(CACHED_TEXTURES.Path()) + M_HP_VAR_STR(textureIndex)
+                    + M_HP_VAR_STR(TEXTURE_SIZE_V) + M_HP_VAR_STR(FRAME_SIZE_V));
+            }
+
+            for (const auto & FRAME_RECT : FRAME_RECTS)
+            {
+                auto frameRectFinal { FRAME_RECT };
+
+                frameRectFinal.left += TRIM.left;
+                frameRectFinal.top += TRIM.top;
+                frameRectFinal.width -= TRIM.width;
+                frameRectFinal.height -= TRIM.height;
+
+                indexRects.emplace_back(std::make_pair(textureIndex, frameRectFinal));
+            }
+        }
+
+        return indexRects;
+    }
+
+    const Animation::RectsVec_t Animation::FrameRectsInTextureOfSize(
+        const sf::Vector2i & TEXTURE_SIZE_V, const sf::Vector2i & FRAME_SIZE_V) const
+    {
+        if (FRAME_SIZE_V == TEXTURE_SIZE_V)
+        {
+            return { sf::IntRect(sf::Vector2i(), FRAME_SIZE_V) };
+        }
+
+        RectsVec_t frameRects;
+        for (int vert(0); vert < TEXTURE_SIZE_V.y; vert += FRAME_SIZE_V.y)
+        {
+            for (int horiz(0); horiz < TEXTURE_SIZE_V.x; horiz += FRAME_SIZE_V.x)
+            {
+                frameRects.emplace_back(sf::IntRect(sf::Vector2i(horiz, vert), FRAME_SIZE_V));
+            }
+        }
+
+        return frameRects;
+    }
+
     void Animation::SetupSprite()
     {
-        sprite_.setTexture(GetTexture(frameIndex_));
-        sprite_.setTextureRect(GetTextureRect(frameIndex_));
-        sfutil::SetSizeAndPos(sprite_, GetEntityRegion());
+        if (frameIndex_ >= frameIndexRects_.size())
+        {
+            return;
+        }
+
+        const auto & INDEX_RECT_PAIR { frameIndexRects_.at(frameIndex_) };
+
+        sprite_.setTexture(cachedTextures_.At(INDEX_RECT_PAIR.first));
+        sprite_.setTextureRect(INDEX_RECT_PAIR.second);
+        sfutil::FitAndCenterTo(sprite_, GetEntityRegion());
 
         if (colorFrom_ == colorTo_)
         {

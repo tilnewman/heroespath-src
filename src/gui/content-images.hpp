@@ -24,10 +24,6 @@ namespace gui
 
         static void SetupFilesystemPaths();
 
-        static float Dimmension();
-        static const sf::Vector2f Size();
-        static unsigned DimmensionU();
-        static const sf::Vector2u SizeU();
         static const std::string FilenameExtension();
         static const std::string FilenameSeparator();
         static const std::string TodoFilename();

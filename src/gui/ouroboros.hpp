@@ -36,9 +36,9 @@ namespace gui
         Ouroboros & operator=(const Ouroboros &) = delete;
         Ouroboros & operator=(Ouroboros &&) = delete;
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-
-        virtual bool UpdateTime(const float ELAPSED_TIME_SEC);
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+        bool UpdateTime(const float ELAPSED_TIME_SEC) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
 
     private:
         const float IMAGE_DIMMENSION_INITIAL_;

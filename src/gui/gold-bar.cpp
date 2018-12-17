@@ -26,7 +26,7 @@ namespace heroespath
 namespace gui
 {
 
-    const std::string GoldBar::IMAGE_PATH_KEY_ { "media-images-gui-elements" };
+    const std::string GoldBar::IMAGE_PATH_KEY_ { "media-image-misc-gui-elements" };
 
     GoldBar::GoldBar()
         : length_(0.0f)

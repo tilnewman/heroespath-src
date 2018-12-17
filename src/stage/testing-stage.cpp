@@ -121,7 +121,7 @@ namespace stage
         , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("TestingStage's"))
         , testingBlurbsVec_()
         , sleepMilliseconds_(0)
-        , animBackgroundCachedTexture_("media-images-backgrounds-tile-wood")
+        , animBackgroundCachedTexture_("media-image-background-tile-wood")
         , animBackgroundSprite_(animBackgroundCachedTexture_.Get())
         , imageInspectPackets_()
         , willInspectImages_(false)
@@ -337,18 +337,10 @@ namespace stage
         }
     }
 
-    void TestingStage::TestingImageSet(
-        const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE)
+    void TestingStage::TestingImageSet(const std::string & PATH_STR)
     {
-        gui::CachedTexture cachedTexture { PathWrapper(PATH_STR) };
-
-        imageInspectPackets_.emplace_back(cachedTexture);
-        textures_.emplace_back(cachedTexture);
-
-        if (WILL_CHECK_FOR_OUTLINE && DoesImageHaveOutline(cachedTexture.Get()))
-        {
-            M_HP_LOG_ERR("Testing Stage found an image with an outline.  path=" << PATH_STR);
-        }
+        imageInspectPackets_.emplace_back(gui::CachedTexture(PathWrapper(PATH_STR)));
+        textures_.emplace_back(gui::CachedTexture(PathWrapper(PATH_STR)));
     }
 
     void TestingStage::PerformNextTest()
@@ -369,11 +361,6 @@ namespace stage
             TestingStrAppend("System Tests Starting...");
             return;
         }
-
-        // See below (function ReSaveWithBlackBorder) for a comment explaining why
-        // this code is commented out.
-        // ReSaveWithBlackBorder("media-images-creatures-dir");
-        // ReSaveWithBlackBorder("media-images-items-dir");
 
         M_TESTING_STAGE_TEST(GameDataFile);
 
@@ -580,26 +567,36 @@ namespace stage
             return false;
         }
 
-        static std::vector<std::string> imagePathKeyVec {
-            misc::ConfigFile::Instance()->FindAllKeysWithPrefix("media-images-")
-        };
+        static std::vector<std::string> imagePathKeyVec;
 
-        imagePathKeyVec.erase(
-            std::remove_if(
-                std::begin(imagePathKeyVec),
-                std::end(imagePathKeyVec),
-                [](const auto & KEY_STR) { return boost::algorithm::icontains(KEY_STR, "-dir"); }),
-            std::end(imagePathKeyVec));
+        if (imagePathKeyVec.empty())
+        {
+            imagePathKeyVec = misc::ConfigFile::Instance()->FindAllKeysWithPrefix("media-image-");
+
+            imagePathKeyVec.erase(
+                std::remove_if(
+                    std::begin(imagePathKeyVec),
+                    std::end(imagePathKeyVec),
+                    [](const auto & KEY_STR) {
+                        return (
+                            boost::algorithm::ends_with(KEY_STR, "-dir")
+                            || boost::algorithm::ends_with(KEY_STR, "-texture-rect"));
+                    }),
+                std::end(imagePathKeyVec));
+        }
 
         static std::size_t imageIndex { 0 };
         if (imageIndex < imagePathKeyVec.size())
         {
-            std::ostringstream ss;
-            ss << "PerformTest_IndividualImage: \"" << imagePathKeyVec[imageIndex] << "\"";
-            TestingStrAppend(ss.str());
-
             const auto IMAGE_PATH_STR { misc::ConfigFile::Instance()->GetMediaPath(
                 imagePathKeyVec[imageIndex]) };
+
+            std::ostringstream ss;
+
+            ss << "PerformTest_IndividualImage: \"" << imagePathKeyVec[imageIndex] << "\", \""
+               << IMAGE_PATH_STR << "\"";
+
+            TestingStrAppend(ss.str());
 
             TestingImageSet(IMAGE_PATH_STR);
 
@@ -869,31 +866,31 @@ namespace stage
         }
 
         static std::vector<std::string> keyVec
-            = { "heroespath-stats-reduce-ratio",
-                "heroespath-stats-race-bonus-base-adj-ratio",
-                "heroespath-stats-race-bonus-minor-adj-ratio",
-                "heroespath-stats-role-bonus-base-adj-ratio",
-                "heroespath-stats-role-bonus-minor-adj-ratio",
+            = { "stats-reduce-ratio",
+                "stats-race-bonus-base-adj-ratio",
+                "stats-race-bonus-minor-adj-ratio",
+                "stats-role-bonus-base-adj-ratio",
+                "stats-role-bonus-minor-adj-ratio",
 
-                "heroespath-item-secondary-material-armor-adj-ratio",
+                "item-secondary-material-armor-adj-ratio",
 
-                "heroespath-fight-stats-luck-adj-ratio",
-                "heroespath-fight-stats-amazing-ratio",
-                "heroespath-fight-stats-base-high-val",
-                "heroespath-fight-stats-value-floor",
-                "heroespath-fight-stats-rank-bonus-ratio",
-                "heroespath-fight-hit-critical-chance-ratio",
-                "heroespath-fight-hit-power-chance-ratio",
-                "heroespath-fight-damage-strength-bonus-ratio",
-                "heroespath-fight-pixie-damage-floor",
-                "heroespath-fight-pixie-damage-adj-ratio",
-                "heroespath-fight-pixie-defend-speed-rank-bonus-ratio",
-                "heroespath-fight-block-defend-speed-bonus-ratio",
-                "heroespath-fight-archer-projectile-accuracy-bonus-ratio",
-                "heroespath-fight-archer-projectile-rank-bonus-ratio",
-                "heroespath-fight-chance-conditions-added-from-damage-ratio",
-                "heroespath-fight-rank-damage-bonus-ratio",
-                "heroespath-fight-chance-enemies-ignore-unconscious" };
+                "fight-stats-luck-adj-ratio",
+                "fight-stats-amazing-ratio",
+                "fight-stats-base-high-val",
+                "fight-stats-value-floor",
+                "fight-stats-rank-bonus-ratio",
+                "fight-hit-critical-chance-ratio",
+                "fight-hit-power-chance-ratio",
+                "fight-damage-strength-bonus-ratio",
+                "fight-pixie-damage-floor",
+                "fight-pixie-damage-adj-ratio",
+                "fight-pixie-defend-speed-rank-bonus-ratio",
+                "fight-block-defend-speed-bonus-ratio",
+                "fight-archer-projectile-accuracy-bonus-ratio",
+                "fight-archer-projectile-rank-bonus-ratio",
+                "fight-chance-conditions-added-from-damage-ratio",
+                "fight-rank-damage-bonus-ratio",
+                "fight-chance-enemies-ignore-unconscious" };
 
         static std::size_t keyIndex { 0 };
         if (keyIndex < keyVec.size())
@@ -922,7 +919,7 @@ namespace stage
             return false;
         }
 
-        const long ANIM_FRAME_SLEEP_MS { 0 };
+        const long ANIM_FRAME_SLEEP_MS { 1 };
 
         static std::size_t animIndex { 0 };
 
@@ -938,10 +935,7 @@ namespace stage
 
                 animUPtr_ = gui::AnimationFactory::Make(
                     static_cast<gui::Animations::Enum>(animIndex),
-                    sf::FloatRect(0.0f, 0.0f, 512.0f, 512.0f),
-                    0.05f,
-                    sf::Color::White,
-                    ((ENUM == gui::Animations::Smoke) ? sf::BlendAlpha : sf::BlendAdd));
+                    sf::FloatRect(0.0f, 0.0f, 512.0f, 512.0f));
             }
 
             if (animUPtr_->UpdateTime(0.02f))
@@ -993,19 +987,19 @@ namespace stage
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                "heroespath-creature-dragon-class-rank-min-Elder");
+                                "creature-dragon-class-rank-min-Elder");
                     }
                     else if (RACE_ENUM == creature::race::Wolfen)
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                "heroespath-creature-wolfen-class-rank-min-Elder");
+                                "creature-wolfen-class-rank-min-Elder");
                     }
                     else
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                "heroespath-rankclass-Master-rankmax");
+                                "rankclass-Master-rankmax");
                     }
                 }() };
 
@@ -1199,65 +1193,6 @@ namespace stage
 
         return (outlineDetectedCount >= 4);
     }
-
-    /*
-     * There was a problem where many creature and item images had slightly off-black borders
-     * so this code was used to programatically force a single-pixel black border.  This code
-     * probably won't be needed again, but I'm keeping it here just in case.
-     *
-    void TestingStage::ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const
-    {
-        const auto IMAGES_PATH_STR{
-            misc::ConfigFile::Instance()->GetMediaPath(IMAGES_DIR_KEY_STR) };
-
-        const auto DIR_PATH{ bfs::system_complete(bfs::path(IMAGES_PATH_STR).normalize()) };
-
-        const auto DIR_PATH_STR{ DIR_PATH.string() };
-
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            bfs::exists(DIR_PATH),
-            "TestingStage::ReSaveWithBlackBorder()(\"" << DIR_PATH_STR
-                << "\") failed because that path does not exist.");
-
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            bfs::is_directory(DIR_PATH),
-            "TestingStage::ReSaveWithBlackBorder()(\"" << DIR_PATH_STR
-                << "\") failed because that is not a directory.");
-
-        bfs::directory_iterator endIter;
-        for (bfs::directory_iterator dirIter(DIR_PATH); endIter != dirIter; ++dirIter)
-        {
-            const auto FILE_PATH_STR{ dirIter->path().string() };
-
-            if (bfs::is_regular_file(dirIter->status()) == false)
-            {
-                continue;
-            }
-
-            if (boost::algorithm::iends_with(FILE_PATH_STR, ".png") == false)
-            {
-                continue;
-            }
-
-            sf::Texture texture;
-            gui::Lo ad ers::T ext ure(texture, FILE_PATH_STR, false);
-            sf::Image image{ texture.copyToImage() };
-
-            const auto WIDTH{ texture.getSize().x };
-            const auto HEIGHT{ texture.getSize().y };
-
-            for (unsigned i(0); i < WIDTH; ++i) image.setPixel(i, 0, sf::Color::Black);
-            for (unsigned i(0); i < WIDTH; ++i) image.setPixel(i, HEIGHT-1, sf::Color::Black);
-            for (unsigned i(0); i < HEIGHT; ++i)image.setPixel(0, i, sf::Color::Black);
-            for (unsigned i(0); i < HEIGHT; ++i)image.setPixel(WIDTH-1, i, sf::Color::Black);
-
-            image.saveToFile(FILE_PATH_STR);
-
-            M_HP_LOG_DBG("\tRe-saved image with black border:  \"" << FILE_PATH_STR << "\"");
-        }
-        exit(1);
-    }
-    */
 
     bool TestingStage::PerformTest_Fonts()
     {

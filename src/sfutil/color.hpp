@@ -37,6 +37,7 @@ namespace heroespath
 {
 
 using ColorOpt_t = boost::optional<sf::Color>;
+using ColorValueOpt_t = boost::optional<sf::Uint8>;
 
 namespace sfutil
 {

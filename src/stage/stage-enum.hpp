@@ -48,7 +48,6 @@ namespace stage
         };
 
         static const std::string ToString(const Enum);
-        static bool HasFadedImage(const Enum);
         static bool IsPlayable(const Enum);
         static bool IsPlayableAndNotPopup(const Enum);
     };

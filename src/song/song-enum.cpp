@@ -110,14 +110,14 @@ namespace song
     const std::string Songs::ShortDesc(const Songs::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-song-" << ToString(ENUM) << "-short-desc";
+        keySS << "song-" << ToString(ENUM) << "-short-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
     const std::string Songs::ExtraDesc(const Songs::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-song-" << ToString(ENUM) << "-extra-desc";
+        keySS << "song-" << ToString(ENUM) << "-extra-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
@@ -132,7 +132,7 @@ namespace song
 
         if (imageDir.empty())
         {
-            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-songs-dir");
+            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-image-song-dir");
         }
 
         return imageDir;

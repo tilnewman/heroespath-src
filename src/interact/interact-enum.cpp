@@ -52,11 +52,11 @@ namespace interact
         {
             case Interact::Lock:
             {
-                return "media-images-misc-lock";
+                return "media-image-misc-lock";
             }
             case Interact::Conversation:
             {
-                return "media-images-misc-talk";
+                return "media-image-misc-talk";
             }
             case Interact::Count:
             default:

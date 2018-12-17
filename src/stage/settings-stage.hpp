@@ -14,6 +14,7 @@
 #include "gui/cached-texture.hpp"
 #include "gui/display.hpp"
 #include "gui/horiz-symbol.hpp"
+#include "gui/main-menu-background.hpp"
 #include "gui/main-menu-buttons.hpp"
 #include "gui/radio-or-check-set.hpp"
 #include "gui/sliderbar-music.hpp"
@@ -97,7 +98,7 @@ namespace stage
         const float SLIDER_LENGTH_VERT_;
         bool hasStageAlreadyBeenSetup_;
         unsigned prevAALevel_;
-        gui::BoxEntity screenBgBox_;
+        gui::MainMenuBackground background_;
         gui::StageTitle stageTitle_;
         gui::BottomSymbol bottomSymbol_;
         gui::MainMenuButtonUPtr_t backButtonUPtr_;

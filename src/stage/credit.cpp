@@ -51,8 +51,7 @@ namespace stage
         const std::string & TITLE_TEXT,
         const std::string & CONTENT_TEXT,
         const gui::Animations::Enum ANIM_ENUM,
-        const float ANIM_SIZE_HORIZ,
-        const float ANIM_FRAME_TIME_SEC)
+        const float ANIM_SIZE_HORIZ)
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Anim)
@@ -70,8 +69,7 @@ namespace stage
             CONTENT_TEXT,
             mediaType_,
             ANIM_SIZE_HORIZ,
-            ANIM_ENUM,
-            ANIM_FRAME_TIME_SEC);
+            ANIM_ENUM);
     }
 
     Credit::Credit(
@@ -89,6 +87,12 @@ namespace stage
         , screenSizeVert_(gui::Display::Instance()->GetWinHeight())
         , region_()
     {
+        const auto TEXTURE_RECT { misc::ConfigFile::Instance()->GetTextureRect(IMAGE_PATH_KEY) };
+        if ((TEXTURE_RECT.width > 0) && (TEXTURE_RECT.height > 0))
+        {
+            sprite_.setTextureRect(TEXTURE_RECT);
+        }
+
         Setup(
             MAX_WIDTH,
             TITLE_TEXT,
@@ -107,12 +111,20 @@ namespace stage
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Image)
-        , cachedTextureOpt_("media-images-logos-openfontlicense")
+        , cachedTextureOpt_("media-image-misc-logos-openfontlicense")
         , sprite_(cachedTextureOpt_.value().Get())
         , animUPtr_()
         , screenSizeVert_(gui::Display::Instance()->GetWinHeight())
         , region_()
     {
+        const auto TEXTURE_RECT { misc::ConfigFile::Instance()->GetTextureRect(
+            "media-image-misc-logos-openfontlicense") };
+
+        if ((TEXTURE_RECT.width > 0) && (TEXTURE_RECT.height > 0))
+        {
+            sprite_.setTextureRect(TEXTURE_RECT);
+        }
+
         Setup(
             MAX_WIDTH,
             TITLE_TEXT,
@@ -131,8 +143,7 @@ namespace stage
         const std::string & CONTENT_TEXT,
         const MediaType::Enum MEDIA_TYPE,
         const float MEDIA_SIZE_HORIZ,
-        const gui::Animations::Enum ANIM_ENUM,
-        const float ANIM_FRAME_TIME_SEC)
+        const gui::Animations::Enum ANIM_ENUM)
     {
         if (MEDIA_TYPE == MediaType::Image)
         {
@@ -144,8 +155,7 @@ namespace stage
         else if (MEDIA_TYPE == MediaType::Anim)
         {
             // initial size and pos are default (zeros)
-            animUPtr_
-                = gui::AnimationFactory::Make(ANIM_ENUM, sf::FloatRect(), ANIM_FRAME_TIME_SEC);
+            animUPtr_ = gui::AnimationFactory::Make(ANIM_ENUM, sf::FloatRect());
 
             const auto SCALE { MEDIA_SIZE_HORIZ / animUPtr_->OrigSize().x };
             const auto WIDTH { animUPtr_->OrigSize().x * SCALE };

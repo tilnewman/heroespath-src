@@ -301,14 +301,14 @@ namespace creature
         PlayerInitialSetup::GetStartingHealth(const creature::CreaturePtr_t CHARACTER_PTR) const
     {
         std::ostringstream ss;
-        ss << "heroespath-player-race-health-initial-"
+        ss << "player-race-health-initial-"
            << creature::race::ToString(CHARACTER_PTR->Race());
 
         const auto HEALTH_BASE { Health_t(
             misc::ConfigFile::Instance()->ValueOrDefault<int>(ss.str())) };
 
         ss.str("");
-        ss << "heroespath-player-role-health-adjustment-initial-"
+        ss << "player-role-health-adjustment-initial-"
            << creature::role::ToString(CHARACTER_PTR->Role());
 
         return HEALTH_BASE + Health_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(ss.str()));

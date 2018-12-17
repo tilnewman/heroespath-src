@@ -11,6 +11,7 @@
 //
 #include "three-stage-image-managers.hpp"
 
+#include "gui/animation.hpp"
 #include "map/map-display.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/config-file.hpp"
@@ -187,7 +188,7 @@ namespace map
     ThreeStageImageManagerAvatarSprites::ThreeStageImageManagerAvatarSprites()
         : avatarSprites_()
         , npcShadowCachedTexture_(
-              "media-images-avatar-shadow",
+              "media-image-avatar-shadow",
               (gui::ImageOpt::Smooth | gui::ImageOpt::ShadowMaskForShadowImage))
         , npcShadowSprite_(npcShadowCachedTexture_.Get(), sf::IntRect(0, 0, 56, 84))
     {}

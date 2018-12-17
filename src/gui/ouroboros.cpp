@@ -25,11 +25,11 @@ namespace gui
 
     Ouroboros::Ouroboros(const std::string & NAME, const bool WILL_MAKE_BLACK)
         : Entity(std::string(NAME).append("_Ouroboros"), sf::FloatRect())
-        , IMAGE_DIMMENSION_INITIAL_(sfutil::ScreenRatioToPixelsHoriz(0.34f))
-        , IMAGE_DIMMENSION_MIN_(IMAGE_DIMMENSION_INITIAL_ * 0.5f)
-        , IMAGE_DIMMENSION_MAX_(IMAGE_DIMMENSION_INITIAL_ * 1.5f)
+        , IMAGE_DIMMENSION_INITIAL_(sfutil::ScreenRatioToPixelsHoriz(0.4f))
+        , IMAGE_DIMMENSION_MIN_(IMAGE_DIMMENSION_INITIAL_ * 0.99f)
+        , IMAGE_DIMMENSION_MAX_(IMAGE_DIMMENSION_INITIAL_ * 1.1f)
         , cachedTexture_(
-              "media-images-gui-accents-ouroboros",
+              "media-image-misc-ouroboros",
               ImageOpt::Default | ((WILL_MAKE_BLACK) ? ImageOpt::None : ImageOpt::Invert))
         , sprite_(cachedTexture_.Get())
         , sizeDrifter_(
@@ -58,12 +58,18 @@ namespace gui
         sprite_.setColor(sf::Color(
             255, 255, 255, static_cast<sf::Uint8>(alphaDrifter_.Update(ELAPSED_TIME_SEC))));
 
-        sprite_.rotate(ELAPSED_TIME_SEC * rotationSpeedDrifter_.Update(ELAPSED_TIME_SEC));
+        sprite_.rotate(-1.0f * ELAPSED_TIME_SEC * rotationSpeedDrifter_.Update(ELAPSED_TIME_SEC));
 
         const auto NEW_IMAGE_DIMMENSION { sizeDrifter_.Update(ELAPSED_TIME_SEC) };
         sfutil::Fit(sprite_, sf::Vector2f(NEW_IMAGE_DIMMENSION, NEW_IMAGE_DIMMENSION));
 
         return true;
+    }
+
+    void Ouroboros::MoveEntityPos(const float HORIZ, const float VERT)
+    {
+        Entity::MoveEntityPos(HORIZ, VERT);
+        sprite_.move(HORIZ, VERT);
     }
 
 } // namespace gui

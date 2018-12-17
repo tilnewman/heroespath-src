@@ -119,9 +119,9 @@ namespace gui
             , emitTimerDurationSec_(0.0f)
             , durationTimerSec_(0.0f)
             , isFinished_(false)
-            , sparkCachedTexture1_("media-images-misc-spark1")
-            , sparkCachedTexture2_("media-images-misc-spark2")
-            , sparkCachedTexture3_("media-images-misc-spark3")
+            , sparkCachedTexture1_("media-image-misc-spark1")
+            , sparkCachedTexture2_("media-image-misc-spark2")
+            , sparkCachedTexture3_("media-image-misc-spark3")
             , sparkleVec_()
         {}
 

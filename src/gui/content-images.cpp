@@ -23,28 +23,20 @@ namespace gui
 
     void ContentImage::SetupFilesystemPaths()
     {
-        todoPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-images-misc-todo");
+        todoPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-misc-todo");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsFile(todoPath_),
             "Default todo content image path does not exist or is not a file."
                 + M_HP_VAR_STR(todoPath_));
 
-        errorPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-images-misc-error");
+        errorPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-misc-error");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsFile(errorPath_),
             "Default error content image path does not exist or is not a file."
                 + M_HP_VAR_STR(todoPath_));
     }
-
-    float ContentImage::Dimmension() { return 256.0f; }
-
-    const sf::Vector2f ContentImage::Size() { return sf::Vector2f(Dimmension(), Dimmension()); }
-
-    unsigned ContentImage::DimmensionU() { return static_cast<unsigned>(Dimmension()); }
-
-    const sf::Vector2u ContentImage::SizeU() { return sf::Vector2u(Size()); }
 
     const std::string ContentImage::FilenameExtension() { return ".png"; }
 

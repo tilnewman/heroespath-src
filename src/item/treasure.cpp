@@ -92,7 +92,7 @@ namespace item
         {
             const auto LOCKBOX_COIN_SUM_MAX { Score_t::Make(
                 misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                    "heroespath-treasure-lockbox-coin-max")) };
+                    "treasure-lockbox-coin-max")) };
 
             return (
                 (TREASURE_SCORES.Coin() > LOCKBOX_COIN_SUM_MAX) ? TreasureImage::ChestClosed
@@ -145,48 +145,48 @@ namespace item
         const auto COIN_BASE { static_cast<int>(
             scores.Coin().As<float>()
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-treasure-coin-base")) };
+                "treasure-coin-base")) };
 
         const auto COIN_RAND_BASE { static_cast<int>(
             scores.Coin().As<float>()
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-treasure-coin-mult")) };
+                "treasure-coin-mult")) };
 
         const auto COIN { Score_t::Make(COIN_BASE + misc::random::Int(COIN_RAND_BASE)) };
 
         const auto GEM_BASE { static_cast<int>(
             scores.Gem().As<float>()
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-treasure-gem-base")) };
+                "treasure-gem-base")) };
 
         const auto GEM_RAND_BASE { static_cast<int>(
             scores.Gem().As<float>()
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-treasure-gem-mult")) };
+                "treasure-gem-mult")) };
 
         const auto GEM { Score_t::Make(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
 
         const auto MAGIC_BASE { static_cast<creature::Trait_t>(
             scores.Magic().As<float>()
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-treasure-magic-base")) };
+                "treasure-magic-base")) };
 
         const auto MAGIC_RAND_BASE { static_cast<creature::Trait_t>(
             scores.Magic().As<float>()
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-treasure-magic-mult")) };
+                "treasure-magic-mult")) };
 
         const auto MAGIC { Score_t::Make(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
 
         const auto RELIGIOUS_BASE { static_cast<creature::Trait_t>(
             scores.Religious().As<float>()
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-treasure-religious-base")) };
+                "treasure-religious-base")) };
 
         const auto RELIGIOUS_RAND_BASE { static_cast<creature::Trait_t>(
             scores.Religious().As<float>()
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-treasure-religious-mult")) };
+                "treasure-religious-mult")) };
 
         const auto RELIGIOUS { Score_t::Make(
             RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE)) };

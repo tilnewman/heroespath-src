@@ -34,7 +34,7 @@ namespace gui
     void CreatureImagePaths::SetupFilesystemPaths()
     {
         imageDirectoryPath_
-            = misc::ConfigFile::Instance()->GetMediaPath("media-images-creatures-dir");
+            = misc::ConfigFile::Instance()->GetMediaPath("media-image-creature-dir");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsDirectory(imageDirectoryPath_),
@@ -117,7 +117,7 @@ namespace gui
 
                                 if (imagePathFoundIter != std::end(allPaths))
                                 {
-                                    iStagePtr->TestingImageSet(PATH, true);
+                                    iStagePtr->TestingImageSet(PATH);
                                     allPaths.erase(imagePathFoundIter);
                                 }
 
@@ -175,7 +175,7 @@ namespace gui
 
                                 if (imagePathFoundIter != std::end(allPaths))
                                 {
-                                    iStagePtr->TestingImageSet(PATH, true);
+                                    iStagePtr->TestingImageSet(PATH);
                                     allPaths.erase(imagePathFoundIter);
                                 }
 
@@ -225,7 +225,7 @@ namespace gui
 
                             if (imagePathFoundIter != std::end(allPaths))
                             {
-                                iStagePtr->TestingImageSet(PATH, true);
+                                iStagePtr->TestingImageSet(PATH);
                                 allPaths.erase(imagePathFoundIter);
                             }
 

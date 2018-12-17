@@ -29,16 +29,16 @@ namespace creature
     class PlayerParty
     {
     public:
-        PlayerParty(const PlayerParty &) = delete;
-        PlayerParty(PlayerParty &&) = delete;
-        PlayerParty & operator=(const PlayerParty &) = delete;
-        PlayerParty & operator=(PlayerParty &&) = delete;
-
         explicit PlayerParty(
             const avatar::Avatar::Enum PARTY_AVATAR = avatar::Avatar::Player_First,
             const creature::CreaturePVec_t & CHARACTER_PVEC = creature::CreaturePVec_t());
 
         ~PlayerParty();
+
+        PlayerParty(const PlayerParty &) = delete;
+        PlayerParty(PlayerParty &&) = delete;
+        PlayerParty & operator=(const PlayerParty &) = delete;
+        PlayerParty & operator=(PlayerParty &&) = delete;
 
         const creature::CreaturePVec_t Characters() const { return charactersPVec_; }
 

@@ -17,6 +17,7 @@
 #include "creature/creature.hpp"
 #include "gui/animation-factory.hpp"
 #include "gui/cloud-animation.hpp"
+#include "gui/combat-image-enum.hpp"
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
 #include "gui/song-animation.hpp"
@@ -64,7 +65,6 @@ namespace combat
     }
 
     const float CombatAnimation::SELECT_ANIM_SLIDER_SPEED_ { 8.0f };
-    const float CombatAnimation::ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ { 0.06f };
     const sf::Uint8 CombatAnimation::ANIM_COLOR_ALT_VAL_ { 232 };
 
     CombatAnimation::CombatAnimation()
@@ -226,54 +226,59 @@ namespace combat
         projAnimWillDraw_ = true;
         projAnimWillSpin_ = !WILL_HIT;
 
-        // establish the game data file path key to the projectile image
-        const std::string PATH_KEY_BASE_STR { "media-images-combat-" };
-        std::string pathKey { PATH_KEY_BASE_STR + "dart" };
-        if (WEAPON_PTR->WeaponInfo().IsBow())
-        {
-            std::ostringstream ss;
-            ss << PATH_KEY_BASE_STR << "arrow" << misc::random::Int(1, 3);
-            pathKey = ss.str();
-        }
-        else if (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
-        {
-            std::ostringstream ss;
-            ss << PATH_KEY_BASE_STR << "stone" << misc::random::Int(1, 4);
-            pathKey = ss.str();
-        }
-        else if (
-            WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Crossbow)
-        {
-            pathKey = PATH_KEY_BASE_STR + "arrow4";
-        }
+        const auto COMBAT_IMAGE_TYPE = [&]() {
+            if (WEAPON_PTR->WeaponInfo().IsBow())
+            {
+                return gui::CombatImageType::Arrow;
+            }
+            else if (
+                WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
+            {
+                return gui::CombatImageType::Stone;
+            }
+            else if (
+                WEAPON_PTR->WeaponInfo().ProjectileType()
+                == item::weapon::projectile_type::Crossbow)
+            {
+                return gui::CombatImageType::Bolt;
+            }
+            else
+            {
+                return gui::CombatImageType::Dart;
+            }
+        }();
 
-        const auto IMAGE_PATH { misc::ConfigFile::Instance()->GetMediaPath(pathKey) };
+        const auto IMAGE_PATH_CONFIG_FILE_KEY { gui::CombatImageType::RandomConfigFileKey(
+            COMBAT_IMAGE_TYPE) };
 
-        if ((!projAnimCachedTextureOpt_) || (projAnimCachedTextureOpt_->Path() != IMAGE_PATH))
-        {
-            projAnimCachedTextureOpt_ = gui::CachedTexture(pathKey);
-        }
+        projAnimCachedTextureOpt_ = gui::CachedTexture(IMAGE_PATH_CONFIG_FILE_KEY);
 
         projAnimSprite_.setTexture(projAnimCachedTextureOpt_->Get(), true);
+
+        projAnimSprite_.setTextureRect(
+            misc::ConfigFile::Instance()->GetTextureRect(IMAGE_PATH_CONFIG_FILE_KEY));
+
         projAnimSprite_.setColor(sf::Color(255, 255, 255, 127));
 
         // scale the sprite down to a reasonable size
         projAnimSprite_.setOrigin(0.0f, 0.0f);
 
-        // this is the scale for Sling projectiles (stones)
-        auto scale { sfutil::MapByRes(0.05f, 0.55f) };
+        auto imageScale { 1.0f };
+        if ((COMBAT_IMAGE_TYPE == gui::CombatImageType::Arrow)
+            || (COMBAT_IMAGE_TYPE == gui::CombatImageType::Bolt))
+        {
+            imageScale = sfutil::MapByRes(0.15f, 1.0f);
+        }
+        else if (COMBAT_IMAGE_TYPE == gui::CombatImageType::Stone)
+        {
+            imageScale = sfutil::MapByRes(0.05f, 0.55f);
+        }
+        else if (COMBAT_IMAGE_TYPE == gui::CombatImageType::Dart)
+        {
+            imageScale = sfutil::MapByRes(0.025f, 0.5f);
+        }
 
-        if (WEAPON_PTR->WeaponInfo().IsBow()
-            || (WEAPON_PTR->WeaponInfo().ProjectileType()
-                == item::weapon::projectile_type::Crossbow))
-        {
-            scale = sfutil::MapByRes(0.3f, 2.0f);
-        }
-        else if (WEAPON_PTR->WeaponInfo().IsBlowpipe())
-        {
-            scale = sfutil::MapByRes(0.05f, 1.0f);
-        }
-        projAnimSprite_.setScale(scale, scale);
+        projAnimSprite_.setScale(imageScale, imageScale);
 
         projAnimSprite_.setOrigin(
             projAnimSprite_.getLocalBounds().width * 0.5f,
@@ -692,7 +697,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::FlashSparkle,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                    0.015f,
                     sf::Color::White,
                     sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
                 return;
@@ -703,7 +708,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::Shimmer,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
+                    0.03f,
                     sf::Color::White,
                     sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
                 return;
@@ -714,7 +719,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::FlashSparkle,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                    0.015f,
                     sf::Color::White,
                     sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
                 return;
@@ -725,7 +730,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::Shimmer,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.03f,
+                    -0.03f,
                     sf::Color::White,
                     sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
                 return;
@@ -736,7 +741,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::FlashSparkle,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                    0.0f,
                     sf::Color::White,
                     sf::Color(ANIM_COLOR_ALT_VAL_, 255, 255));
                 return;
@@ -747,7 +752,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::Shimmer,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                    0.0f,
                     sf::Color::White,
                     sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
                 return;
@@ -758,7 +763,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::Shimmer,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                    0.015f,
                     sf::Color::White,
                     sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
                 return;
@@ -769,7 +774,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::FlashSparkle,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.015f,
+                    -0.015f,
                     sf::Color::White,
                     sf::Color::White);
                 return;
@@ -780,7 +785,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::Shimmer,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
+                    0.03f,
                     sf::Color::White,
                     sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
                 return;
@@ -791,7 +796,7 @@ namespace combat
                 SetupAnimations(
                     TARGETS_PVEC,
                     gui::Animations::FlashSparkle,
-                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                    0.0f,
                     sf::Color::White,
                     sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
                 return;
@@ -944,7 +949,7 @@ namespace combat
     void CombatAnimation::SetupAnimations(
         const combat::CombatNodePVec_t & TARGETS_PVEC,
         const gui::Animations::Enum ENUM,
-        const float FRAME_DELAY_SEC,
+        const float FRAME_DELAY_SEC_ADJ,
         const sf::Color & COLOR_FROM,
         const sf::Color & COLOR_TO)
     {
@@ -970,8 +975,8 @@ namespace combat
                 region.height += ADJ * 2.0f;
             }
 
-            animUVec_.emplace_back(
-                gui::AnimationFactory::Make(ENUM, region, FRAME_DELAY_SEC, COLOR_FROM, COLOR_TO));
+            animUVec_.emplace_back(gui::AnimationFactory::Make(
+                ENUM, region, FRAME_DELAY_SEC_ADJ, COLOR_FROM, COLOR_TO));
         }
     }
 

@@ -40,28 +40,48 @@ namespace stage
                 gui::GuiFont::System,
                 gui::GuiFont::Number,
             })
-        , titleCachedTexture_("media-images-title-blacksymbol")
-        , titleSprite_(titleCachedTexture_.Get())
+        , BUTTON_HEIGHT_SCREEN_RATIO(gui::MainMenuButton::DEFAULT_HEIGHT_SCREEN_SIZE_RATIO_ * 1.2f)
+        , stageTitle_(gui::MenuImage::Title, true, 0.2275f, 0.68f, -0.0082f)
         , resumeButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              gui::MenuImage::Resume,
               stage::Stage::Load,
               gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfutil::ScreenRatioToPixelsHoriz(0.305f)))
-        , createButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              sf::Vector2f(),
+              true,
+              true,
+              BUTTON_HEIGHT_SCREEN_RATIO))
+        , newGameButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              gui::MenuImage::New,
               stage::Stage::Character,
               gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfutil::ScreenRatioToPixelsHoriz(0.43f)))
+              sf::Vector2f(),
+              true,
+              false,
+              BUTTON_HEIGHT_SCREEN_RATIO))
         , settingsButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              gui::MenuImage::Settings,
               stage::Stage::Settings,
               gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfutil::ScreenRatioToPixelsHoriz(0.201f)))
+              sf::Vector2f(),
+              true,
+              false,
+              BUTTON_HEIGHT_SCREEN_RATIO))
         , creditsButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              gui::MenuImage::Credits,
               stage::Stage::Credits,
               gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfutil::ScreenRatioToPixelsHoriz(0.177f)))
+              sf::Vector2f(),
+              true,
+              false,
+              BUTTON_HEIGHT_SCREEN_RATIO))
         , exitButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              gui::MenuImage::Exit,
               stage::Stage::Exit,
               gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfutil::ScreenRatioToPixelsHoriz(0.114f)))
+              sf::Vector2f(),
+              true,
+              false,
+              BUTTON_HEIGHT_SCREEN_RATIO))
         , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("MainMenu's"))
         , bottomSymbol_()
         , background_()
@@ -71,44 +91,35 @@ namespace stage
 
     void MainMenuStage::Setup()
     {
-        // title image
-        const auto TITLE_SCALE { sfutil::MapByRes(0.5f, 3.0f) };
-        titleSprite_.setScale(TITLE_SCALE, TITLE_SCALE);
-
-        titleSprite_.setPosition(
-            sfutil::DisplayCenterHoriz(titleSprite_.getGlobalBounds().width),
-            sfutil::MapByRes(20.0f, 188.0f));
-
-        // Ouroboros
-        EntityAdd(ouroborosUPtr_);
-
-        const auto BETWEEN_BUTTONS_SPACER { sfutil::ScreenRatioToPixelsVert(0.01f) };
+        // position menu buttons
+        const auto BETWEEN_BUTTONS_SPACER { sfutil::ScreenRatioToPixelsVert(0.0f) };
 
         const auto BUTTONS_HEIGHT { (BETWEEN_BUTTONS_SPACER * 4.0f)
                                     + resumeButtonUPtr_->GetEntityRegion().height
-                                    + createButtonUPtr_->GetEntityRegion().height
+                                    + newGameButtonUPtr_->GetEntityRegion().height
                                     + settingsButtonUPtr_->GetEntityRegion().height
                                     + creditsButtonUPtr_->GetEntityRegion().height
                                     + exitButtonUPtr_->GetEntityRegion().height };
 
+        const auto TITLE_POS_BOTTOM { sfutil::Bottom(stageTitle_.Region()) };
+
         const auto BUTTONS_POS_VERT_CENTER {
-            sfutil::Bottom(titleSprite_.getGlobalBounds())
-            + ((bottomSymbol_.Region().top - sfutil::Bottom(titleSprite_.getGlobalBounds())) * 0.5f)
+            TITLE_POS_BOTTOM + ((bottomSymbol_.Region().top - TITLE_POS_BOTTOM) * 0.5f)
         };
 
         const auto FIRST_BUTTON_POS_TOP { BUTTONS_POS_VERT_CENTER - (BUTTONS_HEIGHT * 0.5f) };
 
-        resumeButtonUPtr_->SetEntityPos(
-            sfutil::DisplayCenterHoriz(resumeButtonUPtr_->GetEntityRegion().width),
+        newGameButtonUPtr_->SetEntityPos(
+            sfutil::DisplayCenterHoriz(newGameButtonUPtr_->GetEntityRegion().width),
             FIRST_BUTTON_POS_TOP);
 
-        createButtonUPtr_->SetEntityPos(
-            sfutil::DisplayCenterHoriz(createButtonUPtr_->GetEntityRegion().width),
-            sfutil::Bottom(resumeButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
+        resumeButtonUPtr_->SetEntityPos(
+            sfutil::DisplayCenterHoriz(resumeButtonUPtr_->GetEntityRegion().width),
+            sfutil::Bottom(newGameButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         settingsButtonUPtr_->SetEntityPos(
             sfutil::DisplayCenterHoriz(settingsButtonUPtr_->GetEntityRegion().width),
-            sfutil::Bottom(createButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
+            sfutil::Bottom(resumeButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         creditsButtonUPtr_->SetEntityPos(
             sfutil::DisplayCenterHoriz(creditsButtonUPtr_->GetEntityRegion().width),
@@ -136,16 +147,21 @@ namespace stage
         }
 
         EntityAdd(resumeButtonUPtr_);
-        EntityAdd(createButtonUPtr_);
+        EntityAdd(newGameButtonUPtr_);
         EntityAdd(settingsButtonUPtr_);
         EntityAdd(creditsButtonUPtr_);
         EntityAdd(exitButtonUPtr_);
+
+        // position ouroboros
+        const auto BUTTON_VERT_CENTER_DIFF { (BUTTONS_POS_VERT_CENTER - sfutil::Center().y) };
+        ouroborosUPtr_->MoveEntityPos(0.0f, BUTTON_VERT_CENTER_DIFF);
+        EntityAdd(ouroborosUPtr_);
     }
 
     void MainMenuStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw(background_, states);
-        target.draw(titleSprite_, states);
+        target.draw(stageTitle_, states);
         target.draw(bottomSymbol_, states);
         StageBase::draw(target, states);
     }
@@ -156,9 +172,9 @@ namespace stage
         {
             return true;
         }
-        else if (KEY_EVENT.code == sf::Keyboard::M)
+        else if (KEY_EVENT.code == sf::Keyboard::N)
         {
-            createButtonUPtr_->SetMouseState(gui::MouseState::Over);
+            newGameButtonUPtr_->SetMouseState(gui::MouseState::Over);
             gui::SoundManager::Instance()->PlaySfx_Keypress();
             TransitionTo(stage::Stage::Menu);
             return true;
@@ -179,7 +195,17 @@ namespace stage
         }
         else if ((KEY_EVENT.code == sf::Keyboard::Escape) || (KEY_EVENT.code == sf::Keyboard::E))
         {
+            if (resumeButtonUPtr_->GetMouseState() == gui::MouseState::Over)
+            {
+                resumeButtonUPtr_->SetMouseState(gui::MouseState::Up);
+            }
+
+            newGameButtonUPtr_->SetMouseState(gui::MouseState::Up);
+            settingsButtonUPtr_->SetMouseState(gui::MouseState::Up);
+            creditsButtonUPtr_->SetMouseState(gui::MouseState::Up);
+
             exitButtonUPtr_->SetMouseState(gui::MouseState::Over);
+
             gui::SoundManager::Instance()->PlaySfx_Keypress();
             TransitionTo(stage::Stage::Exit);
             return true;
@@ -197,5 +223,6 @@ namespace stage
 
         return false;
     }
+
 } // namespace stage
 } // namespace heroespath

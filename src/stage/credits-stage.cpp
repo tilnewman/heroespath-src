@@ -12,6 +12,7 @@
 #include "credits-stage.hpp"
 
 #include "gui/gui-images.hpp"
+#include "gui/menu-image-enum.hpp"
 #include "gui/music-enum.hpp"
 #include "gui/sound-manager.hpp"
 #include "gui/text-info.hpp"
@@ -50,8 +51,7 @@ namespace stage
                 gui::GuiFont::DialogModern,
                 gui::GuiFont::DialogMedieval,
             })
-        , titleCachedTexture_("media-images-title-blacksymbol")
-        , bpTitleSprite_(titleCachedTexture_.Get())
+        , stageTitle_(gui::MenuImage::Title)
         , boxUPtr_()
         , boxBorderUPtr_()
         , creditUVec_()
@@ -75,16 +75,11 @@ namespace stage
     {
         const auto TITLE_VERT_PAD { sfutil::ScreenRatioToPixelsVert(0.022f) };
 
-        sfutil::Fit(bpTitleSprite_, sfutil::ScreenRatiosToPixels(0.5f, 0.0f));
-
-        bpTitleSprite_.setPosition(
-            sfutil::DisplayCenterHoriz(bpTitleSprite_.getGlobalBounds().width), TITLE_VERT_PAD);
-
         const auto CREDITS_BOX_REGION = [&]() {
             sf::FloatRect rect;
             rect.width = sfutil::ScreenRatioToPixelsHoriz(0.4f);
             rect.left = (StageRegion().width * 0.5f) - (rect.width * 0.5f);
-            rect.top = sfutil::Bottom(bpTitleSprite_) + TITLE_VERT_PAD;
+            rect.top = sfutil::Bottom(stageTitle_.Region()) + TITLE_VERT_PAD;
             rect.height = (StageRegion().height - rect.top) - (TITLE_VERT_PAD * 2.0f);
             return rect;
         }();
@@ -94,7 +89,7 @@ namespace stage
 
         boxInfo.SetupImage(
             gui::CachedTexture(
-                "media-images-backgrounds-tile-runes",
+                "media-image-background-tile-runes",
                 gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.15f));
 
@@ -147,7 +142,7 @@ namespace stage
             "Special thanks to Laurent Gomila for the Simple Fast Multimedia Library.  This "
             "project came together quickly thanks to the power and simplicity of this library."
             "\n\nwww.sfml-dev.org\nwww.opensource.org/licenses/zlib\n\n",
-            "media-images-logos-sfml",
+            "media-image-misc-logos-sfml",
             sfutil::ScreenRatioToPixelsHoriz(0.146f)));
 
         creditUVec_.emplace_back(
@@ -163,7 +158,7 @@ namespace stage
             "Terrain Art",
             "Daniel Cook\nA beautiful (and free!) (for any use) set of "
             "tiles.\nwww.lostgarden.com",
-            "media-images-logos-terrain",
+            "media-image-misc-logos-terrain",
             sfutil::ScreenRatioToPixelsHoriz(0.117f)));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
@@ -171,7 +166,7 @@ namespace stage
             "Map Editing Software",
             "Thorbjorn Lindeijer for Tiled\nAn incredible free mapping "
             "utility.\nwww.mapeditor.org",
-            "media-images-logos-tiled",
+            "media-image-misc-logos-tiled",
             sfutil::ScreenRatioToPixelsHoriz(0.15f)));
 
         const auto SOUND_IMAGE_WIDTH { sfutil::ScreenRatioToPixelsHoriz(0.05f) };
@@ -187,7 +182,7 @@ namespace stage
             "Unported License\nwwww.creativecommons.org/licenses/by/3.0\nThe original music "
             "was "
             "trimmed and normalized.",
-            "media-images-logos-sound",
+            "media-image-misc-logos-sound",
             SOUND_IMAGE_WIDTH));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
@@ -197,7 +192,7 @@ namespace stage
             "License\nwww.creativecommons.org/licenses/by-sa/3.0\nThe original music was "
             "trimmed "
             "and normalized.",
-            "media-images-logos-sound",
+            "media-image-misc-logos-sound",
             SOUND_IMAGE_WIDTH));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
@@ -207,7 +202,7 @@ namespace stage
             "License\nwww.creativecommons.org/licenses/by/3.0\nThe original music was trimmed "
             "and "
             "normalized.",
-            "media-images-logos-sound",
+            "media-image-misc-logos-sound",
             SOUND_IMAGE_WIDTH));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
@@ -218,7 +213,7 @@ namespace stage
             "marcelofernandezmusic\nFound at www.opengameart.org/users/marcelofg55\nUnder the "
             "Attribution Unported 4.0 License\nwww.creativecommons.org/licenses/by/4.0\nThe "
             "original music was trimmed and normalized.",
-            "media-images-logos-sound",
+            "media-image-misc-logos-sound",
             SOUND_IMAGE_WIDTH));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
@@ -322,7 +317,7 @@ namespace stage
         // scrolling credits when outside the box
         target.draw(blackRectUpper_, states);
         target.draw(blackRectLower_, states);
-        target.draw(bpTitleSprite_, states);
+        target.draw(stageTitle_, states);
         target.draw(*boxBorderUPtr_, states);
     }
 

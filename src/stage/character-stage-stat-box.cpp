@@ -54,8 +54,7 @@ namespace stage
 
         gui::BoxEntityInfo statsBoxInfo;
         statsBoxInfo.SetupImage(gui::CachedTexture(
-            "media-images-backgrounds-tile-wood",
-            gui::ImageOpt::Default | gui::ImageOpt::Repeated));
+            "media-image-background-tile-wood", gui::ImageOpt::Default | gui::ImageOpt::Repeated));
         statsBoxInfo.SetupBorder(true);
         statsBoxInfo.focus_colors = sfutil::color::GuiFocusColors;
 

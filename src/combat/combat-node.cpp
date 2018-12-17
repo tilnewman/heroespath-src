@@ -86,7 +86,8 @@ namespace combat
         , isMoving_(false)
         , creaturePtr_(CREATURE_PTR)
         , willDraw_(true)
-        , crossBonesCachedTexture_("media-images-combat-crossbones")
+        , crossBonesCachedTexture_(
+              gui::CombatImageType::RandomConfigFileKey(gui::CombatImageType::CrossBones))
         , crossBonesSprite_(crossBonesCachedTexture_.Get())
         , willShowCrossBones_(false)
         , healthRatioDisplayed_(0.0f)

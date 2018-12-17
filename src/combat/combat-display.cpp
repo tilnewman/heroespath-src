@@ -79,8 +79,8 @@ namespace combat
         , POSITIONING_BETWEEN_SPACER_HORIZ_(sfutil::MapByRes(5.0f, 200.0f))
         , POSITIONING_BETWEEN_SPACER_VERT_(sfutil::MapByRes(25.0f, 200.0f))
         , CELL_HEIGHT_(sfutil::MapByRes(
-              gui::ContentImage::Dimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-              gui::ContentImage::Dimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_))
+              (256.0f * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_),
+              (256.0f * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_)))
         , NAME_CHAR_SIZE_ORIG_(gui::FontManager::Instance()->Size_CombatCreatureLabels())
         , SCREEN_WIDTH_(gui::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(gui::Display::Instance()->GetWinHeight())
@@ -88,8 +88,8 @@ namespace combat
         , battlefieldRect_()
         , boxUPtr_()
         , bgCachedTexture_(
-              "media-images-backgrounds-tile-darkpaper",
-              gui::ImageOpt::Default | gui::ImageOpt::Repeated)
+              "media-image-background-paper-dark",
+              (gui::ImageOpt::Default | gui::ImageOpt::Repeated))
         , offScreenTexture_()
         , offScreenSprite_()
         , offScreenPosX_(0.0f)
@@ -1239,8 +1239,8 @@ namespace combat
         }
 
         const float CELL_WIDTH_MIN(sfutil::MapByRes(
-            gui::ContentImage::Dimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-            gui::ContentImage::Dimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_));
+            (256.0f * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_),
+            (256.0f * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_)));
 
         const float CELL_WIDTH_ORIG(std::max(maxNameWidth, CELL_WIDTH_MIN));
 

@@ -478,11 +478,10 @@ namespace game
         activeStages_.ExecuteOnNonPopupStages(handleTestStringIncrement);
     }
 
-    void GameController::TestingImageSet(
-        const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE)
+    void GameController::TestingImageSet(const std::string & PATH_STR)
     {
-        auto handleTestImageSet = [PATH_STR, WILL_CHECK_FOR_OUTLINE](stage::IStagePtr_t iStagePtr) {
-            iStagePtr->TestingImageSet(PATH_STR, WILL_CHECK_FOR_OUTLINE);
+        auto handleTestImageSet = [PATH_STR](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->TestingImageSet(PATH_STR);
             return boost::none;
         };
 

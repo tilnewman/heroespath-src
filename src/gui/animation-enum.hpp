@@ -13,6 +13,7 @@
 #include "gui/music-enum.hpp"
 #include "misc/enum-common.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 
 #include <string>
@@ -30,7 +31,7 @@ namespace gui
             Burst = 0,
             Campfire,
             CandleFlame,
-            CandleFlame2, // a very small pixel animation for candles on the map
+            CandleFlamePixel,
             DualCharge,
             DualSwirl,
             ExplosionLarge,
@@ -48,27 +49,27 @@ namespace gui
             OrbShimmer,
             Puff,
             PuffShort,
-            SelectSwirl,
+            Swirl,
             Shimmer,
             Smoke,
             SmokeSwirl,
             SpiderFlare,
-            SplashMagenta1,
-            SplashMagenta2,
-            SplashWhite,
+            Splash1,
+            Splash2,
+            Splash3,
             SymbolReduce,
             Count
         };
 
         static const std::string ToString(const Enum);
-        static const std::string MediaPathKey(const Enum);
-        static bool IsMultiTexture(const Enum);
+        static const std::string MediaPath(const Enum);
         static float TimePerFrameSec(const Enum);
         static const MusicEnumVec_t Sfx(const Enum);
+        static const sf::IntRect TextureRectTrim(const Enum);
 
         // returns frame size for AnimationSingle and the common full texture size for
         // AnimationMults
-        static const sf::Vector2f ImageSize(const Enum);
+        static const sf::Vector2i ImageSize(const Enum);
     };
 
 } // namespace gui

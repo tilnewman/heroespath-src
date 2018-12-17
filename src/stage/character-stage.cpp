@@ -58,32 +58,6 @@ namespace heroespath
 namespace stage
 {
 
-    const sf::Color CharacterStage::LIGHT_TEXT_COLOR_ { sfutil::color::Light };
-
-    const sf::Color CharacterStage::DESC_TEXT_COLOR_ { sfutil::color::Orange };
-
-    const std::string CharacterStage::POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_ {
-        "BackButtonLeaveScreenComfirm"
-    };
-
-    const std::string CharacterStage::POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_ {
-        "NextButtonLeaveScreenComfirm"
-    };
-
-    const std::string CharacterStage::POPUP_NAME_NONAMEERROR_ { "CreateNoNameError" };
-    const std::string CharacterStage::POPUP_NAME_MISSINGATTRIBS_ { "CreateMissingAttributesError" };
-    const std::string CharacterStage::POPUP_NAME_CREATECONFIRM_ { "CreateConfirm" };
-    const std::string CharacterStage::POPUP_NAME_HELP_1_ { "HelpMessage1" };
-    const std::string CharacterStage::POPUP_NAME_HELP_2_ { "HelpMessage2" };
-    const std::string CharacterStage::POPUP_NAME_HELP_3_ { "HelpMessage3" };
-    const std::string CharacterStage::POPUP_NAME_IMAGE_SELECTION_ { "ImageSelection" };
-
-    const creature::Trait_t CharacterStage::STAT_INVALID_ { -1 };
-    const creature::Trait_t CharacterStage::STAT_INITIAL_MAX_ { 20 };
-
-    const float CharacterStage::SMOKE_ANIM_SPEED_MIN_ { 0.05f };
-    const float CharacterStage::SMOKE_ANIM_SPEED_MAX_ { 0.5f };
-
     CharacterStage::CharacterStage()
         : StageBase(
             "CharacterCreation",
@@ -92,6 +66,21 @@ namespace stage
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
               gui::GuiFont::Handwriting })
+        //, STAT_INVALID_(-1)
+        //, STAT_INITIAL_MAX_(20)
+        , LIGHT_TEXT_COLOR_(sfutil::color::Light)
+        , DESC_TEXT_COLOR_(sfutil::color::Orange)
+        , POPUP_NAME_NONAMEERROR_("CreateNoNameError")
+        , POPUP_NAME_MISSINGATTRIBS_("CreateMissingAttributesError")
+        , POPUP_NAME_CREATECONFIRM_("CreateConfirm")
+        , POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_("BackButtonLeaveScreenComfirm")
+        , POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_("NextButtonLeaveScreenComfirm")
+        , POPUP_NAME_HELP_1_("HelpMessage1")
+        , POPUP_NAME_HELP_2_("HelpMessage2")
+        , POPUP_NAME_HELP_3_("HelpMessage3")
+        , POPUP_NAME_IMAGE_SELECTION_("ImageSelection")
+        , SMOKE_ANIM_SPEED_MIN_(0.05f)
+        , SMOKE_ANIM_SPEED_MAX_(0.5f)
         , DESC_TEXT_FONT_SIZE_(gui::FontManager::Instance()->Size_Small())
         , RADIO_BUTTON_TEXT_SIZE_(gui::FontManager::Instance()->Size_Largeish())
         , statBox_(
@@ -100,24 +89,32 @@ namespace stage
               (4.0f / 3.5f),
               LIGHT_TEXT_COLOR_)
         , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("CharacterStage's"))
-        , stageTitle_("media-images-buttons-mainmenu-character-normal")
+        , stageTitle_(
+              gui::MenuImage::CreateCharacters,
+              true,
+              gui::StageTitle::DEFAULT_SYMBOL_HEIGHT_SCREEN_RATIO_,
+              (gui::StageTitle::DEFAULT_SYMBOL_TO_TITLE_HEIGHT_RATIO_ * 0.8f))
         , smokeAnimSliderDriftX_()
         , smokeAnimSliderDriftY_()
         , background_()
         , smokeAnimUPtr_(gui::AnimationFactory::Make(
-              gui::Animations::SmokeSwirl,
-              sfutil::MapByRes(1.0f, 3.0f),
-              0.035f,
-              sf::Color::White,
-              sf::BlendAlpha))
+              gui::Animations::SmokeSwirl, sfutil::MapByRes(1.0f, 3.0f)))
         , backButtonUPtr_(std::make_unique<gui::MainMenuButton>(
-              stage::Stage::Previous, gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this), -1.0f))
+              gui::MenuImage::Back,
+              stage::Stage::Previous,
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this)))
         , saveButtonUPtr_(std::make_unique<gui::MainMenuButton>(
-              stage::Stage::Save, gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this), -1.0f))
+              gui::MenuImage::Save,
+              stage::Stage::Save,
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this)))
         , helpButtonUPtr_(std::make_unique<gui::MainMenuButton>(
-              stage::Stage::Help, gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this), -1.0f))
+              gui::MenuImage::Help,
+              stage::Stage::Help,
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this)))
         , nextButtonUPtr_(std::make_unique<gui::MainMenuButton>(
-              stage::Stage::Next, gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this), -1.0f))
+              gui::MenuImage::Next,
+              stage::Stage::Next,
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this)))
         , statSetBase_()
         //, raceRadioButtonUPtr_()
         , racetDescTextRegionUPtr_()
@@ -133,7 +130,7 @@ namespace stage
         , bottomSymbol_()
         //, selectedImageIndex_(0)
         , characterImageFilenamesVec_()
-        , woodCachedTexture_("media-images-backgrounds-tile-wood")
+        , woodCachedTexture_("media-image-background-tile-wood")
     {}
 
     CharacterStage::~CharacterStage() { StageBase::ClearAllEntities(); }
@@ -934,7 +931,7 @@ namespace stage
         // See below where it is added by hand.
         std::ostringstream ss;
         ss << creature::Traits::Name(creature::Traits::Strength) << " - "
-           << misc::ConfigFile::Instance()->Value("heroespath-stats-stat-desc_Strength") << "\n\n";
+           << misc::ConfigFile::Instance()->Value("stats-stat-desc_Strength") << "\n\n";
 
         const auto STRENGTH_BASE_TEXT { ss.str() };
 
@@ -945,35 +942,23 @@ namespace stage
 
         Setup_Attribute(
             creature::Traits::Accuracy,
-            "heroespath-stats-stat-desc_Accuracy",
+            "stats-stat-desc_Accuracy",
             REGION,
             descTextInfo,
             textRegionUVec);
 
         Setup_Attribute(
-            creature::Traits::Charm,
-            "heroespath-stats-stat-desc_Charm",
-            REGION,
-            descTextInfo,
-            textRegionUVec);
+            creature::Traits::Charm, "stats-stat-desc_Charm", REGION, descTextInfo, textRegionUVec);
 
         Setup_Attribute(
-            creature::Traits::Luck,
-            "heroespath-stats-stat-desc_Luck",
-            REGION,
-            descTextInfo,
-            textRegionUVec);
+            creature::Traits::Luck, "stats-stat-desc_Luck", REGION, descTextInfo, textRegionUVec);
 
         Setup_Attribute(
-            creature::Traits::Speed,
-            "heroespath-stats-stat-desc_Speed",
-            REGION,
-            descTextInfo,
-            textRegionUVec);
+            creature::Traits::Speed, "stats-stat-desc_Speed", REGION, descTextInfo, textRegionUVec);
 
         Setup_Attribute(
             creature::Traits::Intelligence,
-            "heroespath-stats-stat-desc_Intelligence",
+            "stats-stat-desc_Intelligence",
             REGION,
             descTextInfo,
             textRegionUVec);

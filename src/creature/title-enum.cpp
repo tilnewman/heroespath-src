@@ -1342,7 +1342,7 @@ namespace creature
     const std::string Titles::Desc(const Titles::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-creature-title-" << ToString(ENUM) << "-desc";
+        keySS << "creature-title-" << ToString(ENUM) << "-desc";
         return misc::TrimWhitespaceCopy(misc::ConfigFile::Instance()->Value(keySS.str()));
     }
 
@@ -1357,7 +1357,7 @@ namespace creature
 
         if (imageDir.empty())
         {
-            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-titles-dir");
+            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-image-title-dir");
         }
 
         return imageDir;

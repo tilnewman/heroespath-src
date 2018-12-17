@@ -11,6 +11,7 @@
 //
 #include "popup-stage-combat-over.hpp"
 
+#include "gui/combat-image-enum.hpp"
 #include "gui/font-manager.hpp"
 #include "gui/sound-manager.hpp"
 #include "misc/config-file.hpp"
@@ -158,19 +159,17 @@ namespace popup
         {
             case combat::CombatEnd::Win:
             {
-                return "media-images-combat-crossswords";
+                return gui::CombatImageType::RandomConfigFileKey(gui::CombatImageType::CrossSwords);
             }
-
             case combat::CombatEnd::Lose:
             {
-                return "media-images-combat-crossbones";
+                return gui::CombatImageType::RandomConfigFileKey(gui::CombatImageType::CrossBones);
             }
-
             case combat::CombatEnd::Ran:
             case combat::CombatEnd::Count:
             default:
             {
-                return "media-images-combat-run";
+                return gui::CombatImageType::RandomConfigFileKey(gui::CombatImageType::Run);
             }
         }
     }

@@ -11,6 +11,8 @@
 //
 #include "animation-enum.hpp"
 
+#include "misc/config-file.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 
 namespace heroespath
@@ -18,9 +20,9 @@ namespace heroespath
 namespace gui
 {
 
-    const std::string Animations::ToString(const Enum ENUM)
+    const std::string Animations::ToString(const Enum ANIM)
     {
-        switch (ENUM)
+        switch (ANIM)
         {
             case Burst:
             {
@@ -28,11 +30,11 @@ namespace gui
             }
             case CandleFlame:
             {
-                return "CandleFlame";
+                return "Candle-Flame";
             }
-            case CandleFlame2:
+            case CandleFlamePixel:
             {
-                return "CandleFlame2";
+                return "Candle-Flame-Pixel";
             }
             case Campfire:
             {
@@ -40,35 +42,35 @@ namespace gui
             }
             case DualCharge:
             {
-                return "DualCharge";
+                return "Dual-Charge";
             }
             case DualSwirl:
             {
-                return "DualSwirl";
+                return "Dual-Swirl";
             }
             case ExplosionLarge:
             {
-                return "ExplosionLarge";
+                return "Explosion-Large";
             }
             case ExplosionSmall:
             {
-                return "ExplosionSmall";
+                return "Explosion-Small";
             }
             case ExplosionMedium1:
             {
-                return "ExplosionMedium1";
+                return "Explosion-Medium-1";
             }
             case ExplosionMedium2:
             {
-                return "ExplosionMedium2";
+                return "Explosion-Medium-2";
             }
             case ExplosionMedium3:
             {
-                return "ExplosionMedium3";
+                return "Explosion-Medium-3";
             }
             case FireTorch:
             {
-                return "FireTorch";
+                return "Torch";
             }
             case Flash:
             {
@@ -76,7 +78,7 @@ namespace gui
             }
             case FlashSparkle:
             {
-                return "FlashSparkle";
+                return "Flash-Sparkle";
             }
             case Inferno:
             {
@@ -84,31 +86,31 @@ namespace gui
             }
             case LightningBall:
             {
-                return "LightningBall";
+                return "Lightning-Ball";
             }
             case LightningBolt:
             {
-                return "LightningBolt";
+                return "Lightning-Bolt";
             }
             case OrbCharge:
             {
-                return "OrbCharge";
+                return "Orb-Charge";
             }
             case OrbShimmer:
             {
-                return "OrbShimmer";
+                return "Orb-Shimmer";
             }
             case Puff:
             {
-                return "Puff: ";
+                return "Puff";
             }
             case PuffShort:
             {
-                return "PuffShort";
+                return "Puff-Half";
             }
-            case SelectSwirl:
+            case Swirl:
             {
-                return "SelectSwirl";
+                return "Swirl";
             }
             case Shimmer:
             {
@@ -120,27 +122,27 @@ namespace gui
             }
             case SmokeSwirl:
             {
-                return "SmokeSwirl";
+                return "Smoke-Swirl";
             }
             case SpiderFlare:
             {
-                return "SpiderFlare";
+                return "Spider-Flare";
             }
-            case SplashMagenta1:
+            case Splash1:
             {
-                return "SplashMagenta1";
+                return "Splash-1";
             }
-            case SplashMagenta2:
+            case Splash2:
             {
-                return "SplashMagenta2";
+                return "Splash-2";
             }
-            case SplashWhite:
+            case Splash3:
             {
-                return "SplashWhite";
+                return "Splash-3";
             }
             case SymbolReduce:
             {
-                return "SymbolReduce";
+                return "Symbol-Reduce";
             }
             case Count:
             {
@@ -149,7 +151,7 @@ namespace gui
             default:
             {
                 M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ANIM) << " is invalid. (count="
                                   << static_cast<EnumUnderlying_t>(Count) << ")");
 
                 return "";
@@ -157,338 +159,161 @@ namespace gui
         }
     }
 
-    const std::string Animations::MediaPathKey(const Enum ENUM)
+    const std::string Animations::MediaPath(const Enum ANIM)
     {
-        switch (ENUM)
-        {
-            case Burst:
-            {
-                return "media-anim-image-burst";
-            }
-            case Campfire:
-            {
-                return "media-anim-images-dir-campfire";
-            }
-            case CandleFlame:
-            {
-                return "media-anim-image-candleflame";
-            }
-            case CandleFlame2:
-            {
-                return "media-anim-images-dir-candleflame2";
-            }
-            case DualCharge:
-            {
-                return "media-anim-images-dir-dualcharge";
-            }
-            case DualSwirl:
-            {
-                return "media-anim-image-dualswirl";
-            }
-            case ExplosionLarge:
-            {
-                return "media-anim-images-dir-explosion";
-            }
-            case ExplosionSmall:
-            {
-                return "media-anim-image-explosion-small";
-            }
-            case ExplosionMedium1:
-            {
-                return "media-anim-image-explosion1";
-            }
-            case ExplosionMedium2:
-            {
-                return "media-anim-image-explosion2";
-            }
-            case ExplosionMedium3:
-            {
-                return "media-anim-image-explosion3";
-            }
-            case FireTorch:
-            {
-                return "media-anim-image-firetorch";
-            }
-            case Flash:
-            {
-                return "media-anim-image-flash";
-            }
-            case FlashSparkle:
-            {
-                return "media-anim-image-flash-sparkle";
-            }
-            case Inferno:
-            {
-                return "media-anim-images-dir-inferno";
-            }
-            case LightningBall:
-            {
-                return "media-anim-images-dir-lightningball";
-            }
-            case LightningBolt:
-            {
-                return "media-anim-images-dir-lightningbolt";
-            }
-            case OrbCharge:
-            {
-                return "media-anim-images-dir-orbcharge";
-            }
-            case OrbShimmer:
-            {
-                return "media-anim-images-dir-orbshimmer";
-            }
-            case Puff:
-            {
-                return "media-anim-image-puff";
-            }
-            case PuffShort:
-            {
-                return "media-anim-image-puffhalf";
-            }
-            case SelectSwirl:
-            {
-                return "media-anim-image-selectswirl";
-            }
-            case Shimmer:
-            {
-                return "media-anim-images-dir-shimmer";
-            }
-            case Smoke:
-            {
-                return "media-anim-image-smoke";
-            }
-            case SmokeSwirl:
-            {
-                return "media-anim-images-dir-smokesiwrl";
-            }
-            case SpiderFlare:
-            {
-                return "media-anim-images-dir-spiderflare";
-            }
-            case SplashMagenta1:
-            {
-                return "media-anim-image-splash2";
-            }
-            case SplashMagenta2:
-            {
-                return "media-anim-image-splash3";
-            }
-            case SplashWhite:
-            {
-                return "media-anim-images-dir-splash1";
-            }
-            case SymbolReduce:
-            {
-                return "media-anim-images-dir-symbolreduce";
-            }
-            case Count:
-            {
-                return "(Count)";
-            }
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
-                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+        static std::string dirPath;
 
-                return "";
-            }
+        if (dirPath.empty())
+        {
+            dirPath = misc::ConfigFile::Instance()->GetMediaPath("media-image-animation-dir");
         }
+
+        return misc::filesystem::CombinePathsAndClean(dirPath, misc::ToLowerCopy(ToString(ANIM)));
     }
 
-    bool Animations::IsMultiTexture(const Enum ENUM)
+    const sf::Vector2i Animations::ImageSize(const Enum ANIM)
     {
-        switch (ENUM)
+        switch (ANIM)
         {
             case Burst:
-            case CandleFlame:
-            case DualSwirl:
-            case ExplosionSmall:
-            case ExplosionMedium1:
-            case ExplosionMedium2:
-            case ExplosionMedium3:
-            case FireTorch:
-            case Flash:
-            case FlashSparkle:
-            case Puff:
-            case PuffShort:
-            case SelectSwirl:
-            case Smoke:
-            case SplashMagenta1:
-            case SplashMagenta2:
             {
-                return false;
+                return sf::Vector2i(128, 128);
             }
             case Campfire:
-            case CandleFlame2:
+            {
+                return sf::Vector2i(64, 64);
+            }
+            case CandleFlame:
+            {
+                return sf::Vector2i(64, 128);
+            }
+            case CandleFlamePixel:
+            {
+                return sf::Vector2i(16, 32);
+            }
             case DualCharge:
+            {
+                return sf::Vector2i(128, 256);
+            }
+            case DualSwirl:
+            {
+                return sf::Vector2i(128, 64);
+            }
             case ExplosionLarge:
-            case LightningBall:
-            case LightningBolt:
+            {
+                return sf::Vector2i(256, 256);
+            }
+            case ExplosionSmall:
+            {
+                return sf::Vector2i(64, 64);
+            }
+            case ExplosionMedium1:
+            {
+                return sf::Vector2i(128, 128);
+            }
+            case ExplosionMedium2:
+            {
+                return sf::Vector2i(128, 128);
+            }
+            case ExplosionMedium3:
+            {
+                return sf::Vector2i(128, 128);
+            }
+            case FireTorch:
+            {
+                return sf::Vector2i(128, 256);
+            }
+            case Flash:
+            {
+                return sf::Vector2i(128, 128);
+            }
+            case FlashSparkle:
+            {
+                return sf::Vector2i(128, 128);
+            }
             case Inferno:
+            {
+                return sf::Vector2i(128, 256);
+            }
+            case LightningBall:
+            {
+                return sf::Vector2i(64, 64);
+            }
+            case LightningBolt:
+            {
+                return sf::Vector2i(128, 256);
+            }
             case OrbCharge:
+            {
+                return sf::Vector2i(64, 64);
+            }
             case OrbShimmer:
+            {
+                return sf::Vector2i(128, 64);
+            }
+            case Puff:
+            {
+                return sf::Vector2i(64, 64);
+            }
+            case PuffShort:
+            {
+                return sf::Vector2i(128, 128);
+            }
+            case Swirl:
+            {
+                return sf::Vector2i(128, 128);
+            }
             case Shimmer:
+            {
+                return sf::Vector2i(128, 64);
+            }
+            case Smoke:
+            {
+                return sf::Vector2i(128, 128);
+            }
             case SmokeSwirl:
+            {
+                return sf::Vector2i(256, 256);
+            }
             case SpiderFlare:
-            case SplashWhite:
+            {
+                return sf::Vector2i(128, 128);
+            }
+            case Splash1:
+            {
+                return sf::Vector2i(64, 64);
+            }
+            case Splash2:
+            {
+                return sf::Vector2i(128, 128);
+            }
+            case Splash3:
+            {
+                return sf::Vector2i(256, 256);
+            }
             case SymbolReduce:
             {
-                return true;
+                return sf::Vector2i(128, 128);
             }
             case Count:
             default:
             {
                 M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ANIM) << " is invalid. (count="
                                   << static_cast<EnumUnderlying_t>(Count) << ")");
 
-                return false;
+                return sf::Vector2i(0, 0);
             }
         }
     }
 
-    const sf::Vector2f Animations::ImageSize(const Enum ENUM)
+    float Animations::TimePerFrameSec(const Animations::Enum ANIM)
     {
-        switch (ENUM)
-        {
-            case Burst:
-            {
-                return sf::Vector2f(120.0f, 120.0f);
-            }
-            case Campfire:
-            {
-                return sf::Vector2f(81.0f, 64.0f);
-            }
-            case CandleFlame:
-            {
-                return sf::Vector2f(128.0f, 128.0f);
-            }
-            case CandleFlame2:
-            {
-                return sf::Vector2f(16.0f, 24.0f);
-            }
-            case DualCharge:
-            {
-                return sf::Vector2f(133.0f, 169.0f);
-            }
-            case DualSwirl:
-            {
-                return sf::Vector2f(140.0f, 140.0f);
-            }
-            case ExplosionLarge:
-            {
-                return sf::Vector2f(320.0f, 240.0f);
-            }
-            case ExplosionSmall:
-            {
-                return sf::Vector2f(128.0f, 128.0f);
-            }
-            case ExplosionMedium1:
-            {
-                return sf::Vector2f(100.0f, 100.0f);
-            }
-            case ExplosionMedium2:
-            {
-                return sf::Vector2f(100.0f, 100.0f);
-            }
-            case ExplosionMedium3:
-            {
-                return sf::Vector2f(100.0f, 100.0f);
-            }
-            case FireTorch:
-            {
-                return sf::Vector2f(128.0f, 256.0f);
-            }
-            case Flash:
-            {
-                return sf::Vector2f(128.0f, 128.0f);
-            }
-            case FlashSparkle:
-            {
-                return sf::Vector2f(128.0f, 128.0f);
-            }
-            case Inferno:
-            {
-                return sf::Vector2f(256.0f, 256.0f);
-            }
-            case LightningBall:
-            {
-                return sf::Vector2f(56.0f, 65.0f);
-            }
-            case LightningBolt:
-            {
-                return sf::Vector2f(98.0f, 203.0f);
-            }
-            case OrbCharge:
-            {
-                return sf::Vector2f(80.0f, 67.0f);
-            }
-            case OrbShimmer:
-            {
-                return sf::Vector2f(184.0f, 85.0f);
-            }
-            case Puff:
-            {
-                return sf::Vector2f(80.0f, 80.0f);
-            }
-            case PuffShort:
-            {
-                return sf::Vector2f(100.0f, 100.0f);
-            }
-            case SelectSwirl:
-            {
-                return sf::Vector2f(140.0f, 140.0f);
-            }
-            case Shimmer:
-            {
-                return sf::Vector2f(186.0f, 83.0f);
-            }
-            case Smoke:
-            {
-                return sf::Vector2f(164.0f, 164.0f);
-            }
-            case SmokeSwirl:
-            {
-                return sf::Vector2f(256.0f, 256.0f);
-            }
-            case SpiderFlare:
-            {
-                return sf::Vector2f(168.0f, 148.0f);
-            }
-            case SplashMagenta1:
-            {
-                return sf::Vector2f(120.0f, 120.0f);
-            }
-            case SplashMagenta2:
-            {
-                return sf::Vector2f(240.0f, 240.0f);
-            }
-            case SplashWhite:
-            {
-                return sf::Vector2f(50.0f, 47.0f);
-            }
-            case SymbolReduce:
-            {
-                return sf::Vector2f(177.0f, 156.0f);
-            }
-            case Count:
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
-                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+        const auto ANIM_TIME_BETWEEN_FRAMES_DEFAULT { 0.055f };
 
-                return sf::Vector2(0.0f, 0.0f);
-            }
-        }
-    }
-
-    float Animations::TimePerFrameSec(const Animations::Enum ENUM)
-    {
-        switch (ENUM)
+        switch (ANIM)
         {
-            case CandleFlame2:
+            case CandleFlamePixel:
             {
                 return 0.1f;
             }
@@ -512,33 +337,36 @@ namespace gui
             case OrbShimmer:
             case Puff:
             case PuffShort:
-            case SelectSwirl:
+            case Swirl:
             case Shimmer:
             case Smoke:
             case SmokeSwirl:
+            {
+                return 0.035f;
+            }
             case SpiderFlare:
-            case SplashMagenta1:
-            case SplashMagenta2:
-            case SplashWhite:
+            case Splash1:
+            case Splash2:
+            case Splash3:
             case SymbolReduce:
             {
-                return 0.05f;
+                return ANIM_TIME_BETWEEN_FRAMES_DEFAULT;
             }
             case Count:
             default:
             {
                 M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ANIM) << " is invalid. (count="
                                   << static_cast<EnumUnderlying_t>(Count) << ")");
 
-                return 0.0f;
+                return ANIM_TIME_BETWEEN_FRAMES_DEFAULT;
             }
         }
     }
 
-    const MusicEnumVec_t Animations::Sfx(const Animations::Enum ENUM)
+    const MusicEnumVec_t Animations::Sfx(const Animations::Enum ANIM)
     {
-        if (ENUM == Animations::Campfire)
+        if (ANIM == Animations::Campfire)
         {
             return { music::FireIndoorLarge };
         }
@@ -546,6 +374,16 @@ namespace gui
         {
             return {};
         }
+    }
+
+    const sf::IntRect Animations::TextureRectTrim(const Enum ANIM)
+    {
+        if (ANIM == Campfire)
+        {
+            return sf::IntRect(7, 7, 7, 7);
+        }
+
+        return sf::IntRect();
     }
 
 } // namespace gui

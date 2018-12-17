@@ -35,7 +35,7 @@ namespace stage
         , timeFromAnimToExitSec_(7.0f)
         , imageScaleSpeed_(0.028f)
         , fadeSpeed_(100.0f)
-        , titleCachedTexture_("media-images-title-intro")
+        , titleCachedTexture_("media-image-misc-splash")
         , titleSprite_(titleCachedTexture_.Get())
         , elapsedSec_(0.0f)
         , fadeColorAlpha_(0.0f)

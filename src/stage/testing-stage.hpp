@@ -125,9 +125,7 @@ namespace stage
 
         void TestingStrAppend(const std::string &) override;
         void TestingStrIncrement(const std::string &) override;
-
-        void TestingImageSet(
-            const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE = false) override;
+        void TestingImageSet(const std::string & PATH_STR) override;
 
         void PerformNextTest() override;
 

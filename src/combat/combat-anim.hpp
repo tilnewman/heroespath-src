@@ -229,7 +229,7 @@ namespace combat
         void SetupAnimations(
             const combat::CombatNodePVec_t & TARGETS_PVEC,
             const gui::Animations::Enum ENUM,
-            const float FRAME_DELAY_SEC,
+            const float FRAME_DELAY_SEC_ADJ,
             const sf::Color & COLOR_FROM,
             const sf::Color & COLOR_TO);
 
@@ -258,7 +258,6 @@ namespace combat
 
     private:
         static const float SELECT_ANIM_SLIDER_SPEED_;
-        static const float ANIM_TIME_BETWEEN_FRAMES_DEFAULT_;
         static const sf::Uint8 ANIM_COLOR_ALT_VAL_;
 
         const float SCREEN_WIDTH_;

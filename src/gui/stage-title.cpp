@@ -11,6 +11,7 @@
 //
 #include "stage-title.hpp"
 
+#include "misc/config-file.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
@@ -22,69 +23,84 @@ namespace heroespath
 namespace gui
 {
 
-    const float StageTitle::DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_ { 0.6f };
-    const float StageTitle::TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_ { 0.65f };
+    const float StageTitle::DEFAULT_SYMBOL_HEIGHT_SCREEN_RATIO_ { 0.175f };
+    const float StageTitle::DEFAULT_SYMBOL_TO_TITLE_HEIGHT_RATIO_ { 0.55f };
+    const float StageTitle::DEFAULT_SYMBOL_VERT_POS_SCREEN_RATIO_ { 0.011f };
+    const float StageTitle::DEFAULT_BOTTOM_PAD_AS_SYMBOL_HEIGHT_RATIO_ { 0.2f };
+    const float StageTitle::VISIBLE_VERT_POS_RATIO_ { 0.535f };
 
     StageTitle::StageTitle(
-        const std::string & TITLE_IMAGE_PATH_KEY,
-        const bool WILL_INVERT_SYMBOL,
-        const float SIZE_HORIZ,
-        const float SIZE_VERT)
+        const MenuImage::Enum MENU_IMAGE,
+        const bool WILL_INVERT_SYMBOL_TO_WHITE,
+        const float SYMBOL_HEIGHT_SCREEN_RATIO,
+        const float SYMBOL_TO_TITLE_HEIGHT_RATIO,
+        const float SYMBOL_VERT_POS_SCREEN_RATIO)
         : symbolCachedTexture_(
-            "media-images-gui-accents-symbol2",
+            MenuImage::ConfigFileKey(MenuImage::SymbolTop),
             ImageOptions(
-                (WILL_INVERT_SYMBOL) ? (ImageOpt::Default | ImageOpt::Invert) : ImageOpt::Default))
-        , symbolSprite_(symbolCachedTexture_.Get())
+                (WILL_INVERT_SYMBOL_TO_WHITE) ? (ImageOpt::Default | ImageOpt::Invert)
+                                              : ImageOpt::Default))
+        , symbolSprite_(
+              symbolCachedTexture_.Get(),
+              misc::ConfigFile::Instance()->GetTextureRect(
+                  MenuImage::ConfigFileKey(MenuImage::SymbolTop)))
         , titleCachedTextureOpt_()
         , titleSprite_()
     {
-        if (TITLE_IMAGE_PATH_KEY.empty() == false)
+        symbolSprite_.setColor(sf::Color(255, 255, 255, gui::MenuImage::SymbolAlpha()));
+
+        if (MENU_IMAGE != MenuImage::Count)
         {
-            titleCachedTextureOpt_ = gui::CachedTexture(TITLE_IMAGE_PATH_KEY);
-            titleSprite_.setTexture(titleCachedTextureOpt_->Get(), true);
+            const auto CONFIG_FILE_KEY { MenuImage::ConfigFileKey(MENU_IMAGE) };
+
+            titleCachedTextureOpt_ = gui::CachedTexture(CONFIG_FILE_KEY);
+            titleSprite_.setTexture(titleCachedTextureOpt_->Get());
+
+            titleSprite_.setTextureRect(
+                misc::ConfigFile::Instance()->GetTextureRect(CONFIG_FILE_KEY));
         }
 
-        SetSizeAndReCenter(SIZE_HORIZ, SIZE_VERT);
+        SetSizeAndReCenter(
+            SYMBOL_HEIGHT_SCREEN_RATIO, SYMBOL_TO_TITLE_HEIGHT_RATIO, SYMBOL_VERT_POS_SCREEN_RATIO);
     }
 
-    void StageTitle::SetSizeAndReCenter(const float SIZE_HORIZ, const float SIZE_VERT)
+    void StageTitle::SetSizeAndReCenter(
+        const float SYMBOL_HEIGHT_SCREEN_RATIO,
+        const float SYMBOL_TO_TITLE_HEIGHT_RATIO,
+        const float SYMBOL_VERT_POS_SCREEN_RATIO)
     {
-        const auto SYMBOL_WIDTH_DEFAULT { sfutil::ScreenRatioToPixelsHoriz(
-            DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_) };
+        const auto SYMBOL_HEIGHT { sfutil::ScreenRatioToPixelsVert(SYMBOL_HEIGHT_SCREEN_RATIO) };
+        const auto SYMBOL_SCALE { SYMBOL_HEIGHT / symbolSprite_.getLocalBounds().height };
 
-        const auto SYMBOL_SCALE_DEFAULT { SYMBOL_WIDTH_DEFAULT
-                                          / symbolSprite_.getLocalBounds().width };
+        symbolSprite_.setScale(SYMBOL_SCALE, SYMBOL_SCALE);
 
-        auto symbolWidth { SYMBOL_WIDTH_DEFAULT };
-
-        if (SIZE_HORIZ > 0.0f)
-        {
-            symbolWidth = SIZE_HORIZ;
-        }
-
-        const auto SYMBOL_SCALE_HORIZ { symbolWidth / symbolSprite_.getLocalBounds().width };
-
-        auto symbolHeight { symbolSprite_.getLocalBounds().height * SYMBOL_SCALE_DEFAULT };
-
-        if (SIZE_VERT > 0.0f)
-        {
-            symbolHeight = SIZE_VERT;
-        }
-
-        const auto SYMBOL_SCALE_VERT { symbolHeight / symbolSprite_.getLocalBounds().height };
-
-        symbolSprite_.setScale(SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);
+        const auto SYMBOL_VERT_POS { sfutil::ScreenRatioToPixelsVert(
+            SYMBOL_VERT_POS_SCREEN_RATIO) };
 
         symbolSprite_.setPosition(
-            sfutil::DisplayCenterHoriz(symbolSprite_.getGlobalBounds().width),
-            sfutil::ScreenRatioToPixelsVert(0.011f));
+            sfutil::DisplayCenterHoriz(symbolSprite_.getGlobalBounds().width), SYMBOL_VERT_POS);
+
+        symbolSprite_.setColor(sf::Color(255, 255, 255, MenuImage::SymbolAlpha()));
 
         if (titleCachedTextureOpt_)
         {
-            sfutil::FitAndCenterTo(
-                titleSprite_,
-                sfutil::ScaleAndReCenterCopy(
-                    symbolSprite_.getGlobalBounds(), TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_));
+            const auto TITLE_HEIGHT { (
+                symbolSprite_.getGlobalBounds().height * SYMBOL_TO_TITLE_HEIGHT_RATIO) };
+
+            const auto TITLE_SCALE { TITLE_HEIGHT / titleSprite_.getLocalBounds().height };
+
+            titleSprite_.setScale(TITLE_SCALE, TITLE_SCALE);
+
+            auto symbolRegionWithVisibleVertAdj { symbolSprite_.getGlobalBounds() };
+
+            const auto VISIBLE_VERT_SHIFT { (
+                (symbolRegionWithVisibleVertAdj.height * VISIBLE_VERT_POS_RATIO_)
+                - (symbolRegionWithVisibleVertAdj.height * 0.5f)) };
+
+            symbolRegionWithVisibleVertAdj.top += VISIBLE_VERT_SHIFT;
+            // symbolRegionWithVisibleVertAdj.height -= (VISIBLE_VERT_SHIFT * 2.0f);
+
+            sfutil::CenterTo(titleSprite_, symbolRegionWithVisibleVertAdj);
         }
     }
 
@@ -98,7 +114,11 @@ namespace gui
         }
     }
 
-    float StageTitle::DefaultBottomPad() const { return sfutil::ScreenRatioToPixelsVert(0.039f); }
+    float StageTitle::DefaultBottomPad() const
+    {
+        return (
+            symbolSprite_.getGlobalBounds().height * DEFAULT_BOTTOM_PAD_AS_SYMBOL_HEIGHT_RATIO_);
+    }
 
 } // namespace gui
 } // namespace heroespath

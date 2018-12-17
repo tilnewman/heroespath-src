@@ -176,7 +176,7 @@ namespace creature
     float Creature::RankRatio() const
     {
         const float GRANDMASTER_RANK_F { misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                                             "heroespath-rankclass-Master-rankmax")
+                                             "rankclass-Master-rankmax")
                                          + 1.0f };
 
         auto rankRatio { rank_.As<float>() / GRANDMASTER_RANK_F };

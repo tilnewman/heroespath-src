@@ -30,18 +30,19 @@ namespace popup
 {
 
     // This value was found by experiment to be faded enough to avoid interfering with foreground.
-    const sf::Uint8 PopupStageBase::ACCENT_IMAGE_ALPHA_ { 19 };
+    const sf::Uint8 PopupStageBase::ACCENT_IMAGE_ALPHA_ { 28 };
 
     // This value was found by experiment to make a good looking empty border around the image.
-    const float PopupStageBase::ACCENT_IMAGE_SCALEDOWN_RATIO_ { 0.85f };
+    const float PopupStageBase::ACCENT_IMAGE_SCALEDOWN_RATIO_ { 1.0f };
 
     PopupStageBase::PopupStageBase(const PopupInfo & POPUP_INFO)
         : StageBase(
             POPUP_INFO.Name() + "_PopupStage", { gui::GuiFont::Handwriting, gui::GuiFont::Number })
         , popupInfo_(POPUP_INFO)
+        , BACKGROUND_IMAGE_CONFIG_KEY_(
+              PopupManager::Instance()->BackgroundImageConfigFileKey(POPUP_INFO.Image()))
         , innerRegion_()
-        , backgroundTexture_(
-              PathWrapper(PopupManager::Instance()->BackgroundImagePath(POPUP_INFO.Image())))
+        , backgroundTexture_(BACKGROUND_IMAGE_CONFIG_KEY_)
         , textRegionUPtr_()
         , textRegion_()
         , buttonSelectUPtr_()
@@ -59,7 +60,9 @@ namespace popup
         , selection_(-1) // any negative value will work here
         , xSymbolSprite_()
         , willShowXImage_(false)
-        , backgroundSprite_(backgroundTexture_.Get())
+        , backgroundSprite_(
+              backgroundTexture_.Get(),
+              misc::ConfigFile::Instance()->GetTextureRect(BACKGROUND_IMAGE_CONFIG_KEY_))
         , buttonTextHeight_(0.0f)
         , buttonVertPos_(0.0f)
         , xSymbolCachedTextureOpt_()
@@ -270,6 +273,12 @@ namespace popup
         }
     }
 
+    const gui::ImageOptions PopupStageBase::AccentImageOptions() const
+    {
+        return gui::ImageOptions(
+            ((misc::random::Bool()) ? gui::ImageOpt::Default : gui::ImageOpt::FlipHoriz));
+    }
+
     void PopupStageBase::SetupOuterAndInnerRegion()
     {
         const auto BG_IMAGE_SCALE { calcBackgroundImageScale(popupInfo_.Image()) };
@@ -427,12 +436,16 @@ namespace popup
 
     void PopupStageBase::SetupAccentSprite()
     {
-        if (popupInfo_.WillAddRandImage())
+        const auto ACCENT_IMAGE_PATH { PopupManager::Instance()->RandomAccentImagePath() };
+
+        if (popupInfo_.WillAddRandImage() && (ACCENT_IMAGE_PATH.empty() == false))
         {
-            accent1CachedTextureOpt_ = PopupManager::Instance()->LoadRandomAccentImage();
+            accent1CachedTextureOpt_
+                = gui::CachedTexture(PathWrapper(ACCENT_IMAGE_PATH), AccentImageOptions());
+
             accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
-            sfutil::FitAndReCenter(
+            sfutil::FitAndCenterTo(
                 accentSprite1_,
                 sfutil::ScaleAndReCenterCopy(textRegion_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
 
@@ -447,7 +460,7 @@ namespace popup
 
     void PopupStageBase::SetupRedXImage()
     {
-        xSymbolCachedTextureOpt_ = gui::CachedTexture("media-images-misc-x");
+        xSymbolCachedTextureOpt_ = gui::CachedTexture("media-image-misc-x");
         xSymbolSprite_.setTexture(xSymbolCachedTextureOpt_->Get());
         xSymbolSprite_.setColor(sf::Color(255, 0, 0, 127));
     }

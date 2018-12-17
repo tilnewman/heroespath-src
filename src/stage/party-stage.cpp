@@ -81,31 +81,26 @@ namespace stage
         , MOUSEOVER_COLORCYCLE_COUNT_(4)
         , bottomSymbol_()
         , listBoxInfo_()
-        , stageTitle_("media-images-buttons-mainmenu-party-normal")
-        , backgroundBox_(
-              "PartyStage'sBackground",
-              StageRegion(),
-              gui::BoxEntityInfo(gui::CachedTexture(
-                  "media-images-backgrounds-tile-darkknot",
-                  gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
+        , stageTitle_(gui::MenuImage::CreateParty)
+        , background_()
         , backButtonUPtr_(std::make_unique<gui::MainMenuButton>(
-              stage::Stage::Previous, gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this), -1.0f))
-        , startButtonUPtr_(std::make_unique<gui::ImageTextEntity>(
-              "PartyStage'sStartGame",
-              MakeMouseImageInfoForMenuButton(
-                  "media-images-buttons-mainmenu-start-normal",
-                  "media-images-buttons-mainmenu-start-lit"),
-              gui::MouseTextInfo(),
+              gui::MenuImage::Back,
+              stage::Stage::Previous,
               gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              gui::ImageTextEntity::MouseStateSync::Image))
-        , deleteButtonUPtr_(std::make_unique<gui::ImageTextEntity>(
-              "PartyStage'sDelete",
-              MakeMouseImageInfoForMenuButton(
-                  "media-images-buttons-mainmenu-delete-normal",
-                  "media-images-buttons-mainmenu-delete-lit"),
-              gui::MouseTextInfo(),
+              sf::Vector2f(),
+              false))
+        , startButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              gui::MenuImage::StartGame,
+              stage::Stage::Count,
               gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              gui::ImageTextEntity::MouseStateSync::Image))
+              sf::Vector2f(),
+              false))
+        , deleteButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              gui::MenuImage::Delete,
+              stage::Stage::Count,
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sf::Vector2f(),
+              false))
         , characterListBoxUPtr_()
         , partyListBoxUPtr_()
         , insTextRegionUPtr_()
@@ -349,22 +344,22 @@ namespace stage
     {
         backButtonUPtr_->SetEntityPos(
             sfutil::ScreenRatioToPixelsHoriz(0.0586f),
-            sfutil::CenterOfVert(bottomSymbol_.Region())
-                - (backButtonUPtr_->GetEntityRegion().height * 0.5f));
+            (bottomSymbol_.VisibleVerticalCenter()
+             - (backButtonUPtr_->GetEntityRegion().height * 0.5f)));
 
         EntityAdd(backButtonUPtr_);
 
         startButtonUPtr_->SetEntityPos(
             sfutil::ScreenRatioToPixelsHoriz(0.586f),
-            sfutil::CenterOfVert(bottomSymbol_.Region())
-                - (startButtonUPtr_->GetEntityRegion().height * 0.5f));
+            (bottomSymbol_.VisibleVerticalCenter()
+             - (startButtonUPtr_->GetEntityRegion().height * 0.5f)));
 
         EntityAdd(startButtonUPtr_);
 
         deleteButtonUPtr_->SetEntityPos(
             sfutil::ScreenRatioToPixelsHoriz(0.246f),
-            sfutil::CenterOfVert(bottomSymbol_.Region())
-                - (deleteButtonUPtr_->GetEntityRegion().height * 0.5f));
+            (bottomSymbol_.VisibleVerticalCenter()
+             - (deleteButtonUPtr_->GetEntityRegion().height * 0.5f)));
 
         EntityAdd(deleteButtonUPtr_);
     }
@@ -547,7 +542,7 @@ namespace stage
 
     void PartyStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(backgroundBox_, states);
+        target.draw(background_, states);
         target.draw(stageTitle_, states);
         target.draw(bottomSymbol_, states);
         StageBase::draw(target, states);
@@ -980,23 +975,6 @@ namespace stage
 
         UpdateWillDisplayCharacterCountWarning();
         return true;
-    }
-
-    const gui::MouseImageInfo PartyStage::MakeMouseImageInfoForMenuButton(
-        const std::string & IMAGE_PATH_KEY_UP, const std::string & IMAGE_PATH_KEY_OVER)
-    {
-        const sf::FloatRect INITIAL_REGION_TO_SET_WIDTH_(
-            0.0f, 0.0f, gui::MainMenuButton::DefaultWidth(), 0.0f);
-
-        const gui::EntityImageInfo ENTITY_IMAGE_INFO_UP(
-            (gui::CachedTexture(IMAGE_PATH_KEY_UP)), (sf::FloatRect(INITIAL_REGION_TO_SET_WIDTH_)));
-
-        const gui::EntityImageInfo ENTITY_IMAGE_INFO_OVER(
-            (gui::CachedTexture(IMAGE_PATH_KEY_OVER)),
-            (sf::FloatRect(INITIAL_REGION_TO_SET_WIDTH_)));
-
-        return gui::MouseImageInfo(
-            true, ENTITY_IMAGE_INFO_UP, gui::EntityImageInfo(), ENTITY_IMAGE_INFO_OVER);
     }
 
 } // namespace stage

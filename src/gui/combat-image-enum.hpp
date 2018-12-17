@@ -23,22 +23,21 @@ namespace gui
         enum Enum : EnumUnderlying_t
         {
             Wing = 0,
-            Arrow1,
-            Arrow2,
-            Arrow3,
+            Arrow,
             Bolt,
             Dart,
-            Stone1,
-            Stone2,
-            Stone3,
-            Stone4,
+            Stone,
+            Note,
+            Spark,
+            Run,
+            CrossSwords,
+            CrossBones,
             Count
         };
 
         static const std::string ToString(const Enum);
-        static const std::string ImageFilename(const Enum);
-        static const std::string ImageDirectory();
-        static const std::string ImagePath(const Enum);
+        static std::size_t ImageCount(const Enum);
+        static const std::string RandomConfigFileKey(const Enum);
     };
 
 } // namespace gui

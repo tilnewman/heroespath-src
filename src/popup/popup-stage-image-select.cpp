@@ -78,6 +78,7 @@ namespace popup
 
     void PopupStageImageSelect::Setup()
     {
+        M_HP_LOG_WRN(popupInfo_.ToStringFull());
         PopupStageBase::Setup();
 
         imagesRect_ = textRegion_;

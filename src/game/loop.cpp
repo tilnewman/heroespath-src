@@ -38,11 +38,11 @@ namespace game
         , prevMousePosV_(gui::Display::Instance()->GetMousePosition())
         , frameMouseInfo_(false, sf::Vector2i())
         , toLogEvents_()
-        , componentFramerateTrials_("ComponentFramerate", TimeRes::Micro, true, 200, 0.0)
-        , componentFrameRateTrialsIndexAudio_(componentFramerateTrials_.AddCollecter("Audio"))
-        , componentFrameRateTrialsIndexUpdate_(componentFramerateTrials_.AddCollecter("Update"))
-        , componentFrameRateTrialsIndexDraw_(componentFramerateTrials_.AddCollecter("Draw"))
-        , componentFrameRateTrialsIndexDisplay_(componentFramerateTrials_.AddCollecter("Display"))
+    //, componentFramerateTrials_("ComponentFramerate", TimeRes::Micro, true, 200, 0.0)
+    //, componentFrameRateTrialsIndexAudio_(componentFramerateTrials_.AddCollecter("Audio"))
+    //, componentFrameRateTrialsIndexUpdate_(componentFramerateTrials_.AddCollecter("Update"))
+    //, componentFrameRateTrialsIndexDraw_(componentFramerateTrials_.AddCollecter("Draw"))
+    //, componentFrameRateTrialsIndexDisplay_(componentFramerateTrials_.AddCollecter("Display"))
     {
         toLogEvents_.reserve(10);
         iStatus_.SetLoopRunning(true);
@@ -61,14 +61,14 @@ namespace game
         {
             ConsumeAndIgnoreStrayEvents();
 
-            misc::TimeTrials framerateTrials("Framerate", TimeRes::Micro, true, 200, 0.0);
+            // misc::TimeTrials framerateTrials("Framerate", TimeRes::Micro, true, 200, 0.0);
 
-            const std::size_t FRAMERATE_COLLECTER_INDEX { framerateTrials.AddCollecter(
-                flags_.ToString()) };
+            // const std::size_t FRAMERATE_COLLECTER_INDEX { framerateTrials.AddCollecter(
+            //    flags_.ToString()) };
 
             while (!iStatus_.IsLoopStopRequested())
             {
-                M_HP_SCOPED_TIME_TRIAL(framerateTrials, FRAMERATE_COLLECTER_INDEX);
+                // M_HP_SCOPED_TIME_TRIAL(framerateTrials, FRAMERATE_COLLECTER_INDEX);
 
                 gui::Display::Instance()->ClearToBlack();
 
@@ -99,8 +99,8 @@ namespace game
                 Display();
             }
 
-            framerateTrials.EndAllContests();
-            componentFramerateTrials_.EndAllContests();
+            // framerateTrials.EndAllContests();
+            // componentFramerateTrials_.EndAllContests();
         }
         catch (const std::exception & EXCEPTION)
         {
@@ -404,7 +404,7 @@ namespace game
 
     void Loop::UpdateTimeStages(const float FRAME_TIME_SEC)
     {
-        M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexUpdate_);
+        // M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexUpdate_);
 
         auto handleTimeUpdate = [FRAME_TIME_SEC](stage::IStagePtr_t iStagePtr) {
             iStagePtr->UpdateTime(FRAME_TIME_SEC);
@@ -417,7 +417,7 @@ namespace game
 
     void Loop::Draw()
     {
-        M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexDraw_);
+        // M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexDraw_);
 
         auto handleDrawing = [](stage::IStagePtr_t iStagePtr) {
             gui::Display::Instance()->DrawStage(iStagePtr);
@@ -441,7 +441,7 @@ namespace game
 
     void Loop::Display()
     {
-        M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexDisplay_);
+        // M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexDisplay_);
         gui::Display::Instance()->DisplayFrameBuffer();
     }
 
@@ -457,7 +457,7 @@ namespace game
 
     void Loop::UpdateTimeAudio(const float FRAME_TIME_SEC)
     {
-        M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexAudio_);
+        // M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexAudio_);
         gui::SoundManager::Instance()->UpdateTime(FRAME_TIME_SEC);
     }
 

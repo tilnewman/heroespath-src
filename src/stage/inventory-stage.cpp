@@ -120,7 +120,7 @@ namespace stage
               SCREEN_HEIGHT_ - (2.0f * INNER_PAD_))
         , CREATURE_IMAGE_POS_LEFT_(INNER_RECT_.left + sfutil::MapByRes(35.0f, 100.0f))
         , CREATURE_IMAGE_SCALE_(sfutil::MapByRes(0.75f, 3.25f))
-        , CREATURE_IMAGE_HEIGHT_MAX_(gui::ContentImage::Dimmension() * CREATURE_IMAGE_SCALE_)
+        , CREATURE_IMAGE_HEIGHT_MAX_(256.0f * CREATURE_IMAGE_SCALE_)
         , LISTBOX_HEIGHT_REDUCTION_(sfutil::MapByRes(100.0f, 400.0f))
         , LISTBOX_SCREEN_EDGE_MARGIN_(sfutil::MapByRes(35.0f, 100.0f))
         , LISTBOX_BETWEEN_SPACER_(sfutil::MapByRes(65.0f, 200.0f))
@@ -142,11 +142,7 @@ namespace stage
         , DESCBOX_TEXT_COLOR_(LISTBOX_COLOR_TITLE_ - sf::Color(50, 50, 50, 0))
         , DESCBOX_TEXT_SIZE_(gui::FontManager::Instance()->Size_Largeish())
         , LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
-        , stageTitle_(
-              "media-images-buttons-gui-inventory-normal",
-              true,
-              0.0f,
-              sfutil::ScreenRatioToPixelsVert(0.12f))
+        , stageTitle_(gui::MenuImage::Inventory, true)
         , CREATURE_IMAGE_POS_TOP_(sfutil::Bottom(stageTitle_.Region()))
         , LISTBOX_POS_TOP_(
               (CREATURE_IMAGE_POS_TOP_ + CREATURE_IMAGE_HEIGHT_MAX_)
@@ -174,8 +170,8 @@ namespace stage
               sfutil::color::GrayDarker,
               gui::Justified::Left)
         , creaturePtr_(INVENTORY_CREATURE_PTR)
-        , bottomSymbol_(0.75f, true, sf::Color::White)
-        , paperBgCachedTexture_("media-images-backgrounds-paper-2")
+        , bottomSymbol_(true, 0.75f)
+        , paperBgCachedTexture_("media-image-background-paper-large-gold")
         , paperBgSprite_(paperBgCachedTexture_.Get())
         , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("InventoryStage's", true))
         , creatureSprite_()
@@ -1492,32 +1488,32 @@ namespace stage
     {
         Setup_SortButton(
             "InventoryStage's_EquippedListbox_SortByName_",
-            "media-images-misc-abc",
+            "media-image-misc-abc",
             eqSortButtonNameUPtr_);
 
         Setup_SortButton(
             "InventoryStage's_EquippedListbox_SortByPrice_",
-            "media-images-misc-money-bag",
+            "media-image-misc-money-bag",
             eqSortButtonPriceUPtr_);
 
         Setup_SortButton(
             "InventoryStage's_EquippedListbox_SortByWeight_",
-            "media-images-misc-weight",
+            "media-image-misc-weight",
             eqSortButtonWeightUPtr_);
 
         Setup_SortButton(
             "InventoryStage's_UnequippedListbox_SortByName_",
-            "media-images-misc-abc",
+            "media-image-misc-abc",
             unEqSortButtonNameUPtr_);
 
         Setup_SortButton(
             "InventoryStage's_UnequippedListbox_SortByPrice_",
-            "media-images-misc-money-bag",
+            "media-image-misc-money-bag",
             unEqSortButtonPriceUPtr_);
 
         Setup_SortButton(
             "InventoryStage's_UnequippedListbox_SortByWeight_",
-            "media-images-misc-weight",
+            "media-image-misc-weight",
             unEqSortButtonWeightUPtr_);
 
         const auto THREE_ICONS_WIDTH { eqSortButtonNameUPtr_->GetEntityRegion().width

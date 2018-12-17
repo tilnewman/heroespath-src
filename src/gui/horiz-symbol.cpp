@@ -12,6 +12,8 @@
 #include "horiz-symbol.hpp"
 
 #include "gui/display.hpp"
+#include "gui/menu-image-enum.hpp"
+#include "misc/config-file.hpp"
 #include "sfutil/fitting.hpp"
 #include "sfutil/vertex.hpp"
 
@@ -23,16 +25,21 @@ namespace heroespath
 namespace gui
 {
 
-    const sf::Color BottomSymbol::DEFAULT_COLOR_ { sf::Color(255, 255, 255, 127) };
-    const std::string BottomSymbol::IMAGE_PATH_KEY_ { "media-images-gui-accents-symbol1" };
+    const float BottomSymbol::DEFAULT_HEIGHT_SCREEN_RATIO_ { 0.137f };
+    const float BottomSymbol::VISIBLE_VERT_POS_RATIO_ { 0.575f };
+    const sf::Color BottomSymbol::DEFAULT_COLOR_ { 255, 255, 255, 16 };
 
     BottomSymbol::BottomSymbol(
-        const float VERT_SCALE, const bool WILL_INVERT_COLOR, const sf::Color & COLOR)
-        : cachedTexture_(IMAGE_PATH_KEY_, MakeImageOpt(WILL_INVERT_COLOR))
+        const bool WILL_INVERT_COLOR_TO_WHITE,
+        const float VERT_RESCALE,
+        const sf::Color & COLOR,
+        const float HEIGHT_SCREEN_RATIO)
+        : IMAGE_CONFIG_FILE_KEY_(MenuImage::ConfigFileKey(MenuImage::SymbolBottom))
+        , cachedTexture_(IMAGE_CONFIG_FILE_KEY_, MakeImageOpt(WILL_INVERT_COLOR_TO_WHITE))
         , sprites_()
         , region_(0.0f, 0.0f, 0.0f, 0.0f)
     {
-        Setup(VERT_SCALE, WILL_INVERT_COLOR, COLOR);
+        Setup(WILL_INVERT_COLOR_TO_WHITE, VERT_RESCALE, COLOR, HEIGHT_SCREEN_RATIO);
     }
 
     void BottomSymbol::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -43,24 +50,37 @@ namespace gui
         }
     }
 
+    float BottomSymbol::VisibleVerticalCenter() const
+    {
+        return (region_.top + (region_.height * VISIBLE_VERT_POS_RATIO_));
+    }
+
     void BottomSymbol::Setup(
-        const float VERT_SCALE, const bool WILL_INVERT_COLOR, const sf::Color & COLOR)
+        const bool WILL_INVERT_COLOR_TO_WHITE,
+        const float VERT_RESCALE,
+        const sf::Color & COLOR,
+        const float HEIGHT_SCREEN_RATIO_PARAM)
     {
         sprites_.clear();
 
-        const auto NEW_IMAGE_OPT { MakeImageOpt(WILL_INVERT_COLOR) };
+        const auto NEW_IMAGE_OPT { MakeImageOpt(WILL_INVERT_COLOR_TO_WHITE) };
+
         if (cachedTexture_.Options().option_enum != NEW_IMAGE_OPT)
         {
-            cachedTexture_ = CachedTexture(IMAGE_PATH_KEY_, NEW_IMAGE_OPT);
+            cachedTexture_ = CachedTexture(IMAGE_CONFIG_FILE_KEY_, NEW_IMAGE_OPT);
         }
 
-        const sf::FloatRect TEXTURE_REGION(
-            sf::Vector2f(0.0f, 0.0f), sf::Vector2f(cachedTexture_.Get().getSize()));
+        const auto TEXTURE_RECT { misc::ConfigFile::Instance()->GetTextureRect(
+            IMAGE_CONFIG_FILE_KEY_) };
 
         const auto FULL_SCREEN_RECT { gui::Display::Instance()->FullScreenRect() };
 
+        const auto HEIGHT_SCREEN_RATIO_FINAL { (
+            (HEIGHT_SCREEN_RATIO_PARAM > 0.0f) ? HEIGHT_SCREEN_RATIO_PARAM
+                                               : DEFAULT_HEIGHT_SCREEN_RATIO_) };
+
         const sf::Vector2f IMAGE_SIZE_CONTRAINTS_V(
-            0.0f, (sfutil::ScreenRatioToPixelsVert(0.137f) * VERT_SCALE));
+            0.0f, (sfutil::ScreenRatioToPixelsVert(HEIGHT_SCREEN_RATIO_FINAL) * VERT_RESCALE));
 
         const auto POS_TOP { (FULL_SCREEN_RECT.height - IMAGE_SIZE_CONTRAINTS_V.y) };
 
@@ -72,8 +92,8 @@ namespace gui
 
         while ((posMostLeft > 0.0f) && (posMostRight < FULL_SCREEN_RECT.width))
         {
-            sf::Sprite spriteLeft(cachedTexture_.Get());
-            sf::Sprite spriteRight(cachedTexture_.Get());
+            sf::Sprite spriteLeft(cachedTexture_.Get(), TEXTURE_RECT);
+            sf::Sprite spriteRight(cachedTexture_.Get(), TEXTURE_RECT);
 
             sfutil::Fit(spriteLeft, IMAGE_SIZE_CONTRAINTS_V);
             sfutil::Fit(spriteRight, IMAGE_SIZE_CONTRAINTS_V);
@@ -98,6 +118,8 @@ namespace gui
         }
 
         region_ = sfutil::MinimallyEnclosing(sprites_);
+
+        Color(COLOR);
     }
 
     const sf::Color BottomSymbol::Color() const
@@ -136,9 +158,10 @@ namespace gui
         region_.top += VERT;
     }
 
-    gui::ImageOpt::Enum BottomSymbol::MakeImageOpt(const bool WILL_INVERT_COLOR) const
+    gui::ImageOpt::Enum BottomSymbol::MakeImageOpt(const bool WILL_INVERT_COLOR_TO_WHITE) const
     {
-        return ImageOpt::Default | ((WILL_INVERT_COLOR) ? ImageOpt::Invert : ImageOpt::None);
+        return ImageOpt::Default
+            | ((WILL_INVERT_COLOR_TO_WHITE) ? ImageOpt::Invert : ImageOpt::None);
     }
 
 } // namespace gui

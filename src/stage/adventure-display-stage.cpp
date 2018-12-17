@@ -36,8 +36,8 @@ namespace stage
     AdventureDisplayStage::AdventureDisplayStage()
         : StageBase("AdventureDisplay", {})
         , interactionManager_()
-        , stageTitle_("", true, 0.0f, sfutil::ScreenRatioToPixelsVert(0.12f))
-        , bottomImage_(0.75f, true, sf::Color::White)
+        , stageTitle_(gui::MenuImage::Count, true)
+        , bottomImage_(true, 0.75f)
         , MAP_OUTER_REGION_(
               sfutil::ScreenRatioToPixelsHoriz(0.0586f),
               sfutil::Bottom(stageTitle_.Region()) - sfutil::ScreenRatioToPixelsVert(0.0278f),
@@ -47,7 +47,8 @@ namespace stage
         , mapUPtr_(std::make_unique<map::Map>(MAP_INNER_REGION_, interactionManager_))
         , characterListUPtr_(std::make_unique<AdventureCharacterList>(misc::MakeNotNull(this)))
         , bgCachedTexture_(
-              "media-images-backgrounds-paper-2", gui::ImageOpt::Default | gui::ImageOpt::FlipVert)
+              "media-image-background-paper-large-gold",
+              gui::ImageOpt::Default | gui::ImageOpt::FlipVert)
         , bgSprite_(bgCachedTexture_.Get())
         , moveTimerSec_(0.0f)
         , wasPressedLeft_(false)

@@ -235,7 +235,7 @@ namespace creature
     const std::string role::Desc(const role::Enum ENUM)
     {
         std::ostringstream ss;
-        ss << "heroespath-creature-role-" << ToString(ENUM) << "-desc";
+        ss << "creature-role-" << ToString(ENUM) << "-desc";
         return misc::ConfigFile::Instance()->Value(ss.str());
     }
 

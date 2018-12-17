@@ -114,7 +114,7 @@ namespace creature
     const std::string Conditions::Desc(const Conditions::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-creature-condition-" << ToString(ENUM) << "-desc";
+        keySS << "creature-condition-" << ToString(ENUM) << "-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
@@ -129,7 +129,7 @@ namespace creature
 
         if (imageDir.empty())
         {
-            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-conditions-dir");
+            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-image-condition-dir");
         }
 
         return imageDir;

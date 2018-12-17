@@ -74,8 +74,7 @@ namespace stage
         {
             DisplayMeasurements(const float COINS_IMAGE_BOTTOM, const float BOTTOM_SYMBOL_HEIGHT);
 
-            float screenWidth;
-            float screenHeight;
+            sf::Vector2f screenSizeV;
             float innerPad;
             sf::FloatRect innerRect;
             float listboxScreenEdgeMargin;
@@ -123,7 +122,7 @@ namespace stage
 
     public:
         explicit TreasureDisplayStage();
-        virtual ~TreasureDisplayStage() = default;
+        virtual ~TreasureDisplayStage();
 
         TreasureDisplayStage(const TreasureDisplayStage &) = delete;
         TreasureDisplayStage(TreasureDisplayStage &&) = delete;
@@ -138,10 +137,7 @@ namespace stage
             const gui::ImageTextEntity::Callback_t::Packet_t &,
             const std::string & PACKET_DESCRIPTION) override;
 
-        void SetModelStage(const TreasureStagePtr_t treasureStagePtr)
-        {
-            treasureStagePtrOpt_ = treasureStagePtr;
-        }
+        void SetModelStage(const TreasureStagePtr_t treasureStagePtr);
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
@@ -248,7 +244,7 @@ namespace stage
 
         float CalculateHorizOffscreenPos() const
         {
-            return CreateDisplayMeasurements().screenWidth + 1.0f;
+            return CreateDisplayMeasurements().screenSizeV.x + 1.0f;
         }
 
         float CalculateInventoryTextPosLeft() const;
@@ -298,7 +294,7 @@ namespace stage
         static const float ITEM_DETAIL_TIMEOUT_SEC_;
 
         TreasureStagePtrOpt_t treasureStagePtrOpt_;
-        gui::StageTitle titleImage_;
+        gui::StageTitle stageTitle_;
         gui::BottomSymbol bottomImage_;
         gui::OuroborosUPtr_t ouroborosUPtr_;
         treasure::StageMoverUPtr_t stageMoverUPtr_;

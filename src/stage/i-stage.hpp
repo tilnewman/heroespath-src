@@ -100,10 +100,7 @@ namespace stage
         // all of these testing functions are temp until all tests are moved to unit tests
         virtual void TestingStrAppend(const std::string &) = 0;
         virtual void TestingStrIncrement(const std::string &) = 0;
-
-        virtual void
-            TestingImageSet(const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE = false)
-            = 0;
+        virtual void TestingImageSet(const std::string & PATH_STR) = 0;
 
         virtual void PerformNextTest() = 0;
 

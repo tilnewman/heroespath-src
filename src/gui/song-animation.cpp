@@ -137,12 +137,12 @@ namespace gui
             , emitTimerDurationSec_(0.0f)
             , durationTimerSec_(0.0f)
             , isFinished_(false)
-            , noteCachedTexture1_("media-images-misc-note1")
-            , noteCachedTexture2_("media-images-misc-note2")
-            , noteCachedTexture3_("media-images-misc-note3")
-            , noteCachedTexture4_("media-images-misc-note4")
-            , noteCachedTexture5_("media-images-misc-note5")
-            , noteCachedTexture6_("media-images-misc-note6")
+            , noteCachedTexture1_("media-image-misc-note1")
+            , noteCachedTexture2_("media-image-misc-note2")
+            , noteCachedTexture3_("media-image-misc-note3")
+            , noteCachedTexture4_("media-image-misc-note4")
+            , noteCachedTexture5_("media-image-misc-note5")
+            , noteCachedTexture6_("media-image-misc-note6")
             , noteVec_()
         {
             noteVec_.reserve(static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);

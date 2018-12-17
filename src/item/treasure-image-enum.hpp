@@ -30,11 +30,10 @@ namespace item
             Count
         };
 
-        static const std::string ToString(const TreasureImage::Enum);
-        static const std::string ToImageKey(const TreasureImage::Enum);
+        static const std::string ToString(const Enum);
+        static const std::string ImageConfigKey(const Enum);
 
-        static const std::string
-            ToContainerName(const TreasureImage::Enum, const bool WILL_CAPITALIZE = false);
+        static const std::string ToContainerName(const Enum, const bool WILL_CAPITALIZE = false);
     };
 
 } // namespace item

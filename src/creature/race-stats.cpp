@@ -32,7 +32,7 @@ namespace creature
                 const auto NEXT_ENUM { static_cast<race::Enum>(i) };
                 const auto NEXT_ENUM_STR { race::ToString(NEXT_ENUM) };
 
-                const auto NEXT_KEY_STR { "heroespath-creature-race-stat-modifiers-"
+                const auto NEXT_KEY_STR { "creature-race-stat-modifiers-"
                                           + NEXT_ENUM_STR };
 
                 const auto STAT_STR { misc::ConfigFile::Instance()->Value(NEXT_KEY_STR) };

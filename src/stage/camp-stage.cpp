@@ -55,14 +55,14 @@ namespace stage
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
               gui::GuiFont::Handwriting })
-        , stageTitle_("")
-        , campfireCachedTexture_("media-images-campfire")
+        , stageTitle_(gui::MenuImage::Count)
+        , campfireCachedTexture_("media-image-campfire")
         , campfireSprite_(campfireCachedTexture_.Get())
         , backgroundBox_(
               "CampStage'sBackground",
               StageRegion(),
               gui::BoxEntityInfo(gui::CachedTexture(
-                  "media-images-backgrounds-tile-darkknot",
+                  "media-image-background-tile-darkknot",
                   gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
         , fireAnimUPtr_()
         , showNewGamePopup1_(false)
@@ -70,7 +70,7 @@ namespace stage
         , showNewGamePopup3_(false)
         , showNewGamePopup4_(false)
         , ouroborosUPtr_()
-        , botSymbol_()
+        , bottomSymbol_()
     {
         gui::SoundManager::Instance()->MusicStart(
             { gui::music::FireOutdoor1, gui::music::FireOutdoor2 });
@@ -142,7 +142,7 @@ namespace stage
         sfutil::FitAndCenterTo(campfireSprite_, CAMPFIRE_CONSTRAINING_REGION);
 
         // campfire animation
-        fireAnimUPtr_ = gui::AnimationFactory::Make(gui::Animations::Inferno, 1.2f, 0.05f);
+        fireAnimUPtr_ = gui::AnimationFactory::Make(gui::Animations::Inferno, 1.2f);
 
         const auto CAMPFIRE_ANIM_POS_V { sfutil::CenterToCopy(
             sfutil::Size(fireAnimUPtr_->GetEntityRegion()), CAMPFIRE_CONSTRAINING_REGION) };
@@ -159,7 +159,7 @@ namespace stage
         target.draw(backgroundBox_, states);
         target.draw(stageTitle_, states);
         target.draw(campfireSprite_, states);
-        target.draw(botSymbol_, states);
+        target.draw(bottomSymbol_, states);
         StageBase::draw(target, states);
     }
 
@@ -224,14 +224,14 @@ namespace stage
     const std::string CampStage::ComposeNewGamePopupText1()
     {
         std::ostringstream ss;
-        ss << misc::ConfigFile::Instance()->Value("heroespath-intro-text1");
+        ss << misc::ConfigFile::Instance()->Value("intro-text1");
         return ss.str();
     }
 
     const std::string CampStage::ComposeNewGamePopupText2()
     {
         std::ostringstream ss;
-        ss << misc::ConfigFile::Instance()->Value("heroespath-intro-text2");
+        ss << misc::ConfigFile::Instance()->Value("intro-text2");
 
         const auto PLAYERS_PVEC(creature::Algorithms::Players());
 
@@ -248,7 +248,7 @@ namespace stage
             ss << " where " << creature::Algorithms::Names(humansAndGnomesPVec) << " call home";
         }
 
-        ss << ".\n\n" << misc::ConfigFile::Instance()->Value("heroespath-intro-text3");
+        ss << ".\n\n" << misc::ConfigFile::Instance()->Value("intro-text3");
 
         auto pixiesAndBeastmastersPVec(
             creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Pixie));
@@ -264,7 +264,7 @@ namespace stage
             ss << " such as " << creature::Algorithms::Names(pixiesAndBeastmastersPVec) << ",";
         }
 
-        ss << " " << misc::ConfigFile::Instance()->Value("heroespath-intro-text4");
+        ss << " " << misc::ConfigFile::Instance()->Value("intro-text4");
         return ss.str();
     }
 
@@ -361,11 +361,10 @@ namespace stage
         }
 
         std::ostringstream ss;
-        ss << misc::ConfigFile::Instance()->Value("heroespath-intro-text5")
-           << charToUsePtrOpt.value()->Name() << " "
-           << misc::ConfigFile::Instance()->Value("heroespath-intro-text6") << "  "
+        ss << misc::ConfigFile::Instance()->Value("intro-text5") << charToUsePtrOpt.value()->Name()
+           << " " << misc::ConfigFile::Instance()->Value("intro-text6") << "  "
            << creature::sex::HeSheIt(charToUsePtrOpt.value()->Sex(), false) << " "
-           << misc::ConfigFile::Instance()->Value("heroespath-intro-text7") << " "
+           << misc::ConfigFile::Instance()->Value("intro-text7") << " "
            << creature::sex::HimHerIt(charToUsePtrOpt.value()->Sex(), false) << ", but ";
 
         const auto BEAST_PVEC { creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
@@ -444,7 +443,7 @@ namespace stage
             }
         }
 
-        ss << " arrived.\n\n" << misc::ConfigFile::Instance()->Value("heroespath-intro-text8");
+        ss << " arrived.\n\n" << misc::ConfigFile::Instance()->Value("intro-text8");
 
         return ss.str();
     }
@@ -452,7 +451,7 @@ namespace stage
     const std::string CampStage::ComposeNewGamePopupText4()
     {
         std::ostringstream ss;
-        ss << misc::ConfigFile::Instance()->Value("heroespath-intro-text9");
+        ss << misc::ConfigFile::Instance()->Value("intro-text9");
         return ss.str();
     }
 

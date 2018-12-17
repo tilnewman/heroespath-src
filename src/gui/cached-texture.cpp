@@ -30,8 +30,11 @@ namespace gui
         , options_(CT.options_)
         , texturePtr_(CT.texturePtr_)
     {
-        // this call is required because copying must always increment the ref_count
-        TextureCache::Instance()->AddByPath(CT.path_, CT.options_);
+        if (path_.empty() == false)
+        {
+            // this call is required because copying must always increment the ref_count
+            TextureCache::Instance()->AddByPath(CT.path_, CT.options_);
+        }
     }
 
     CachedTexture::CachedTexture(CachedTexture && ct)

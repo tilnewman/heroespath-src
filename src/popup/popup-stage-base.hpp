@@ -32,13 +32,13 @@ namespace popup
         , public gui::TextButton::Callback_t::IHandler_t
     {
     public:
+        explicit PopupStageBase(const PopupInfo & POPUP_INFO);
+        virtual ~PopupStageBase();
+
         PopupStageBase(const PopupStageBase &) = delete;
         PopupStageBase(PopupStageBase &&) = delete;
         PopupStageBase & operator=(const PopupStageBase &) = delete;
         PopupStageBase & operator=(PopupStageBase &&) = delete;
-
-        explicit PopupStageBase(const PopupInfo & POPUP_INFO);
-        virtual ~PopupStageBase();
 
         const std::string HandleCallback(
             const gui::SliderBar::Callback_t::Packet_t &, const std::string &) override
@@ -51,13 +51,9 @@ namespace popup
             const std::string & PACKET_DESCRIPTION) override;
 
         void Setup() override;
-
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
-
         void DrawRedX(sf::RenderTarget &, sf::RenderStates) const;
-
         bool KeyRelease(const sf::Event::KeyEvent &) override;
-
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
     protected:
@@ -67,15 +63,12 @@ namespace popup
         virtual bool HandleSelect();
 
         virtual void SetupOuterAndInnerRegion();
-
         void SetupForFullScreenWithBorderRatio(const float BORDER_RATIO);
-
         virtual void SetupSliderbar();
-
         void PlayValidKeypressSoundEffect() const;
         void PlayInvalidKeypressSoundEffect() const;
-
         void EndKeepAliveTimer();
+        const gui::ImageOptions AccentImageOptions() const;
 
     private:
         void SetupVariousButtonPositionValues();
@@ -97,6 +90,7 @@ namespace popup
 
     protected:
         PopupInfo popupInfo_;
+        const std::string BACKGROUND_IMAGE_CONFIG_KEY_;
         sf::FloatRect innerRegion_;
         gui::CachedTexture backgroundTexture_;
         gui::TextRegionUPtr_t textRegionUPtr_;

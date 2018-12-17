@@ -296,7 +296,7 @@ namespace creature
     const std::string race::Desc(const race::Enum ENUM)
     {
         std::ostringstream ss;
-        ss << "heroespath-creature-race-desc-" << ToString(ENUM);
+        ss << "creature-race-desc-" << ToString(ENUM);
         return misc::ConfigFile::Instance()->Value(ss.str());
     }
 
@@ -2281,75 +2281,76 @@ namespace creature
             case race::Halfling:
             case race::Skeleton:
             {
-                return { "media-images-bones-skull-humanoid",
-                         "media-images-bones-skull-humanoid-pile-1",
-                         "media-images-bones-skull-humanoid-pile-2",
-                         "media-images-bones-skull-humanoid-pile-3" };
+                return { "media-image-bone-pile-skull-humanoid",
+                         "media-image-bone-pile-skull-humanoid-pile-1",
+                         "media-image-bone-pile-skull-humanoid-pile-2",
+                         "media-image-bone-pile-skull-humanoid-pile-3" };
             }
 
             case race::Wyvern:
             case race::Dragon:
             case race::Hydra:
             {
-                return { "media-images-bones-skull-dragon-1",
-                         "media-images-bones-skull-dragon-2",
-                         "media-images-bones-skull-dragon-3",
-                         "media-images-bones-skull-dragon-4" };
+                return { "media-image-bone-pile-skull-dragon-1",
+                         "media-image-bone-pile-skull-dragon-2",
+                         "media-image-bone-pile-skull-dragon-3",
+                         "media-image-bone-pile-skull-dragon-4" };
             }
 
             case race::Orc:
             case race::Goblin:
             {
-                return { "media-images-bones-skull-goblin" };
+                return { "media-image-bone-pile-skull-goblin" };
             }
 
             case race::Pug:
             case race::Newt:
             {
-                return { "media-images-bones-skull-animal-2" };
+                return { "media-image-bone-pile-skull-animal-2" };
             }
 
             case race::Naga:
             case race::LizardWalker:
             {
                 // the orc skull looked better as a naga/lizard skull
-                return { "media-images-bones-skull-orc" };
+                return { "media-image-bone-pile-skull-orc" };
             }
 
             case race::Bog:
             {
-                return { "media-images-bones-skull-bog" };
+                return { "media-image-bone-pile-skull-bog" };
             }
 
             case race::Spider:
             case race::CaveCrawler:
             {
-                return { "media-images-bones-cave-crawler" };
+                return { "media-image-bone-pile-cave-crawler" };
             }
 
             case race::Minotaur:
             {
-                return { "media-images-bones-skull-minotaur" };
+                return { "media-image-bone-pile-skull-minotaur" };
             }
 
             case race::Plant:
             {
-                return { "media-images-bones-skull-animal-1" };
+                return { "media-image-bone-pile-skull-animal-1" };
             }
 
             case race::Beetle:
             {
-                return { "media-images-bones-beetle" };
+                return { "media-image-bone-pile-beetle" };
             }
 
             case race::Demon:
             {
-                return { "media-images-bones-skull-demon" };
+                return { "media-image-bone-pile-skull-demon" };
             }
 
+            case race::Harpy:
             case race::Griffin:
             {
-                return { "media-images-bones-griffin" };
+                return { "media-image-bone-pile-griffin" };
             }
 
             case race::Boar:
@@ -2357,7 +2358,7 @@ namespace creature
             case race::Ramonaut:
             case race::Wereboar:
             {
-                return { "media-images-bones-skull-animal-3" };
+                return { "media-image-bone-pile-skull-animal-3" };
             }
 
             case race::Wolfen:
@@ -2365,18 +2366,18 @@ namespace creature
             case race::Werebear:
             case race::Werewolf:
             {
-                return { "media-images-bones-wolfen" };
+                return { "media-image-bone-pile-wolfen" };
             }
 
             case race::Serpent:
             case race::Cobra:
             {
-                return { "media-images-bones-skull-snake" };
+                return { "media-image-bone-pile-skull-snake" };
             }
 
             case race::Werecat:
             {
-                return { "media-images-bones-cat" };
+                return { "media-image-bone-pile-cat" };
             }
 
             case race::Ogre:
@@ -2384,23 +2385,18 @@ namespace creature
             case race::Troll:
             case race::Giant:
             {
-                return { "media-images-bones-skull-giant" };
+                return { "media-image-bone-pile-skull-giant" };
             }
 
             case race::Bat:
             case race::Werebat:
             {
-                return { "media-images-bones-bat" };
-            }
-
-            case race::Harpy:
-            {
-                return { "media-images-bones-harpy" };
+                return { "media-image-bone-pile-bat" };
             }
 
             case race::ThreeHeadedHound:
             {
-                return { "media-images-bones-three-headed-hound" };
+                return { "media-image-bone-pile-three-headed-hound" };
             }
 
             case race::Count:

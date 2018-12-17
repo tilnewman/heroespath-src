@@ -91,7 +91,7 @@ namespace stage
               gui::GuiFont::Number,
               gui::GuiFont::DefaultBoldFlavor,
               gui::GuiFont::Handwriting })
-        , displayStagePtrOpt_(boost::none)
+        , displayStagePtrOpt_()
         , treasureImageType_(item::TreasureImage::Count)
         , itemCacheHeld_()
         , itemCacheLockbox_()
@@ -110,6 +110,11 @@ namespace stage
         item::ItemWarehouse::Access().Free(itemCacheHeld_.items_pvec);
         item::ItemWarehouse::Access().Free(itemCacheLockbox_.items_pvec);
         StageBase::ClearAllEntities();
+    }
+
+    void TreasureStage::SetViewStage(TreasureDisplayStagePtr_t viewStagePtr)
+    {
+        displayStagePtrOpt_ = viewStagePtr;
     }
 
     const std::string TreasureStage::HandleCallback(
@@ -382,7 +387,7 @@ namespace stage
     void TreasureStage::Setup()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (!displayStagePtrOpt_),
+            (displayStagePtrOpt_),
             "stage::TreasureStage::Setup() called but displayStagePtrOpt_ was invalid.  It "
             "should be set before this function is called by stage::StageFactory::Make().");
 

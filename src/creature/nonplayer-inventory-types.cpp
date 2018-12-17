@@ -383,7 +383,7 @@ namespace creature
                 const auto NEXT_WEALTH_TYPE_NAME { wealth_type::ToString(NEXT_WEALTH_TYPE) };
 
                 std::ostringstream ss;
-                ss << "heroespath-wealthtype-chance-" << RANK_CLASS_STR << "-"
+                ss << "wealthtype-chance-" << RANK_CLASS_STR << "-"
                    << NEXT_WEALTH_TYPE_NAME << "-one-in";
 
                 const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(ss.str()) };
@@ -461,13 +461,13 @@ namespace creature
         collector_type::Enum collector_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             const auto CHANCE_BASE(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-nonplayer-ownershipprofile-collectortype-chance-base"));
+                "nonplayer-ownershipprofile-collectortype-chance-base"));
 
             // adjust for race
             const auto RACE_STR { race::ToString(CHARACTER_PTR->Race()) };
 
             const auto RACE_KEY {
-                "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-race-"
+                "nonplayer-ownershipprofile-collectortype-chance-adjustment-race-"
                 + RACE_STR
             };
 
@@ -498,7 +498,7 @@ namespace creature
             const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
 
             const auto ROLE_KEY {
-                "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
+                "nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
                 + ROLE_STR
             };
 
@@ -521,7 +521,7 @@ namespace creature
             // enforce min
             {
                 const float CHANCE_MIN(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "heroespath-nonplayer-ownershipprofile-collectortype-chance-minimum"));
+                    "nonplayer-ownershipprofile-collectortype-chance-minimum"));
 
                 if (chanceMinimalist < CHANCE_MIN)
                 {
@@ -547,7 +547,7 @@ namespace creature
             // enforce max
             {
                 const float CHANCE_MAX(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "heroespath-nonplayer-ownershipprofile-collectortype-chance-maximum"));
+                    "nonplayer-ownershipprofile-collectortype-chance-maximum"));
 
                 if (chanceMinimalist > CHANCE_MAX)
                 {
@@ -635,7 +635,7 @@ namespace creature
                 const auto RACE_STR(race::ToString(CHARACTER_PTR->Race()));
 
                 const auto RACE_KEY {
-                    "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-" + RACE_STR
+                    "nonplayer-ownershipprofile-ownsmagictype-chance-race-" + RACE_STR
                 };
 
                 const auto RACE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
@@ -678,11 +678,11 @@ namespace creature
                 const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
 
                 std::ostringstream ss;
-                ss << "heroespath-nonplayer-ownershipprofile-"
+                ss << "nonplayer-ownershipprofile-"
                    << "ownsmagictype-chance-adjustment-Rarely-role-" << ROLE_STR;
 
                 const auto ROLE_KEY {
-                    "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-"
+                    "nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-"
                     + ROLE_STR
                 };
 
@@ -706,7 +706,7 @@ namespace creature
             // enforce min
             {
                 const float MIN(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-min"));
+                    "nonplayer-ownershipprofile-ownsmagictype-chance-min"));
 
                 if (chanceRarely < MIN)
                 {
@@ -727,7 +727,7 @@ namespace creature
             // enforce max
             {
                 const float MAX(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-max"));
+                    "nonplayer-ownershipprofile-ownsmagictype-chance-max"));
 
                 if (chanceRarely > MAX)
                 {
@@ -805,13 +805,13 @@ namespace creature
         complexity_type::Enum complexity_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             const auto RACE_COMPLEXITY_STR { misc::ConfigFile::Instance()->Value(
-                "heroespath-nonplayer-ownershipprofile-complexitytype-race-"
+                "nonplayer-ownershipprofile-complexitytype-race-"
                 + race::ToString(CHARACTER_PTR->Race())) };
 
             if (RACE_COMPLEXITY_STR == "based-on-role")
             {
                 return EnumUtil<complexity_type>::FromString(misc::ConfigFile::Instance()->Value(
-                    "heroespath-nonplayer-ownershipprofile-complexitytype-role-"
+                    "nonplayer-ownershipprofile-complexitytype-role-"
                     + role::ToString(CHARACTER_PTR->Role())));
             }
             else

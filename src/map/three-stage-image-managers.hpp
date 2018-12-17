@@ -9,7 +9,6 @@
 //
 // three-stage-image-managers.hpp
 //
-#include "gui/animation-base.hpp"
 #include "gui/cached-texture.hpp"
 #include "map/map-anim.hpp"
 #include "map/map-tile-draw.hpp"
@@ -24,6 +23,11 @@
 
 namespace heroespath
 {
+namespace gui
+{
+    class Animation;
+    using AnimationUPtr_t = std::unique_ptr<Animation>;
+} // namespace gui
 namespace map
 {
 

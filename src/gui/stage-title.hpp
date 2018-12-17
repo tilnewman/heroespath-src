@@ -10,6 +10,7 @@
 // stage-title.hpp
 //
 #include "gui/cached-texture.hpp"
+#include "gui/menu-image-enum.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -24,29 +25,37 @@ namespace gui
     class StageTitle : public sf::Drawable
     {
     public:
+        explicit StageTitle(
+            const MenuImage::Enum MENU_IMAGE = MenuImage::Count,
+            const bool WILL_INVERT_SYMBOL_TO_WHITE = true,
+            const float SYMBOL_HEIGHT_SCREEN_RATIO = DEFAULT_SYMBOL_HEIGHT_SCREEN_RATIO_,
+            const float SYMBOL_TO_TITLE_HEIGHT_RATIO = DEFAULT_SYMBOL_TO_TITLE_HEIGHT_RATIO_,
+            const float SYMBOL_VERT_POS_SCREEN_RATIO = DEFAULT_SYMBOL_VERT_POS_SCREEN_RATIO_);
+
         StageTitle(const StageTitle &) = delete;
         StageTitle(StageTitle &&) = delete;
         StageTitle & operator=(const StageTitle &) = delete;
         StageTitle & operator=(StageTitle &&) = delete;
 
-        explicit StageTitle(
-            const std::string & TITLE_IMAGE_PATH_KEY = "",
-            const bool WILL_INVERT_SYMBOL = false,
-            const float SIZE_HORIZ = 0.0f,
-            const float SIZE_VERT = 0.0f);
-
-        void SetSizeAndReCenter(const float SIZE_HORIZ = 0.0f, const float SIZE_VERT = 0.0f);
+        // for all floats: <=0 means "use default"
+        void SetSizeAndReCenter(
+            const float SYMBOL_HEIGHT_SCREEN_RATIO = DEFAULT_SYMBOL_HEIGHT_SCREEN_RATIO_,
+            const float SYMBOL_TO_TITLE_HEIGHT_RATIO = DEFAULT_SYMBOL_TO_TITLE_HEIGHT_RATIO_,
+            const float SYMBOL_VERT_POS_SCREEN_RATIO = DEFAULT_SYMBOL_VERT_POS_SCREEN_RATIO_);
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
-
         const sf::FloatRect Region() const { return symbolSprite_.getGlobalBounds(); }
-
         float DefaultBottomPad() const;
+        float VisibleVertPosRatio() const { return VISIBLE_VERT_POS_RATIO_; }
+
+    public:
+        static const float DEFAULT_SYMBOL_HEIGHT_SCREEN_RATIO_;
+        static const float DEFAULT_SYMBOL_TO_TITLE_HEIGHT_RATIO_;
+        static const float DEFAULT_SYMBOL_VERT_POS_SCREEN_RATIO_;
+        static const float DEFAULT_BOTTOM_PAD_AS_SYMBOL_HEIGHT_RATIO_;
+        static const float VISIBLE_VERT_POS_RATIO_;
 
     private:
-        static const float DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_;
-        static const float TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_;
-        //
         gui::CachedTexture symbolCachedTexture_;
         sf::Sprite symbolSprite_;
         gui::CachedTextureOpt_t titleCachedTextureOpt_;

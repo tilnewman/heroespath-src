@@ -32,7 +32,7 @@ namespace interact
             Interact::Lock,
             InteractionBase::MakeTextInfo("This door is locked.", Text::System),
             ButtonVec_t({ Button(Buttons::Unlock), Button(Buttons::Ignore) }),
-            "media-images-misc-door-locked",
+            "media-image-misc-door-locked",
             gui::sound_effect::DoorLocked)
         , transition_(TRANSITION)
     {}

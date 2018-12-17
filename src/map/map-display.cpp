@@ -51,12 +51,12 @@ namespace map
         , mapRectI_()
         , mapTileRectI_()
         , tileSizeVI_()
-        , ANIM_SFX_DISTANCE_MIN_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-              "heroespath-sound-map-animsfx-distance-min"))
-        , ANIM_SFX_DISTANCE_MAX_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-              "heroespath-sound-map-animsfx-distance-max"))
+        , ANIM_SFX_DISTANCE_MIN_(
+              misc::ConfigFile::Instance()->ValueOrDefault<float>("sound-map-animsfx-distance-min"))
+        , ANIM_SFX_DISTANCE_MAX_(
+              misc::ConfigFile::Instance()->ValueOrDefault<float>("sound-map-animsfx-distance-max"))
         , ANIM_SFX_VOLUME_MIN_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-              "heroespath-sound-map-animsfx-min-volume-ratio"))
+              "sound-map-animsfx-min-volume-ratio"))
         , playerPosV_(0.0f, 0.0f)
         , playerPosOffsetV_(0.0f, 0.0f)
         , animInfoVec_()
@@ -560,10 +560,8 @@ namespace map
 
         for (const auto & ANIM_INFO : animInfoVec_)
         {
-            animUPtrVec_.emplace_back(gui::AnimationFactory::Make(
-                ANIM_INFO.which_anim,
-                ANIM_INFO.rect,
-                gui::Animations::TimePerFrameSec(ANIM_INFO.which_anim)));
+            animUPtrVec_.emplace_back(
+                gui::AnimationFactory::Make(ANIM_INFO.which_anim, ANIM_INFO.rect));
 
             animUPtrVec_.back()->RandomVaryTimePerFrame();
         }

@@ -26,7 +26,7 @@ namespace gui
 
         backgroundBoxInfo.SetupImage(
             gui::CachedTexture(
-                "media-images-backgrounds-tile-darkknot",
+                "media-image-background-tile-darkknot",
                 gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.075f));
 

@@ -50,7 +50,7 @@ namespace gui
     FontManager::FontManager()
         : fontUVec_(GuiFont::Count)
         , numberFontFamilyName_("")
-        , fontsDirPathStr_(misc::ConfigFile::Instance()->GetMediaPath("media-fonts-dir"))
+        , fontsDirPathStr_(misc::ConfigFile::Instance()->GetMediaPath("media-font-dir"))
     {
         M_HP_LOG_DBG("Subsystem Construction: FontManager");
 

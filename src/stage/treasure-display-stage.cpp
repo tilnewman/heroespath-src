@@ -54,14 +54,13 @@ namespace stage
 
         DisplayMeasurements::DisplayMeasurements(
             const float COINS_IMAGE_BOTTOM, const float BOTTOM_SYMBOL_HEIGHT)
-            : screenWidth(gui::Display::Instance()->GetWinWidth())
-            , screenHeight(gui::Display::Instance()->GetWinHeight())
+            : screenSizeV(sfutil::DisplaySize())
             , innerPad(sfutil::MapByRes(10.0f, 40.0f))
             , innerRect(
                   innerPad,
                   innerPad,
-                  screenWidth - (2.0f * innerPad),
-                  screenWidth - (2.0f * innerPad))
+                  screenSizeV.x - (2.0f * innerPad),
+                  screenSizeV.x - (2.0f * innerPad))
             , listboxScreenEdgeMargin(sfutil::MapByRes(35.0f, 100.0f))
             , listboxBetweenSpacer(sfutil::MapByRes(65.0f, 200.0f))
             , listboxWidth(
@@ -70,7 +69,7 @@ namespace stage
             , treasureListboxLeft(innerRect.left + listboxScreenEdgeMargin)
             , inventoryListboxLeft(treasureListboxLeft + listboxWidth + listboxBetweenSpacer)
             , listboxTop(COINS_IMAGE_BOTTOM + sfutil::MapByRes(30.0f, 70.0f))
-            , listboxHeight((screenHeight - listboxTop) - BOTTOM_SYMBOL_HEIGHT)
+            , listboxHeight((screenSizeV.y - listboxTop) - BOTTOM_SYMBOL_HEIGHT)
             , treasureListboxRegion(treasureListboxLeft, listboxTop, listboxWidth, listboxHeight)
             , inventoryListboxRegion(inventoryListboxLeft, listboxTop, listboxWidth, listboxHeight)
             , listboxMargin(10.0f)
@@ -90,8 +89,8 @@ namespace stage
     TreasureDisplayStage::TreasureDisplayStage()
         : StageBase("TreasureDisplay", {})
         , treasureStagePtrOpt_(boost::none)
-        , titleImage_("media-images-buttons-gui-treasure-normal", true, 1.0f, 0.75f)
-        , bottomImage_(0.75f, true, sf::Color::White)
+        , stageTitle_(gui::MenuImage::Treasure, true)
+        , bottomImage_(true, 0.75f)
         , ouroborosUPtr_()
         , stageMoverUPtr_()
         , treasureListboxUPtr_()
@@ -102,14 +101,16 @@ namespace stage
         , gemsTextUPtr_()
         , weightTextUPtr_()
         , instrTextUPtr_()
-        , bgCachedTexture_("media-images-backgrounds-paper-2")
+        , bgCachedTexture_("media-image-background-paper-large-gold")
         , bgSprite_(bgCachedTexture_.Get())
         , corpseCachedTextureOpt_()
         , corpseSprite_()
         , treasureCachedTextureOpt_()
         , treasureSprite_()
-        , coinsCachedTexture_("media-images-coins")
-        , coinsSprite_(coinsCachedTexture_.Get())
+        , coinsCachedTexture_("media-image-misc-coins")
+        , coinsSprite_(
+              coinsCachedTexture_.Get(),
+              misc::ConfigFile::Instance()->GetTextureRect("media-image-misc-coins"))
         , treasureAlphaButtonUPtr_()
         , treasureMoneyButtonUPtr_()
         , treasureWeightButtonUPtr_()
@@ -125,7 +126,7 @@ namespace stage
         , characterImageUPtr_()
         , treasureAvailable_(item::TreasureAvailable::NoTreasure)
         , treasureImage_(item::TreasureImage::Count)
-        , xCachedTexture_("media-images-misc-x")
+        , xCachedTexture_("media-image-misc-x")
         , redXImageUPtr_()
         , itemDetailTimer_(0.0f)
         , itemDetailViewer_()
@@ -136,6 +137,13 @@ namespace stage
         , heldCache_()
         , lockboxCache_()
     {}
+
+    TreasureDisplayStage::~TreasureDisplayStage() = default;
+
+    void TreasureDisplayStage::SetModelStage(const TreasureStagePtr_t treasureStagePtr)
+    {
+        treasureStagePtrOpt_ = treasureStagePtr;
+    }
 
     const std::string TreasureDisplayStage::HandleCallback(
         const ItemListBox_t::Callback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
@@ -228,10 +236,11 @@ namespace stage
     void TreasureDisplayStage::Setup()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (!treasureStagePtrOpt_),
+            (treasureStagePtrOpt_),
             "stage::TreasureDisplayStage::Setup() called but treasureStagePtrOpt_ was invalid.  It "
             "should be set before this function is called by stage::StageFactory::Make().");
 
+        // move the bottom symbol down to make more room on screen for other gui stuff above it
         if ((sfutil::Bottom(bottomImage_.Region()) > StageRegion().height) == false)
         {
             bottomImage_.MovePos(0.0f, (bottomImage_.Region().height * 0.4f));
@@ -243,7 +252,7 @@ namespace stage
     void TreasureDisplayStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw(bgSprite_, states);
-        target.draw(titleImage_, states);
+        target.draw(stageTitle_, states);
         target.draw(bottomImage_, states);
         target.draw(corpseSprite_, states);
         target.draw(treasureSprite_, states);
@@ -399,11 +408,11 @@ namespace stage
     {
         if (item::TreasureImage::ChestOpen == WHICH_IMAGE)
         {
-            treasureCachedTextureOpt_ = gui::CachedTexture("media-images-chest-open");
+            treasureCachedTextureOpt_ = gui::CachedTexture("media-image-misc-chest-open");
         }
         else if (item::TreasureImage::LockboxOpen == WHICH_IMAGE)
         {
-            treasureCachedTextureOpt_ = gui::CachedTexture("media-images-lockbox-open");
+            treasureCachedTextureOpt_ = gui::CachedTexture("media-image-misc-lockbox-open");
         }
     }
 
@@ -532,8 +541,7 @@ namespace stage
         const auto MEASUREMENTS { CreateDisplayMeasurements() };
 
         bgSprite_.setScale(
-            MEASUREMENTS.screenWidth / bgSprite_.getLocalBounds().width,
-            MEASUREMENTS.screenHeight / bgSprite_.getLocalBounds().height);
+            sfutil::VectorDiv(MEASUREMENTS.screenSizeV, sfutil::Size(bgSprite_.getLocalBounds())));
     }
 
     void TreasureDisplayStage::SetupInitial_Ouroboros()
@@ -544,22 +552,21 @@ namespace stage
 
     void TreasureDisplayStage::SetupAfterPleaseWait_CorpseImage()
     {
-        corpseCachedTextureOpt_ = gui::CachedTexture(CorpseImageKeyFromEnemyParty());
-
+        const auto PATH_CONFIG_KEY { CorpseImageKeyFromEnemyParty() };
+        corpseCachedTextureOpt_ = gui::CachedTexture(PATH_CONFIG_KEY);
         corpseSprite_.setTexture(corpseCachedTextureOpt_->Get(), true);
 
-        const auto SCREEN_WIDTH { gui::Display::Instance()->GetWinWidth() };
-        const auto SCREEN_HEIGHT { gui::Display::Instance()->GetWinHeight() };
+        const auto TEXTURE_RECT { misc::ConfigFile::Instance()->GetTextureRect(PATH_CONFIG_KEY) };
+        if ((TEXTURE_RECT.width > 0) && (TEXTURE_RECT.height > 0))
+        {
+            corpseSprite_.setTextureRect(TEXTURE_RECT);
+        }
 
-        sfutil::Fit(corpseSprite_, (SCREEN_WIDTH * 0.75f), (SCREEN_HEIGHT * 0.5f));
+        const auto CORPSE_IMAGE_REGION { sfutil::ScaleAndReCenterCopy(
+            sfutil::DisplayRect(), sf::Vector2f(0.75f, 0.5f)) };
 
-        const auto CORPSE_IMAGE_LEFT { (SCREEN_WIDTH * 0.5f)
-                                       - (corpseSprite_.getGlobalBounds().width * 0.5f) };
+        sfutil::FitAndCenterTo(corpseSprite_, CORPSE_IMAGE_REGION);
 
-        const auto CORPSE_IMAGE_TOP { bottomImage_.Region().top
-                                      - corpseSprite_.getGlobalBounds().height };
-
-        corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
         corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
     }
 
@@ -567,31 +574,24 @@ namespace stage
     void TreasureDisplayStage::SetupAfterPleaseWait_TreasureImage(
         const item::TreasureImage::Enum WHICH_IMAGE)
     {
-        const auto TREASURE_IMAGE_KEY { item::TreasureImage::ToImageKey(WHICH_IMAGE) };
-
-        const auto TREASURE_IMAGE_SCALE_NEED_REDUCTION {
-            (TREASURE_IMAGE_KEY == "media-images-bones-bone-pile-1")
-            || (TREASURE_IMAGE_KEY == "media-images-bones-bone-pile-2")
-        };
-
-        treasureCachedTextureOpt_ = gui::CachedTexture(TREASURE_IMAGE_KEY);
-
+        const auto PATH_CONFIG_KEY { item::TreasureImage::ImageConfigKey(WHICH_IMAGE) };
+        treasureCachedTextureOpt_ = gui::CachedTexture(PATH_CONFIG_KEY);
         treasureSprite_.setTexture(treasureCachedTextureOpt_->Get(), true);
 
-        const auto TREASURE_IMAGE_SCALE_ADJ { (
-            (TREASURE_IMAGE_SCALE_NEED_REDUCTION) ? 0.75f : 1.0f) };
+        const auto TEXTURE_RECT { misc::ConfigFile::Instance()->GetTextureRect(PATH_CONFIG_KEY) };
+        if ((TEXTURE_RECT.width > 0) && (TEXTURE_RECT.height > 0))
+        {
+            treasureSprite_.setTextureRect(TEXTURE_RECT);
+        }
 
-        const auto TREASURE_IMAGE_MAX_WIDTH { (
-            CreateDisplayMeasurements().screenWidth * 0.36f * TREASURE_IMAGE_SCALE_ADJ) };
+        const sf::Vector2f SIZE_CONSTRAINT_V(
+            sfutil::ScreenRatioToPixelsHoriz(0.36f), sfutil::ScreenRatioToPixelsVert(0.25f));
 
-        const auto TREASURE_IMAGE_MAX_HEIGHT { (
-            CreateDisplayMeasurements().screenHeight * 0.250f * TREASURE_IMAGE_SCALE_ADJ) };
-
-        sfutil::Fit(treasureSprite_, TREASURE_IMAGE_MAX_WIDTH, TREASURE_IMAGE_MAX_HEIGHT);
+        sfutil::Fit(treasureSprite_, SIZE_CONSTRAINT_V);
 
         treasureSprite_.setPosition(
             sfutil::MapByRes(50.0f, 350.0f),
-            sfutil::Bottom(titleImage_.Region()) - sfutil::MapByRes(40.0f, 250.0f));
+            sfutil::Bottom(stageTitle_.Region()) - sfutil::MapByRes(40.0f, 250.0f));
 
         treasureSprite_.setColor(sf::Color(255, 255, 255, 192));
     }
@@ -599,11 +599,9 @@ namespace stage
     // The scales/colors/positions found by experiment to look good at various resolutions.
     void TreasureDisplayStage::SetupAfterPleaseWait_CoinsImage()
     {
-        const auto COINS_IMAGE_WIDTH { (gui::Display::Instance()->GetWinWidth() * 0.125f) };
+        const auto COINS_IMAGE_WIDTH { sfutil::ScreenRatioToPixelsHoriz(0.125f) };
         const auto COINS_SCALE { COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width };
         coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
-
-        coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
 
         const auto COINS_LEFT { treasureSprite_.getPosition().x
                                 + (treasureSprite_.getGlobalBounds().width * 0.80f) };
@@ -612,6 +610,8 @@ namespace stage
                                + (treasureSprite_.getGlobalBounds().height * 0.75f) };
 
         coinsSprite_.setPosition(COINS_LEFT, COINS_TOP);
+
+        coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
     }
 
     const std::string TreasureDisplayStage::CorpseImageKeyFromEnemyParty() const
@@ -796,7 +796,7 @@ namespace stage
 
         const auto MEASUREMENTS { CreateDisplayMeasurements() };
 
-        const auto OFFSCREEN_POS_HORIZ { MEASUREMENTS.screenWidth + MEASUREMENTS.listboxWidth };
+        const auto OFFSCREEN_POS_HORIZ { MEASUREMENTS.screenSizeV.x + MEASUREMENTS.listboxWidth };
 
         stageMoverUPtr_->AddInventoryObject(
             gui::IEntityPtrOpt_t(inventoryAlphaButtonUPtr_.get()),
@@ -832,9 +832,9 @@ namespace stage
 
         // the +93 and -10 were found by experiment to look better
         instrTextUPtr_->SetEntityPos(
-            (CreateDisplayMeasurements().screenWidth * 0.5f)
+            (CreateDisplayMeasurements().screenSizeV.x * 0.5f)
                 - (instrTextUPtr_->GetEntityRegion().width * 0.5f) + 93.0f,
-            sfutil::Bottom(titleImage_.Region()) - 10.0f);
+            sfutil::Bottom(stageTitle_.Region()) - 10.0f);
 
         EntityAdd(instrTextUPtr_);
     }
@@ -880,7 +880,7 @@ namespace stage
             gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
             gui::ImageTextEntity::MouseStateSync::Text);
 
-        const auto HORIZ_POS { (CreateDisplayMeasurements().screenWidth * 0.5f)
+        const auto HORIZ_POS { (CreateDisplayMeasurements().screenSizeV.x * 0.5f)
                                - (buttonUPtr->GetEntityRegion().width * 0.5f) };
 
         buttonUPtr->SetEntityPos(HORIZ_POS, VERT_POS);
@@ -984,21 +984,21 @@ namespace stage
 
         CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_TreasureListboxSortIcon_Alpha",
-            "media-images-misc-abc",
+            "media-image-misc-abc",
             LISTBOX_COLORS.icon,
             SCALE,
             treasureAlphaButtonUPtr_);
 
         CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_TreasureListboxSortIcon_Money",
-            "media-images-misc-money-bag",
+            "media-image-misc-money-bag",
             LISTBOX_COLORS.icon,
             SCALE,
             treasureMoneyButtonUPtr_);
 
         CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_TreasureListboxSortIcon_Weight",
-            "media-images-misc-weight",
+            "media-image-misc-weight",
             LISTBOX_COLORS.icon,
             SCALE,
             treasureWeightButtonUPtr_);
@@ -1044,21 +1044,21 @@ namespace stage
 
         CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_InventoryListboxSortIcon_Alpha",
-            "media-images-misc-abc",
+            "media-image-misc-abc",
             LISTBOX_COLORS.icon,
             SCALE,
             inventoryAlphaButtonUPtr_);
 
         CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_InventoryListboxSortIcon_Money",
-            "media-images-misc-money-bag",
+            "media-image-misc-money-bag",
             LISTBOX_COLORS.icon,
             SCALE,
             inventoryMoneyButtonUPtr_);
 
         CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_InventoryListboxSortIcon_Weight",
-            "media-images-misc-weight",
+            "media-image-misc-weight",
             LISTBOX_COLORS.icon,
             SCALE,
             inventoryWeightButtonUPtr_);
@@ -1105,8 +1105,7 @@ namespace stage
 
         const sf::Vector2f POS_V(
             MEASUREMENTS.characterImageLeft,
-            inventoryListboxUPtr_->GetEntityPos().y
-                - (gui::ContentImage::Dimmension() * MEASUREMENTS.characterImageScale));
+            inventoryListboxUPtr_->GetEntityPos().y - (256.0f * MEASUREMENTS.characterImageScale));
 
         const gui::EntityImageInfo ENTITY_IMAGE_INFO(
             gui::LoadAndCacheImage(
@@ -1333,7 +1332,7 @@ namespace stage
     float TreasureDisplayStage::CalculateInventoryTextPosLeft() const
     {
         return characterImageUPtr_->GetEntityPos().x
-            + (gui::ContentImage::Dimmension() * CreateDisplayMeasurements().characterImageScale);
+            + (256.0f * CreateDisplayMeasurements().characterImageScale);
     }
 
     void TreasureDisplayStage::ItemViewerInterruption()

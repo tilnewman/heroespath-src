@@ -12,75 +12,85 @@
 #include "main-menu-buttons.hpp"
 
 #include "game/game-controller.hpp"
-#include "gui/text-info.hpp"
+#include "gui/mouse-text-info.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/display.hpp"
-
-#include <string>
 
 namespace heroespath
 {
 namespace gui
 {
 
-    const float MainMenuButton::SCREEN_SIZE_RATIO_WIDTH_DEFAULT_(0.1f);
+    const float MainMenuButton::DEFAULT_HEIGHT_SCREEN_SIZE_RATIO_ { 0.07f };
+    const sf::Uint8 MainMenuButton::DISABLED_COLOR_ALPHA_ { 100 };
 
     MainMenuButton::MainMenuButton(
+        const MenuImage::Enum MENU_IMAGE,
         const stage::Stage::Enum TRANSITION_TO,
         const ImageTextEntity::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
-        const float FORCED_IMAGE_WIDTH,
-        const sf::Vector2f & POS_V)
+        const sf::Vector2f & POS_V,
+        const bool WILL_TRANSITION_STAGE,
+        const bool WILL_INCLUDE_DISABLED,
+        const float HEIGHT_SCREEN_RATIO)
         : ImageTextEntity(
             "MainMenuButton_" + stage::Stage::ToString(TRANSITION_TO),
-            MakeMouseImageInfo(TRANSITION_TO, POS_V, FORCED_IMAGE_WIDTH),
+            MakeMouseImageInfo(MENU_IMAGE, WILL_INCLUDE_DISABLED, HEIGHT_SCREEN_RATIO, POS_V),
             MouseTextInfo(),
             CALLBACK_HANDLER_PTR_OPT,
             ImageTextEntity::MouseStateSync::Image)
         , transitionTo_(TRANSITION_TO)
+        , willTransitionStage_(WILL_TRANSITION_STAGE)
     {}
-
-    float MainMenuButton::DefaultWidth()
-    {
-        return sfutil::ScreenRatioToPixelsHoriz(SCREEN_SIZE_RATIO_WIDTH_DEFAULT_);
-    }
 
     void MainMenuButton::OnClick(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (stage::Stage::IsPlayableAndNotPopup(transitionTo_))
+        if (willTransitionStage_)
         {
-            game::GameController::Instance()->TransitionTo(transitionTo_);
+            if (stage::Stage::IsPlayableAndNotPopup(transitionTo_))
+            {
+                game::GameController::Instance()->TransitionTo(transitionTo_);
+            }
         }
 
         ImageTextEntity::OnClick(MOUSE_POS_V);
     }
 
     const MouseImageInfo MainMenuButton::MakeMouseImageInfo(
-        const stage::Stage::Enum TRANSITION_TO,
-        const sf::Vector2f & POS_V,
-        const float FORCED_IMAGE_WIDTH_ORIG)
+        const MenuImage::Enum MENU_IMAGE,
+        const bool WILL_INCLUDE_DISABLED,
+        const float HEIGHT_SCREEN_RATIO,
+        const sf::Vector2f & POS_V)
     {
-        const auto FORCED_IMAGE_WIDTH { (
-            (FORCED_IMAGE_WIDTH_ORIG < 0.0f) ? DefaultWidth() : FORCED_IMAGE_WIDTH_ORIG) };
+        const auto HEIGHT { sfutil::ScreenRatioToPixelsVert(HEIGHT_SCREEN_RATIO) };
 
-        const sf::FloatRect IMAGE_REGION(POS_V, sf::Vector2f(FORCED_IMAGE_WIDTH, 0.0f));
+        const sf::FloatRect IMAGE_REGION(POS_V, sf::Vector2f(0.0f, HEIGHT));
 
-        const std::string IMAGE_PATH_KEY_PREFIX("media-images-buttons-mainmenu-");
+        const auto CONFIG_FILE_KEY_NORMAL { MenuImage::ConfigFileKey(MENU_IMAGE, false) };
 
-        const auto LOOPSTATE_NAME { misc::ToLowerCopy(stage::Stage::ToString(TRANSITION_TO)) };
+        const auto TEXTURE_RECT_NORMAL { misc::ConfigFile::Instance()->GetTextureRect(
+            CONFIG_FILE_KEY_NORMAL) };
+
+        const auto CONFIG_FILE_KEY_LIT { MenuImage::ConfigFileKey(MENU_IMAGE, true) };
+
+        const auto TEXTURE_RECT_LIT { misc::ConfigFile::Instance()->GetTextureRect(
+            CONFIG_FILE_KEY_LIT) };
 
         MouseImageInfo mouseImageInfo(
             true,
             EntityImageInfo(
-                CachedTexture(IMAGE_PATH_KEY_PREFIX + LOOPSTATE_NAME + "-normal"), IMAGE_REGION),
+                CachedTexture(CONFIG_FILE_KEY_NORMAL), IMAGE_REGION, TEXTURE_RECT_NORMAL),
             EntityImageInfo(),
-            EntityImageInfo(
-                CachedTexture(IMAGE_PATH_KEY_PREFIX + LOOPSTATE_NAME + "-lit"), IMAGE_REGION));
+            EntityImageInfo(CachedTexture(CONFIG_FILE_KEY_LIT), IMAGE_REGION, TEXTURE_RECT_LIT));
 
-        if (stage::Stage::HasFadedImage(TRANSITION_TO))
+        if (WILL_INCLUDE_DISABLED)
         {
             mouseImageInfo.disabled = EntityImageInfo(
-                CachedTexture(IMAGE_PATH_KEY_PREFIX + LOOPSTATE_NAME + "-faded"), IMAGE_REGION);
+                CachedTexture(CONFIG_FILE_KEY_NORMAL),
+                IMAGE_REGION,
+                TEXTURE_RECT_NORMAL,
+                sf::Color(255, 255, 255, DISABLED_COLOR_ALPHA_));
         }
 
         return mouseImageInfo;

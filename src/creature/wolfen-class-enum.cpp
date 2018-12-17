@@ -66,37 +66,37 @@ namespace creature
     const std::string wolfen_class::Desc(const wolfen_class::Enum WOLFEN_CLASS_TYPE)
     {
         return misc::ConfigFile::Instance()->Value(
-            "heroespath-creature-race-desc-wolfen-" + ToString(WOLFEN_CLASS_TYPE));
+            "creature-race-desc-wolfen-" + ToString(WOLFEN_CLASS_TYPE));
     }
 
     wolfen_class::Enum wolfen_class::ClassFromRank(const Rank_t & RANK)
     {
         if (RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-wolfen-class-rank-min-Elder")))
+                "creature-wolfen-class-rank-min-Elder")))
         {
             return wolfen_class::Elder;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-wolfen-class-rank-min-Highborn")))
+                "creature-wolfen-class-rank-min-Highborn")))
         {
             return wolfen_class::Highborn;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-wolfen-class-rank-min-Noble")))
+                "creature-wolfen-class-rank-min-Noble")))
         {
             return wolfen_class::Noble;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-wolfen-class-rank-min-Adult")))
+                "creature-wolfen-class-rank-min-Adult")))
         {
             return wolfen_class::Adult;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-wolfen-class-rank-min-Juvenile")))
+                "creature-wolfen-class-rank-min-Juvenile")))
         {
             return wolfen_class::Juvenile;
         }

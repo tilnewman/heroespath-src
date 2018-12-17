@@ -355,9 +355,9 @@ namespace stage
         game::GameController::Instance()->TestingStrIncrement(MESSAGE);
     }
 
-    void StageBase::TestingImageSet(const std::string & MESSAGE, const bool WILL_CHECK_FOR_OUTLINE)
+    void StageBase::TestingImageSet(const std::string & MESSAGE)
     {
-        game::GameController::Instance()->TestingImageSet(MESSAGE, WILL_CHECK_FOR_OUTLINE);
+        game::GameController::Instance()->TestingImageSet(MESSAGE);
     }
 
     void StageBase::ClearAllEntities()

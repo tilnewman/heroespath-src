@@ -73,44 +73,44 @@ namespace creature
     const std::string dragon_class::Desc(const dragon_class::Enum DRAGON_CLASS_TYPE)
     {
         std::ostringstream ss;
-        ss << "heroespath-creature-race-desc-dragon-" << ToString(DRAGON_CLASS_TYPE);
+        ss << "creature-race-desc-dragon-" << ToString(DRAGON_CLASS_TYPE);
         return misc::ConfigFile::Instance()->Value(ss.str());
     }
 
     dragon_class::Enum dragon_class::ClassFromRank(const Rank_t & RANK)
     {
         if (RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-dragon-class-rank-min-Elder")))
+                "creature-dragon-class-rank-min-Elder")))
         {
             return dragon_class::Elder;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-dragon-class-rank-min-Skycaster")))
+                "creature-dragon-class-rank-min-Skycaster")))
         {
             return dragon_class::Skycaster;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-dragon-class-rank-min-Wyrm")))
+                "creature-dragon-class-rank-min-Wyrm")))
         {
             return dragon_class::Wyrm;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-dragon-class-rank-min-Adult")))
+                "creature-dragon-class-rank-min-Adult")))
         {
             return dragon_class::Adult;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-dragon-class-rank-min-Juvenile")))
+                "creature-dragon-class-rank-min-Juvenile")))
         {
             return dragon_class::Juvenile;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-creature-dragon-class-rank-min-Fledgling")))
+                "creature-dragon-class-rank-min-Fledgling")))
         {
             return dragon_class::Fledgling;
         }

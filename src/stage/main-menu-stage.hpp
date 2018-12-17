@@ -15,6 +15,7 @@
 #include "gui/main-menu-background.hpp"
 #include "gui/main-menu-buttons.hpp"
 #include "gui/ouroboros.hpp"
+#include "gui/stage-title.hpp"
 #include "stage/stage-base.hpp"
 
 #include <memory>
@@ -32,13 +33,13 @@ namespace stage
         , public gui::ImageTextEntity::Callback_t::IHandler_t
     {
     public:
+        MainMenuStage();
+        virtual ~MainMenuStage();
+
         MainMenuStage(const MainMenuStage &) = delete;
         MainMenuStage(MainMenuStage &&) = delete;
         MainMenuStage & operator=(const MainMenuStage &) = delete;
         MainMenuStage & operator=(MainMenuStage &&) = delete;
-
-        MainMenuStage();
-        virtual ~MainMenuStage();
 
         const std::string HandleCallback(
             const gui::ImageTextEntity::Callback_t::Packet_t &, const std::string &) override
@@ -51,10 +52,10 @@ namespace stage
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
-        gui::CachedTexture titleCachedTexture_;
-        sf::Sprite titleSprite_;
+        const float BUTTON_HEIGHT_SCREEN_RATIO;
+        gui::StageTitle stageTitle_;
         gui::MainMenuButtonUPtr_t resumeButtonUPtr_;
-        gui::MainMenuButtonUPtr_t createButtonUPtr_;
+        gui::MainMenuButtonUPtr_t newGameButtonUPtr_;
         gui::MainMenuButtonUPtr_t settingsButtonUPtr_;
         gui::MainMenuButtonUPtr_t creditsButtonUPtr_;
         gui::MainMenuButtonUPtr_t exitButtonUPtr_;

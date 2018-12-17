@@ -67,18 +67,15 @@ namespace stage
         using ItemListBoxUPtr_t = gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
 
     public:
+        TreasureStage();
+        virtual ~TreasureStage();
+
         TreasureStage(const TreasureStage &) = delete;
         TreasureStage(TreasureStage &&) = delete;
         TreasureStage & operator=(const TreasureStage &) = delete;
         TreasureStage & operator=(TreasureStage &&) = delete;
 
-        TreasureStage();
-        virtual ~TreasureStage();
-
-        void SetViewStage(TreasureDisplayStagePtr_t viewStagePtr)
-        {
-            displayStagePtrOpt_ = viewStagePtr;
-        }
+        void SetViewStage(TreasureDisplayStagePtr_t viewStagePtr);
 
         const std::string HandleCallback(
             const misc::PopupCallback_t::Packet_t &,

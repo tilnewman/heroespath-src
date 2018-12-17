@@ -38,7 +38,7 @@ namespace gui
         const gui::CachedTextureOpt_t & TEXTURE_UP_OPT,
         const gui::CachedTextureOpt_t & TEXTURE_DOWN_OPT,
         const gui::CachedTextureOpt_t & TEXTURE_OVER_OPT,
-        const gui::CachedTextureOpt_t & TEXTURE_DISABLED_OPT,
+        const ColorValueOpt_t & DISABLED_COLOR_ALPHA_OPT,
         const bool WILL_DRAW_UP_IF_MISSING,
         const ColorOpt_t & COLOR_OPT,
         const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
@@ -66,10 +66,10 @@ namespace gui
                   COLOR_OPT,
                   WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION),
               EntityImageInfo(
-                  TEXTURE_DISABLED_OPT,
+                  TEXTURE_UP_OPT,
                   REGION_OPT,
                   boost::none,
-                  COLOR_OPT,
+                  MakeDisabledColorOpt(COLOR_OPT, DISABLED_COLOR_ALPHA_OPT),
                   WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION))
         , sprite_()
         , willDraw_(false)
@@ -92,7 +92,10 @@ namespace gui
         mouseImageInfo_.up.sprite.setColor(COLOR);
         mouseImageInfo_.down.sprite.setColor(COLOR);
         mouseImageInfo_.over.sprite.setColor(COLOR);
-        mouseImageInfo_.disabled.sprite.setColor(COLOR);
+
+        mouseImageInfo_.disabled.sprite.setColor(
+            MakeDisabledColorOpt(COLOR, mouseImageInfo_.disabled.sprite.getColor().a).value());
+
         Sync();
     }
 
@@ -176,6 +179,26 @@ namespace gui
             sprite_ = mouseImageInfo_.FromMouseState(MOUSE_STATE_TO_DRAW).sprite;
             entityRegion_ = sprite_.getGlobalBounds();
         }
+    }
+
+    const ColorOpt_t ImageEntity::MakeDisabledColorOpt(
+        const ColorOpt_t & COLOR_OPT, const ColorValueOpt_t & ALPHA_OPT) const
+    {
+        if (!ALPHA_OPT)
+        {
+            return boost::none;
+        }
+
+        sf::Color disabledColor { sf::Color::White };
+
+        if (COLOR_OPT)
+        {
+            disabledColor = COLOR_OPT.value();
+        }
+
+        disabledColor.a = ALPHA_OPT.value();
+
+        return disabledColor;
     }
 
 } // namespace gui

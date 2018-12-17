@@ -36,13 +36,13 @@ namespace stage
     class InnStage : public stage::StageBase
     {
     public:
+        InnStage();
+        virtual ~InnStage();
+
         InnStage(const InnStage &) = delete;
         InnStage(InnStage &&) = delete;
         InnStage & operator=(const InnStage &) = delete;
         InnStage & operator=(InnStage &&) = delete;
-
-        InnStage();
-        virtual ~InnStage();
 
         void Setup() final;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;

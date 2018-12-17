@@ -301,7 +301,7 @@ namespace combat
         }
 
         const auto CHANCE_CONDS_ADDED_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
-            "heroespath-fight-chance-conditions-added-from-damage-ratio") };
+            "fight-chance-conditions-added-from-damage-ratio") };
 
         for (const auto NEXT_COND_ENUM : condsVecToAdd)
         {
@@ -1029,14 +1029,14 @@ namespace combat
             && (WEAPON_PTR->WeaponType() & item::weapon_type::Projectile))
         {
             const auto ARCHER_ACC_BONUS_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-fight-archer-projectile-accuracy-bonus-ratio") };
+                "fight-archer-projectile-accuracy-bonus-ratio") };
 
             attackAccToUse += static_cast<creature::Trait_t>(
                 static_cast<float>(ATTACK_ACC_RAW) * ARCHER_ACC_BONUS_RATIO);
 
             const auto ARCHER_RANK_BONUS_RATIO {
                 misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "heroespath-fight-archer-projectile-rank-bonus-ratio")
+                    "fight-archer-projectile-rank-bonus-ratio")
             };
 
             attackAccToUse += static_cast<int>(
@@ -1050,10 +1050,10 @@ namespace combat
         const auto ATTACK_ACC_RAND { misc::random::Int(ATTACK_ACC_RAND_MIN, ATTACK_ACC_RAND_MAX) };
 
         const auto STAT_RATIO_AMAZING { misc::ConfigFile::Instance()->ValueOrDefault<float>(
-            "heroespath-fight-stats-amazing-ratio") };
+            "fight-stats-amazing-ratio") };
 
         const auto STAT_HIGHER_THAN_AVERAGE { misc::ConfigFile::Instance()->ValueOrDefault<int>(
-            "heroespath-fight-stats-base-high-val") };
+            "fight-stats-base-high-val") };
 
         const auto IS_ATTACK_AMAZING_ACC {
             (attackAccToUse >= STAT_HIGHER_THAN_AVERAGE)
@@ -1069,7 +1069,7 @@ namespace combat
             defendSpdToUse += static_cast<int>(
                 CREATURE_DEFENDING_PTR->Rank().As<float>()
                 * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "heroespath-fight-pixie-defend-speed-rank-bonus-ratio"));
+                    "fight-pixie-defend-speed-rank-bonus-ratio"));
         }
 
         // If the defending creature is Blocking, then add a speed bonus.
@@ -1082,7 +1082,7 @@ namespace combat
             defendSpdToUse += static_cast<int>(
                 static_cast<float>(DEFEND_SPD_RAW)
                 * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "heroespath-fight-block-defend-speed-bonus-ratio"));
+                    "fight-block-defend-speed-bonus-ratio"));
         }
 
         const auto DEFEND_SPD_RAND_MIN { static_cast<creature::Trait_t>(
@@ -1271,7 +1271,7 @@ namespace combat
         // add extra damage based on rank
         const auto RANK_DAMAGE_BONUS_ADJ_RATIO {
             misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-fight-rank-damage-bonus-ratio")
+                "fight-rank-damage-bonus-ratio")
         };
 
         const auto DAMAGE_FROM_RANK { Health_t::Make(
@@ -1280,7 +1280,7 @@ namespace combat
         // If strength stat is at or over the min of STAT_FLOOR,
         // then add a damage bonus based on half a strength ratio "roll".
         const creature::Trait_t STAT_FLOOR { misc::ConfigFile::Instance()->ValueOrDefault<int>(
-            "heroespath-fight-stats-value-floor") };
+            "fight-stats-value-floor") };
 
         Health_t damageFromStrength { 0_health };
         const auto STRENGTH_CURRENT { CREATURE_ATTACKING_PTR->Strength().As<int>() };
@@ -1290,7 +1290,7 @@ namespace combat
                 CREATURE_ATTACKING_PTR, creature::Traits::Strength) };
 
             const auto STR_BONUS_ADJ_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "heroespath-fight-damage-strength-bonus-ratio") };
+                "fight-damage-strength-bonus-ratio") };
 
             damageFromStrength
                 += Health_t::Make(static_cast<float>(RAND_STR_STAT) * STR_BONUS_ADJ_RATIO);
@@ -1314,7 +1314,7 @@ namespace combat
                 | creature::Stats::With::RankBonus)) };
 
         const auto POWER_HIT_CHANCE_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
-            "heroespath-fight-hit-power-chance-ratio") };
+            "fight-hit-power-chance-ratio") };
 
         isPowerHit_OutParam
             = (CREATURE_ATTACKING_PTR->IsPlayerCharacter() && STRENGTH_TEST
@@ -1337,7 +1337,7 @@ namespace combat
                 | creature::Stats::With::RankBonus)) };
 
         const auto CRITICAL_HIT_CHANCE_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
-            "heroespath-fight-hit-critical-chance-ratio") };
+            "fight-hit-critical-chance-ratio") };
 
         const auto ACCURACY_CURRENT { CREATURE_ATTACKING_PTR->Accuracy().As<int>() };
 
@@ -1350,7 +1350,7 @@ namespace combat
 
         const Health_t SPECIAL_HIT_DAMAGE_MIN { CREATURE_ATTACKING_PTR->Rank().As<int>()
                                                 + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                                    "heroespath-fight-hit-special-damage-min") };
+                                                    "fight-hit-special-damage-min") };
 
         if (isPowerHit_OutParam)
         {
@@ -1394,7 +1394,7 @@ namespace combat
         if ((damageFinal > 0_health) && (CREATURE_DEFENDING_PTR->Race() == creature::race::Pixie))
         {
             const Health_t PIXIE_DAMAGE_FLOOR { misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-fight-pixie-damage-floor") };
+                "fight-pixie-damage-floor") };
 
             if (damageFinal < PIXIE_DAMAGE_FLOOR)
             {
@@ -1404,7 +1404,7 @@ namespace combat
             {
                 const auto PIXIE_DAMAGE_ADJ_RATIO {
                     misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                        "heroespath-fight-pixie-damage-adj-ratio")
+                        "fight-pixie-damage-adj-ratio")
                 };
 
                 damageFinal = Health_t::Make(damageFinal.As<float>() * PIXIE_DAMAGE_ADJ_RATIO);

@@ -26,7 +26,7 @@
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/phase-enum.hpp"
-#include "gui/animation-base.hpp"
+#include "gui/animation.hpp"
 #include "gui/box-entity.hpp"
 #include "gui/cloud-animation.hpp"
 #include "gui/display.hpp"
@@ -589,7 +589,7 @@ namespace stage
 
         statusBoxInfo.SetupImage(
             gui::CachedTexture(
-                "media-images-backgrounds-tile-darkknot",
+                "media-image-background-tile-darkknot",
                 gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
@@ -619,7 +619,7 @@ namespace stage
 
         commandBoxInfo.SetupImage(
             gui::CachedTexture(
-                "media-images-backgrounds-tile-darkknot",
+                "media-image-background-tile-darkknot",
                 gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
@@ -635,7 +635,7 @@ namespace stage
 
         turnBoxInfo.SetupImage(
             gui::CachedTexture(
-                "media-images-backgrounds-tile-darkknot",
+                "media-image-background-tile-darkknot",
                 gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
@@ -760,10 +760,10 @@ namespace stage
         const sf::FloatRect GEAR_IMAGE_REGION(GEAR_IMAGE_POS_V, GEAR_IMAGE_SIZE_V);
 
         const gui::EntityImageInfo GEAR_IMAGE_INFO_UP(
-            gui::CachedTexture("media-images-buttons-gui-gears-normal"), GEAR_IMAGE_REGION);
+            gui::CachedTexture("media-image-misc-gear-normal"), GEAR_IMAGE_REGION);
 
         const gui::EntityImageInfo GEAR_IMAGE_INFO_OVER(
-            gui::CachedTexture("media-images-buttons-gui-gears-lit"), GEAR_IMAGE_REGION);
+            gui::CachedTexture("media-image-misc-gear-lit"), GEAR_IMAGE_REGION);
 
         settingsButtonUPtr_ = std::make_unique<gui::ImageTextEntity>(
             "CombatStage'sSettingsGears",

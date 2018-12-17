@@ -56,7 +56,7 @@ namespace map
     void Parser::SetupFilesystemPaths()
     {
         tileTextureDirectoryPath_
-            = misc::ConfigFile::Instance()->GetMediaPath("media-maps-tile-dir");
+            = misc::ConfigFile::Instance()->GetMediaPath("media-image-map-dir");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsDirectory(tileTextureDirectoryPath_),

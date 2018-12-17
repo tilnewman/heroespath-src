@@ -11,8 +11,7 @@
 //
 #include "animation-factory.hpp"
 
-#include "gui/animation-multi.hpp"
-#include "gui/animation-single.hpp"
+#include "gui/animation.hpp"
 
 namespace heroespath
 {
@@ -22,25 +21,23 @@ namespace gui
     AnimationUPtr_t AnimationFactory::Make(
         const Animations::Enum ENUM,
         const float SCALE,
-        const float TIME_PER_FRAME_SEC,
-        const sf::Color & COLOR,
-        const sf::BlendMode & BLEND_MODE)
+        const float TIME_PER_FRAME_SEC_ADJ,
+        const sf::Color & COLOR)
     {
-        return Make(ENUM, SCALE, TIME_PER_FRAME_SEC, COLOR, COLOR, BLEND_MODE);
+        return Make(ENUM, SCALE, TIME_PER_FRAME_SEC_ADJ, COLOR, COLOR);
     }
 
     AnimationUPtr_t AnimationFactory::Make(
         const Animations::Enum ENUM,
         const float SCALE,
-        const float TIME_PER_FRAME_SEC,
+        const float TIME_PER_FRAME_SEC_ADJ,
         const sf::Color & COLOR_FROM,
-        const sf::Color & COLOR_TO,
-        const sf::BlendMode & BLEND_MODE)
+        const sf::Color & COLOR_TO)
     {
         // initial position is the origin, and the initial size is default
         sf::FloatRect r(0.0f, 0.0f, 0.0f, 0.0f);
 
-        auto animUPtr { Make(ENUM, r, TIME_PER_FRAME_SEC, COLOR_FROM, COLOR_TO, BLEND_MODE) };
+        auto animUPtr { Make(ENUM, r, TIME_PER_FRAME_SEC_ADJ, COLOR_FROM, COLOR_TO) };
 
         // correct the size (account for the given SCALE)
         r.width = animUPtr->OrigSize().x * SCALE;
@@ -53,31 +50,26 @@ namespace gui
     AnimationUPtr_t AnimationFactory::Make(
         const Animations::Enum ENUM,
         const sf::FloatRect & REGION,
-        const float TIME_PER_FRAME_SEC,
-        const sf::Color & COLOR,
-        const sf::BlendMode & BLEND_MODE)
+        const float TIME_PER_FRAME_SEC_ADJ,
+        const sf::Color & COLOR)
     {
-        return Make(ENUM, REGION, TIME_PER_FRAME_SEC, COLOR, COLOR, BLEND_MODE);
+        return Make(ENUM, REGION, TIME_PER_FRAME_SEC_ADJ, COLOR, COLOR);
     }
 
     AnimationUPtr_t AnimationFactory::Make(
         const Animations::Enum ENUM,
         const sf::FloatRect & REGION,
-        const float TIME_PER_FRAME_SEC,
+        const float TIME_PER_FRAME_SEC_ADJ,
         const sf::Color & COLOR_FROM,
-        const sf::Color & COLOR_TO,
-        const sf::BlendMode & BLEND_MODE)
+        const sf::Color & COLOR_TO)
     {
-        if (Animations::IsMultiTexture(ENUM))
-        {
-            return std::make_unique<AnimationMultiTexture>(
-                ENUM, REGION, TIME_PER_FRAME_SEC, BLEND_MODE, COLOR_FROM, COLOR_TO);
-        }
-        else
-        {
-            return std::make_unique<AnimationSingleTexture>(
-                ENUM, REGION, TIME_PER_FRAME_SEC, BLEND_MODE, COLOR_FROM, COLOR_TO);
-        }
+        return std::make_unique<Animation>(
+            ENUM,
+            REGION,
+            (Animations::TimePerFrameSec(ENUM) + TIME_PER_FRAME_SEC_ADJ),
+            ((ENUM == gui::Animations::Smoke) ? sf::BlendAlpha : sf::BlendAdd),
+            COLOR_FROM,
+            COLOR_TO);
     }
 
 } // namespace gui

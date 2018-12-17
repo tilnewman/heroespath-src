@@ -9,13 +9,15 @@
 //
 // animation-factory.hpp
 //
-#include "gui/animation-base.hpp"
 #include "gui/animation-enum.hpp"
+#include "gui/animation.hpp"
 
 namespace heroespath
 {
 namespace gui
 {
+    class Animation;
+    using AnimationUPtr_t = std::unique_ptr<Animation>;
 
     struct AnimationFactory
     {
@@ -23,33 +25,29 @@ namespace gui
 
         static AnimationUPtr_t Make(
             const Animations::Enum ENUM,
-            const float SCALE,
-            const float TIME_PER_FRAME_SEC,
-            const sf::Color & COLOR = sf::Color::White,
-            const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
+            const float SCALE = 1.0f,
+            const float TIME_PER_FRAME_SEC_ADJ = 0.0f,
+            const sf::Color & COLOR = sf::Color::White);
 
         static AnimationUPtr_t Make(
             const Animations::Enum ENUM,
             const float SCALE,
-            const float TIME_PER_FRAME_SEC,
+            const float TIME_PER_FRAME_SEC_ADJ,
             const sf::Color & COLOR_FROM,
-            const sf::Color & COLOR_TO,
-            const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
+            const sf::Color & COLOR_TO);
 
         static AnimationUPtr_t Make(
             const Animations::Enum ENUM,
             const sf::FloatRect & REGION,
-            const float TIME_PER_FRAME_SEC,
-            const sf::Color & COLOR = sf::Color::White,
-            const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
+            const float TIME_PER_FRAME_SEC_ADJ = 0.0f,
+            const sf::Color & COLOR = sf::Color::White);
 
         static AnimationUPtr_t Make(
             const Animations::Enum ENUM,
             const sf::FloatRect & REGION,
-            const float TIME_PER_FRAME_SEC,
+            const float TIME_PER_FRAME_SEC_ADJ,
             const sf::Color & COLOR_FROM,
-            const sf::Color & COLOR_TO,
-            const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
+            const sf::Color & COLOR_TO);
     };
 
 } // namespace gui

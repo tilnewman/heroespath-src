@@ -45,7 +45,7 @@ namespace gui
 
     void ItemImagePaths::SetupFilesystemPaths()
     {
-        imageDirectoryPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-images-items-dir");
+        imageDirectoryPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-item-dir");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             misc::filesystem::ExistsAndIsDirectory(imageDirectoryPath_),
@@ -87,20 +87,12 @@ namespace gui
 
             gui::CachedTexture cachedTexture { PathWrapper(IMAGE_PATH_STR) };
 
-            const auto ACTUAL_SIZE_VU { cachedTexture.Get().getSize() };
-
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                ACTUAL_SIZE_VU == ContentImage::SizeU(),
-                "Image actual size did not match required size." + M_HP_VAR_STR(ACTUAL_SIZE_VU)
-                    + M_HP_VAR_STR(ContentImage::SizeU()) + M_HP_VAR_STR(FILENAME)
-                    + M_HP_VAR_STR(WEAPON_TYPE_WRAPPER.ReadableName()));
-
             auto imagePathFoundIter { std::find(
                 std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
 
             if (imagePathFoundIter != std::end(allPaths))
             {
-                iStagePtr->TestingImageSet(IMAGE_PATH_STR, true);
+                iStagePtr->TestingImageSet(IMAGE_PATH_STR);
                 allPaths.erase(imagePathFoundIter);
             }
 
@@ -125,20 +117,12 @@ namespace gui
 
                 gui::CachedTexture cachedTexture { PathWrapper(IMAGE_PATH_STR) };
 
-                const auto ACTUAL_SIZE_VU { cachedTexture.Get().getSize() };
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    ACTUAL_SIZE_VU == ContentImage::SizeU(),
-                    "Image actual size did not match required size." + M_HP_VAR_STR(ACTUAL_SIZE_VU)
-                        + M_HP_VAR_STR(ContentImage::SizeU()) + M_HP_VAR_STR(FILENAME)
-                        + M_HP_VAR_STR(ARMOR_TYPE_WRAPPER.ReadableName()));
-
                 auto imagePathFoundIter { std::find(
                     std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
 
                 if (imagePathFoundIter != std::end(allPaths))
                 {
-                    iStagePtr->TestingImageSet(IMAGE_PATH_STR, true);
+                    iStagePtr->TestingImageSet(IMAGE_PATH_STR);
                     allPaths.erase(imagePathFoundIter);
                 }
 
@@ -174,19 +158,12 @@ namespace gui
 
             gui::CachedTexture cachedTexture { PathWrapper(IMAGE_PATH_STR) };
 
-            const auto ACTUAL_SIZE_VU { cachedTexture.Get().getSize() };
-
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                ACTUAL_SIZE_VU == ContentImage::SizeU(),
-                "Image actual size did not match required size." + M_HP_VAR_STR(ACTUAL_SIZE_VU)
-                    + M_HP_VAR_STR(ContentImage::SizeU()) + M_HP_VAR_STR(FILENAME));
-
             auto imagePathFoundIter { std::find(
                 std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
 
             if (imagePathFoundIter != std::end(allPaths))
             {
-                iStagePtr->TestingImageSet(IMAGE_PATH_STR, true);
+                iStagePtr->TestingImageSet(IMAGE_PATH_STR);
                 allPaths.erase(imagePathFoundIter);
             }
 
@@ -238,20 +215,12 @@ namespace gui
 
                     gui::CachedTexture cachedTexture { PathWrapper(IMAGE_PATH_STR) };
 
-                    const auto ACTUAL_SIZE_VU { cachedTexture.Get().getSize() };
-
-                    M_HP_ASSERT_OR_LOG_AND_THROW(
-                        ACTUAL_SIZE_VU == ContentImage::SizeU(),
-                        "Image actual size did not match required size."
-                            + M_HP_VAR_STR(ACTUAL_SIZE_VU) + M_HP_VAR_STR(ContentImage::SizeU())
-                            + M_HP_VAR_STR(FILENAME) + M_HP_VAR_STR(ENUM_STR));
-
                     auto imagePathFoundIter { std::find(
                         std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
 
                     if (imagePathFoundIter != std::end(allPaths))
                     {
-                        iStagePtr->TestingImageSet(IMAGE_PATH_STR, true);
+                        iStagePtr->TestingImageSet(IMAGE_PATH_STR);
                         allPaths.erase(imagePathFoundIter);
                     }
 

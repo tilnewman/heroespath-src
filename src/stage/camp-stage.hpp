@@ -41,13 +41,13 @@ namespace stage
         , public misc::PopupCallback_t::IHandler_t
     {
     public:
+        CampStage();
+        virtual ~CampStage();
+
         CampStage(const CampStage &) = delete;
         CampStage(CampStage &&) = delete;
         CampStage & operator=(const CampStage &) = delete;
         CampStage & operator=(CampStage &&) = delete;
-
-        CampStage();
-        virtual ~CampStage();
 
         const std::string HandleCallback(
             const misc::PopupCallback_t::Packet_t &,
@@ -80,7 +80,7 @@ namespace stage
         bool showNewGamePopup3_;
         bool showNewGamePopup4_;
         gui::OuroborosUPtr_t ouroborosUPtr_;
-        gui::BottomSymbol botSymbol_;
+        gui::BottomSymbol bottomSymbol_;
     };
 
 } // namespace stage

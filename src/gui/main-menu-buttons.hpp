@@ -10,6 +10,7 @@
 // main-menu-buttons.hpp
 //
 #include "gui/image-text-entity.hpp"
+#include "gui/menu-image-enum.hpp"
 #include "stage/stage-enum.hpp"
 
 #include <memory>
@@ -25,22 +26,22 @@ namespace gui
     class MainMenuButton : public gui::ImageTextEntity
     {
     public:
+        explicit MainMenuButton(
+            const MenuImage::Enum MENU_IMAGE = MenuImage::Count,
+            const stage::Stage::Enum TRANSITION_TO = stage::Stage::Count,
+            const ImageTextEntity::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT
+            = boost::none,
+            const sf::Vector2f & POS_V = sf::Vector2f(),
+            const bool WILL_TRANSITION_STAGE = true,
+            const bool WILL_INCLUDE_DISABLED = false,
+            const float HEIGHT_SCREEN_RATIO = DEFAULT_HEIGHT_SCREEN_SIZE_RATIO_);
+
+        virtual ~MainMenuButton() = default;
+
         MainMenuButton(const MainMenuButton &) = delete;
         MainMenuButton(MainMenuButton &&) = delete;
         MainMenuButton & operator=(const MainMenuButton &) = delete;
         MainMenuButton & operator=(MainMenuButton &&) = delete;
-
-        // if FORCED_IMAGE_WIDTH=0 it is ignored, if <0 then the default is used
-        explicit MainMenuButton(
-            const stage::Stage::Enum TRANSITION_TO = stage::Stage::Count,
-            const ImageTextEntity::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT
-            = boost::none,
-            const float FORCED_IMAGE_WIDTH = 0.0f,
-            const sf::Vector2f & POS_V = sf::Vector2f(0.0f, 0.0f));
-
-        virtual ~MainMenuButton() = default;
-
-        static float DefaultWidth();
 
         void PretendClicked(const sf::Vector2f & FAKE_MOUSE_POS_V = sf::Vector2f(-1.0f, -1.0f))
         {
@@ -51,14 +52,18 @@ namespace gui
         void OnClick(const sf::Vector2f &) override;
 
         static const MouseImageInfo MakeMouseImageInfo(
-            const stage::Stage::Enum TRANSITION_TO,
-            const sf::Vector2f & POS_V,
-            const float FORCED_IMAGE_WIDTH);
+            const MenuImage::Enum MENU_IMAGE,
+            const bool WILL_INCLUDE_DISABLED,
+            const float HEIGHT_SCREEN_RATIO,
+            const sf::Vector2f & POS_V);
+
+    public:
+        static const float DEFAULT_HEIGHT_SCREEN_SIZE_RATIO_;
+        static const sf::Uint8 DISABLED_COLOR_ALPHA_;
 
     private:
-        static const float SCREEN_SIZE_RATIO_WIDTH_DEFAULT_;
-
         stage::Stage::Enum transitionTo_;
+        bool willTransitionStage_;
     };
 
     using MainMenuButtonUPtr_t = std::unique_ptr<MainMenuButton>;

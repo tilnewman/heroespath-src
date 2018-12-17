@@ -12,33 +12,25 @@
 #include "combat-image-enum.hpp"
 
 #include "misc/config-file.hpp"
-#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/random.hpp"
 
 namespace heroespath
 {
 namespace gui
 {
 
-    const std::string CombatImageType::ToString(const Enum ENUM)
+    const std::string CombatImageType::ToString(const Enum IMAGE)
     {
-        switch (ENUM)
+        switch (IMAGE)
         {
             case Wing:
             {
                 return "Wing";
             }
-            case Arrow1:
+            case Arrow:
             {
-                return "Arrow1";
-            }
-            case Arrow2:
-            {
-                return "Arrow2";
-            }
-            case Arrow3:
-            {
-                return "Arrow3";
+                return "Arrow";
             }
             case Bolt:
             {
@@ -48,21 +40,29 @@ namespace gui
             {
                 return "Dart";
             }
-            case Stone1:
+            case Stone:
             {
-                return "Stone1";
+                return "Stone";
             }
-            case Stone2:
+            case Note:
             {
-                return "Stone2";
+                return "Note";
             }
-            case Stone3:
+            case Spark:
             {
-                return "Stone3";
+                return "Spark";
             }
-            case Stone4:
+            case Run:
             {
-                return "Stone4";
+                return "Run";
+            }
+            case CrossSwords:
+            {
+                return "CrossSwords";
+            }
+            case CrossBones:
+            {
+                return "CrossBones";
             }
             case Count:
             {
@@ -71,7 +71,7 @@ namespace gui
             default:
             {
                 M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                    "enum_value=" << static_cast<EnumUnderlying_t>(IMAGE) << " is invalid. (count="
                                   << static_cast<EnumUnderlying_t>(Count) << ")");
 
                 return "";
@@ -79,80 +79,130 @@ namespace gui
         }
     }
 
-    const std::string CombatImageType::ImageFilename(const Enum ENUM)
+    std::size_t CombatImageType::ImageCount(const Enum IMAGE)
     {
-        switch (ENUM)
+        switch (IMAGE)
         {
             case Wing:
             {
-                return "wing.png";
+                return 1;
             }
-            case Arrow1:
+            case Arrow:
             {
-                return "arrow1.png";
-            }
-            case Arrow2:
-            {
-                return "arrow2.png";
-            }
-            case Arrow3:
-            {
-                return "arrow3.png";
+                return 5;
             }
             case Bolt:
             {
-                return "arrow4.png";
+                return 2;
             }
             case Dart:
             {
-                return "dart.png";
+                return 2;
             }
-            case Stone1:
+            case Stone:
             {
-                return "stone1.png";
+                return 4;
             }
-            case Stone2:
+            case Note:
             {
-                return "stone2.png";
+                return 5;
             }
-            case Stone3:
+            case Spark:
             {
-                return "stone3.png";
+                return 4;
             }
-            case Stone4:
+            case Run:
             {
-                return "stone4.png";
+                return 1;
+            }
+            case CrossSwords:
+            {
+                return 1;
+            }
+            case CrossBones:
+            {
+                return 1;
             }
             case Count:
-            {
-                return "(Count)";
-            }
             default:
             {
                 M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                    "enum_value=" << static_cast<EnumUnderlying_t>(IMAGE) << " is invalid. (count="
                                   << static_cast<EnumUnderlying_t>(Count) << ")");
 
-                return "";
+                return 0;
             }
         }
     }
 
-    const std::string CombatImageType::ImageDirectory()
+    const std::string CombatImageType::RandomConfigFileKey(const Enum IMAGE)
     {
-        static std::string imageDir;
+        const auto CONFIG_FILE_KEY_PREFIX = [&]() {
+            switch (IMAGE)
+            {
+                case Wing:
+                {
+                    return "media-image-combat-wing";
+                }
+                case Arrow:
+                {
+                    return "media-image-combat-arrow-";
+                }
+                case Bolt:
+                {
+                    return "media-image-combat-bolt-";
+                }
+                case Dart:
+                {
+                    return "media-image-combat-dart-";
+                }
+                case Stone:
+                {
+                    return "media-image-combat-stone-";
+                }
+                case Note:
+                {
+                    return "media-image-combat-note-";
+                }
+                case Spark:
+                {
+                    return "media-image-combat-spark-";
+                }
+                case Run:
+                {
+                    return "media-image-combat-run";
+                }
+                case CrossSwords:
+                {
+                    return "media-image-combat-crossswords";
+                }
+                case CrossBones:
+                {
+                    return "media-image-combat-crossbones";
+                }
+                case Count:
+                default:
+                {
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(IMAGE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
 
-        if (imageDir.empty())
+                    return "";
+                }
+            }
+        }();
+
+        const auto IMAGE_COUNT { ImageCount(IMAGE) };
+
+        if (IMAGE_COUNT == 1)
         {
-            imageDir = misc::ConfigFile::Instance()->GetMediaPath("media-images-combat-dir");
+            return CONFIG_FILE_KEY_PREFIX;
         }
 
-        return imageDir;
-    }
+        const auto IMAGE_NUMBER { misc::random::SizeT(1, IMAGE_COUNT) };
 
-    const std::string CombatImageType::ImagePath(const Enum ENUM)
-    {
-        return misc::filesystem::CombinePaths(ImageDirectory(), ImageFilename(ENUM));
+        return CONFIG_FILE_KEY_PREFIX + misc::ToString(IMAGE_NUMBER);
     }
 
 } // namespace gui

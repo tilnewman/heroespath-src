@@ -23,7 +23,7 @@ namespace gui
     {
         GuiImages() = delete;
 
-        static const std::string PathKey() { return "media-images-gui-elements"; }
+        static const std::string PathKey() { return "media-image-misc-gui-elements"; }
 
         // If the small line box is going to grow to fit inner contents, then these values
         // specify how to grow or shrink each side.
