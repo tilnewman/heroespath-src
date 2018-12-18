@@ -1458,10 +1458,7 @@ namespace stage
         descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "InventoryStage'sDescriptionBox",
             gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, " ", DESCBOX_TEXT_COLOR_),
-            LISTBOX_REGION_RIGHT_,
-            gui::TextRegion::DEFAULT_NO_RESIZE_,
-            gui::BoxEntityInfo(),
-            DESCBOX_MARGINS_);
+            LISTBOX_REGION_RIGHT_);
 
         EntityAdd(descTextRegionUPtr_);
 
@@ -3116,10 +3113,8 @@ namespace stage
             gui::TextInfo(
                 LIST_ELEMENT_TEXT_INFO_DEFAULT_, TEXT, DESCBOX_TEXT_COLOR_, DESCBOX_TEXT_SIZE_),
             LISTBOX_REGION_RIGHT_,
-            misc::MakeNotNull(this),
-            gui::TextRegion::DEFAULT_NO_RESIZE_,
             gui::BoxEntityInfo(),
-            DESCBOX_MARGINS_);
+            stage::IStagePtr_t(this));
 
         EntityAdd(descTextRegionUPtr_);
     }

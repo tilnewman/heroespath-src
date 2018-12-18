@@ -277,8 +277,8 @@ namespace combat
             gui::FontManager::Instance()->Size_Small(),
             sfutil::color::Light);
 
-        nameTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "SummaryView'sName", CREATURE_NAME_TEXT_INFO, sf::FloatRect());
+        nameTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("SummaryView'sName", CREATURE_NAME_TEXT_INFO);
 
         std::ostringstream rankSS;
         rankSS << "Rank " << creaturePtr->Rank() << " (" << creaturePtr->RankClassName() << ")";
@@ -289,8 +289,8 @@ namespace combat
             gui::FontManager::Instance()->Size_Small(),
             sfutil::color::Light);
 
-        rankTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "SummaryView'sRank", CREATURE_RANK_TEXT_INFO, sf::FloatRect());
+        rankTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("SummaryView'sRank", CREATURE_RANK_TEXT_INFO);
 
         std::ostringstream healthSS;
         healthSS << "Health: ";
@@ -309,8 +309,8 @@ namespace combat
             gui::FontManager::Instance()->Size_Small(),
             sfutil::color::Light);
 
-        healthTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO, sf::FloatRect());
+        healthTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO);
 
         std::ostringstream armorRatingSS;
         armorRatingSS << "Armor Rating: " << creaturePtr->ArmorRating();
@@ -322,7 +322,7 @@ namespace combat
             sfutil::color::Light);
 
         armorTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO, sf::FloatRect());
+            "SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO);
 
         const gui::TextInfo CREATURE_DESC_TEXT_INFO(
             creaturePtr->Body().ToString(),
@@ -345,7 +345,7 @@ namespace combat
             sfutil::color::Light);
 
         condTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "SummaryView'sCondition", CREATURE_CONDITIONS_TEXT_INFO, sf::FloatRect());
+            "SummaryView'sCondition", CREATURE_CONDITIONS_TEXT_INFO);
 
         const float IMAGE_POS_LEFT(COMBAT_REGION.left + BLOCK_POS_LEFT_ + IMAGE_EDGE_PAD_);
         const float IMAGE_POS_TOP(COMBAT_REGION.top + BLOCK_POS_TOP_ + IMAGE_EDGE_PAD_);

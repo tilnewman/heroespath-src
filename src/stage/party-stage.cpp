@@ -374,8 +374,7 @@ namespace stage
             gui::Justified::Left,
             sf::Text::Italic);
 
-        insTextRegionUPtr_
-            = std::make_unique<gui::TextRegion>("Instructions", insTextInfo, sf::FloatRect());
+        insTextRegionUPtr_ = std::make_unique<gui::TextRegion>("Instructions", insTextInfo);
 
         const auto HALF_INSTR_TEXT_WIDTH { insTextRegionUPtr_->GetEntityRegion().width * 0.5f };
 
@@ -401,7 +400,7 @@ namespace stage
             sf::Text::Italic);
 
         warningTextRegionUPtr_
-            = std::make_unique<gui::TextRegion>("WarningsText", warningTextInfo_, sf::FloatRect());
+            = std::make_unique<gui::TextRegion>("WarningsText", warningTextInfo_);
 
         const auto WARNING_TEXT_LEFT { (StageBase::StageRegion().width * 0.5f)
                                        - (warningTextRegionUPtr_->GetEntityRegion().width * 0.5f)
@@ -422,8 +421,7 @@ namespace stage
             gui::FontManager::Instance()->Size_Largeish(),
             sfutil::color::Orange + sf::Color(0, 30, 30, 0));
 
-        upTextRegionUPtr_
-            = std::make_unique<gui::TextRegion>("CharacterLabel", labelTextInfo, sf::FloatRect());
+        upTextRegionUPtr_ = std::make_unique<gui::TextRegion>("CharacterLabel", labelTextInfo);
 
         upTextRegionUPtr_->SetEntityPos(
             CHAR_LISTBOX_POS_LEFT_ + sfutil::ScreenRatioToPixelsHoriz(0.025f),
@@ -442,8 +440,7 @@ namespace stage
             gui::FontManager::Instance()->Size_Largeish(),
             sfutil::color::Orange + sf::Color(0, 30, 30, 0));
 
-        partyTextRegionUPtr_
-            = std::make_unique<gui::TextRegion>("PartyLabel", labelTextInfo, sf::FloatRect());
+        partyTextRegionUPtr_ = std::make_unique<gui::TextRegion>("PartyLabel", labelTextInfo);
 
         partyTextRegionUPtr_->SetEntityPos(
             PARTY_LISTBOX_POS_LEFT_ + sfutil::ScreenRatioToPixelsHoriz(0.025f),
@@ -917,8 +914,8 @@ namespace stage
             gui::Justified::Left);
 
         // initially the TextRegion is not positioned, see below
-        mouseOverTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "PartyStage'sMouseOverPopup", TEXT_INFO, sf::FloatRect());
+        mouseOverTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("PartyStage'sMouseOverPopup", TEXT_INFO);
 
         const auto TEXT_WIDTH { mouseOverTextRegionUPtr_->GetEntityRegion().width };
         const auto TEXT_HEIGHT { mouseOverTextRegionUPtr_->GetEntityRegion().height };

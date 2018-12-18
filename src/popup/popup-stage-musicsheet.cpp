@@ -598,7 +598,11 @@ namespace popup
         }
         else
         {
-            descTextUPtr_->Setup(SONG_DESC_TEXTINFO, SONG_DESC_TEXTRECT, stage::IStagePtr_t(this));
+            descTextUPtr_->Setup(
+                SONG_DESC_TEXTINFO,
+                SONG_DESC_TEXTRECT,
+                gui::BoxEntityInfo(),
+                stage::IStagePtr_t(this));
         }
     }
 

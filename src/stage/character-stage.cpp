@@ -968,19 +968,24 @@ namespace stage
         if (!attrDescTextRegionUPtr_)
         {
             attrDescTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "AttributeDescription", descTextInfo, REGION, stage::IStagePtr_t(this));
+                "AttributeDescription",
+                descTextInfo,
+                REGION,
+                gui::BoxEntityInfo(),
+                stage::IStagePtr_t(this));
 
             EntityAdd(attrDescTextRegionUPtr_);
         }
         else
         {
-            attrDescTextRegionUPtr_->Setup(descTextInfo, REGION, stage::IStagePtr_t(this));
+            attrDescTextRegionUPtr_->Setup(
+                descTextInfo, REGION, gui::BoxEntityInfo(), stage::IStagePtr_t(this));
         }
 
-        for (const auto & NEXT_TR_UPTR : textRegionUVec)
-        {
-            attrDescTextRegionUPtr_->Append(*NEXT_TR_UPTR);
-        }
+        // for (const auto & NEXT_TR_UPTR : textRegionUVec)
+        //{
+        //    attrDescTextRegionUPtr_->Append(*NEXT_TR_UPTR);
+        //}
 
         return REGION_TOP;
     }
@@ -998,13 +1003,9 @@ namespace stage
            << misc::ConfigFile::Instance()->Value(DESC_KEY) << "\n\n";
 
         descTextInfo.text = ss.str();
+
         textRegionUVec.emplace_back(std::make_unique<gui::TextRegion>(
-            creature::Traits::ToString(TRAIT_ENUM) + "StatDesc",
-            descTextInfo,
-            REGION,
-            gui::TextRegion::DEFAULT_NO_RESIZE_,
-            gui::BoxEntityInfo(),
-            gui::Margins()));
+            creature::Traits::ToString(TRAIT_ENUM) + "StatDesc", descTextInfo, REGION));
 
         gui::TextInfo helpTextInfo(descTextInfo);
 
@@ -1022,12 +1023,7 @@ namespace stage
         if (helpTextInfo.text.empty() == false)
         {
             textRegionUVec.emplace_back(std::make_unique<gui::TextRegion>(
-                creature::Traits::ToString(TRAIT_ENUM) + "AttributeDesc",
-                helpTextInfo,
-                REGION,
-                gui::TextRegion::DEFAULT_NO_RESIZE_,
-                gui::BoxEntityInfo(),
-                gui::Margins()));
+                creature::Traits::ToString(TRAIT_ENUM) + "AttributeDesc", helpTextInfo, REGION));
         }
     }
 

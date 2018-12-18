@@ -81,11 +81,7 @@ namespace gui
             r.width = 0.0f;
 
             textRegionUPtr_ = std::make_unique<TextRegion>(
-                std::string(GetEntityName()).append("'s"),
-                textInfo_,
-                r,
-                TextRegion::DEFAULT_NO_RESIZE_,
-                BoxEntityInfo());
+                std::string(GetEntityName()).append("'s"), textInfo_, r);
 
             cursorRect_.SetPos(
                 innerRegion_.left + textRegionUPtr_->GetEntityRegion().width + 3.0f,

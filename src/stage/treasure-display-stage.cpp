@@ -824,11 +824,8 @@ namespace stage
             gui::Justified::Left,
             sf::Text::Italic);
 
-        // initial position doesn't matter since the position must be set after rendering
-        const auto EMPTY_RECT { sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
-
-        instrTextUPtr_ = std::make_unique<gui::TextRegion>(
-            "TreasureStage'sInstructionText", TEXT_INFO, EMPTY_RECT);
+        instrTextUPtr_
+            = std::make_unique<gui::TextRegion>("TreasureStage'sInstructionText", TEXT_INFO);
 
         // the +93 and -10 were found by experiment to look better
         instrTextUPtr_->SetEntityPos(
@@ -957,11 +954,8 @@ namespace stage
 
         const auto PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(treasureLabelUPtr_) };
 
-        // initial position doesn't matter since the position must be set after rendering
-        const auto EMPTY_RECT { sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
-
-        treasureLabelUPtr_ = std::make_unique<gui::TextRegion>(
-            "TreasureStage'sTreasureListboxLabel", TEXT_INFO, EMPTY_RECT);
+        treasureLabelUPtr_
+            = std::make_unique<gui::TextRegion>("TreasureStage'sTreasureListboxLabel", TEXT_INFO);
 
         const auto MEASUREMENTS { CreateDisplayMeasurements() };
 
@@ -1318,11 +1312,8 @@ namespace stage
 
         const auto PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(textRegionUPtr) };
 
-        // initial position doesn't matter since the position must be set after rendering
-        const auto EMPTY_RECT { sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
-
-        textRegionUPtr = std::make_unique<gui::TextRegion>(
-            "TreasureStage'sInventory" + NAME, TEXT_INFO, EMPTY_RECT);
+        textRegionUPtr
+            = std::make_unique<gui::TextRegion>("TreasureStage'sInventory" + NAME, TEXT_INFO);
 
         textRegionUPtr->SetEntityPos(HORIZ_POS, VERT_POS);
 

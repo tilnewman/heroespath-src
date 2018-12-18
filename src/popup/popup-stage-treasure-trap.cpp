@@ -60,7 +60,11 @@ namespace popup
             sf::Text::Bold);
 
         textRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "PopupStageTreasureTrap's_Title", TITLE_TEXTINFO, tempRect, stage::IStagePtr_t(this));
+            "PopupStageTreasureTrap's_Title",
+            TITLE_TEXTINFO,
+            tempRect,
+            gui::BoxEntityInfo(),
+            stage::IStagePtr_t(this));
     }
 
     void PopupStageTreasureTrap::SetupDescriptionText()
@@ -77,7 +81,11 @@ namespace popup
             gui::Justified::Center);
 
         descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "PopupStageTreasureTrap's_Desc", DESC_TEXTINFO, tempRect, stage::IStagePtr_t(this));
+            "PopupStageTreasureTrap's_Desc",
+            DESC_TEXTINFO,
+            tempRect,
+            gui::BoxEntityInfo(),
+            stage::IStagePtr_t(this));
 
         StageBase::EntityAdd(descTextRegionUPtr_);
     }

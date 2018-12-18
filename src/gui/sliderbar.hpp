@@ -16,6 +16,7 @@
 #include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
@@ -33,11 +34,6 @@ namespace gui
     public:
         using Callback_t = misc::Callback<SliderBar>;
 
-        SliderBar(const SliderBar &) = delete;
-        SliderBar(SliderBar &&) = delete;
-        SliderBar & operator=(const SliderBar &) = delete;
-        SliderBar & operator=(SliderBar &&) = delete;
-
         SliderBar(
             const std::string & NAME,
             const float POS_LEFT,
@@ -50,6 +46,11 @@ namespace gui
 
         virtual ~SliderBar() = default;
 
+        SliderBar(const SliderBar &) = delete;
+        SliderBar(SliderBar &&) = delete;
+        SliderBar & operator=(const SliderBar &) = delete;
+        SliderBar & operator=(SliderBar &&) = delete;
+
         float PositionRatio() const { return currentPosRatio_; }
 
         // calls the callback
@@ -57,7 +58,8 @@ namespace gui
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        bool UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION) override;
+        // bool UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION)
+        // override;
 
         bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
         bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
@@ -73,26 +75,27 @@ namespace gui
         }
 
     protected:
+        void SetupInitialSpritePositions(const sf::Vector2f POS_V);
         float CalcPositionRatioChangeOnMouseUp(const sf::Vector2f & MOUSE_POS_V) const;
         float CalcPositionRatioFromScreenPos(const sf::Vector2f & SCREEN_POS_V) const;
 
         virtual void OnChange(const float NEW_VALUE);
 
-        const sf::IntRect TextureCoordsBaseOnStyle_BottomOrLeft(const SliderStyle STYLE) const;
+        const sf::IntRect TextureCoordsBaseOnStyle_TopOrLeft(const SliderStyle STYLE) const;
 
         const sf::IntRect
-            TextureCoordsBaseOnStyle_BottomOrLeft_Horizontal(const SliderStyle STYLE) const;
+            TextureCoordsBaseOnStyle_TopOrLeft_Horizontal(const SliderStyle STYLE) const;
 
         const sf::IntRect
-            TextureCoordsBaseOnStyle_BottomOrLeft_Vertical(const SliderStyle STYLE) const;
+            TextureCoordsBaseOnStyle_TopOrLeft_Vertical(const SliderStyle STYLE) const;
 
-        const sf::IntRect TextureCoordsBaseOnStyle_TopOrRight(const SliderStyle STYLE) const;
-
-        const sf::IntRect
-            TextureCoordsBaseOnStyle_TopOrRight_Horizontal(const SliderStyle STYLE) const;
+        const sf::IntRect TextureCoordsBaseOnStyle_BottomOrRight(const SliderStyle STYLE) const;
 
         const sf::IntRect
-            TextureCoordsBaseOnStyle_TopOrRight_Vertical(const SliderStyle STYLE) const;
+            TextureCoordsBaseOnStyle_BottomOrRight_Horizontal(const SliderStyle STYLE) const;
+
+        const sf::IntRect
+            TextureCoordsBaseOnStyle_BottomOrRight_Vertical(const SliderStyle STYLE) const;
 
         const sf::IntRect TextureCoordsBasedOnStyle_Bar(const SliderStyle STYLE) const;
         const sf::IntRect TextureCoordsBasedOnStyle_Pad(const SliderStyle STYLE) const;
@@ -106,28 +109,28 @@ namespace gui
 
         void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
 
+        float CalcMoveAmountRatio() const;
+
     private:
-        float CalcPositionRatioChangeOnMouseUp_Inner(const sf::Vector2f & MOUSE_POS_V) const;
-        float CalcPositionRatioFromScreenPos_Inner(const sf::Vector2f & SCREEN_POS_V) const;
+        float CalcPositionRatioChangeOnMouseUp_Impl(const sf::Vector2f & MOUSE_POS_V) const;
+        float CalcPositionRatioFromScreenPos_Impl(const sf::Vector2f & SCREEN_POS_V) const;
 
     public:
         static const float POS_OFFSET_HORIZ_;
         static const float POS_OFFSET_VERT_;
 
     protected:
-        static const float MOVE_AMOUNT_RATIO_;
-
         float currentPosRatio_;
         float length_;
         SliderStyle style_;
         gui::CachedTexture guiElementsCachedTexture_;
-        sf::Sprite botOrLeftSprite_;
-        sf::Sprite topOrRightSprite_;
+        sf::Sprite topOrLeftSprite_;
+        sf::Sprite botOrRightSprite_;
         sf::Sprite barSprite_;
         sf::Sprite padSprite_;
         Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
-        bool botOrLeftIsMouseDown_;
-        bool topOrRightIsMouseDown_;
+        bool topOrLeftIsMouseDown_;
+        bool botOrRightIsMouseDown_;
         bool barIsMouseDown_;
         bool padIsMouseDown_;
         bool willInvertPosition_;

@@ -26,7 +26,6 @@ namespace gui
 
     const float SliderBar::POS_OFFSET_HORIZ_(18.0f);
     const float SliderBar::POS_OFFSET_VERT_(5.0f);
-    const float SliderBar::MOVE_AMOUNT_RATIO_(0.1f);
 
     SliderBar::SliderBar(
         const std::string & NAME,
@@ -42,61 +41,23 @@ namespace gui
         , length_(LENGTH)
         , style_(STYLE)
         , guiElementsCachedTexture_(GuiImages::PathKey())
-        , botOrLeftSprite_(
-              guiElementsCachedTexture_.Get(), TextureCoordsBaseOnStyle_BottomOrLeft(STYLE))
-        , topOrRightSprite_(
-              guiElementsCachedTexture_.Get(), TextureCoordsBaseOnStyle_TopOrRight(STYLE))
+        , topOrLeftSprite_(
+              guiElementsCachedTexture_.Get(), TextureCoordsBaseOnStyle_TopOrLeft(STYLE))
+        , botOrRightSprite_(
+              guiElementsCachedTexture_.Get(), TextureCoordsBaseOnStyle_BottomOrRight(STYLE))
         , barSprite_(guiElementsCachedTexture_.Get(), TextureCoordsBasedOnStyle_Bar(STYLE))
         , padSprite_(guiElementsCachedTexture_.Get(), TextureCoordsBasedOnStyle_Pad(STYLE))
         , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
-        , botOrLeftIsMouseDown_(false)
-        , topOrRightIsMouseDown_(false)
+        , topOrLeftIsMouseDown_(false)
+        , botOrRightIsMouseDown_(false)
         , barIsMouseDown_(false)
         , padIsMouseDown_(false)
         , willInvertPosition_(WILL_INVERT_POSITION)
     {
-        if (style_.orientation == Orientation::Horiz)
-        {
-            botOrLeftSprite_.setPosition(POS_LEFT, POS_TOP);
-
-            topOrRightSprite_.setPosition(
-                POS_LEFT + (length_ - topOrRightSprite_.getLocalBounds().width), POS_TOP);
-
-            barSprite_.setPosition(
-                POS_LEFT + (botOrLeftSprite_.getLocalBounds().width * 0.5f),
-                POS_TOP + (botOrLeftSprite_.getLocalBounds().height * 0.5f)
-                    - (barSprite_.getGlobalBounds().height * 0.5f));
-
-            barSprite_.setScale(
-                (length_ - botOrLeftSprite_.getLocalBounds().width)
-                    / barSprite_.getLocalBounds().width,
-                1.0f);
-        }
-        else
-        {
-            // bar sprites are only horizontal so rotate if orientation is vertical
-            barSprite_.rotate(270.0f);
-
-            botOrLeftSprite_.setPosition(
-                POS_LEFT, POS_TOP + (length_ - botOrLeftSprite_.getLocalBounds().height));
-
-            topOrRightSprite_.setPosition(POS_LEFT, POS_TOP);
-
-            barSprite_.setPosition(
-                (POS_LEFT + (topOrRightSprite_.getGlobalBounds().width * 0.5f))
-                    - (barSprite_.getGlobalBounds().width * 0.5f),
-                (POS_TOP + (topOrRightSprite_.getGlobalBounds().height * 0.5f)) + length_);
-
-            barSprite_.setScale(
-                (length_ - topOrRightSprite_.getLocalBounds().height)
-                    / barSprite_.getLocalBounds().width,
-                1.0f);
-        }
+        SetupInitialSpritePositions(sf::Vector2f(POS_LEFT, POS_TOP));
 
         SetEntityRegion(sfutil::MinimallyEnclosing(
-            { botOrLeftSprite_, topOrRightSprite_, barSprite_, padSprite_ }));
-
-        UpdatePadPosition();
+            { topOrLeftSprite_, botOrRightSprite_, barSprite_, padSprite_ }));
     }
 
     void SliderBar::PositionRatio(const float NEW_VAL)
@@ -105,83 +66,59 @@ namespace gui
         UpdatePadPosition();
     }
 
-    float SliderBar::CalcPositionRatioChangeOnMouseUp(const sf::Vector2f & MOUSE_POS_V) const
-    {
-        if (willInvertPosition_)
-        {
-            return -1.0f * CalcPositionRatioChangeOnMouseUp_Inner(MOUSE_POS_V);
-        }
-        else
-        {
-            return CalcPositionRatioChangeOnMouseUp_Inner(MOUSE_POS_V);
-        }
-    }
-
-    float SliderBar::CalcPositionRatioFromScreenPos(const sf::Vector2f & SCREEN_POS_V) const
-    {
-        if (willInvertPosition_)
-        {
-            return 1.0f - CalcPositionRatioFromScreenPos_Inner(SCREEN_POS_V);
-        }
-        else
-        {
-            return CalcPositionRatioFromScreenPos_Inner(SCREEN_POS_V);
-        }
-    }
-
     void SliderBar::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw(barSprite_, states);
         target.draw(padSprite_, states);
-        target.draw(botOrLeftSprite_, states);
-        target.draw(topOrRightSprite_, states);
+        target.draw(topOrLeftSprite_, states);
+        target.draw(botOrRightSprite_, states);
     }
 
-    bool SliderBar::UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION)
-    {
-        if (entityRegion_.contains(MOUSE_POS_V))
-        {
-            if (WHEEL_MOTION < 0.0f)
-            {
-                currentPosRatio_ -= 0.02f;
-            }
-            else
-            {
-                currentPosRatio_ += 0.02f;
-            }
-
-            UpdatePadPosition();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    // bool SliderBar::UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION)
+    //{
+    //    if (entityRegion_.contains(MOUSE_POS_V))
+    //    {
+    //        if (WHEEL_MOTION < 0.0f)
+    //        {
+    //            currentPosRatio_ -= 0.02f;
+    //        }
+    //        else
+    //        {
+    //            currentPosRatio_ += 0.02f;
+    //        }
+    //
+    //        UpdatePadPosition();
+    //        return true;
+    //    }
+    //    else
+    //    {
+    //        return false;
+    //    }
+    //}
 
     bool SliderBar::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
         ResetMouseDownStatus();
 
-        // important to check the pad and end-points before the bar
+        // check the pad and end-points before the bar because they are on top of the bar
         if (padSprite_.getGlobalBounds().contains(MOUSE_POS_V))
         {
             padIsMouseDown_ = true;
         }
-        else if (botOrLeftSprite_.getGlobalBounds().contains(MOUSE_POS_V))
+        else if (topOrLeftSprite_.getGlobalBounds().contains(MOUSE_POS_V))
         {
-            botOrLeftIsMouseDown_ = true;
+            topOrLeftIsMouseDown_ = true;
         }
-        else if (topOrRightSprite_.getGlobalBounds().contains(MOUSE_POS_V))
+        else if (botOrRightSprite_.getGlobalBounds().contains(MOUSE_POS_V))
         {
-            topOrRightIsMouseDown_ = true;
+            botOrRightIsMouseDown_ = true;
         }
         else if (barSprite_.getGlobalBounds().contains(MOUSE_POS_V))
         {
             barIsMouseDown_ = true;
         }
 
-        if (botOrLeftIsMouseDown_ || topOrRightIsMouseDown_ || barIsMouseDown_ || padIsMouseDown_)
+        if (topOrLeftIsMouseDown_ || botOrRightIsMouseDown_ || barIsMouseDown_ || padIsMouseDown_)
         {
             SetMouseState(MouseState::Down);
             return true;
@@ -201,6 +138,7 @@ namespace gui
 
         if ((POS_CHANGE_RATIO < 0.0f) || (POS_CHANGE_RATIO > 0.0f))
         {
+            currentPosRatio_ += POS_CHANGE_RATIO;
             UpdatePadPosition();
             return true;
         }
@@ -232,13 +170,126 @@ namespace gui
 
     void SliderBar::MoveEntityPos(const float HORIZ, const float VERT)
     {
-        entityRegion_.left += HORIZ;
-        entityRegion_.top += VERT;
+        Entity::MoveEntityPos(HORIZ, VERT);
 
-        botOrLeftSprite_.move(HORIZ, VERT);
-        topOrRightSprite_.move(HORIZ, VERT);
+        topOrLeftSprite_.move(HORIZ, VERT);
+        botOrRightSprite_.move(HORIZ, VERT);
         barSprite_.move(HORIZ, VERT);
         padSprite_.move(HORIZ, VERT);
+    }
+
+    void SliderBar::SetupInitialSpritePositions(const sf::Vector2f POS_V)
+    {
+        auto calcPadScale = [](const float SIZE_ORIG, const float RANGE) {
+            const auto TENTH_RANGE { (RANGE * 0.1f) };
+
+            auto sizeFinal { SIZE_ORIG };
+
+            if (SIZE_ORIG > RANGE)
+            {
+                sizeFinal = (RANGE * 0.5f);
+            }
+            else if (SIZE_ORIG < TENTH_RANGE)
+            {
+                sizeFinal = TENTH_RANGE;
+            }
+
+            return (sizeFinal / SIZE_ORIG);
+        };
+
+        // the end caps are not placed at either end of the length_ because that would grow the
+        // length_, instead they are placed on-top-of or within the length_, which preserves the
+        // total lenght_ on screen but reduces the range over which the pad can move, see
+        // CalcPadPosition() for the code that assumes/handles this
+        if (style_.orientation == Orientation::Horiz)
+        {
+            topOrLeftSprite_.setPosition(POS_V);
+
+            botOrRightSprite_.setPosition(
+                POS_V.x + (length_ - sfutil::Width(botOrRightSprite_)), POS_V.y);
+
+            const auto BAR_RANGE {
+                (sfutil::CenterOfHoriz(botOrRightSprite_) - sfutil::CenterOfHoriz(topOrLeftSprite_))
+            };
+
+            const auto PAD_RANGE { BAR_RANGE - sfutil::Width(padSprite_) };
+            const auto PAD_SIZE_ORIG { sfutil::Width(padSprite_.getLocalBounds()) };
+
+            padSprite_.setScale(calcPadScale(PAD_SIZE_ORIG, PAD_RANGE), 1.0f);
+
+            padSprite_.setPosition(
+                sfutil::Right(topOrLeftSprite_),
+                (sfutil::CenterOfVert(topOrLeftSprite_) - (sfutil::Height(padSprite_) * 0.5f)));
+
+            barSprite_.setPosition(
+                sfutil::CenterOfHoriz(topOrLeftSprite_),
+                (sfutil::CenterOfVert(topOrLeftSprite_) - (sfutil::Height(barSprite_) * 0.5f)));
+
+            padSprite_.setPosition(
+                sfutil::Right(topOrLeftSprite_),
+                (sfutil::CenterOfVert(barSprite_) - (sfutil::Height(padSprite_) * 0.5f)));
+
+            barSprite_.setScale((BAR_RANGE / sfutil::Width(barSprite_.getLocalBounds())), 1.0f);
+        }
+        else
+        {
+            topOrLeftSprite_.setPosition(POS_V);
+
+            botOrRightSprite_.setPosition(
+                POS_V.x, (POS_V.y + (length_ - sfutil::Height(botOrRightSprite_))));
+
+            const auto BAR_RANGE { (
+                sfutil::CenterOfVert(botOrRightSprite_) - sfutil::CenterOfVert(topOrLeftSprite_)) };
+
+            const auto PAD_RANGE { BAR_RANGE - sfutil::Height(padSprite_) };
+            const auto PAD_SIZE_ORIG { sfutil::Height(padSprite_.getLocalBounds()) };
+
+            padSprite_.setScale(1.0f, calcPadScale(PAD_SIZE_ORIG, PAD_RANGE));
+
+            padSprite_.setPosition(
+                (sfutil::CenterOfHoriz(topOrLeftSprite_) - (sfutil::Width(padSprite_) * 0.5f)),
+                sfutil::Bottom(topOrLeftSprite_));
+
+            // this rotation puts the long shadow at the top which is not correct but because we are
+            // covering the ends of the bar it doesn't matter
+            barSprite_.setOrigin(sfutil::Size(barSprite_) * 0.5f);
+            barSprite_.rotate(270.0f);
+            barSprite_.setScale((BAR_RANGE / sfutil::Height(barSprite_)), 1.0f);
+
+            barSprite_.setPosition(
+                sfutil::CenterOfHoriz(topOrLeftSprite_),
+                (sfutil::CenterOfVert(topOrLeftSprite_) + (BAR_RANGE * 0.5f)));
+        }
+
+        UpdatePadPosition();
+    }
+
+    float SliderBar::CalcPositionRatioChangeOnMouseUp(const sf::Vector2f & MOUSE_POS_V) const
+    {
+        const auto POS_RATIO_CHANGE { CalcPositionRatioChangeOnMouseUp_Impl(MOUSE_POS_V) };
+
+        if (willInvertPosition_)
+        {
+            return (-1.0f * POS_RATIO_CHANGE);
+        }
+        else
+        {
+            return POS_RATIO_CHANGE;
+        }
+    }
+
+    float SliderBar::CalcPositionRatioFromScreenPos(const sf::Vector2f & SCREEN_POS_V) const
+    {
+        const auto POS_RATIO { CalcPositionRatioFromScreenPos_Impl(SCREEN_POS_V) };
+
+        if (willInvertPosition_)
+        {
+            return (1.0f - POS_RATIO);
+        }
+        else
+        {
+            return POS_RATIO;
+        }
     }
 
     void SliderBar::OnChange(const float)
@@ -249,33 +300,33 @@ namespace gui
         }
     }
 
-    const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_BottomOrLeft(const SliderStyle STYLE) const
+    const sf::IntRect SliderBar::TextureCoordsBaseOnStyle_TopOrLeft(const SliderStyle STYLE) const
     {
         if (style_.orientation == Orientation::Horiz)
         {
-            return TextureCoordsBaseOnStyle_BottomOrLeft_Horizontal(STYLE);
+            return TextureCoordsBaseOnStyle_TopOrLeft_Horizontal(STYLE);
         }
         else
         {
-            return TextureCoordsBaseOnStyle_BottomOrLeft_Vertical(STYLE);
-        }
-    }
-
-    const sf::IntRect SliderBar::TextureCoordsBaseOnStyle_TopOrRight(const SliderStyle STYLE) const
-    {
-        if (style_.orientation == Orientation::Horiz)
-        {
-            return TextureCoordsBaseOnStyle_TopOrRight_Horizontal(STYLE);
-        }
-        else
-        {
-            return TextureCoordsBaseOnStyle_TopOrRight_Vertical(STYLE);
+            return TextureCoordsBaseOnStyle_TopOrLeft_Vertical(STYLE);
         }
     }
 
     const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_BottomOrLeft_Horizontal(const SliderStyle STYLE) const
+        SliderBar::TextureCoordsBaseOnStyle_BottomOrRight(const SliderStyle STYLE) const
+    {
+        if (style_.orientation == Orientation::Horiz)
+        {
+            return TextureCoordsBaseOnStyle_BottomOrRight_Horizontal(STYLE);
+        }
+        else
+        {
+            return TextureCoordsBaseOnStyle_BottomOrRight_Vertical(STYLE);
+        }
+    }
+
+    const sf::IntRect
+        SliderBar::TextureCoordsBaseOnStyle_TopOrLeft_Horizontal(const SliderStyle STYLE) const
     {
         switch (STYLE.brightness)
         {
@@ -319,7 +370,7 @@ namespace gui
     }
 
     const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_BottomOrLeft_Vertical(const SliderStyle STYLE) const
+        SliderBar::TextureCoordsBaseOnStyle_TopOrLeft_Vertical(const SliderStyle STYLE) const
     {
         switch (STYLE.brightness)
         {
@@ -327,22 +378,22 @@ namespace gui
             {
                 if (STYLE.will_label_arrows)
                 {
-                    return GuiImages::ArrowMinusDownMedI();
+                    return GuiImages::ArrowPlusUpMedI();
                 }
                 else
                 {
-                    return GuiImages::ArrowDownMedI();
+                    return GuiImages::ArrowUpMedI();
                 }
             }
             case Brightness::Dark:
             {
                 if (STYLE.will_label_arrows)
                 {
-                    return GuiImages::ArrowMinusDownDarkI();
+                    return GuiImages::ArrowPlusUpDarkI();
                 }
                 else
                 {
-                    return GuiImages::ArrowDownDarkI();
+                    return GuiImages::ArrowUpDarkI();
                 }
             }
 
@@ -352,18 +403,18 @@ namespace gui
             {
                 if (STYLE.will_label_arrows)
                 {
-                    return GuiImages::ArrowMinusDownBrightI();
+                    return GuiImages::ArrowPlusUpBrightI();
                 }
                 else
                 {
-                    return GuiImages::ArrowDownBrightI();
+                    return GuiImages::ArrowUpBrightI();
                 }
             }
         }
     }
 
     const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_TopOrRight_Horizontal(const SliderStyle STYLE) const
+        SliderBar::TextureCoordsBaseOnStyle_BottomOrRight_Horizontal(const SliderStyle STYLE) const
     {
         switch (STYLE.brightness)
         {
@@ -407,7 +458,7 @@ namespace gui
     }
 
     const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_TopOrRight_Vertical(const SliderStyle STYLE) const
+        SliderBar::TextureCoordsBaseOnStyle_BottomOrRight_Vertical(const SliderStyle STYLE) const
     {
         switch (STYLE.brightness)
         {
@@ -415,11 +466,11 @@ namespace gui
             {
                 if (STYLE.will_label_arrows)
                 {
-                    return GuiImages::ArrowPlusUpMedI();
+                    return GuiImages::ArrowMinusDownMedI();
                 }
                 else
                 {
-                    return GuiImages::ArrowUpMedI();
+                    return GuiImages::ArrowDownMedI();
                 }
             }
 
@@ -427,11 +478,11 @@ namespace gui
             {
                 if (STYLE.will_label_arrows)
                 {
-                    return GuiImages::ArrowPlusUpDarkI();
+                    return GuiImages::ArrowMinusDownDarkI();
                 }
                 else
                 {
-                    return GuiImages::ArrowUpDarkI();
+                    return GuiImages::ArrowDownDarkI();
                 }
             }
 
@@ -441,11 +492,11 @@ namespace gui
             {
                 if (STYLE.will_label_arrows)
                 {
-                    return GuiImages::ArrowPlusUpBrightI();
+                    return GuiImages::ArrowMinusDownBrightI();
                 }
                 else
                 {
-                    return GuiImages::ArrowUpBrightI();
+                    return GuiImages::ArrowDownBrightI();
                 }
             }
         }
@@ -453,14 +504,22 @@ namespace gui
 
     const sf::IntRect SliderBar::TextureCoordsBasedOnStyle_Bar(const SliderStyle STYLE) const
     {
+        sf::IntRect textureRect;
+
         if (STYLE.is_line_large)
         {
-            return GuiImages::HorizontalLineLargeI();
+            textureRect = GuiImages::HorizontalLineLargeI();
         }
         else
         {
-            return GuiImages::HorizontalLineSmallI();
+            textureRect = GuiImages::HorizontalLineSmallI();
         }
+
+        const auto END_CLIP_LENGTH { 20 };
+        textureRect.left += END_CLIP_LENGTH;
+        textureRect.width -= (END_CLIP_LENGTH * 2);
+
+        return textureRect;
     }
 
     const sf::IntRect SliderBar::TextureCoordsBasedOnStyle_Pad(const SliderStyle STYLE) const
@@ -496,99 +555,107 @@ namespace gui
 
         if (willInvertPosition_)
         {
-            currentPosRatioToUse = 1.0f - currentPosRatioToUse;
+            currentPosRatioToUse = (1.0f - currentPosRatioToUse);
         }
 
-        const sf::Vector2f POS_V(GetEntityPos());
+        auto calcPos = [](const float MIN_POS,
+                          const float MAX_POS,
+                          const float PAD_SIZE,
+                          const float POS_RATIO) {
+            const auto RANGE { ((MAX_POS - MIN_POS) - PAD_SIZE) };
+
+            return (MIN_POS + (RANGE * POS_RATIO));
+        };
+
+        // this offset moves the pad away from the center of the sliderbar and makes it overlap on
+        // top of the end caps topOrLeftSprite_ and botOrRightSprite_, because those sprites have
+        // semi-transparent shadows that prevent padSprite_ from actually touching the endcaps.  So
+        // no matter how many times you click or how hard you drag the pad it never really touches
+        // the endcaps, which looks wrong and drives users crazy.  So this makes the pad overlap the
+        // endcaps a little, just enough to push past the shadow, and allows the pad to touch the
+        // endcaps.
+        const auto OVERLAP_OFFSET { 2.0f };
 
         if (style_.orientation == Orientation::Horiz)
         {
-            const auto SLIDER_RANGE { length_
-                                      - (botOrLeftSprite_.getLocalBounds().width
-                                         + topOrRightSprite_.getLocalBounds().width
-                                         + padSprite_.getLocalBounds().width - 8.0f) };
+            const auto LEFT { calcPos(
+                (sfutil::Right(topOrLeftSprite_) - OVERLAP_OFFSET),
+                (sfutil::Left(botOrRightSprite_) + OVERLAP_OFFSET),
+                sfutil::Width(padSprite_),
+                currentPosRatioToUse) };
 
-            // magic number 3 moves passed the shadow
-            const auto PAD_POS_LEFT { POS_V.x + botOrLeftSprite_.getLocalBounds().width
-                                      + (SLIDER_RANGE * currentPosRatioToUse) - 3.0f };
-
-            const auto PAD_POS_TOP { POS_V.y + (botOrLeftSprite_.getLocalBounds().height * 0.5f)
-                                     - (padSprite_.getLocalBounds().height * 0.5f) };
-
-            return sf::Vector2f(PAD_POS_LEFT, PAD_POS_TOP);
+            return sf::Vector2f(LEFT, sfutil::Top(padSprite_));
         }
         else
         {
-            const auto SLIDER_RANGE { length_
-                                      - (topOrRightSprite_.getLocalBounds().height
-                                         + botOrLeftSprite_.getLocalBounds().height
-                                         + padSprite_.getLocalBounds().height - 5.0f) };
+            const auto TOP { calcPos(
+                (sfutil::Bottom(topOrLeftSprite_) - OVERLAP_OFFSET),
+                (sfutil::Top(botOrRightSprite_) + OVERLAP_OFFSET),
+                sfutil::Height(padSprite_),
+                currentPosRatioToUse) };
 
-            // magic number 1 moves passed the shadow
-            const auto PAD_POS_TOP { POS_V.y + topOrRightSprite_.getLocalBounds().height
-                                     + (SLIDER_RANGE * currentPosRatioToUse) - 1.0f };
-
-            const auto PAD_POS_LEFT { POS_V.x + (topOrRightSprite_.getLocalBounds().width * 0.5f)
-                                      - (padSprite_.getLocalBounds().width * 0.5f) };
-
-            return sf::Vector2f(PAD_POS_LEFT, PAD_POS_TOP);
+            return sf::Vector2f(sfutil::Left(padSprite_), TOP);
         }
     }
 
     void SliderBar::ResetMouseDownStatus()
     {
-        botOrLeftIsMouseDown_ = false;
-        topOrRightIsMouseDown_ = false;
+        topOrLeftIsMouseDown_ = false;
+        botOrRightIsMouseDown_ = false;
         barIsMouseDown_ = false;
         padIsMouseDown_ = false;
     }
 
-    float SliderBar::CalcPositionRatioChangeOnMouseUp_Inner(const sf::Vector2f & MOUSE_POS_V) const
+    float SliderBar::CalcMoveAmountRatio() const
     {
-        if (botOrLeftIsMouseDown_)
+        if (style_.orientation == Orientation::Horiz)
         {
-            if (style_.orientation == Orientation::Horiz)
-            {
-                return -MOVE_AMOUNT_RATIO_;
-            }
-            else
-            {
-                return MOVE_AMOUNT_RATIO_;
-            }
+            return (
+                sfutil::Width(padSprite_)
+                / (sfutil::Left(botOrRightSprite_) - sfutil::Right(topOrLeftSprite_)));
         }
-        else if (topOrRightIsMouseDown_)
+        else
         {
-            if (style_.orientation == Orientation::Horiz)
-            {
-                return MOVE_AMOUNT_RATIO_;
-            }
-            else
-            {
-                return -MOVE_AMOUNT_RATIO_;
-            }
+            return (
+                sfutil::Height(padSprite_)
+                / (sfutil::Top(botOrRightSprite_) - sfutil::Bottom(topOrLeftSprite_)));
+        }
+    }
+
+    float SliderBar::CalcPositionRatioChangeOnMouseUp_Impl(const sf::Vector2f & MOUSE_POS_V) const
+    {
+        const auto MOVE_AMOUNT_RATIO { CalcMoveAmountRatio() };
+
+        if (topOrLeftIsMouseDown_)
+        {
+            return -MOVE_AMOUNT_RATIO;
+        }
+        else if (botOrRightIsMouseDown_)
+        {
+            return MOVE_AMOUNT_RATIO;
         }
         else if (barIsMouseDown_)
         {
             if (style_.orientation == Orientation::Horiz)
             {
-                if (MOUSE_POS_V.x < padSprite_.getGlobalBounds().left)
+                if (MOUSE_POS_V.x < sfutil::Left(padSprite_))
                 {
-                    return -MOVE_AMOUNT_RATIO_;
+                    return -MOVE_AMOUNT_RATIO;
                 }
                 else if (MOUSE_POS_V.x > sfutil::Right(padSprite_))
                 {
-                    return MOVE_AMOUNT_RATIO_;
+                    return MOVE_AMOUNT_RATIO;
                 }
             }
             else
             {
-                if (MOUSE_POS_V.y < padSprite_.getGlobalBounds().top)
+                if (MOUSE_POS_V.y < sfutil::Top(padSprite_))
                 {
-                    return -MOVE_AMOUNT_RATIO_;
+                    return -MOVE_AMOUNT_RATIO;
                 }
                 else if (MOUSE_POS_V.y > sfutil::Bottom(padSprite_))
                 {
-                    return MOVE_AMOUNT_RATIO_;
+                    return MOVE_AMOUNT_RATIO;
                 }
             }
         }
@@ -596,58 +663,32 @@ namespace gui
         return 0.0f;
     }
 
-    float SliderBar::CalcPositionRatioFromScreenPos_Inner(const sf::Vector2f & SCREEN_POS_V) const
+    float SliderBar::CalcPositionRatioFromScreenPos_Impl(const sf::Vector2f & SCREEN_POS_V) const
     {
-        const auto POS_V(GetEntityPos());
-
-        // change from screen to slider coords
-        if (style_.orientation == Orientation::Horiz)
-        {
-            const auto MIN_SCREENX { POS_V.x + botOrLeftSprite_.getLocalBounds().width };
-
-            const auto MAX_SCREENX { (
-                POS_V.x + (length_ - topOrRightSprite_.getLocalBounds().width)
-                - barSprite_.getLocalBounds().height) };
-
-            if (SCREEN_POS_V.x < MIN_SCREENX)
+        auto calcRatio = [](const float MIN_POS, const float MAX_POS, const float ACTUAL_POS) {
+            if (ACTUAL_POS < MIN_POS)
             {
                 return 0.0f;
             }
+            else if (ACTUAL_POS > MAX_POS)
+            {
+                return 1.0f;
+            }
             else
             {
-                if (SCREEN_POS_V.x > MAX_SCREENX)
-                {
-                    return 1.0f;
-                }
-                else
-                {
-                    return (SCREEN_POS_V.x - MIN_SCREENX) / (MAX_SCREENX - MIN_SCREENX);
-                }
+                return ((ACTUAL_POS - MIN_POS) / (MAX_POS - MIN_POS));
             }
+        };
+
+        if (style_.orientation == Orientation::Horiz)
+        {
+            return calcRatio(
+                sfutil::Right(topOrLeftSprite_), sfutil::Left(botOrRightSprite_), SCREEN_POS_V.x);
         }
         else
         {
-            const auto MIN_SCREENY { POS_V.y + topOrRightSprite_.getLocalBounds().height };
-
-            const auto MAX_SCREENY { (
-                POS_V.y + (length_ - botOrLeftSprite_.getLocalBounds().height)
-                - barSprite_.getLocalBounds().height) };
-
-            if (SCREEN_POS_V.y < MIN_SCREENY)
-            {
-                return 0.0f;
-            }
-            else
-            {
-                if (SCREEN_POS_V.y > MAX_SCREENY)
-                {
-                    return 1.0f;
-                }
-                else
-                {
-                    return (SCREEN_POS_V.y - MIN_SCREENY) / (MAX_SCREENY - MIN_SCREENY);
-                }
-            }
+            return calcRatio(
+                sfutil::Bottom(topOrLeftSprite_), sfutil::Top(botOrRightSprite_), SCREEN_POS_V.y);
         }
     }
 

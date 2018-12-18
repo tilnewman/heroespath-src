@@ -67,6 +67,7 @@ namespace gui
         backgroundInfo_ = BACKGROUND_INFO;
         SetEntityColors(BACKGROUND_INFO.focus_colors);
         SetEntityRegion(REGION);
+        SetWillAcceptFocus((BACKGROUND_INFO != BoxEntityInfo()));
     }
 
     void BoxEntity::SetEntityPos(const float POS_LEFT, const float POS_TOP)

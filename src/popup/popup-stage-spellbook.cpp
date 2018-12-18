@@ -629,7 +629,10 @@ namespace popup
         else
         {
             spellDescTextUPtr_->Setup(
-                SPELL_DESC_TEXTINFO, SPELL_DESC_TEXTRECT, stage::IStagePtr_t(this));
+                SPELL_DESC_TEXTINFO,
+                SPELL_DESC_TEXTRECT,
+                gui::BoxEntityInfo(),
+                stage::IStagePtr_t(this));
         }
     }
 

@@ -240,7 +240,11 @@ namespace stage
                 subjectSprite_,
                 sfutil::ScaleAndReCenterCopy(SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_));
 
-            textRegionUPtr_->Setup(INTERACTION_PTR->Text(), TEXT_REGION, stage::IStagePtr_t(this));
+            textRegionUPtr_->Setup(
+                INTERACTION_PTR->Text(),
+                TEXT_REGION,
+                gui::BoxEntityInfo(),
+                stage::IStagePtr_t(this));
 
             for (auto & buttonUPtr : buttons_)
             {

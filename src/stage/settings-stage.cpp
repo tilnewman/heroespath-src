@@ -297,7 +297,7 @@ namespace stage
         if (false == hasStageAlreadyBeenSetup_)
         {
             resLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "ResolutionChangeLabel", CreateLabelTextInfo("Change Resolution"), sf::FloatRect());
+                "ResolutionChangeLabel", CreateLabelTextInfo("Change Resolution"));
 
             EntityAdd(resLabelTextRegionUPtr_);
         }
@@ -341,7 +341,7 @@ namespace stage
         if (false == hasStageAlreadyBeenSetup_)
         {
             aaLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "AntiAliasSettingLabel", CreateLabelTextInfo("Anti-\nAliasing"), sf::FloatRect());
+                "AntiAliasSettingLabel", CreateLabelTextInfo("Anti-\nAliasing"));
 
             EntityAdd(aaLabelTextRegionUPtr_);
         }
@@ -463,7 +463,7 @@ namespace stage
         if (false == hasStageAlreadyBeenSetup_)
         {
             musicVolLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "MusicVolumeSettingLabel", CreateLabelTextInfo("Music\nVolume"), sf::FloatRect());
+                "MusicVolumeSettingLabel", CreateLabelTextInfo("Music\nVolume"));
 
             EntityAdd(musicVolLabelTextRegionUPtr_);
         }
@@ -511,9 +511,7 @@ namespace stage
             effectsVolLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "EffectsVolumeSettingLabel",
                 CreateLabelTextInfo("Sound Effects\nVolume"),
-                sf::FloatRect(),
-                gui::TextRegion::DEFAULT_NO_RESIZE_,
-                gui::BoxEntityInfo());
+                sf::FloatRect());
 
             EntityAdd(effectsVolLabelTextRegionUPtr_);
         }
@@ -559,7 +557,7 @@ namespace stage
         if (false == hasStageAlreadyBeenSetup_)
         {
             musicInfoLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "MusicInfoLabel", CreateLabelTextInfo("Music Currently Playing"), sf::FloatRect());
+                "MusicInfoLabel", CreateLabelTextInfo("Music Currently Playing"));
 
             EntityAdd(musicInfoLabelTextRegionUPtr_);
         }
@@ -633,18 +631,12 @@ namespace stage
         if (false == hasStageAlreadyBeenSetup_)
         {
             musicInfoDetailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "SettingsStageMusicInfo",
-                TEXT_INFO,
-                RECT,
-                misc::MakeNotNull(this),
-                gui::TextRegion::DEFAULT_NO_RESIZE_,
-                musicBoxInfo);
+                "SettingsStageMusicInfo", TEXT_INFO, RECT, musicBoxInfo, stage::IStagePtr_t(this));
 
             EntityAdd(musicInfoDetailsTextRegionUPtr_);
         }
 
-        musicInfoDetailsTextRegionUPtr_->Setup(
-            TEXT_INFO, RECT, gui::TextRegion::DEFAULT_NO_RESIZE_, musicBoxInfo);
+        musicInfoDetailsTextRegionUPtr_->Setup(TEXT_INFO, RECT, musicBoxInfo);
     }
 
     void SettingsStage::Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT)
@@ -662,7 +654,7 @@ namespace stage
         if (false == hasStageAlreadyBeenSetup_)
         {
             revLabelTextRegionUPtr_
-                = std::make_unique<gui::TextRegion>("RevisionNumber", TEXT_INFO, sf::FloatRect());
+                = std::make_unique<gui::TextRegion>("RevisionNumber", TEXT_INFO);
 
             EntityAdd(revLabelTextRegionUPtr_);
         }

@@ -84,8 +84,7 @@ namespace popup
                                             PopupManager::Color_Font(),
                                             gui::Justified::Center };
 
-        msgTextRegionUPtr_
-            = std::make_unique<gui::TextRegion>("PopupStage'sInfo", MSG_TEXT_INFO, sf::FloatRect());
+        msgTextRegionUPtr_ = std::make_unique<gui::TextRegion>("PopupStage'sInfo", MSG_TEXT_INFO);
 
         EntityAdd(msgTextRegionUPtr_);
         SetupInfoText("(type a number or use the slider below)");
@@ -176,8 +175,7 @@ namespace popup
 
         EntityRemove(msgTextRegionUPtr_);
 
-        msgTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect());
+        msgTextRegionUPtr_ = std::make_unique<gui::TextRegion>("PopupStage'sInfo", INFO_TEXT_INFO);
 
         EntityAdd(msgTextRegionUPtr_);
 

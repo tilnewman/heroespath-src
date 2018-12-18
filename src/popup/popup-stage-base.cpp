@@ -422,7 +422,11 @@ namespace popup
         tempRect.height = 0.0f;
 
         textRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "PopupStage's", popupInfo_.TextInfo(), tempRect, stage::IStagePtr_t(this));
+            "PopupStage's",
+            popupInfo_.TextInfo(),
+            tempRect,
+            gui::BoxEntityInfo(),
+            stage::IStagePtr_t(this));
 
         if ((textRegionUPtr_->GetEntityRegion().top + textRegionUPtr_->GetEntityRegion().height)
             > (textRegion_.top + textRegion_.height))
@@ -430,7 +434,11 @@ namespace popup
             tempRect.height = textRegion_.height;
 
             textRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "PopupStage's", popupInfo_.TextInfo(), tempRect, stage::IStagePtr_t(this));
+                "PopupStage's",
+                popupInfo_.TextInfo(),
+                tempRect,
+                gui::BoxEntityInfo(),
+                stage::IStagePtr_t(this));
         }
     }
 
