@@ -43,8 +43,7 @@ namespace interact
 
         auto uptr { std::make_unique<gui::TextButton>(
             Name(),
-            0.0f,
-            0.0f,
+            sf::Vector2f(),
             gui::MouseTextInfo::Make_InteractionButtonSet(DISPLAYED_NAME),
             CALLBACK_HANDLER_PTR_OPT) };
 

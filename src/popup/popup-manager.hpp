@@ -64,22 +64,7 @@ namespace popup
 
         bool Test(stage::IStagePtr_t iStagePtr);
 
-        // throws range error on invalid PopupImage::Enum
-        const std::string BackgroundImageConfigFileKey(const PopupImage::Enum IMAGE) const;
-
         static sf::Color Color_Font() { return fontColor_; }
-
-        // inner rects that content can appear within
-        // TODO move this to the config file
-        static sf::IntRect Rect_Banner() { return { 78, 32, 338, 180 }; }
-        static sf::IntRect Rect_Regular() { return { 32, 32, 431, 260 }; }
-        static sf::IntRect Rect_RegularSidebar() { return { 115, 32, 347, 260 }; }
-        static sf::IntRect Rect_Large() { return { 47, 47, 407, 400 }; }
-        static sf::IntRect Rect_LargeSidebar() { return { 85, 47, 360, 400 }; }
-        static sf::IntRect Rect_Spellbook_PageLeft() { return { 165, 155, 652, 990 }; }
-        static sf::IntRect Rect_Spellbook_PageRight() { return { 932, 155, 652, 990 }; }
-        static sf::IntRect Rect_MusicSheet_LeftSide() { return { 116, 116, 700, 840 }; }
-        static sf::IntRect Rect_MusicSheet_RightSide() { return { 816, 116, 700, 840 }; }
 
         // TextInfo creation helper functions
         const gui::TextInfo TextInfoDefault(

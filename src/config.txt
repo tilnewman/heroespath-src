@@ -100,7 +100,7 @@ media-image-background-paper-popup-large-texture-rect         0,0,512,512
 media-image-background-paper-popup-large-bar-texture-rect     0,512,512,512
 media-image-background-paper-popup-medium-texture-rect        512,0,512,336
 media-image-background-paper-popup-medium-bar-texture-rect    512,384,512,320
-media-image-background-paper-popup-banner-texture-rect        512,786,512,256
+media-image-background-paper-popup-banner-texture-rect        512,768,512,256
 media-image-background-paper-popup-music-sheet-texture-rect   0,0,1024,680
 media-image-background-paper-popup-spell-book-texture-rect    0,0,1024,680
 #

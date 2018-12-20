@@ -16,6 +16,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/serialize-helpers.hpp"
+#include "misc/strings.hpp"
 
 #include <exception>
 #include <sstream>
@@ -46,7 +47,7 @@ namespace creature
                 {
                     if ((iter + 1) == charactersPVec_.end())
                     {
-                        return charactersPVec_[0];
+                        return charactersPVec_.front();
                     }
                     else
                     {
@@ -57,7 +58,7 @@ namespace creature
                 {
                     if (iter == charactersPVec_.begin())
                     {
-                        return charactersPVec_[charactersPVec_.size() - 1];
+                        return charactersPVec_.back();
                     }
                     else
                     {
@@ -67,55 +68,46 @@ namespace creature
             }
         }
 
-        std::ostringstream ss;
-        ss << "player::party::GetNextInOrder(creature={" << CREATURE_PTR->ToString()
-           << "}, WILL_CHOOSE_AFTER=" << std::boolalpha << WILL_CHOOSE_AFTER
-           << ") but that CREATURE_PTR was not found in the party list.";
+        M_HP_LOG_ERR(
+            "CREATURE_PTR not in charactersPVec_.  Returning the first character instead."
+            + M_HP_VAR_STR(CREATURE_PTR->ToString()) + M_HP_VAR_STR(charactersPVec_.size())
+            + M_HP_VAR_STR(WILL_CHOOSE_AFTER));
 
-        throw std::runtime_error(ss.str());
+        return charactersPVec_.front();
     }
 
-    const creature::CreaturePtr_t PlayerParty::GetAtOrderPos(const std::size_t INDEX_NUM)
+    const creature::CreaturePtr_t PlayerParty::GetAtOrderPos(const std::size_t INDEX)
     {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (INDEX_NUM < charactersPVec_.size()),
-            "player::party::GetAtOrderPos(INDEX_NUM="
-                << INDEX_NUM << ") was given an out of range INDEX_NUM.  (it was too big, max is "
-                << charactersPVec_.size() - 1 << ")");
-
-        std::size_t indexCounter(0);
-        for (const auto & CREATURE_PTR : charactersPVec_)
+        if (INDEX >= charactersPVec_.size())
         {
-            if (indexCounter++ == INDEX_NUM)
-            {
-                return CREATURE_PTR;
-            }
+            M_HP_LOG_ERR(
+                "INDEX out of bounds.  Returning the last character instead." + M_HP_VAR_STR(INDEX)
+                + M_HP_VAR_STR(charactersPVec_.size()));
+
+            return charactersPVec_.back();
         }
-
-        std::ostringstream ss;
-        ss << "player::party::GetAtOrderPos(INDEX_NUM=" << INDEX_NUM
-           << ") never found an index matching what was given.";
-
-        throw std::runtime_error(ss.str());
+        else
+        {
+            return charactersPVec_.at(INDEX);
+        }
     }
 
     std::size_t PlayerParty::GetOrderNum(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        const std::size_t NUM_CHARACTERS(charactersPVec_.size());
-        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        const auto CHARACTER_COUNT { charactersPVec_.size() };
+        for (std::size_t index(0); index < CHARACTER_COUNT; ++index)
         {
-            if (charactersPVec_[i] == CREATURE_PTR)
+            if (charactersPVec_.at(index) == CREATURE_PTR)
             {
-                return i;
+                return index;
             }
         }
 
-        std::ostringstream ss;
-        ss << "player::party::GetOrderNum(creature={" << CREATURE_PTR->ToString()
-           << "}) never found that creature in the party vec.  Put another way, the function"
-           << "was given a creature that was not in the character vec.";
+        M_HP_LOG_ERR(
+            "CREATURE_PTR not in charactersPVec_.  Returning zero (the first character) instead."
+            + M_HP_VAR_STR(CREATURE_PTR->ToString()) + M_HP_VAR_STR(charactersPVec_.size()));
 
-        throw std::runtime_error(ss.str());
+        return 0;
     }
 
     std::size_t PlayerParty::GetNumHumanoid() const

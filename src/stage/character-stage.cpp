@@ -1099,7 +1099,7 @@ namespace stage
                 popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
                     ss.str(),
-                    (popup::PopupButtons::Yes | popup::PopupButtons::No),
+                    popup::PopupButtons::YesNo,
                     popup::PopupImage::Regular,
                     gui::Justified::Center,
                     gui::sound_effect::PromptWarn));

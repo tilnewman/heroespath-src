@@ -139,7 +139,7 @@ namespace popup
     {
         PopupStageBase::Setup();
 
-        SetupRegions();
+        SetupRegionsExtraWork();
         SetupLeftAccentImage();
         SetupRightAccentImage();
         SetupPlayerImage();
@@ -174,8 +174,6 @@ namespace popup
         spellDescTextUPtr_->draw(target, states);
 
         StageBase::draw(target, states);
-
-        PopupStageBase::DrawRedX(target, states);
     }
 
     void PopupStageSpellbook::UpdateTime(const float ELAPSED_TIME_SECONDS)
@@ -223,29 +221,15 @@ namespace popup
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
 
-    void PopupStageSpellbook::SetupOuterAndInnerRegion()
-    {
-        SetupForFullScreenWithBorderRatio(BORDER_SCREEN_RATIO_);
-    }
-
     void PopupStageSpellbook::SetupRegions()
     {
-        const sf::FloatRect LEFT_PAGE_RECT_RAW { popup::PopupManager::Rect_Spellbook_PageLeft() };
+        PopupStageBase::SetupRegionsForFullScreen(BORDER_SCREEN_RATIO_);
+    }
 
-        const auto SCALE { innerRegion_.width
-                           / static_cast<float>(backgroundTexture_.Get().getSize().x) };
-
-        pageRectLeft_.left = innerRegion_.left + (LEFT_PAGE_RECT_RAW.left * SCALE);
-        pageRectLeft_.top = innerRegion_.top + (LEFT_PAGE_RECT_RAW.top * SCALE);
-        pageRectLeft_.width = LEFT_PAGE_RECT_RAW.width * SCALE;
-        pageRectLeft_.height = LEFT_PAGE_RECT_RAW.height * SCALE;
-
-        const sf::FloatRect RIGHT_PAGE_RECT_RAW { popup::PopupManager::Rect_Spellbook_PageRight() };
-
-        pageRectRight_.left = innerRegion_.left + (RIGHT_PAGE_RECT_RAW.left * SCALE);
-        pageRectRight_.top = innerRegion_.top + (RIGHT_PAGE_RECT_RAW.top * SCALE);
-        pageRectRight_.width = RIGHT_PAGE_RECT_RAW.width * SCALE;
-        pageRectRight_.height = RIGHT_PAGE_RECT_RAW.height * SCALE;
+    void PopupStageSpellbook::SetupRegionsExtraWork()
+    {
+        pageRectLeft_ = MakeBackgroundImageContentRegion(popupInfo_.Image(), false, StageRegion());
+        pageRectRight_ = MakeBackgroundImageContentRegion(popupInfo_.Image(), true, StageRegion());
     }
 
     void PopupStageSpellbook::SetupLeftAccentImage()
@@ -259,9 +243,7 @@ namespace popup
 
             accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
-            sfutil::FitAndCenterTo(
-                accentSprite1_,
-                sfutil::ScaleAndReCenterCopy(pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+            sfutil::FitAndCenterTo(accentSprite1_, pageRectLeft_);
 
             accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
@@ -275,11 +257,10 @@ namespace popup
         {
             accent2CachedTextureOpt_
                 = gui::CachedTexture(PathWrapper(ACCENT_IMAGE_PATH), AccentImageOptions());
+
             accentSprite2_.setTexture(accent2CachedTextureOpt_->Get(), true);
 
-            sfutil::FitAndCenterTo(
-                accentSprite2_,
-                sfutil::ScaleAndReCenterCopy(pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+            sfutil::FitAndCenterTo(accentSprite2_, pageRectRight_);
 
             accentSprite2_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
@@ -412,7 +393,7 @@ namespace popup
         listBoxBackgroundInfo_.focus_colors = LISTBOX_COLORSET_;
 
         listBoxUPtr_ = std::make_unique<gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>>(
-            "PopupStage'sSpellListBox",
+            GetStageName() + "'sSpellListBox",
             misc::MakeNotNull(this),
             misc::MakeNotNull(this),
             gui::ListBoxPacket(

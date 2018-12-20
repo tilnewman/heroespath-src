@@ -15,7 +15,9 @@
 #include "gui/image-loaders.hpp"
 #include "gui/sound-manager.hpp"
 #include "popup/popup-manager.hpp"
+#include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
+#include "sfutil/primitives.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -30,18 +32,16 @@ namespace popup
 
     PopupStageImageSelect::PopupStageImageSelect(const PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
+        , IMAGE_COUNT_(POPUP_INFO.ImagesCount())
         , isChangingImageAllowed_(false)
         , isInitialAnimComplete_(false)
         , willShowImageCount_(false)
-        , cachedTexturePrevOpt_()
         , spriteCurr_()
         , spritePrev_()
         , areImagesMoving_(false)
         , areImagesMovingLeft_(false)
-        , imagesRect_()
         , imageWrnTextRegionUPtr_()
         , imageNumTextRegionUPtr_()
-        , imageIndex_(0)
         , imageIndexLastSoundOn_(0)
         , imageIndexLastSoundOff_(0)
         , targetScaleCurr_(1.0f)
@@ -49,9 +49,11 @@ namespace popup
         , startPosXPrev_(0.0f)
         , travelDistCurr_(0.0f)
         , travelDistPrev_(0.0f)
-        , imageMoveQueue_()
         , imageSlider_(IMAGE_SLIDER_SPEED_)
         , imagePosTop_(0.0f)
+        , imagesRect_()
+        , imageIndex_(0)
+        , imageMoveQueue_()
     {}
 
     PopupStageImageSelect::~PopupStageImageSelect() = default;
@@ -61,13 +63,12 @@ namespace popup
     {
         if (isChangingImageAllowed_)
         {
-            const auto COUNT_MAX { CountMax() };
             auto index { static_cast<std::size_t>(
-                sliderbarUPtr_->PositionRatio() * static_cast<float>(COUNT_MAX)) };
+                sliderbarUPtr_->PositionRatio() * static_cast<float>(IMAGE_COUNT_)) };
 
-            if (index >= COUNT_MAX)
+            if (index >= IMAGE_COUNT_)
             {
-                index = COUNT_MAX - 1;
+                index = (IMAGE_COUNT_ - 1);
             }
 
             imageMoveQueue_.push(index);
@@ -78,44 +79,58 @@ namespace popup
 
     void PopupStageImageSelect::Setup()
     {
-        M_HP_LOG_WRN(popupInfo_.ToStringFull());
         PopupStageBase::Setup();
 
-        imagesRect_ = textRegion_;
+        SetupImagesRect();
+        SetupImagePosTop();
+        SetupSliderbar();
 
-        // added is a pad so the text does not touch the images
-        imagesRect_.top = textRegionUPtr_->GetEntityPos().y + sfutil::MapByRes(70.0f, 200.0f);
+        isChangingImageAllowed_ = (IMAGE_COUNT_ > 0);
 
-        imagesRect_.height = (sliderbarPosTop_ - (ButtonTextHeight() * 2.0f)) - imagesRect_.top;
-
-        imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
-
-        isChangingImageAllowed_ = (popupInfo_.ImagesCount() != 0);
-
-        imageMoveQueue_.push(0);
+        imageIndex_ = 0;
+        imageMoveQueue_.push(imageIndex_);
         EnqueueImagesFromCurrentToTarget(imageIndex_, popupInfo_.InitialSelection());
 
-        if (popupInfo_.ImagesCount() == 1)
+        if (IMAGE_COUNT_ == 1)
         {
-            const gui::TextInfo TEXT_INFO(
-                "(there is only one image)",
-                gui::GuiFont::Default,
-                gui::FontManager::Instance()->Size_Small(),
-                PopupManager::Color_Font(),
-                gui::Justified::Center);
+            SetupWarnText();
 
-            sf::FloatRect region(textRegion_);
-            region.top = sliderbarPosTop_;
-            region.height = 0.0f;
-            imageWrnTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "PopupStage'sImageSelectionion", TEXT_INFO, region);
-
-            EntityAdd(imageWrnTextRegionUPtr_);
             if (sliderbarUPtr_)
             {
                 EntityRemove(sliderbarUPtr_);
             }
         }
+    }
+
+    void PopupStageImageSelect::SetupWarnText()
+    {
+        const gui::TextInfo TEXT_INFO(
+            "(there is only one image)",
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
+            PopupManager::Color_Font(),
+            gui::Justified::Center);
+
+        sf::FloatRect region { ContentRegion() };
+        region.top = sliderbarUPtr_->GetEntityPos().y;
+        region.height = 0.0f;
+
+        imageWrnTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+            GetStageName() + "'sImageSelectionion", TEXT_INFO, region);
+
+        EntityAdd(imageWrnTextRegionUPtr_);
+    }
+
+    void PopupStageImageSelect::SetupImagesRect()
+    {
+        imagesRect_ = ContentRegion();
+        imagesRect_.height = (ContentRegion().height * 0.5f);
+        imagesRect_.top = sfutil::CenterOfVert(ContentRegion()) - (imagesRect_.height * 0.5f);
+    }
+
+    void PopupStageImageSelect::SetupImagePosTop()
+    {
+        imagePosTop_ = sfutil::CenterOfVert(imagesRect_);
     }
 
     void PopupStageImageSelect::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -124,12 +139,12 @@ namespace popup
 
         target.draw(spriteCurr_, states);
 
-        if (areImagesMoving_ && (isInitialAnimComplete_))
+        if (areImagesMoving_ && isInitialAnimComplete_)
         {
             target.draw(spritePrev_, states);
         }
 
-        if (willShowImageCount_ && (imageNumTextRegionUPtr_))
+        if (willShowImageCount_ && imageNumTextRegionUPtr_)
         {
             imageNumTextRegionUPtr_->draw(target, states);
         }
@@ -152,7 +167,7 @@ namespace popup
 
                 if (false == areImagesMoving_)
                 {
-                    SetupContent(false);
+                    SetupContentForNewImage(false);
                     willShowImageCount_ = true;
 
                     if (imageIndexLastSoundOff_ != imageIndex_)
@@ -188,7 +203,7 @@ namespace popup
                 imageMoveQueue_.pop();
                 currRatio = imageSlider_.Update(ELAPSED_TIME_SECONDS);
 
-                SetupContent(true);
+                SetupContentForNewImage(true);
             }
 
             const auto CURR_SCALE { targetScaleCurr_ * currRatio };
@@ -203,16 +218,9 @@ namespace popup
             const auto PREV_POS_TOP { imagePosTop_
                                       - (spritePrev_.getGlobalBounds().height * 0.5f) };
 
-            if (willShowImageCount_)
-            {
-                imageNumTextRegionUPtr_->SetEntityPos(
-                    imageNumTextRegionUPtr_->GetEntityPos().x,
-                    CURR_POS_TOP - imageNumTextRegionUPtr_->GetEntityRegion().height);
-            }
-
             if (areImagesMovingLeft_)
             {
-                const auto CURR_POS_LEFT { (imagesRect_.left + imagesRect_.width)
+                const auto CURR_POS_LEFT { sfutil::Right(imagesRect_)
                                            - (currRatio * travelDistCurr_) };
 
                 spriteCurr_.setPosition(CURR_POS_LEFT, CURR_POS_TOP);
@@ -261,11 +269,9 @@ namespace popup
         }
 
         const auto NEW_IMAGE_INDEX_TO_USE { [&]() {
-            const auto COUNT_MAX { CountMax() };
-
-            if (NEW_IMAGE_INDEX_PARAM >= COUNT_MAX)
+            if (NEW_IMAGE_INDEX_PARAM >= IMAGE_COUNT_)
             {
-                return COUNT_MAX - 1;
+                return (IMAGE_COUNT_ - 1);
             }
             else
             {
@@ -299,36 +305,35 @@ namespace popup
 
     void PopupStageImageSelect::SetupSelectImage_SetupImageResources()
     {
-        spritePrev_ = spriteCurr_;
-        cachedTexturePrevOpt_ = GetCurrentCachedTexture(imageIndex_);
+        if (spriteCurr_.getTexture() != nullptr)
+        {
+            spritePrev_.setTexture(*spriteCurr_.getTexture(), true);
+        }
 
-        spritePrev_.setTexture(cachedTexturePrevOpt_->Get(), true);
-        spriteCurr_.setTexture(GetCurrentCachedTexture(imageIndex_).Get(), true);
+        spriteCurr_.setTexture(popupInfo_.ImagesAt(imageIndex_).Get(), true);
         spriteCurr_.setScale(1.0f, 1.0f);
 
-        const auto POS_LEFT { textRegion_.left
-                              + ((areImagesMovingLeft_) ? textRegion_.width : 0.0f) };
+        const auto POS_LEFT { (
+            (areImagesMovingLeft_) ? sfutil::Right(imagesRect_) : sfutil::Left(imagesRect_)) };
 
         const auto POS_TOP { imagePosTop_ };
 
         spriteCurr_.setPosition(POS_LEFT, POS_TOP);
 
-        const auto RESIZE_RATIO { 0.8f };
-        const auto SPRITE_TARGET_WIDTH { imagesRect_.width * RESIZE_RATIO };
-        const auto SPRITE_TARGET_HEIGHT { imagesRect_.height * RESIZE_RATIO };
+        // shrink images down a bit so they do not touch the top or bottom of imagesRect_ which
+        // would touch other things like text and the sliderbar
+        const auto SHRINK_RATIO { 0.8f };
+        const auto TARGET_HEIGHT { (imagesRect_.height * SHRINK_RATIO) };
+        const auto SCALE { (TARGET_HEIGHT / spriteCurr_.getGlobalBounds().height) };
+        targetScaleCurr_ = SCALE;
 
-        const auto SCALE_HORIZ { SPRITE_TARGET_WIDTH / spriteCurr_.getGlobalBounds().width };
-
-        const auto SCALE_VERT { SPRITE_TARGET_HEIGHT / spriteCurr_.getGlobalBounds().height };
-
-        targetScaleCurr_ = std::min(SCALE_HORIZ, SCALE_VERT);
         spriteCurr_.setScale(0.0f, 0.0f);
     }
 
     void PopupStageImageSelect::SetupSelectImage_SetupNumberText(const std::size_t IMAGE_INDEX)
     {
         std::ostringstream ss;
-        ss << IMAGE_INDEX + 1 << "/" << CountMax();
+        ss << IMAGE_INDEX + 1 << "/" << IMAGE_COUNT_;
 
         const gui::TextInfo TEXT_INFO(
             ss.str(),
@@ -337,28 +342,31 @@ namespace popup
             PopupManager::Color_Font(),
             gui::Justified::Center);
 
-        sf::FloatRect imageCountTextRect(textRegion_);
-        imageCountTextRect.height = 0.0f;
-
         imageNumTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "PopupStage'sSelectNumber", TEXT_INFO, imageCountTextRect);
+            GetStageName() + "'sSelectNumber", TEXT_INFO, imagesRect_);
+
+        imageNumTextRegionUPtr_->MoveEntityPos(
+            0.0f, (imageNumTextRegionUPtr_->ActualTextRegion().height * -1.0f));
     }
 
     float PopupStageImageSelect::SetupSelectImage_CalcTravelDistanceCurrent()
     {
-        sf::Sprite tempSprite(spriteCurr_);
-        tempSprite.setScale(targetScaleCurr_, targetScaleCurr_);
+        // after call to SetupSelectImage_SetupImageResources() above the spriteCurr_ is not at
+        // targetScaleCurr_, so this code predicts what it's width will be once it reaches that
+        // target scale
+        const auto CURR_SPRITE_WIDTH_AT_TARGET_SCALE { (
+            spriteCurr_.getLocalBounds().width * targetScaleCurr_) };
 
-        const auto POS_LEFT_CENTERED { (textRegion_.left + (textRegion_.width * 0.5f))
-                                       - (tempSprite.getGlobalBounds().width * 0.5f) };
+        const auto POS_LEFT_CENTERED { (
+            sfutil::CenterOfHoriz(imagesRect_) - (CURR_SPRITE_WIDTH_AT_TARGET_SCALE * 0.5f)) };
 
         if (areImagesMovingLeft_)
         {
-            return (textRegion_.left + textRegion_.width) - POS_LEFT_CENTERED;
+            return (sfutil::Right(imagesRect_) - POS_LEFT_CENTERED);
         }
         else
         {
-            return POS_LEFT_CENTERED - textRegion_.left;
+            return (POS_LEFT_CENTERED - imagesRect_.left);
         }
     }
 
@@ -366,20 +374,12 @@ namespace popup
     {
         if (areImagesMovingLeft_)
         {
-            return spritePrev_.getGlobalBounds().left - imagesRect_.left;
+            return (spritePrev_.getGlobalBounds().left - imagesRect_.left);
         }
         else
         {
-            return (imagesRect_.left + imagesRect_.width) - spritePrev_.getGlobalBounds().left;
+            return (sfutil::Right(imagesRect_) - spritePrev_.getGlobalBounds().left);
         }
-    }
-
-    std::size_t PopupStageImageSelect::CountMax() const { return popupInfo_.ImagesCount(); }
-
-    const gui::CachedTexture &
-        PopupStageImageSelect::GetCurrentCachedTexture(const std::size_t IMAGE_INDEX)
-    {
-        return popupInfo_.ImagesAt(IMAGE_INDEX);
     }
 
     bool PopupStageImageSelect::KeyReleaseHandleNumbers(const sf::Event::KeyEvent & KEY_EVENT)
@@ -387,26 +387,41 @@ namespace popup
         std::size_t targetIndex { 0 };
 
         if (KEY_EVENT.code == sf::Keyboard::Num2)
+        {
             targetIndex = 1;
+        }
         else if (KEY_EVENT.code == sf::Keyboard::Num3)
+        {
             targetIndex = 2;
+        }
         else if (KEY_EVENT.code == sf::Keyboard::Num4)
+        {
             targetIndex = 3;
+        }
         else if (KEY_EVENT.code == sf::Keyboard::Num5)
+        {
             targetIndex = 4;
+        }
         else if (KEY_EVENT.code == sf::Keyboard::Num6)
+        {
             targetIndex = 5;
+        }
         else if (KEY_EVENT.code == sf::Keyboard::Num7)
+        {
             targetIndex = 6;
+        }
         else if (KEY_EVENT.code == sf::Keyboard::Num8)
+        {
             targetIndex = 7;
+        }
         else if (KEY_EVENT.code == sf::Keyboard::Num9)
+        {
             targetIndex = 8;
+        }
 
-        const auto COUNT_MAX { CountMax() };
-        const auto ONE_OVER_COUNT { 1.0f / static_cast<float>(COUNT_MAX) };
+        const auto ONE_OVER_COUNT { 1.0f / static_cast<float>(IMAGE_COUNT_) };
 
-        if ((imageIndex_ == targetIndex) || (targetIndex > (COUNT_MAX - 1)))
+        if ((imageIndex_ == targetIndex) || (targetIndex > (IMAGE_COUNT_ - 1)))
         {
             return false;
         }
@@ -427,7 +442,7 @@ namespace popup
             isChangingImageAllowed_ = false;
 
             sliderbarUPtr_->PositionRatio(
-                static_cast<float>(NEW_INDEX) / static_cast<float>(CountMax()));
+                static_cast<float>(NEW_INDEX) / static_cast<float>(IMAGE_COUNT_));
 
             isChangingImageAllowed_ = true;
             imageMoveQueue_.push(NEW_INDEX);
@@ -441,22 +456,20 @@ namespace popup
 
     bool PopupStageImageSelect::KeyReleaseHandeRight()
     {
-        const auto COUNT_MAX { CountMax() };
-
-        if (imageIndex_ < (COUNT_MAX - 1))
+        if (imageIndex_ < (IMAGE_COUNT_ - 1))
         {
             const auto NEW_INDEX { imageIndex_ + 1 };
 
             isChangingImageAllowed_ = false;
 
             sliderbarUPtr_->PositionRatio(
-                static_cast<float>(NEW_INDEX) / static_cast<float>(COUNT_MAX));
+                static_cast<float>(NEW_INDEX) / static_cast<float>(IMAGE_COUNT_));
 
             isChangingImageAllowed_ = true;
 
             // if already at the end, then make sure the sliderbar is
             // all the way to the right
-            if (NEW_INDEX >= (COUNT_MAX - 1))
+            if (NEW_INDEX >= (IMAGE_COUNT_ - 1))
             {
                 // prevent processing and adding to the imageMoveQueue_ or calling
                 // SetupSelectImage() when setting the sliderbar value here.
@@ -476,20 +489,31 @@ namespace popup
 
     void PopupStageImageSelect::SetupSliderbar()
     {
-        PopupStageBase::SetupSliderbar();
+        const auto MOVE_RATIO_MIN { (
+            (IMAGE_COUNT_ >= 2) ? (1.0f / static_cast<float>(IMAGE_COUNT_)) : 0.0f) };
 
-        const auto SLIDERBAR_LENGTH { textRegion_.width * 0.75f }; // found by experiment
-
-        const auto SLIDERBAR_POS_LEFT { textRegion_.left
-                                        + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f) };
+        const auto SLIDERBAR_LENGTH { (ContentRegion().width * 0.75f) };
 
         sliderbarUPtr_ = std::make_unique<gui::SliderBar>(
-            "PopupStage's",
-            SLIDERBAR_POS_LEFT,
-            sliderbarPosTop_,
+            GetStageName() + "'s",
+            0.0f,
+            0.0f,
             SLIDERBAR_LENGTH,
             gui::SliderStyle(gui::Orientation::Horiz),
-            gui::SliderBar::Callback_t::IHandlerPtr_t(this));
+            gui::SliderBar::Callback_t::IHandlerPtr_t(this),
+            0.0f,
+            false,
+            MOVE_RATIO_MIN);
+
+        const auto POS_LEFT { sfutil::DisplayCenterHoriz(sliderbarUPtr_->GetEntityRegion().width) };
+
+        const auto POS_TOP { sfutil::Bottom(imagesRect_)
+                             + ((sfutil::Bottom(ContentRegion()) - sfutil::Bottom(imagesRect_))
+                                * 0.5f) };
+
+        sliderbarUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
+
+        sliderbarUPtr_->WillPlaySfx(false);
 
         EntityAdd(sliderbarUPtr_);
     }
@@ -497,17 +521,17 @@ namespace popup
     void PopupStageImageSelect::EnqueueImagesFromCurrentToTarget(
         const std::size_t CURRENT_INDEX, const std::size_t TARGET_INDEX)
     {
-        std::size_t i { CURRENT_INDEX };
+        std::size_t index { CURRENT_INDEX };
 
-        while (i != TARGET_INDEX)
+        while (index != TARGET_INDEX)
         {
             if (TARGET_INDEX < CURRENT_INDEX)
             {
-                imageMoveQueue_.push(--i);
+                imageMoveQueue_.push(--index);
             }
             else
             {
-                imageMoveQueue_.push(++i);
+                imageMoveQueue_.push(++index);
             }
         }
     }
@@ -526,5 +550,6 @@ namespace popup
 
         return PopupStageBase::HandleSelect();
     }
+
 } // namespace popup
 } // namespace heroespath

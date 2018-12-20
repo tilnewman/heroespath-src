@@ -30,27 +30,25 @@ namespace gui
     public:
         using Callback_t = misc::Callback<TextButton>;
 
-        TextButton(const TextButton &) = delete;
-        TextButton(TextButton &&) = delete;
-        TextButton & operator=(const TextButton &) = delete;
-        TextButton & operator=(TextButton &&) = delete;
-
         // if using this constructor, Setup() must be called before any other functions
         TextButton(
             const std::string & NAME, const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT);
 
         TextButton(
             const std::string & NAME,
-            const float POS_LEFT,
-            const float POS_TOP,
+            const sf::Vector2f & POS_V,
             const MouseTextInfo & MOUSE_TEXT_INFO,
             const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT);
 
         virtual ~TextButton();
 
+        TextButton(const TextButton &) = delete;
+        TextButton(TextButton &&) = delete;
+        TextButton & operator=(const TextButton &) = delete;
+        TextButton & operator=(TextButton &&) = delete;
+
         void Setup(
-            const float POS_LEFT,
-            const float POS_TOP,
+            const sf::Vector2f & POS_V,
             const MouseTextInfo & MOUSE_TEXT_INFO,
             const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT);
 

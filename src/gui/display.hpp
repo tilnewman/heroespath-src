@@ -107,6 +107,7 @@ namespace gui
 
         void DisplayFrameBuffer();
 
+        // TODO move this to the config file
         static float GetWinWidthMin() { return 1280.0f; }
         static float GetWinHeightMin() { return 900.0f; }
 

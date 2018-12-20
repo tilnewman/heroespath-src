@@ -60,10 +60,11 @@ namespace popup
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
-        void SetupOuterAndInnerRegion() override;
+    protected:
+        void SetupRegions() override;
 
     private:
-        void SetupRegions();
+        void SetupRegionsExtraWork();
         void SetupLeftAccentImage();
         void SetupRightAccentImage();
         void SetupPlayerImage();

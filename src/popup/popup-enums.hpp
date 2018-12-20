@@ -11,6 +11,8 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
+
 #include <string>
 
 namespace heroespath
@@ -93,6 +95,13 @@ namespace popup
         };
 
         static const std::string ToString(const PopupImage::Enum);
+
+        static const sf::FloatRect
+            ContentRegionRatios(const PopupImage::Enum, const bool IS_LEFT = true);
+
+        static float ScreenSizeRatio(const PopupImage::Enum);
+
+        static const std::string ImageConfigKey(const PopupImage::Enum);
     };
 
 } // namespace popup

@@ -17,6 +17,7 @@
 #include "misc/config-file.hpp"
 #include "misc/strings.hpp"
 #include "popup/popup-manager.hpp"
+#include "sfutil/center.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -55,7 +56,7 @@ namespace popup
             willTextBoxUpdate_ = false;
             textEntryBoxUPtr_->SetText(std::to_string(CURR_VAL));
             willTextBoxUpdate_ = true;
-            SetupInfoText("");
+            SetupMessageText("");
         }
 
         return "";
@@ -78,27 +79,27 @@ namespace popup
     {
         PopupStageBase::Setup();
 
-        const gui::TextInfo MSG_TEXT_INFO { " ",
-                                            gui::GuiFont::Default,
-                                            gui::FontManager::Instance()->Size_Small(),
-                                            PopupManager::Color_Font(),
-                                            gui::Justified::Center };
+        SetupMessageText("(type a number or use the slider below)");
+        SetupTextEntryBox();
+        SetupSliderbar();
 
-        msgTextRegionUPtr_ = std::make_unique<gui::TextRegion>("PopupStage'sInfo", MSG_TEXT_INFO);
+        RemoveFocus();
+        SetFocus(textEntryBoxUPtr_);
+        textEntryBoxUPtr_->SetHasFocus(true);
+    }
 
-        EntityAdd(msgTextRegionUPtr_);
-        SetupInfoText("(type a number or use the slider below)");
+    void PopupStageNumberSelect::SetupTextEntryBox()
+    {
+        const auto TEXTENTRY_BOX_WIDTH { ContentRegion().width * 0.45f };
 
-        const auto TEXTENTRY_BOX_WIDTH { textRegion_.width * 0.45f };
+        const auto TEXTENTRY_BOX_POS_LEFT { (
+            sfutil::CenterOfHoriz(ContentRegion()) - (TEXTENTRY_BOX_WIDTH * 0.5f)) };
 
-        const auto TEXTENTRY_BOX_POS_LEFT { textRegion_.left
-                                            + ((textRegion_.width - TEXTENTRY_BOX_WIDTH) * 0.5f) };
+        const auto TEXTENTRY_BOX_POS_TOP { (
+            sfutil::Bottom(msgTextRegionUPtr_->GetEntityRegion())
+            + sfutil::ScreenRatioToPixelsVert(0.08f)) };
 
-        // this 115 spacer value of 115 found to look good by experiment
-        const auto TEXTENTRY_BOX_POS_TOP { msgTextRegionUPtr_->GetEntityPos().y - 115.0f };
-
-        // this textbox's min height, and fits pretty well here with the font size being "large"
-        const auto TEXTENTRY_BOX_HEIGHT { 55.0f };
+        const auto TEXTENTRY_BOX_HEIGHT { sfutil::ScreenRatioToPixelsVert(0.08f) };
 
         const sf::FloatRect TEXTENTRY_REGION(
             TEXTENTRY_BOX_POS_LEFT,
@@ -123,7 +124,7 @@ namespace popup
 
         textEntryBoxUPtr_ = std::make_unique<gui::TextEntryBox>(
             gui::TextEntryBox::Callback_t::IHandlerPtr_t(this),
-            "PopupStage's",
+            GetStageName() + "'s",
             TEXTENTRY_REGION,
             TEXTENTRY_TEXT_INFO,
             sfutil::color::Light,
@@ -131,10 +132,6 @@ namespace popup
 
         textEntryBoxUPtr_->SetText(minNumSS.str());
         EntityAdd(textEntryBoxUPtr_);
-
-        RemoveFocus();
-        SetFocus(textEntryBoxUPtr_);
-        textEntryBoxUPtr_->SetHasFocus(true);
     }
 
     void PopupStageNumberSelect::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -162,31 +159,36 @@ namespace popup
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
 
-    void PopupStageNumberSelect::SetupInfoText(const std::string & TEXT)
+    void PopupStageNumberSelect::SetupMessageText(const std::string & MESSAGE)
     {
-        const auto TEXT_TO_USE { (TEXT.empty()) ? " " : TEXT };
+        const auto MESSAGE_TEXT_TO_USE { ((MESSAGE.empty()) ? " " : MESSAGE) };
 
         const gui::TextInfo INFO_TEXT_INFO(
-            TEXT_TO_USE,
+            MESSAGE_TEXT_TO_USE,
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Small(),
             PopupManager::Color_Font(),
             gui::Justified::Center);
 
-        EntityRemove(msgTextRegionUPtr_);
+        if (msgTextRegionUPtr_)
+        {
+            EntityRemove(msgTextRegionUPtr_);
+        }
 
-        msgTextRegionUPtr_ = std::make_unique<gui::TextRegion>("PopupStage'sInfo", INFO_TEXT_INFO);
+        msgTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>(GetStageName() + "'sInfo", INFO_TEXT_INFO);
 
         EntityAdd(msgTextRegionUPtr_);
 
-        const auto INFO_TEXT_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
-                                        - (msgTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
+        const auto POS_LEFT { (
+            sfutil::CenterOfHoriz(ContentRegion())
+            - (msgTextRegionUPtr_->GetEntityRegion().width * 0.5f)) };
 
-        const auto INFO_TEXT_POS_TOP { sliderbarPosTop_
-                                       - (2.0f * msgTextRegionUPtr_->GetEntityRegion().height) };
+        const auto POS_TOP { (
+            sfutil::Bottom(ActualTextRegion()) + sfutil::ScreenRatioToPixelsVert(0.075f)) };
 
         msgTextRegionUPtr_->SetEntityPos(
-            INFO_TEXT_POS_LEFT + static_cast<float>(TEXT.size() / 2), INFO_TEXT_POS_TOP);
+            (POS_LEFT + static_cast<float>(MESSAGE.size() / 2)), POS_TOP);
     }
 
     int PopupStageNumberSelect::GetSelectNumber() const
@@ -224,7 +226,7 @@ namespace popup
             ss << "(invalid, type a number between " << popupInfo_.NumberSelMin() << " and "
                << popupInfo_.NumberSelMax() << ")";
 
-            SetupInfoText(ss.str());
+            SetupMessageText(ss.str());
             return false;
         }
         else if (ORIG_SELECTION_NUM < static_cast<int>(popupInfo_.NumberSelMin()))
@@ -234,7 +236,7 @@ namespace popup
 
             ss << "(the number is too small, the minimum is " << popupInfo_.NumberSelMin() << ")";
 
-            SetupInfoText(ss.str());
+            SetupMessageText(ss.str());
             return false;
         }
         else if (ORIG_SELECTION_NUM > static_cast<int>(popupInfo_.NumberSelMax()))
@@ -244,12 +246,12 @@ namespace popup
 
             ss << "(the number is too large, the maximum is " << popupInfo_.NumberSelMax() << ")";
 
-            SetupInfoText(ss.str());
+            SetupMessageText(ss.str());
             return false;
         }
         else
         {
-            SetupInfoText("");
+            SetupMessageText("");
 
             if (sliderbarUPtr_)
             {
@@ -275,21 +277,23 @@ namespace popup
 
     void PopupStageNumberSelect::SetupSliderbar()
     {
-        PopupStageBase::SetupSliderbar();
-
-        const auto SLIDERBAR_LENGTH { textRegion_.width * 0.75f }; // found by experiment
-
-        const auto SLIDERBAR_POS_LEFT { textRegion_.left
-                                        + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f) };
+        const auto SLIDERBAR_LENGTH { (ContentRegion().width * 0.75f) };
 
         sliderbarUPtr_ = std::make_unique<gui::SliderBar>(
-            "PopupStage's",
-            SLIDERBAR_POS_LEFT,
-            sliderbarPosTop_,
+            GetStageName() + "'s",
+            0.0f,
+            0.0f,
             SLIDERBAR_LENGTH,
             gui::SliderStyle(gui::Orientation::Horiz),
             gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
+        const auto POS_LEFT { sfutil::DisplayCenterHoriz(sliderbarUPtr_->GetEntityRegion().width) };
+
+        const auto POS_TOP { (
+            sfutil::Bottom(textEntryBoxUPtr_->GetEntityRegion())
+            + sfutil::ScreenRatioToPixelsVert(0.08f)) };
+
+        sliderbarUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
         EntityAdd(sliderbarUPtr_);
     }
 

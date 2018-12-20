@@ -184,10 +184,12 @@ namespace gui
         Setup(textInfoOrig_, regionOrig_, boxInfo, stagePtrOpt_);
     }
 
-    void TextRegion::ShrinkEntityRegionToFitText()
+    void TextRegion::ShrinkEntityRegionToFitActualTextRegion()
     {
         Entity::SetEntityRegion(sprite_.getGlobalBounds());
     }
+
+    const sf::FloatRect TextRegion::ActualTextRegion() const { return sprite_.getGlobalBounds(); }
 
     void TextRegion::SetupRender(const TextInfo & TEXT_INFO, const sf::FloatRect & REGION)
     {
@@ -240,14 +242,19 @@ namespace gui
             return;
         }
 
+        const auto VISIBLE_TO_TOTAL_HEIGHT_RATIO { (
+            REGION.height / static_cast<float>(renderTextureUPtr_->getSize().y)) };
+
         sliderBarUPtr_ = std::make_unique<SliderBar>(
             GetEntityName() + "'s_",
             sfutil::Right(REGION) - SliderBar::POS_OFFSET_HORIZ_,
             REGION.top + SliderBar::POS_OFFSET_VERT_,
             REGION.height - (SliderBar::POS_OFFSET_VERT_ * 2.0f),
-            SliderStyle(Orientation::Vert, Brightness::Bright, true, true));
-
-        sliderBarUPtr_->SetCallbackHandler(SliderBar::Callback_t::IHandlerPtrOpt_t(this));
+            SliderStyle(Orientation::Vert, Brightness::Bright, true, true),
+            SliderBar::Callback_t::IHandlerPtrOpt_t(this),
+            0.0f,
+            false,
+            VISIBLE_TO_TOTAL_HEIGHT_RATIO);
 
         sliderBarUPtr_->PositionRatio(0.0f);
         stagePtrOpt_.value()->EntityAdd(sliderBarUPtr_, true);

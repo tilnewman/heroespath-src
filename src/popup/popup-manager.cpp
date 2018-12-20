@@ -102,60 +102,6 @@ namespace popup
         return true;
     }
 
-    const std::string PopupManager::BackgroundImageConfigFileKey(const PopupImage::Enum IMAGE) const
-    {
-        std::string filename { "media-image-background-paper-popup-" };
-        switch (IMAGE)
-        {
-            case PopupImage::Banner:
-            {
-                filename += "banner";
-                break;
-            }
-            case PopupImage::Regular:
-            {
-                filename += "medium";
-                break;
-            }
-            case PopupImage::RegularSidebar:
-            {
-                filename += "medium-bar";
-                break;
-            }
-            case PopupImage::Large:
-            {
-                filename += "large";
-                break;
-            }
-            case PopupImage::LargeSidebar:
-            {
-                filename += "large-bar";
-                break;
-            }
-            case PopupImage::Spellbook:
-            {
-                filename += "spell-book";
-                break;
-            }
-            case PopupImage::MusicSheet:
-            {
-                filename += "music-sheet";
-                break;
-            }
-            case PopupImage::Count:
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "gui::PopupManager::BackgroundImagePath(" << popup::PopupImage::ToString(
-                        IMAGE) << ") but that popup::PopupImage::Enum value was invalid.");
-
-                return "";
-            }
-        }
-
-        return filename;
-    }
-
     const gui::TextInfo PopupManager::TextInfoDefault(
         const std::string & TEXT,
         const gui::Justified::Enum JUSTIFIED,

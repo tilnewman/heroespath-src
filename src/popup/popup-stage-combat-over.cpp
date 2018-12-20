@@ -47,7 +47,7 @@ namespace popup
 
         bgSprite_.setColor(sf::Color(255, 255, 255, 32));
 
-        sfutil::FitAndCenterTo(bgSprite_, textRegion_);
+        sfutil::FitAndCenterTo(bgSprite_, ContentRegion());
 
         const auto TITLE_TEXT { [&]() {
             switch (popupInfo_.HowCombatEnded())
@@ -80,12 +80,13 @@ namespace popup
         titleTextRegionUPtr_
             = std::make_unique<gui::TextRegion>("CombatOverPopupTitle", COMBAT_TITLE_TEXTINFO);
 
-        const auto TITLE_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
-                                    - (titleTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
+        const auto TITLE_POS_LEFT { (
+            sfutil::CenterOfHoriz(ContentRegion())
+            - (titleTextRegionUPtr_->GetEntityRegion().width * 0.5f)) };
 
         const auto VERT_SPACER { sfutil::ScreenRatioToPixelsVert(0.0222f) };
 
-        const auto TITLE_POS_TOP { textRegion_.top + VERT_SPACER };
+        const auto TITLE_POS_TOP { ContentRegion().top + VERT_SPACER };
 
         titleTextRegionUPtr_->SetEntityPos(TITLE_POS_LEFT, TITLE_POS_TOP);
 
@@ -130,11 +131,11 @@ namespace popup
             gui::Justified::Center);
 
         const sf::FloatRect COMBAT_DESC_RECT(
-            textRegion_.left,
+            ContentRegion().left,
             titleTextRegionUPtr_->GetEntityRegion().top
                 + titleTextRegionUPtr_->GetEntityRegion().height + VERT_SPACER,
-            textRegion_.width,
-            textRegion_.height
+            ContentRegion().width,
+            ContentRegion().height
                 - (titleTextRegionUPtr_->GetEntityRegion().height + (VERT_SPACER * 2.0f)));
 
         descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(

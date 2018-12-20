@@ -34,7 +34,7 @@ namespace popup
     {
         PopupStageBase::Setup();
         bgSprite_.setColor(sf::Color(255, 255, 255, 32));
-        sfutil::FitAndCenterTo(bgSprite_, textRegion_);
+        sfutil::FitAndCenterTo(bgSprite_, ContentRegion());
     }
 
     void PopupStageSystemError::draw(sf::RenderTarget & target, sf::RenderStates states) const

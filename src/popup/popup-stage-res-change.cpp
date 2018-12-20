@@ -55,7 +55,7 @@ namespace popup
                     textInfo.text = ss.str();
 
                     textRegionUPtr_->Setup(
-                        textInfo, textRegion_, gui::BoxEntityInfo(), stage::IStagePtr_t(this));
+                        textInfo, ContentRegion(), gui::BoxEntityInfo(), stage::IStagePtr_t(this));
                 }
                 else
                 {

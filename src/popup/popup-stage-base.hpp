@@ -52,69 +52,83 @@ namespace popup
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
-        void DrawRedX(sf::RenderTarget &, sf::RenderStates) const;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
     protected:
-        float ButtonTextHeight() const { return buttonTextHeight_; }
+        const sf::FloatRect MakeBackgroundImageContentRegion(
+            const PopupImage::Enum,
+            const bool IS_LEFT_IMAGE,
+            const sf::FloatRect & BG_REGION) const;
 
         // returns true if the selection was valid and the popup will be removed
         virtual bool HandleSelect();
 
-        virtual void SetupOuterAndInnerRegion();
-        void SetupForFullScreenWithBorderRatio(const float BORDER_RATIO);
-        virtual void SetupSliderbar();
+        virtual void SetupRegions();
+        void SetupRegionsForFullScreen(const float BORDER_RATIO);
+
         void PlayValidKeypressSoundEffect() const;
         void PlayInvalidKeypressSoundEffect() const;
+
         void EndKeepAliveTimer();
+
         const gui::ImageOptions AccentImageOptions() const;
 
+        const sf::Vector2f BackgroundImageLocalSize() const;
+
+        const sf::FloatRect ContentRegion() const { return contentRegion_; }
+
+        void ClosePopup(
+            const PopupButtons::Enum BUTTON,
+            const std::size_t SELECTION = 0,
+            const bool WILL_PLAY_SFX = true);
+
+        const sf::FloatRect ActualTextRegion() const;
+
     private:
-        void SetupVariousButtonPositionValues();
+        void SetupBackgroundImage();
         void SetupButtons();
-        void SetupTextRegion();
         void SetupText();
         void SetupAccentSprite();
         void SetupRedXImage();
 
-        const sf::IntRect BackgroundImageRect(const PopupImage::Enum PI, const float SCALE) const;
-
         virtual bool WillPressingCKeyClosePopup() const { return false; }
 
-        float calcBackgroundImageScale(const PopupImage::Enum) const;
+        // if POS_LEFT is negative then the button is centered
+        void MakeTextButton(
+            gui::TextButtonUPtr_t & buttonUPtr, const std::string & NAME, const float POS_LEFT);
+
+        float CalcTextButtonMaxHeight() const;
 
     protected:
         static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
-        static const float ACCENT_IMAGE_SCALEDOWN_RATIO_;
 
-    protected:
-        PopupInfo popupInfo_;
+        const PopupInfo popupInfo_;
         const std::string BACKGROUND_IMAGE_CONFIG_KEY_;
-        sf::FloatRect innerRegion_;
-        gui::CachedTexture backgroundTexture_;
+        const float TEXT_BUTTON_VERT_PAD_;
+        const float TEXT_BUTTON_REGION_HEIGHT_;
+
+        gui::SliderBarUPtr_t sliderbarUPtr_;
+        gui::CachedTextureOpt_t accent1CachedTextureOpt_;
+        sf::Sprite accentSprite1_;
+        gui::CachedTextureOpt_t accent2CachedTextureOpt_;
+        sf::Sprite accentSprite2_;
+        int selection_;
+        sf::Sprite xSymbolSprite_;
+        bool willShowXImage_;
         gui::TextRegionUPtr_t textRegionUPtr_;
-        sf::FloatRect textRegion_;
+
+    private:
+        gui::CachedTexture backgroundTexture_;
+        sf::Sprite backgroundSprite_;
+        sf::FloatRect contentRegion_;
+        sf::FloatRect buttonRegion_;
         gui::TextButtonUPtr_t buttonSelectUPtr_;
         gui::TextButtonUPtr_t buttonYesUPtr_;
         gui::TextButtonUPtr_t buttonNoUPtr_;
         gui::TextButtonUPtr_t buttonCancelUPtr_;
         gui::TextButtonUPtr_t buttonContinueUPtr_;
         gui::TextButtonUPtr_t buttonOkayUPtr_;
-        gui::SliderBarUPtr_t sliderbarUPtr_;
-        gui::CachedTextureOpt_t accent1CachedTextureOpt_;
-        sf::Sprite accentSprite1_;
-        gui::CachedTextureOpt_t accent2CachedTextureOpt_;
-        sf::Sprite accentSprite2_;
-        float sliderbarPosTop_;
-        int selection_;
-        sf::Sprite xSymbolSprite_;
-        bool willShowXImage_;
-
-    private:
-        sf::Sprite backgroundSprite_;
-        float buttonTextHeight_;
-        float buttonVertPos_;
         gui::CachedTextureOpt_t xSymbolCachedTextureOpt_;
         float keepAliveTimerSec_;
     };

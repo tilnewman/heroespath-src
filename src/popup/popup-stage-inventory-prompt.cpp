@@ -36,26 +36,22 @@ namespace popup
     {
         if ((KEY_EVENT.code == sf::Keyboard::I) && popupInfo_.WillIncludeItems())
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Select, PopupInfo::ContentNum_Item());
+            ClosePopup(PopupButtons::Select, PopupInfo::ContentNum_Item());
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::C)
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Select, PopupInfo::ContentNum_Coins());
+            ClosePopup(PopupButtons::Select, PopupInfo::ContentNum_Coins());
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::G)
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Select, PopupInfo::ContentNum_Gems());
+            ClosePopup(PopupButtons::Select, PopupInfo::ContentNum_Gems());
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::M)
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Select, PopupInfo::ContentNum_MeteorShards());
+            ClosePopup(PopupButtons::Select, PopupInfo::ContentNum_MeteorShards());
             return true;
         }
 

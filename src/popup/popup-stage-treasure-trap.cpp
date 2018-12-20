@@ -48,7 +48,7 @@ namespace popup
 
     void PopupStageTreasureTrap::SetupTitleText()
     {
-        sf::FloatRect tempRect(textRegion_);
+        sf::FloatRect tempRect(ContentRegion());
         tempRect.height = 0.0f;
 
         const gui::TextInfo TITLE_TEXTINFO(
@@ -69,7 +69,7 @@ namespace popup
 
     void PopupStageTreasureTrap::SetupDescriptionText()
     {
-        sf::FloatRect tempRect(textRegion_);
+        sf::FloatRect tempRect(ContentRegion());
         tempRect.height = 0.0f;
         tempRect.top += sfutil::MapByRes(75.0f, 225.0f);
 
@@ -95,7 +95,8 @@ namespace popup
         accent1CachedTextureOpt_ = gui::CachedTexture("media-image-trap");
         accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
-        sfutil::FitAndReCenter(accentSprite1_, sfutil::ScaleAndReCenterCopy(textRegion_, 0.65f));
+        sfutil::FitAndReCenter(
+            accentSprite1_, sfutil::ScaleAndReCenterCopy(ContentRegion(), 0.65f));
 
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }

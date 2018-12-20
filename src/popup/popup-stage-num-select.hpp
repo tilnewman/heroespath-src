@@ -50,10 +50,11 @@ namespace popup
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
-        void SetupInfoText(const std::string &);
+        void SetupMessageText(const std::string & MESSAGE);
         int GetSelectNumber() const;
         bool ProcessSelectNumber();
-        void SetupSliderbar() override;
+        void SetupTextEntryBox();
+        void SetupSliderbar();
 
     private:
         static const int NUMBER_SELECT_INVALID_;

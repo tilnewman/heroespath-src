@@ -28,11 +28,6 @@ namespace gui
     class SliderBarLabeled : public SliderBar
     {
     public:
-        SliderBarLabeled(const SliderBarLabeled &) = delete;
-        SliderBarLabeled(SliderBarLabeled &&) = delete;
-        SliderBarLabeled & operator=(const SliderBarLabeled &) = delete;
-        SliderBarLabeled & operator=(SliderBarLabeled &&) = delete;
-
         SliderBarLabeled(
             const std::string & NAME,
             const float POS_LEFT,
@@ -47,17 +42,14 @@ namespace gui
         virtual ~SliderBarLabeled();
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
-
         void MoveEntityPos(const float HORIZ, const float VERT) override;
 
     protected:
         void OnChange(const float) override;
-
         const TextInfo TextInfoFromCurrentPositionPercent(const int PERCENT) const;
-
         virtual const TextInfo CreateTextToDisplay(const float CURRENT_POS_RATIO);
 
-    protected:
+    private:
         // This var is not really about mouse text info but about the three TextInfo
         // objects required to display the current slider number.  A MouseTextInfo object
         // is just being used to hold three TextInfo objects.

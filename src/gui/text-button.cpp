@@ -24,11 +24,10 @@ namespace gui
 
     TextButton::TextButton(
         const std::string & NAME,
-        const float POS_LEFT,
-        const float POS_TOP,
+        const sf::Vector2f & POS_V,
         const MouseTextInfo & MOUSE_TEXT_INFO,
         const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT)
-        : TextEntity(std::string(NAME).append("_TextButton"), POS_LEFT, POS_TOP, MOUSE_TEXT_INFO)
+        : TextEntity(std::string(NAME).append("_TextButton"), POS_V.x, POS_V.y, MOUSE_TEXT_INFO)
         , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
     {
         // no need to call setup
@@ -37,12 +36,11 @@ namespace gui
     TextButton::~TextButton() = default;
 
     void TextButton::Setup(
-        const float POS_LEFT,
-        const float POS_TOP,
+        const sf::Vector2f & POS_V,
         const MouseTextInfo & MOUSE_TEXT_INFO,
         const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT)
     {
-        TextEntity::Setup(POS_LEFT, POS_TOP, MOUSE_TEXT_INFO);
+        TextEntity::Setup(POS_V.x, POS_V.y, MOUSE_TEXT_INFO);
         callbackHandlerPtrOpt_ = CALLBACK_HANDLER_PTR_OPT;
     }
 

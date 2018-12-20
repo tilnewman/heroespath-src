@@ -25,11 +25,6 @@ namespace gui
     class SliderBarSfx : public SliderBarLabeled
     {
     public:
-        SliderBarSfx(const SliderBarSfx &) = delete;
-        SliderBarSfx(SliderBarSfx &&) = delete;
-        SliderBarSfx & operator=(const SliderBarSfx &) = delete;
-        SliderBarSfx & operator=(SliderBarSfx &&) = delete;
-
         SliderBarSfx(
             const std::string & NAME,
             const float POS_LEFT,
@@ -51,7 +46,6 @@ namespace gui
 
     private:
         static bool isConstructionAndInitFinished_;
-        bool willPlaySfx_;
         float timeSinceLastPlaySec_;
     };
 

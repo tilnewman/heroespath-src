@@ -11,7 +11,6 @@
 //
 #include "popup-stage-base.hpp"
 
-#include "creature/name-info.hpp"
 #include "gui/display.hpp"
 #include "gui/sound-manager.hpp"
 #include "misc/config-file.hpp"
@@ -20,6 +19,7 @@
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
+#include "sfutil/primitives.hpp"
 #include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -30,41 +30,36 @@ namespace popup
 {
 
     // This value was found by experiment to be faded enough to avoid interfering with foreground.
-    const sf::Uint8 PopupStageBase::ACCENT_IMAGE_ALPHA_ { 28 };
-
-    // This value was found by experiment to make a good looking empty border around the image.
-    const float PopupStageBase::ACCENT_IMAGE_SCALEDOWN_RATIO_ { 1.0f };
+    const sf::Uint8 PopupStageBase::ACCENT_IMAGE_ALPHA_ { 20 };
 
     PopupStageBase::PopupStageBase(const PopupInfo & POPUP_INFO)
         : StageBase(
             POPUP_INFO.Name() + "_PopupStage", { gui::GuiFont::Handwriting, gui::GuiFont::Number })
         , popupInfo_(POPUP_INFO)
-        , BACKGROUND_IMAGE_CONFIG_KEY_(
-              PopupManager::Instance()->BackgroundImageConfigFileKey(POPUP_INFO.Image()))
-        , innerRegion_()
-        , backgroundTexture_(BACKGROUND_IMAGE_CONFIG_KEY_)
+        , BACKGROUND_IMAGE_CONFIG_KEY_(PopupImage::ImageConfigKey(POPUP_INFO.Image()))
+        , TEXT_BUTTON_VERT_PAD_()
+        , TEXT_BUTTON_REGION_HEIGHT_(+(2.0f * TEXT_BUTTON_VERT_PAD_))
+        , sliderbarUPtr_()
+        , accent1CachedTextureOpt_()
+        , accentSprite1_()
+        , accent2CachedTextureOpt_()
+        , accentSprite2_()
+        , selection_(-1) // any negative value will work here
+        , xSymbolSprite_()
+        , willShowXImage_(false)
         , textRegionUPtr_()
-        , textRegion_()
+        , backgroundTexture_(BACKGROUND_IMAGE_CONFIG_KEY_)
+        , backgroundSprite_(
+              backgroundTexture_.Get(),
+              misc::ConfigFile::Instance()->GetTextureRect(BACKGROUND_IMAGE_CONFIG_KEY_))
+        , contentRegion_()
+        , buttonRegion_()
         , buttonSelectUPtr_()
         , buttonYesUPtr_()
         , buttonNoUPtr_()
         , buttonCancelUPtr_()
         , buttonContinueUPtr_()
         , buttonOkayUPtr_()
-        , sliderbarUPtr_()
-        , accent1CachedTextureOpt_()
-        , accentSprite1_()
-        , accent2CachedTextureOpt_()
-        , accentSprite2_()
-        , sliderbarPosTop_(0.0f)
-        , selection_(-1) // any negative value will work here
-        , xSymbolSprite_()
-        , willShowXImage_(false)
-        , backgroundSprite_(
-              backgroundTexture_.Get(),
-              misc::ConfigFile::Instance()->GetTextureRect(BACKGROUND_IMAGE_CONFIG_KEY_))
-        , buttonTextHeight_(0.0f)
-        , buttonVertPos_(0.0f)
         , xSymbolCachedTextureOpt_()
         , keepAliveTimerSec_(POPUP_INFO.KeepAliveSec())
     {}
@@ -93,32 +88,27 @@ namespace popup
         }
         else if (&PACKET == buttonYesUPtr_.get())
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Yes);
+            ClosePopup(PopupButtons::Yes);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "yes text button clicked");
         }
         else if (&PACKET == buttonNoUPtr_.get())
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::No);
+            ClosePopup(PopupButtons::No);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "no text button clicked");
         }
         else if (&PACKET == buttonCancelUPtr_.get())
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Cancel);
+            ClosePopup(PopupButtons::Cancel);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "cancel text button clicked");
         }
         else if (&PACKET == buttonContinueUPtr_.get())
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Continue);
+            ClosePopup(PopupButtons::Continue);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "continue text button clicked");
         }
         else if (&PACKET == buttonOkayUPtr_.get())
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Okay);
+            ClosePopup(PopupButtons::Okay);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "okay text button clicked");
         }
 
@@ -127,14 +117,14 @@ namespace popup
 
     void PopupStageBase::Setup()
     {
+        // TODO move this sfx play elsewhere so there isn't so much of a delay
         gui::SoundManager::Instance()->SoundEffectPlay(popupInfo_.SoundEffect());
-        SetupOuterAndInnerRegion();
-        SetupVariousButtonPositionValues();
+
+        SetupBackgroundImage();
+        SetupRegions();
         SetupButtons();
-        SetupTextRegion();
         SetupText();
         SetupAccentSprite();
-        SetupSliderbar();
         SetupRedXImage();
     }
 
@@ -148,10 +138,7 @@ namespace popup
         }
 
         textRegionUPtr_->draw(target, states);
-    }
 
-    void PopupStageBase::DrawRedX(sf::RenderTarget & target, sf::RenderStates states) const
-    {
         if (willShowXImage_)
         {
             target.draw(xSymbolSprite_, states);
@@ -166,9 +153,7 @@ namespace popup
                 || (KEY_EVENT.code == sf::Keyboard::Return)
                 || (KEY_EVENT.code == sf::Keyboard::Escape))
             {
-                EndKeepAliveTimer();
-                PlayValidKeypressSoundEffect();
-                RemovePopup(PopupButtons::Continue);
+                ClosePopup(PopupButtons::Continue);
                 return true;
             }
         }
@@ -179,26 +164,21 @@ namespace popup
                 || (KEY_EVENT.code == sf::Keyboard::Return)
                 || (KEY_EVENT.code == sf::Keyboard::Escape))
             {
-                EndKeepAliveTimer();
-                PlayValidKeypressSoundEffect();
-                RemovePopup(PopupButtons::Okay);
+                ClosePopup(PopupButtons::Okay);
                 return true;
             }
         }
 
         if ((popupInfo_.Buttons() & PopupButtons::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
         {
-            EndKeepAliveTimer();
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Yes);
+            ClosePopup(PopupButtons::Yes);
             return true;
         }
 
         if ((popupInfo_.Buttons() & PopupButtons::No)
             && ((KEY_EVENT.code == sf::Keyboard::N) || (KEY_EVENT.code == sf::Keyboard::Escape)))
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::No);
+            ClosePopup(PopupButtons::No);
             return true;
         }
 
@@ -209,9 +189,7 @@ namespace popup
                 || ((KEY_EVENT.code == sf::Keyboard::Return)
                     && (popupInfo_.Buttons() == PopupButtons::Cancel)))
             {
-                EndKeepAliveTimer();
-                PlayValidKeypressSoundEffect();
-                RemovePopup(PopupButtons::Cancel);
+                ClosePopup(PopupButtons::Cancel);
                 return true;
             }
         }
@@ -235,7 +213,7 @@ namespace popup
             keepAliveTimerSec_ -= ELAPSED_TIME_SECONDS;
             if (keepAliveTimerSec_ < 0.0f)
             {
-                RemovePopup(PopupButtons::Continue);
+                ClosePopup(PopupButtons::Continue, 0, false);
             }
         }
     }
@@ -249,8 +227,7 @@ namespace popup
         }
         else
         {
-            PlayValidKeypressSoundEffect();
-            RemovePopup(PopupButtons::Select, static_cast<std::size_t>(selection_));
+            ClosePopup(PopupButtons::Select, static_cast<std::size_t>(selection_));
             return true;
         }
     }
@@ -279,16 +256,58 @@ namespace popup
             ((misc::random::Bool()) ? gui::ImageOpt::Default : gui::ImageOpt::FlipHoriz));
     }
 
-    void PopupStageBase::SetupOuterAndInnerRegion()
+    const sf::Vector2f PopupStageBase::BackgroundImageLocalSize() const
     {
-        const auto BG_IMAGE_SCALE { calcBackgroundImageScale(popupInfo_.Image()) };
-        innerRegion_ = sf::FloatRect(BackgroundImageRect(popupInfo_.Image(), BG_IMAGE_SCALE));
-        backgroundSprite_.setScale(BG_IMAGE_SCALE, BG_IMAGE_SCALE);
-        sfutil::Center(backgroundSprite_);
-        StageRegion(backgroundSprite_.getGlobalBounds());
+        return sf::Vector2f { backgroundTexture_.Get().getSize() };
     }
 
-    void PopupStageBase::SetupForFullScreenWithBorderRatio(const float BORDER_RATIO)
+    void PopupStageBase::SetupBackgroundImage()
+    {
+        const auto HEGHT { sfutil::ScreenRatioToPixelsVert(
+            PopupImage::ScreenSizeRatio(popupInfo_.Image())) };
+
+        const auto SCALE { (HEGHT / backgroundSprite_.getLocalBounds().height) };
+
+        backgroundSprite_.setScale(SCALE, SCALE);
+        sfutil::Center(backgroundSprite_);
+    }
+
+    void PopupStageBase::SetupRegions()
+    {
+        StageRegion(backgroundSprite_.getGlobalBounds());
+
+        contentRegion_ = MakeBackgroundImageContentRegion(popupInfo_.Image(), false, StageRegion());
+
+        const auto BUTTON_HEIGHT_MAX { CalcTextButtonMaxHeight() };
+        const auto TEXT_TO_BUTTON_VERT_PAD { sfutil::ScreenRatioToPixelsVert(0.006f) };
+        buttonRegion_.height = (BUTTON_HEIGHT_MAX + TEXT_TO_BUTTON_VERT_PAD);
+        contentRegion_.height -= buttonRegion_.height;
+
+        buttonRegion_.top = sfutil::Bottom(contentRegion_);
+        buttonRegion_.left = contentRegion_.left;
+        buttonRegion_.width = contentRegion_.width;
+    }
+
+    const sf::FloatRect PopupStageBase::MakeBackgroundImageContentRegion(
+        const PopupImage::Enum IMAGE,
+        const bool IS_LEFT_IMAGE,
+        const sf::FloatRect & BG_REGION) const
+    {
+        const auto BG_SIZE_V { sfutil::Size(BG_REGION) };
+
+        const auto BG_CONTENT_REGION_RATIOS { PopupImage::ContentRegionRatios(
+            IMAGE, IS_LEFT_IMAGE) };
+
+        sf::FloatRect rect;
+        rect.left = BG_REGION.left + (BG_SIZE_V.x * BG_CONTENT_REGION_RATIOS.left);
+        rect.top = BG_REGION.top + (BG_SIZE_V.y * BG_CONTENT_REGION_RATIOS.top);
+        rect.width = (BG_SIZE_V.x * BG_CONTENT_REGION_RATIOS.width);
+        rect.height = (BG_SIZE_V.y * BG_CONTENT_REGION_RATIOS.height);
+
+        return rect;
+    }
+
+    void PopupStageBase::SetupRegionsForFullScreen(const float BORDER_RATIO)
     {
         const auto REGION { gui::Margins(
                                 sfutil::ScreenRatioToPixelsHoriz(BORDER_RATIO),
@@ -296,150 +315,66 @@ namespace popup
                                 .ApplyShrinkCopy(gui::Display::Instance()->FullScreenRect()) };
 
         StageRegion(REGION);
-        innerRegion_ = REGION;
+        contentRegion_ = REGION;
+
+        buttonRegion_.left = REGION.left;
+        buttonRegion_.top = sfutil::Bottom(REGION);
+        buttonRegion_.width = REGION.width;
+        buttonRegion_.height = 0.0f;
+
         sfutil::SetSizeAndPos(backgroundSprite_, REGION);
-    }
-
-    void PopupStageBase::SetupVariousButtonPositionValues()
-    {
-        creature::NameInfo creatureNameInfo;
-
-        const auto TEMP_MOUSE_TEXT_INFO { gui::MouseTextInfo::Make_PopupButtonSet(
-            creatureNameInfo.LargestLetterString(), popupInfo_.ButtonColor()) };
-
-        const gui::Text TEMP_TEXT_OBJ { TEMP_MOUSE_TEXT_INFO.up.text,
-                                        TEMP_MOUSE_TEXT_INFO.up.font_letters,
-                                        TEMP_MOUSE_TEXT_INFO.up.size };
-
-        buttonTextHeight_ = TEMP_TEXT_OBJ.getGlobalBounds().height;
-
-        const auto POPUPBUTTON_TEXT_BOTTOM_MARGIN { sfutil::MapByRes(30.0f, 90.0f) };
-        const auto BUTTON_HEIGHT { ButtonTextHeight() + POPUPBUTTON_TEXT_BOTTOM_MARGIN };
-
-        buttonVertPos_
-            = (StageRegion().top + innerRegion_.top + innerRegion_.height) - BUTTON_HEIGHT;
     }
 
     void PopupStageBase::SetupButtons()
     {
+        // this is used for horizontal positioning
+        const auto TWELF_CONTENT_WIDTH { (contentRegion_.width * 0.0833f) };
+
         if (popupInfo_.Buttons() & PopupButtons::Yes)
         {
-            buttonYesUPtr_ = std::make_unique<gui::TextButton>(
-                "PopupStage'sYes",
-                StageRegion().left + innerRegion_.left + (innerRegion_.width / 4.0f) - 50.0f,
-                buttonVertPos_,
-                gui::MouseTextInfo::Make_PopupButtonSet("Yes", popupInfo_.ButtonColor()),
-                gui::TextButton::Callback_t::IHandlerPtr_t(this));
-
-            EntityAdd(buttonYesUPtr_);
+            MakeTextButton(
+                buttonYesUPtr_, "Yes", (contentRegion_.left + (TWELF_CONTENT_WIDTH * 3.0f)));
         }
 
         if (popupInfo_.Buttons() & PopupButtons::No)
         {
-            buttonNoUPtr_ = std::make_unique<gui::TextButton>(
-                "PopupStage'sNo",
-                StageRegion().left + innerRegion_.left + (2.0f * (innerRegion_.width / 4.0f))
-                    - 40.0f,
-                buttonVertPos_,
-                gui::MouseTextInfo::Make_PopupButtonSet("No", popupInfo_.ButtonColor()),
-                gui::TextButton::Callback_t::IHandlerPtr_t(this));
-
-            EntityAdd(buttonNoUPtr_);
+            MakeTextButton(
+                buttonNoUPtr_, "No", (contentRegion_.left + (TWELF_CONTENT_WIDTH * 5.0f)));
         }
 
         if (popupInfo_.Buttons() & PopupButtons::Cancel)
         {
-            buttonCancelUPtr_ = std::make_unique<gui::TextButton>(
-                "PopupStage'sCancel",
-                (StageRegion().left + innerRegion_.left + innerRegion_.width)
-                    - (innerRegion_.width / 3.0f),
-                buttonVertPos_,
-                gui::MouseTextInfo::Make_PopupButtonSet("Cancel", popupInfo_.ButtonColor()),
-                gui::TextButton::Callback_t::IHandlerPtr_t(this));
-
-            EntityAdd(buttonCancelUPtr_);
+            MakeTextButton(
+                buttonCancelUPtr_, "Cancel", (contentRegion_.left + (TWELF_CONTENT_WIDTH * 8.5f)));
         }
 
         if (popupInfo_.Buttons() & PopupButtons::Continue)
         {
-            const auto MIDDLE { StageRegion().left + innerRegion_.left
-                                + (innerRegion_.width * 0.5f) };
-
-            buttonContinueUPtr_ = std::make_unique<gui::TextButton>(
-                "PopupStage'sContinue",
-                MIDDLE - 30.0f,
-                buttonVertPos_,
-                gui::MouseTextInfo::Make_PopupButtonSet("Continue", popupInfo_.ButtonColor()),
-                gui::TextButton::Callback_t::IHandlerPtr_t(this));
-
-            EntityAdd(buttonContinueUPtr_);
+            MakeTextButton(
+                buttonContinueUPtr_,
+                "Continue",
+                (contentRegion_.left + (TWELF_CONTENT_WIDTH * 6.5f)));
         }
 
         if (popupInfo_.Buttons() & PopupButtons::Okay)
         {
-            const float MIDDLE(
-                StageRegion().left + innerRegion_.left + (innerRegion_.width * 0.5f));
-
-            buttonOkayUPtr_ = std::make_unique<gui::TextButton>(
-                "PopupStage'sOkay",
-                MIDDLE - 50.0f,
-                buttonVertPos_,
-                gui::MouseTextInfo::Make_PopupButtonSet("Okay", popupInfo_.ButtonColor()),
-                gui::TextButton::Callback_t::IHandlerPtr_t(this));
-
-            EntityAdd(buttonOkayUPtr_);
+            MakeTextButton(buttonOkayUPtr_, "Okay", -1.0f); // any negative will work here (center)
         }
 
         if (popupInfo_.Buttons() & PopupButtons::Select)
         {
-            const float MIDDLE(
-                StageRegion().left + innerRegion_.left + (innerRegion_.width * 0.5f));
-
-            buttonSelectUPtr_ = std::make_unique<gui::TextButton>(
-                "PopupStage'sSelect",
-                MIDDLE - 100.0f,
-                buttonVertPos_,
-                gui::MouseTextInfo::Make_PopupButtonSet("Select", popupInfo_.ButtonColor()),
-                gui::TextButton::Callback_t::IHandlerPtr_t(this));
-
-            EntityAdd(buttonSelectUPtr_);
+            MakeTextButton(buttonSelectUPtr_, "Select", -1.0f);
         }
-    }
-
-    void PopupStageBase::SetupTextRegion()
-    {
-        textRegion_.left = StageRegion().left + innerRegion_.left;
-        textRegion_.top = StageRegion().top + innerRegion_.top;
-        textRegion_.width = innerRegion_.width;
-
-        const auto TEXT_TO_BUTTON_SPACER { 12.0f }; // found by experiment
-        textRegion_.height = (innerRegion_.height - ButtonTextHeight()) - TEXT_TO_BUTTON_SPACER;
     }
 
     void PopupStageBase::SetupText()
     {
-        sf::FloatRect tempRect(textRegion_);
-        tempRect.height = 0.0f;
-
         textRegionUPtr_ = std::make_unique<gui::TextRegion>(
-            "PopupStage's",
+            GetStageName() + "'s",
             popupInfo_.TextInfo(),
-            tempRect,
+            contentRegion_,
             gui::BoxEntityInfo(),
             stage::IStagePtr_t(this));
-
-        if ((textRegionUPtr_->GetEntityRegion().top + textRegionUPtr_->GetEntityRegion().height)
-            > (textRegion_.top + textRegion_.height))
-        {
-            tempRect.height = textRegion_.height;
-
-            textRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "PopupStage's",
-                popupInfo_.TextInfo(),
-                tempRect,
-                gui::BoxEntityInfo(),
-                stage::IStagePtr_t(this));
-        }
     }
 
     void PopupStageBase::SetupAccentSprite()
@@ -453,17 +388,10 @@ namespace popup
 
             accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
-            sfutil::FitAndCenterTo(
-                accentSprite1_,
-                sfutil::ScaleAndReCenterCopy(textRegion_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+            sfutil::FitAndCenterTo(accentSprite1_, contentRegion_);
 
             accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
-    }
-
-    void PopupStageBase::SetupSliderbar()
-    {
-        sliderbarPosTop_ = (buttonVertPos_ - (ButtonTextHeight() * 3.0f));
     }
 
     void PopupStageBase::SetupRedXImage()
@@ -473,95 +401,66 @@ namespace popup
         xSymbolSprite_.setColor(sf::Color(255, 0, 0, 127));
     }
 
-    const sf::IntRect
-        PopupStageBase::BackgroundImageRect(const PopupImage::Enum PI, const float SCALE) const
+    void PopupStageBase::ClosePopup(
+        const PopupButtons::Enum BUTTON, const std::size_t SELECTION, const bool WILL_PLAY_SFX)
     {
-        switch (PI)
+        EndKeepAliveTimer();
+
+        if (WILL_PLAY_SFX)
         {
-            case PopupImage::Banner:
-            {
-                return sfutil::ScaleRectLinearCopy(PopupManager::Instance()->Rect_Banner(), SCALE);
-            }
+            PlayValidKeypressSoundEffect();
+        }
 
-            case PopupImage::Regular:
-            {
-                return sfutil::ScaleRectLinearCopy(PopupManager::Instance()->Rect_Regular(), SCALE);
-            }
+        RemovePopup(BUTTON, SELECTION);
+    }
 
-            case PopupImage::RegularSidebar:
-            {
-                return sfutil::ScaleRectLinearCopy(
-                    PopupManager::Instance()->Rect_RegularSidebar(), SCALE);
-            }
+    void PopupStageBase::MakeTextButton(
+        gui::TextButtonUPtr_t & buttonUPtr, const std::string & NAME, const float POS_LEFT_ORIG)
+    {
+        buttonUPtr = std::make_unique<gui::TextButton>(
+            GetStageName() + "'s_" + NAME,
+            sf::Vector2f(),
+            gui::MouseTextInfo::Make_PopupButtonSet(NAME, popupInfo_.ButtonColor()),
+            gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
-            case PopupImage::Large:
-            {
-                return sfutil::ScaleRectLinearCopy(PopupManager::Instance()->Rect_Large(), SCALE);
-            }
+        auto posLeft { POS_LEFT_ORIG };
+        if (posLeft < 0.0f)
+        {
+            posLeft
+                = (sfutil::CenterOfHoriz(buttonRegion_)
+                   - (buttonUPtr->GetEntityRegion().width * 0.5f));
+        }
 
-            case PopupImage::LargeSidebar:
-            {
-                return sfutil::ScaleRectLinearCopy(
-                    PopupManager::Instance()->Rect_LargeSidebar(), SCALE);
-            }
+        const auto POS_TOP { (
+            sfutil::CenterOfVert(buttonRegion_) - (buttonUPtr->GetEntityRegion().height * 0.5f)) };
 
-            case PopupImage::Spellbook:
-            case PopupImage::MusicSheet:
-            {
-                M_HP_LOG_ERR(
-                    "gui::PopupManager::BackgroundImagePath("
-                    << popup::PopupImage::ToString(PI)
-                    << ") was given Spellbook or MusicSheet, which are fullscreen"
-                    << " popups and have no rects to setup.");
+        buttonUPtr->SetEntityPos(posLeft, POS_TOP);
 
-                return sf::IntRect();
-            }
-            case PopupImage::Count:
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "gui::PopupManager::BackgroundImagePath(" << popup::PopupImage::ToString(
-                        PI) << ") but that popup::PopupImage::Enum value was invalid.");
+        EntityAdd(buttonUPtr);
+    }
 
-                return sf::IntRect();
-            }
+    const sf::FloatRect PopupStageBase::ActualTextRegion() const
+    {
+        if (textRegionUPtr_)
+        {
+            return textRegionUPtr_->ActualTextRegion();
+        }
+        else
+        {
+            return sf::FloatRect();
         }
     }
 
-    float PopupStageBase::calcBackgroundImageScale(const PopupImage::Enum ENUM) const
+    float PopupStageBase::CalcTextButtonMaxHeight() const
     {
-        // These values found by experiment to look good at various resolutions.
-        switch (ENUM)
-        {
-            case PopupImage::Banner:
-            {
-                return sfutil::MapByRes(0.7f, 2.0f);
-            }
+        const auto MOUSE_TEXT_INFO { gui::MouseTextInfo::Make_PopupButtonSet(
+            "Y", popupInfo_.ButtonColor()) };
 
-            case PopupImage::Regular:
-            case PopupImage::RegularSidebar:
-            {
-                return sfutil::MapByRes(0.85f, 3.5f);
-            }
+        const gui::Text TEMP_TEXT_OBJ { MOUSE_TEXT_INFO.up.text,
+                                        MOUSE_TEXT_INFO.up.font_letters,
+                                        MOUSE_TEXT_INFO.up.size };
 
-            case PopupImage::Large:
-            case PopupImage::LargeSidebar:
-            {
-                // If you change this, then make sure the character_selection
-                // and image_selection popups still look right.
-                return sfutil::MapByRes(1.0f, 4.75f);
-            }
-
-            case PopupImage::Spellbook: // Spellbook and MusicSheet are scale themselves to fit the
-                                        // screen.
-
-            case PopupImage::MusicSheet:
-            case PopupImage::Count:
-            default:
-            {
-                return 1.0f;
-            }
-        }
+        return TEMP_TEXT_OBJ.getGlobalBounds().height;
     }
 
 } // namespace popup

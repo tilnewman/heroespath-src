@@ -24,11 +24,6 @@ namespace gui
     class SliderBarMusic : public SliderBarLabeled
     {
     public:
-        SliderBarMusic(const SliderBarMusic &) = delete;
-        SliderBarMusic(SliderBarMusic &&) = delete;
-        SliderBarMusic & operator=(const SliderBarMusic &) = delete;
-        SliderBarMusic & operator=(SliderBarMusic &&) = delete;
-
         SliderBarMusic(
             const std::string & NAME,
             const float POS_LEFT,

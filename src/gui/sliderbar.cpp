@@ -35,29 +35,40 @@ namespace gui
         const SliderStyle & STYLE,
         const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
         const float INITIAL_POS_RATIO,
-        const bool WILL_INVERT_POSITION)
+        const bool WILL_INVERT_POSITION,
+        const float MIN_MOVE_RATIO)
         : Entity(std::string(NAME).append("_SliderBar"), POS_LEFT, POS_TOP)
-        , currentPosRatio_(INITIAL_POS_RATIO)
         , length_(LENGTH)
         , style_(STYLE)
+        , minMoveRatio_(MIN_MOVE_RATIO)
+        , PAD_TEXTURE_END_LENGTH_(4)
+        , currentPosRatio_(INITIAL_POS_RATIO)
         , guiElementsCachedTexture_(GuiImages::PathKey())
         , topOrLeftSprite_(
               guiElementsCachedTexture_.Get(), TextureCoordsBaseOnStyle_TopOrLeft(STYLE))
         , botOrRightSprite_(
               guiElementsCachedTexture_.Get(), TextureCoordsBaseOnStyle_BottomOrRight(STYLE))
         , barSprite_(guiElementsCachedTexture_.Get(), TextureCoordsBasedOnStyle_Bar(STYLE))
-        , padSprite_(guiElementsCachedTexture_.Get(), TextureCoordsBasedOnStyle_Pad(STYLE))
+        , topOrLeftPadSprite_(guiElementsCachedTexture_.Get())
+        , middlePadSprite_(guiElementsCachedTexture_.Get())
+        , botOrRightPadSprite_(guiElementsCachedTexture_.Get())
         , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
         , topOrLeftIsMouseDown_(false)
         , botOrRightIsMouseDown_(false)
         , barIsMouseDown_(false)
         , padIsMouseDown_(false)
+        , willPlaySfx_(true)
         , willInvertPosition_(WILL_INVERT_POSITION)
+        , padIsMouseDownPosV_()
     {
         SetupInitialSpritePositions(sf::Vector2f(POS_LEFT, POS_TOP));
 
-        SetEntityRegion(sfutil::MinimallyEnclosing(
-            { topOrLeftSprite_, botOrRightSprite_, barSprite_, padSprite_ }));
+        SetEntityRegion(sfutil::MinimallyEnclosing({ topOrLeftSprite_,
+                                                     botOrRightSprite_,
+                                                     barSprite_,
+                                                     topOrLeftPadSprite_,
+                                                     middlePadSprite_,
+                                                     botOrRightPadSprite_ }));
     }
 
     void SliderBar::PositionRatio(const float NEW_VAL)
@@ -69,41 +80,24 @@ namespace gui
     void SliderBar::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw(barSprite_, states);
-        target.draw(padSprite_, states);
+
         target.draw(topOrLeftSprite_, states);
         target.draw(botOrRightSprite_, states);
-    }
 
-    // bool SliderBar::UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION)
-    //{
-    //    if (entityRegion_.contains(MOUSE_POS_V))
-    //    {
-    //        if (WHEEL_MOTION < 0.0f)
-    //        {
-    //            currentPosRatio_ -= 0.02f;
-    //        }
-    //        else
-    //        {
-    //            currentPosRatio_ += 0.02f;
-    //        }
-    //
-    //        UpdatePadPosition();
-    //        return true;
-    //    }
-    //    else
-    //    {
-    //        return false;
-    //    }
-    //}
+        target.draw(topOrLeftPadSprite_, states);
+        target.draw(middlePadSprite_, states);
+        target.draw(botOrRightPadSprite_, states);
+    }
 
     bool SliderBar::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
         ResetMouseDownStatus();
 
         // check the pad and end-points before the bar because they are on top of the bar
-        if (padSprite_.getGlobalBounds().contains(MOUSE_POS_V))
+        if (CalcPadSpriteRegion().contains(MOUSE_POS_V))
         {
             padIsMouseDown_ = true;
+            padIsMouseDownPosV_ = MOUSE_POS_V;
         }
         else if (topOrLeftSprite_.getGlobalBounds().contains(MOUSE_POS_V))
         {
@@ -138,6 +132,11 @@ namespace gui
 
         if ((POS_CHANGE_RATIO < 0.0f) || (POS_CHANGE_RATIO > 0.0f))
         {
+            if (willPlaySfx_)
+            {
+                gui::SoundManager::Instance()->PlaySfx_TickOn();
+            }
+
             currentPosRatio_ += POS_CHANGE_RATIO;
             UpdatePadPosition();
             return true;
@@ -152,8 +151,19 @@ namespace gui
     {
         if (padIsMouseDown_)
         {
-            currentPosRatio_ = CalcPositionRatioFromScreenPos(MOUSE_POS_V);
+            if (style_.orientation == Orientation::Horiz)
+            {
+                const auto DRAG_DISTANCE { (MOUSE_POS_V.x - padIsMouseDownPosV_.x) };
+                currentPosRatio_ += (DRAG_DISTANCE / length_);
+            }
+            else
+            {
+                const auto DRAG_DISTANCE { (MOUSE_POS_V.y - padIsMouseDownPosV_.y) };
+                currentPosRatio_ += (DRAG_DISTANCE / length_);
+            }
+
             UpdatePadPosition();
+            padIsMouseDownPosV_ = MOUSE_POS_V;
             return true;
         }
         else
@@ -174,29 +184,16 @@ namespace gui
 
         topOrLeftSprite_.move(HORIZ, VERT);
         botOrRightSprite_.move(HORIZ, VERT);
+
         barSprite_.move(HORIZ, VERT);
-        padSprite_.move(HORIZ, VERT);
+
+        topOrLeftPadSprite_.move(HORIZ, VERT);
+        middlePadSprite_.move(HORIZ, VERT);
+        botOrRightPadSprite_.move(HORIZ, VERT);
     }
 
     void SliderBar::SetupInitialSpritePositions(const sf::Vector2f POS_V)
     {
-        auto calcPadScale = [](const float SIZE_ORIG, const float RANGE) {
-            const auto TENTH_RANGE { (RANGE * 0.1f) };
-
-            auto sizeFinal { SIZE_ORIG };
-
-            if (SIZE_ORIG > RANGE)
-            {
-                sizeFinal = (RANGE * 0.5f);
-            }
-            else if (SIZE_ORIG < TENTH_RANGE)
-            {
-                sizeFinal = TENTH_RANGE;
-            }
-
-            return (sizeFinal / SIZE_ORIG);
-        };
-
         // the end caps are not placed at either end of the length_ because that would grow the
         // length_, instead they are placed on-top-of or within the length_, which preserves the
         // total lenght_ on screen but reduces the range over which the pad can move, see
@@ -212,22 +209,54 @@ namespace gui
                 (sfutil::CenterOfHoriz(botOrRightSprite_) - sfutil::CenterOfHoriz(topOrLeftSprite_))
             };
 
-            const auto PAD_RANGE { BAR_RANGE - sfutil::Width(padSprite_) };
-            const auto PAD_SIZE_ORIG { sfutil::Width(padSprite_.getLocalBounds()) };
+            // setup top/left pad
+            {
+                auto padSpriteTextureRect { TextureCoordsBasedOnStyle_Pad(style_) };
+                padSpriteTextureRect.width = PAD_TEXTURE_END_LENGTH_;
+                topOrLeftPadSprite_.setTextureRect(padSpriteTextureRect);
+            }
 
-            padSprite_.setScale(calcPadScale(PAD_SIZE_ORIG, PAD_RANGE), 1.0f);
+            // setup bot/right pad
+            {
+                auto padSpriteTextureRect { TextureCoordsBasedOnStyle_Pad(style_) };
 
-            padSprite_.setPosition(
+                padSpriteTextureRect.left
+                    += ((padSpriteTextureRect.width - 1) - PAD_TEXTURE_END_LENGTH_);
+
+                padSpriteTextureRect.width = PAD_TEXTURE_END_LENGTH_;
+
+                botOrRightPadSprite_.setTextureRect(padSpriteTextureRect);
+            }
+
+            // setup middle pad
+            {
+                auto padSpriteTextureRect { TextureCoordsBasedOnStyle_Pad(style_) };
+
+                padSpriteTextureRect.left += PAD_TEXTURE_END_LENGTH_;
+
+                padSpriteTextureRect.width
+                    = (padSpriteTextureRect.width - (PAD_TEXTURE_END_LENGTH_ * 2));
+
+                middlePadSprite_.setTextureRect(padSpriteTextureRect);
+
+                const auto PAD_LENGTH { CalcPadLength(
+                    TextureCoordsBasedOnStyle_Pad(style_).width, BAR_RANGE, minMoveRatio_) };
+
+                const auto MIDDLE_PAD_SCALE_HORIZ { (
+                    (PAD_LENGTH - static_cast<float>(PAD_TEXTURE_END_LENGTH_ * 2))
+                    / static_cast<float>(padSpriteTextureRect.width)) };
+
+                middlePadSprite_.setScale(MIDDLE_PAD_SCALE_HORIZ, 1.0f);
+            }
+
+            SetPadPosition(sf::Vector2f(
                 sfutil::Right(topOrLeftSprite_),
-                (sfutil::CenterOfVert(topOrLeftSprite_) - (sfutil::Height(padSprite_) * 0.5f)));
+                (sfutil::CenterOfVert(topOrLeftSprite_)
+                 - (sfutil::Height(middlePadSprite_) * 0.5f))));
 
             barSprite_.setPosition(
                 sfutil::CenterOfHoriz(topOrLeftSprite_),
                 (sfutil::CenterOfVert(topOrLeftSprite_) - (sfutil::Height(barSprite_) * 0.5f)));
-
-            padSprite_.setPosition(
-                sfutil::Right(topOrLeftSprite_),
-                (sfutil::CenterOfVert(barSprite_) - (sfutil::Height(padSprite_) * 0.5f)));
 
             barSprite_.setScale((BAR_RANGE / sfutil::Width(barSprite_.getLocalBounds())), 1.0f);
         }
@@ -241,14 +270,50 @@ namespace gui
             const auto BAR_RANGE { (
                 sfutil::CenterOfVert(botOrRightSprite_) - sfutil::CenterOfVert(topOrLeftSprite_)) };
 
-            const auto PAD_RANGE { BAR_RANGE - sfutil::Height(padSprite_) };
-            const auto PAD_SIZE_ORIG { sfutil::Height(padSprite_.getLocalBounds()) };
+            // setup top/left pad
+            {
+                auto padSpriteTextureRect { TextureCoordsBasedOnStyle_Pad(style_) };
+                padSpriteTextureRect.height = PAD_TEXTURE_END_LENGTH_;
+                topOrLeftPadSprite_.setTextureRect(padSpriteTextureRect);
+            }
 
-            padSprite_.setScale(1.0f, calcPadScale(PAD_SIZE_ORIG, PAD_RANGE));
+            // setup bot/right pad
+            {
+                auto padSpriteTextureRect { TextureCoordsBasedOnStyle_Pad(style_) };
 
-            padSprite_.setPosition(
-                (sfutil::CenterOfHoriz(topOrLeftSprite_) - (sfutil::Width(padSprite_) * 0.5f)),
-                sfutil::Bottom(topOrLeftSprite_));
+                padSpriteTextureRect.top
+                    += ((padSpriteTextureRect.height - 1) - PAD_TEXTURE_END_LENGTH_);
+
+                padSpriteTextureRect.height = PAD_TEXTURE_END_LENGTH_;
+
+                botOrRightPadSprite_.setTextureRect(padSpriteTextureRect);
+            }
+
+            // setup middle pad
+            {
+                auto padSpriteTextureRect { TextureCoordsBasedOnStyle_Pad(style_) };
+
+                padSpriteTextureRect.top += PAD_TEXTURE_END_LENGTH_;
+
+                padSpriteTextureRect.height
+                    = (padSpriteTextureRect.height - (PAD_TEXTURE_END_LENGTH_ * 2));
+
+                middlePadSprite_.setTextureRect(padSpriteTextureRect);
+
+                const auto PAD_LENGTH { CalcPadLength(
+                    TextureCoordsBasedOnStyle_Pad(style_).height, BAR_RANGE, minMoveRatio_) };
+
+                const auto MIDDLE_PAD_SCALE_VERT { (
+                    (PAD_LENGTH - static_cast<float>(PAD_TEXTURE_END_LENGTH_ * 2))
+                    / static_cast<float>(padSpriteTextureRect.height)) };
+
+                middlePadSprite_.setScale(1.0f, MIDDLE_PAD_SCALE_VERT);
+            }
+
+            SetPadPosition(sf::Vector2f(
+                (sfutil::CenterOfHoriz(topOrLeftSprite_)
+                 - (sfutil::Width(middlePadSprite_) * 0.5f)),
+                sfutil::Bottom(topOrLeftSprite_)));
 
             // this rotation puts the long shadow at the top which is not correct but because we are
             // covering the ends of the bar it doesn't matter
@@ -396,7 +461,6 @@ namespace gui
                     return GuiImages::ArrowUpDarkI();
                 }
             }
-
             case Brightness::Bright:
             case Brightness::Count:
             default:
@@ -440,7 +504,6 @@ namespace gui
                     return GuiImages::ArrowRightDarkI();
                 }
             }
-
             case Brightness::Bright:
             case Brightness::Count:
             default:
@@ -473,7 +536,6 @@ namespace gui
                     return GuiImages::ArrowDownMedI();
                 }
             }
-
             case Brightness::Dark:
             {
                 if (STYLE.will_label_arrows)
@@ -485,7 +547,6 @@ namespace gui
                     return GuiImages::ArrowDownDarkI();
                 }
             }
-
             case Brightness::Bright:
             case Brightness::Count:
             default:
@@ -545,7 +606,7 @@ namespace gui
             currentPosRatio_ = 0.0f;
         }
 
-        padSprite_.setPosition(CalcPadPosition());
+        SetPadPosition(CalcPadPosition());
         OnChange(currentPosRatio_);
     }
 
@@ -576,25 +637,27 @@ namespace gui
         // endcaps.
         const auto OVERLAP_OFFSET { 2.0f };
 
+        const auto PAD_SPRITE_REGION { CalcPadSpriteRegion() };
+
         if (style_.orientation == Orientation::Horiz)
         {
             const auto LEFT { calcPos(
                 (sfutil::Right(topOrLeftSprite_) - OVERLAP_OFFSET),
                 (sfutil::Left(botOrRightSprite_) + OVERLAP_OFFSET),
-                sfutil::Width(padSprite_),
+                sfutil::Width(PAD_SPRITE_REGION),
                 currentPosRatioToUse) };
 
-            return sf::Vector2f(LEFT, sfutil::Top(padSprite_));
+            return sf::Vector2f(LEFT, sfutil::Top(PAD_SPRITE_REGION));
         }
         else
         {
             const auto TOP { calcPos(
                 (sfutil::Bottom(topOrLeftSprite_) - OVERLAP_OFFSET),
                 (sfutil::Top(botOrRightSprite_) + OVERLAP_OFFSET),
-                sfutil::Height(padSprite_),
+                sfutil::Height(PAD_SPRITE_REGION),
                 currentPosRatioToUse) };
 
-            return sf::Vector2f(sfutil::Left(padSprite_), TOP);
+            return sf::Vector2f(sfutil::Left(PAD_SPRITE_REGION), TOP);
         }
     }
 
@@ -604,21 +667,37 @@ namespace gui
         botOrRightIsMouseDown_ = false;
         barIsMouseDown_ = false;
         padIsMouseDown_ = false;
+        padIsMouseDownPosV_ = sf::Vector2f();
     }
 
     float SliderBar::CalcMoveAmountRatio() const
     {
-        if (style_.orientation == Orientation::Horiz)
+        const auto MOVE_RATIO_DEFAULT = [&]() {
+            const auto PAD_SPRITE_REGION { CalcPadSpriteRegion() };
+
+            if (style_.orientation == Orientation::Horiz)
+            {
+                const auto MOVE_MAX_HORIZ { (
+                    sfutil::Left(botOrRightSprite_) - sfutil::Right(topOrLeftSprite_)) };
+
+                return (sfutil::Width(PAD_SPRITE_REGION) / MOVE_MAX_HORIZ);
+            }
+            else
+            {
+                const auto MOVE_MAX_VERT { (
+                    sfutil::Top(botOrRightSprite_) - sfutil::Bottom(topOrLeftSprite_)) };
+
+                return (sfutil::Height(PAD_SPRITE_REGION) / MOVE_MAX_VERT);
+            }
+        }();
+
+        if (minMoveRatio_ > MOVE_RATIO_DEFAULT)
         {
-            return (
-                sfutil::Width(padSprite_)
-                / (sfutil::Left(botOrRightSprite_) - sfutil::Right(topOrLeftSprite_)));
+            return minMoveRatio_;
         }
         else
         {
-            return (
-                sfutil::Height(padSprite_)
-                / (sfutil::Top(botOrRightSprite_) - sfutil::Bottom(topOrLeftSprite_)));
+            return MOVE_RATIO_DEFAULT;
         }
     }
 
@@ -636,24 +715,26 @@ namespace gui
         }
         else if (barIsMouseDown_)
         {
+            const auto PAD_SPRITE_REGION { CalcPadSpriteRegion() };
+
             if (style_.orientation == Orientation::Horiz)
             {
-                if (MOUSE_POS_V.x < sfutil::Left(padSprite_))
+                if (MOUSE_POS_V.x < sfutil::Left(PAD_SPRITE_REGION))
                 {
                     return -MOVE_AMOUNT_RATIO;
                 }
-                else if (MOUSE_POS_V.x > sfutil::Right(padSprite_))
+                else if (MOUSE_POS_V.x > sfutil::Right(PAD_SPRITE_REGION))
                 {
                     return MOVE_AMOUNT_RATIO;
                 }
             }
             else
             {
-                if (MOUSE_POS_V.y < sfutil::Top(padSprite_))
+                if (MOUSE_POS_V.y < sfutil::Top(PAD_SPRITE_REGION))
                 {
                     return -MOVE_AMOUNT_RATIO;
                 }
-                else if (MOUSE_POS_V.y > sfutil::Bottom(padSprite_))
+                else if (MOUSE_POS_V.y > sfutil::Bottom(PAD_SPRITE_REGION))
                 {
                     return MOVE_AMOUNT_RATIO;
                 }
@@ -689,6 +770,56 @@ namespace gui
         {
             return calcRatio(
                 sfutil::Bottom(topOrLeftSprite_), sfutil::Top(botOrRightSprite_), SCREEN_POS_V.y);
+        }
+    }
+
+    float SliderBar::CalcPadLength(
+        const float SIZE_ORIG, const float RANGE, const float MIN_MOVE_RATIO) const
+    {
+        const auto MIN_MOVE_RANGE { (RANGE * MIN_MOVE_RATIO) };
+        const auto TENTH_RANGE { (RANGE * 0.1f) };
+
+        auto length { SIZE_ORIG };
+
+        if (SIZE_ORIG > RANGE)
+        {
+            length = (RANGE * 0.5f);
+        }
+        else
+        {
+            if (SIZE_ORIG < TENTH_RANGE)
+            {
+                length = TENTH_RANGE;
+            }
+
+            if (length < MIN_MOVE_RANGE)
+            {
+                length = MIN_MOVE_RANGE;
+            }
+        }
+
+        return length;
+    }
+
+    const sf::FloatRect SliderBar::CalcPadSpriteRegion() const
+    {
+        return sfutil::MinimallyEnclosing(
+            { topOrLeftPadSprite_, middlePadSprite_, botOrRightPadSprite_ });
+    }
+
+    void SliderBar::SetPadPosition(const sf::Vector2f & POS_V)
+    {
+        topOrLeftPadSprite_.setPosition(POS_V);
+
+        if (Orientation::Horiz == style_.orientation)
+        {
+            middlePadSprite_.setPosition(sfutil::Right(topOrLeftPadSprite_), POS_V.y);
+            botOrRightPadSprite_.setPosition(sfutil::Right(middlePadSprite_), POS_V.y);
+        }
+        else
+        {
+            middlePadSprite_.setPosition(POS_V.x, sfutil::Bottom(topOrLeftPadSprite_));
+            botOrRightPadSprite_.setPosition(POS_V.x, sfutil::Bottom(middlePadSprite_));
         }
     }
 

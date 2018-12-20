@@ -52,7 +52,7 @@ namespace popup
             gui::Justified::Center,
             sf::Text::Bold);
 
-        auto titleRegion { textRegion_ };
+        auto titleRegion { ContentRegion() };
         titleRegion.height = 0.0f;
 
         titleTextRegionUPtr_
@@ -65,7 +65,7 @@ namespace popup
             sfutil::color::GrayDarker,
             gui::Justified::Center);
 
-        auto descRegion { textRegion_ };
+        auto descRegion { ContentRegion() };
         descRegion.height = 0.0f;
 
         descTextRegionUPtr_
@@ -75,23 +75,22 @@ namespace popup
 
         descTextRegionUPtr_->SetEntityPos(
             descTextRegionUPtr_->GetEntityPos().x,
-            (textRegion_.top + textRegion_.height) - descRegion.height);
+            sfutil::Bottom(ContentRegion()) - descRegion.height);
 
         const auto IMAGE_PAD_VERT { sfutil::ScreenRatioToPixelsVert(0.0167f) };
 
         const sf::FloatRect IMAGE_REGION = [&]() {
-            const auto IMAGE_TOP { sfutil::Bottom(textRegionUPtr_->GetEntityRegion())
-                                   + IMAGE_PAD_VERT };
+            const auto IMAGE_TOP { sfutil::Bottom(ContentRegion()) + IMAGE_PAD_VERT };
 
             const auto MAX_HEIGHT { descTextRegionUPtr_->GetEntityPos().y
                                     - (IMAGE_TOP + IMAGE_PAD_VERT) };
 
             const auto IMAGE_MAX_DIMM { sfutil::ScreenRatioToPixelsHoriz(0.086f) };
 
-            const auto IMAGE_WIDTH { std::min(IMAGE_MAX_DIMM, textRegion_.width) };
+            const auto IMAGE_WIDTH { std::min(IMAGE_MAX_DIMM, ContentRegion().width) };
             const auto IMAGE_HEIGHT { std::min(IMAGE_MAX_DIMM, MAX_HEIGHT) };
 
-            return sf::FloatRect(textRegion_.left, IMAGE_TOP, IMAGE_WIDTH, IMAGE_HEIGHT);
+            return sf::FloatRect(ContentRegion().left, IMAGE_TOP, IMAGE_WIDTH, IMAGE_HEIGHT);
         }();
 
         descTextRegionUPtr_->SetEntityPos(

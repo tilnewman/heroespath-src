@@ -94,7 +94,8 @@ namespace gui
 
         // void Append(const TextRegion &);
         const TextInfo GetTextInfo() const { return textInfoOrig_; }
-        void ShrinkEntityRegionToFitText();
+        void ShrinkEntityRegionToFitActualTextRegion();
+        const sf::FloatRect ActualTextRegion() const;
 
     protected:
         void SetupRender(const TextInfo & TEXT_INFO, const sf::FloatRect & REGION);

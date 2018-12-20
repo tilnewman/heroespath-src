@@ -67,9 +67,7 @@ namespace popup
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
-        void SetupOuterAndInnerRegion() override;
-
-        void SetupRegions();
+        void SetupRegionsExtraWork();
         void SetupLeftAccentImage();
         void SetupRightAccentImage();
         void SetupPlayerImage();
@@ -83,6 +81,9 @@ namespace popup
         bool CanCastSpellInPhase(const spell::SpellPtr_t) const;
         bool CanCastSpell(const spell::SpellPtr_t) const;
         bool HandleSpellCast();
+
+    protected:
+        void SetupRegions() override;
 
     private:
         const spell::SpellPtr_t CurrentSelectedSpell() const;

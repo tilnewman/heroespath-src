@@ -184,12 +184,12 @@ namespace gui
         {
             return sf::FloatRect(PadVerticalSmallI());
         }
-        static const sf::IntRect PadVerticalLargeI() { return sf::IntRect(59, 150, 22, 39); }
+        static const sf::IntRect PadVerticalLargeI() { return sf::IntRect(59, 150, 21, 37); }
         static const sf::FloatRect PadVerticalLargeF()
         {
             return sf::FloatRect(PadVerticalLargeI());
         }
-        static const sf::IntRect PadHorizontalLargeI() { return sf::IntRect(81, 150, 40, 21); }
+        static const sf::IntRect PadHorizontalLargeI() { return sf::IntRect(82, 150, 37, 21); }
         static const sf::FloatRect PadHorizontalLargeF()
         {
             return sf::FloatRect(PadHorizontalLargeI());

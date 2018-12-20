@@ -26,12 +26,14 @@ namespace popup
     // Responsible for implementing the Image Select Popup Stage.
     class PopupStageImageSelect : public PopupStageBase
     {
-        PopupStageImageSelect(const PopupStageImageSelect &);
-        PopupStageImageSelect & operator=(const PopupStageImageSelect &);
-
     public:
         explicit PopupStageImageSelect(const PopupInfo &);
         virtual ~PopupStageImageSelect();
+
+        PopupStageImageSelect(const PopupStageImageSelect &) = delete;
+        PopupStageImageSelect(PopupStageImageSelect &&) = delete;
+        PopupStageImageSelect & operator=(const PopupStageImageSelect &) = delete;
+        PopupStageImageSelect & operator=(PopupStageImageSelect &&) = delete;
 
         using PopupStageBase::HandleCallback;
 
@@ -44,7 +46,15 @@ namespace popup
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
+    protected:
+        bool HandleSelect() override;
+
     private:
+        void SetupImagesRect();
+        void SetupImagePosTop();
+        void SetupSliderbar();
+        void SetupWarnText();
+
         void SetupSelectImage(const std::size_t NEW_IMAGE_INDEX, const float SLIDER_SPEED);
         void SetupSelectImage_SetupNewImageIndex(const std::size_t NEW_IMAGE_INDEX);
         void SetupSelectImage_SetupImageResources();
@@ -52,37 +62,28 @@ namespace popup
         float SetupSelectImage_CalcTravelDistanceCurrent();
         float SetupSelectImage_CalcTravelDistancePrev();
 
-        virtual std::size_t CountMax() const;
-        virtual void SetupContent(const bool) {}
-        virtual const gui::CachedTexture & GetCurrentCachedTexture(const std::size_t IMAGE_INDEX);
+        virtual void SetupContentForNewImage(const bool) {}
 
         bool KeyReleaseHandleNumbers(const sf::Event::KeyEvent &);
         bool KeyReleaseHandleLeft();
         bool KeyReleaseHandeRight();
 
-        void SetupSliderbar() override;
-
-    protected:
         void EnqueueImagesFromCurrentToTarget(
             const std::size_t CURRENT_INDEX, const std::size_t TARGET_INDEX);
 
-        bool HandleSelect() override;
-
-    protected:
+    private:
         static const float IMAGE_SLIDER_SPEED_;
 
+        const std::size_t IMAGE_COUNT_;
         bool isChangingImageAllowed_;
         bool isInitialAnimComplete_;
         bool willShowImageCount_;
-        gui::CachedTextureOpt_t cachedTexturePrevOpt_;
         sf::Sprite spriteCurr_;
         sf::Sprite spritePrev_;
         bool areImagesMoving_;
         bool areImagesMovingLeft_;
-        sf::FloatRect imagesRect_;
         gui::TextRegionUPtr_t imageWrnTextRegionUPtr_;
         gui::TextRegionUPtr_t imageNumTextRegionUPtr_;
-        std::size_t imageIndex_;
         std::size_t imageIndexLastSoundOn_;
         std::size_t imageIndexLastSoundOff_;
         float targetScaleCurr_;
@@ -90,10 +91,15 @@ namespace popup
         float startPosXPrev_;
         float travelDistCurr_;
         float travelDistPrev_;
-        std::queue<std::size_t> imageMoveQueue_;
         gui::SliderZeroToOne imageSlider_;
         float imagePosTop_;
+
+    protected:
+        sf::FloatRect imagesRect_;
+        std::size_t imageIndex_;
+        std::queue<std::size_t> imageMoveQueue_;
     };
+
 } // namespace popup
 } // namespace heroespath
 

@@ -24,32 +24,28 @@ namespace popup
     // Responsible for implementing the Character Select Popup Stage.
     class PopupStageCharacterSelect : public PopupStageImageSelect
     {
-        PopupStageCharacterSelect(const PopupStageCharacterSelect &);
-        PopupStageCharacterSelect & operator=(const PopupStageCharacterSelect &);
-
     public:
         explicit PopupStageCharacterSelect(const PopupInfo &);
         virtual ~PopupStageCharacterSelect();
 
-        using PopupStageBase::HandleCallback;
+        PopupStageCharacterSelect(const PopupStageCharacterSelect &) = delete;
+        PopupStageCharacterSelect(PopupStageCharacterSelect &&) = delete;
+        PopupStageCharacterSelect & operator=(const PopupStageCharacterSelect &) = delete;
+        PopupStageCharacterSelect & operator=(PopupStageCharacterSelect &&) = delete;
 
-        void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-    protected:
+    private:
+        void SetupCharDetailsText();
+
         bool HandleSelect() override;
 
-    private:
-        std::size_t CountMax() const override;
-        void SetupContent(const bool WILL_ERASE) override;
+        void SetupContentForNewImage(const bool WILL_ERASE) override;
         void SetupCharacterSelectDetailText(const bool WILL_ERASE);
         void SetupCharacterSelectionRejectImage(const bool WILL_ERASE);
 
-        const gui::CachedTexture & GetCurrentCachedTexture(const std::size_t IMAGE_INDEX) override;
-
     private:
         gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
-        misc::VectorMap<creature::CreaturePtr_t, gui::CachedTexture> creatureToTextureMap_;
     };
 
 } // namespace popup

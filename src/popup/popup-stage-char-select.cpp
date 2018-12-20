@@ -19,6 +19,7 @@
 #include "gui/sound-manager.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -30,32 +31,14 @@ namespace popup
     PopupStageCharacterSelect::PopupStageCharacterSelect(const PopupInfo & POPUP_INFO)
         : PopupStageImageSelect(POPUP_INFO)
         , charDetailsTextRegionUPtr_()
-        , creatureToTextureMap_()
     {}
 
     PopupStageCharacterSelect::~PopupStageCharacterSelect() = default;
 
-    void PopupStageCharacterSelect::Setup()
+    void PopupStageCharacterSelect::SetupCharDetailsText()
     {
-        PopupStageBase::Setup();
-
-        imagesRect_ = textRegion_;
-
-        imagesRect_.top = textRegionUPtr_->GetEntityPos().y + sfutil::MapByRes(70.0f, 120.0f);
-
-        imagesRect_.height = sfutil::MapByRes(125.0f, 625.0f);
-
-        imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
-
-        const auto SYM_SCALE { sfutil::MapByRes(0.5f, 2.0f) };
-        xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
-
-        sfutil::CenterTo(xSymbolSprite_, imagesRect_);
-
-        sf::FloatRect charDetailsTextRegion(textRegion_);
-
-        charDetailsTextRegion.top = imagesRect_.top + imagesRect_.height;
-
+        sf::FloatRect charDetailsTextRegion(ContentRegion());
+        charDetailsTextRegion.top = sfutil::Bottom(imagesRect_);
         charDetailsTextRegion.height = 0.0f;
 
         auto charDetailsTextInfo { popupInfo_.TextInfo() };
@@ -65,48 +48,12 @@ namespace popup
             "PopupWindow's_CharacterSelection_DetailsText",
             charDetailsTextInfo,
             charDetailsTextRegion);
-
-        // sliderbar setup
-        const float SLIDERBAR_LENGTH(textRegion_.width * 0.5f);
-        const float SLIDERBAR_POS_LEFT(
-            textRegion_.left + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f));
-
-        sliderbarPosTop_ = charDetailsTextRegionUPtr_->GetEntityRegion().top
-            + charDetailsTextRegionUPtr_->GetEntityRegion().height
-            + sfutil::MapByRes(60.0f, 300.0f);
-
-        if (sliderbarUPtr_)
-        {
-            EntityRemove(sliderbarUPtr_);
-        }
-
-        sliderbarUPtr_ = std::make_unique<gui::SliderBar>(
-            "PopupStage's",
-            SLIDERBAR_POS_LEFT,
-            sliderbarPosTop_,
-            SLIDERBAR_LENGTH,
-            gui::SliderStyle(gui::Orientation::Horiz),
-            gui::SliderBar::Callback_t::IHandlerPtr_t(this));
-
-        EntityAdd(sliderbarUPtr_);
-
-        isChangingImageAllowed_
-            = (game::Game::Instance()->State().Party().Characters().size() != 0);
-
-        imageMoveQueue_.push(0);
-        EnqueueImagesFromCurrentToTarget(imageIndex_, popupInfo_.InitialSelection());
     }
 
     void PopupStageCharacterSelect::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         PopupStageImageSelect::draw(target, states);
         charDetailsTextRegionUPtr_->draw(target, states);
-        PopupStageBase::DrawRedX(target, states);
-    }
-
-    std::size_t PopupStageCharacterSelect::CountMax() const
-    {
-        return game::Game::Instance()->State().Party().Characters().size();
     }
 
     bool PopupStageCharacterSelect::HandleSelect()
@@ -114,7 +61,7 @@ namespace popup
         // attempt to select the value most recently enqueued
         if (imageMoveQueue_.empty() == false)
         {
-            if (popupInfo_.TextVec()[imageMoveQueue_.back()].empty() == false)
+            if (popupInfo_.TextVec().at(imageMoveQueue_.back()).empty() == false)
             {
                 PlayInvalidKeypressSoundEffect();
                 return false;
@@ -135,7 +82,7 @@ namespace popup
             return false;
         }
 
-        if (popupInfo_.TextVec()[static_cast<std::size_t>(selection_)].empty() == false)
+        if (popupInfo_.TextVec().at(static_cast<std::size_t>(selection_)).empty() == false)
         {
             PlayInvalidKeypressSoundEffect();
             return false;
@@ -144,7 +91,7 @@ namespace popup
         return PopupStageBase::HandleSelect();
     }
 
-    void PopupStageCharacterSelect::SetupContent(const bool WILL_ERASE)
+    void PopupStageCharacterSelect::SetupContentForNewImage(const bool WILL_ERASE)
     {
         SetupCharacterSelectDetailText(WILL_ERASE);
         SetupCharacterSelectionRejectImage(WILL_ERASE);
@@ -170,6 +117,7 @@ namespace popup
             {
                 ss << ", " << CREATURE_PTR->RoleName();
             }
+
             ss << " " << CREATURE_PTR->RankClassName() << "\n";
         }
         else
@@ -186,53 +134,34 @@ namespace popup
 
     void PopupStageCharacterSelect::SetupCharacterSelectionRejectImage(const bool WILL_ERASE)
     {
-        if (imageIndex_ < popupInfo_.TextVec().size())
+        if (imageIndex_ >= popupInfo_.TextVec().size())
         {
-            const auto TEXT { popupInfo_.TextVec()[imageIndex_] };
-
-            if (TEXT.empty())
-            {
-                selection_ = static_cast<int>(imageIndex_);
-            }
-            else
-            {
-                selection_ = -1; // any negative value will work here
-            }
-
-            if (TEXT.empty() || WILL_ERASE)
-            {
-                willShowXImage_ = false;
-                SetupCharacterSelectDetailText(false);
-                charDetailsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color::Black);
-            }
-            else
-            {
-                willShowXImage_ = true;
-                charDetailsTextRegionUPtr_->SetText(TEXT);
-                charDetailsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color(100, 32, 32));
-            }
-        }
-    }
-
-    const gui::CachedTexture &
-        PopupStageCharacterSelect::GetCurrentCachedTexture(const std::size_t IMAGE_INDEX)
-    {
-        const auto CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
-            IMAGE_INDEX) };
-
-        auto foundIter { creatureToTextureMap_.Find(CREATURE_PTR) };
-
-        if (foundIter == std::end(creatureToTextureMap_))
-        {
-            creatureToTextureMap_.Append(
-                CREATURE_PTR,
-                gui::LoadAndCacheImage(
-                    CREATURE_PTR, gui::ImageOptions::InvertedCharacterOptions()));
-
-            foundIter = creatureToTextureMap_.Find(CREATURE_PTR);
+            return;
         }
 
-        return foundIter->second;
+        const auto TEXT { popupInfo_.TextVec().at(imageIndex_) };
+
+        if (TEXT.empty())
+        {
+            selection_ = static_cast<int>(imageIndex_);
+        }
+        else
+        {
+            selection_ = -1; // any negative value will work here
+        }
+
+        if (TEXT.empty() || WILL_ERASE)
+        {
+            willShowXImage_ = false;
+            SetupCharacterSelectDetailText(false);
+            charDetailsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color::Black);
+        }
+        else
+        {
+            willShowXImage_ = true;
+            charDetailsTextRegionUPtr_->SetText(TEXT);
+            charDetailsTextRegionUPtr_->SetEntityColorFgBoth(sf::Color(100, 32, 32));
+        }
     }
 
 } // namespace popup

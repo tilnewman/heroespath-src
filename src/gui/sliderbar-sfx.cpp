@@ -43,9 +43,9 @@ namespace gui
             INITIAL_VALUE,
             RELATIVE_LABEL_POS_LEFT,
             RELATIVE_LABEL_POS_TOP)
-        , willPlaySfx_(false)
         , timeSinceLastPlaySec_(0.0f)
     {
+        WillPlaySfx(false);
         PositionRatio(gui::SoundManager::Instance()->SoundEffectVolume() / 100.0f);
         isConstructionAndInitFinished_ = true;
     }
@@ -84,13 +84,13 @@ namespace gui
 
     bool SliderBarSfx::UpdateTime(const float ELAPSED_TIME_SEC)
     {
-        if (isConstructionAndInitFinished_ && willPlaySfx_)
+        if (isConstructionAndInitFinished_ && WillPlaySfx())
         {
             timeSinceLastPlaySec_ += ELAPSED_TIME_SEC;
 
             if (timeSinceLastPlaySec_ > 0.5f)
             {
-                willPlaySfx_ = false;
+                WillPlaySfx(false);
                 timeSinceLastPlaySec_ = 0.0f;
                 SoundManager::Instance()->PlaySfx_Reject();
                 return true;

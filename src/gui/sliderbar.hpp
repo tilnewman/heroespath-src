@@ -42,7 +42,8 @@ namespace gui
             const SliderStyle & STYLE,
             const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT = boost::none,
             const float INITIAL_POS_RATIO = 0.0f,
-            const bool WILL_INVERT_POSITION = false); // must be [0.0f, 1.0f]
+            const bool WILL_INVERT_POSITION = false,
+            const float MIN_MOVE_RATIO = 0.0f); // zero means there is no min move ratio
 
         virtual ~SliderBar() = default;
 
@@ -58,9 +59,6 @@ namespace gui
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        // bool UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION)
-        // override;
-
         bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
         bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
         bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
@@ -74,12 +72,18 @@ namespace gui
             callbackHandlerPtrOpt_ = CALLBACK_HANDLER_PTR_OPT;
         }
 
+        bool WillPlaySfx() const { return willPlaySfx_; }
+        void WillPlaySfx(const bool WILL_PLAY_SFX) { willPlaySfx_ = WILL_PLAY_SFX; }
+
+        void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
+
     protected:
+        virtual void OnChange(const float NEW_VALUE);
+
+    private:
         void SetupInitialSpritePositions(const sf::Vector2f POS_V);
         float CalcPositionRatioChangeOnMouseUp(const sf::Vector2f & MOUSE_POS_V) const;
         float CalcPositionRatioFromScreenPos(const sf::Vector2f & SCREEN_POS_V) const;
-
-        virtual void OnChange(const float NEW_VALUE);
 
         const sf::IntRect TextureCoordsBaseOnStyle_TopOrLeft(const SliderStyle STYLE) const;
 
@@ -107,33 +111,43 @@ namespace gui
 
         void ResetMouseDownStatus();
 
-        void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
-
         float CalcMoveAmountRatio() const;
 
-    private:
         float CalcPositionRatioChangeOnMouseUp_Impl(const sf::Vector2f & MOUSE_POS_V) const;
         float CalcPositionRatioFromScreenPos_Impl(const sf::Vector2f & SCREEN_POS_V) const;
+
+        float CalcPadLength(
+            const float SIZE_ORIG, const float RANGE, const float MIN_MOVE_RATIO) const;
+
+        const sf::FloatRect CalcPadSpriteRegion() const;
+
+        void SetPadPosition(const sf::Vector2f & POS_V);
 
     public:
         static const float POS_OFFSET_HORIZ_;
         static const float POS_OFFSET_VERT_;
 
-    protected:
+    private:
+        const float length_;
+        const SliderStyle style_;
+        const float minMoveRatio_;
+        const int PAD_TEXTURE_END_LENGTH_;
         float currentPosRatio_;
-        float length_;
-        SliderStyle style_;
         gui::CachedTexture guiElementsCachedTexture_;
         sf::Sprite topOrLeftSprite_;
         sf::Sprite botOrRightSprite_;
         sf::Sprite barSprite_;
-        sf::Sprite padSprite_;
+        sf::Sprite topOrLeftPadSprite_;
+        sf::Sprite middlePadSprite_;
+        sf::Sprite botOrRightPadSprite_;
         Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
         bool topOrLeftIsMouseDown_;
         bool botOrRightIsMouseDown_;
         bool barIsMouseDown_;
         bool padIsMouseDown_;
+        bool willPlaySfx_;
         bool willInvertPosition_;
+        sf::Vector2f padIsMouseDownPosV_;
     };
 
     using SliderBarPtr_t = misc::NotNull<SliderBar *>;
