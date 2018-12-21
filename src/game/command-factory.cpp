@@ -53,7 +53,7 @@ namespace game
     }
 
     const CommandVec_t CommandFactory::MakeCommandsForNonPopupStageReplace(
-        const StageReplaceCommand & STAGE_SETUP_COMMAND) const
+        const StageReplaceCommand & STAGE_SETUP_COMMAND, const bool HAS_CURRENT_STAGE) const
     {
         CommandVec_t commandVec;
 
@@ -71,7 +71,7 @@ namespace game
         ExecuteCommandOpt_t executeCommandOpt { MakeCommandForStateChangeExecute(
             STAGE_SETUP_COMMAND.stage) };
 
-        if ((STAGE_SETUP_COMMAND.stage == stage::Stage::Intro)
+        if ((HAS_CURRENT_STAGE == false) || (STAGE_SETUP_COMMAND.stage == stage::Stage::Intro)
             || (STAGE_SETUP_COMMAND.stage == stage::Stage::Test))
         {
             fadeOutCommandOpt = boost::none;

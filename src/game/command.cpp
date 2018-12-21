@@ -27,7 +27,7 @@ namespace game
             }
         };
 
-        ss << "cmd=music";
+        ss << "music";
 
         if (EnumUtil<gui::music>::IsValid(to_stop) || (gui::music::All == to_stop))
         {

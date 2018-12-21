@@ -65,6 +65,9 @@ namespace game
 
         void Execute();
 
+        std::size_t FrameCount() const { return frameCounter_; }
+        float DurationSec() const { return durationSec_; }
+
     private:
         void ExecuteCleanup();
         const MouseThisFrame UpdateMouseInfo();
@@ -104,6 +107,10 @@ namespace game
         sf::Vector2i prevMousePosV_;
         MouseThisFrame frameMouseInfo_;
         std::vector<sf::Event> toLogEvents_;
+        std::size_t frameCounter_;
+        float durationSec_;
+        sf::Color prevFadeColor_;
+        std::size_t fadeColorChangeCounter_;
         // misc::TimeTrials componentFramerateTrials_;
         // std::size_t componentFrameRateTrialsIndexAudio_;
         // std::size_t componentFrameRateTrialsIndexUpdate_;

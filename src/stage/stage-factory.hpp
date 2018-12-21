@@ -38,6 +38,10 @@ namespace stage
 
         static IStageUVec_t Make(const SetupPacket & SETUP_PACKET);
         static IStageUPtr_t MakePopup(const popup::PopupInfo & POPUP_INFO);
+
+    private:
+        static IStageUVec_t CreateAll(const SetupPacket & SETUP_PACKET);
+        static void SetupAll(IStageUVec_t &);
     };
 
 } // namespace stage

@@ -239,8 +239,6 @@ namespace gui
             SPEED,
             gui::WillOscillate::No,
             gui::WillAutoStart::Yes);
-
-        M_HP_LOG_DBG("fade out started, to_color=" << COLOR);
     }
 
     void Display::FadeInStart(const float SPEED)
@@ -264,8 +262,6 @@ namespace gui
             SPEED,
             gui::WillOscillate::No,
             gui::WillAutoStart::Yes);
-
-        M_HP_LOG_DBG("fade in started, from_color=" << fadeFromColor);
     }
 
     const sf::Color Display::UpdateFadeColor(const float FRAME_TIME_SEC)

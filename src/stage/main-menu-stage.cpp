@@ -176,7 +176,7 @@ namespace stage
         {
             newGameButtonUPtr_->SetMouseState(gui::MouseState::Over);
             gui::SoundManager::Instance()->PlaySfx_Keypress();
-            TransitionTo(stage::Stage::Menu);
+            TransitionTo(stage::Stage::Character);
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)

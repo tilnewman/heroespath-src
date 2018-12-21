@@ -92,8 +92,7 @@ namespace game
         void TestingImageSet(const std::string & PATH_STR);
 
     private:
-        void PreTaskLogs(
-            const std::string & NAME_OF_TASK_ABOUT_TO_EXECUTE, const Command & COMMAND) const;
+        void ExecptionLogging(const Command & COMMAND) const;
         void ExecuteGameCommand(const Command &);
         void ExecuteGameCommandFade(const FadeCommand &);
         void RequestLoopExit() { status_.LoopStopRequest(); }
@@ -125,6 +124,7 @@ namespace game
         CommandFactory commandFactory_;
         CommandQueue commandQueue_;
         ExecuteCommand prePopupExecuteCommandWithoutFade_;
+        std::size_t commandCounter_;
     };
 
 } // namespace game

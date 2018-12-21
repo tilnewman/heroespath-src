@@ -38,6 +38,10 @@ namespace game
         , prevMousePosV_(gui::Display::Instance()->GetMousePosition())
         , frameMouseInfo_(false, sf::Vector2i())
         , toLogEvents_()
+        , frameCounter_(0)
+        , durationSec_(0.0f)
+        , prevFadeColor_(sf::Color::Transparent)
+        , fadeColorChangeCounter_(0)
     //, componentFramerateTrials_("ComponentFramerate", TimeRes::Micro, true, 200, 0.0)
     //, componentFrameRateTrialsIndexAudio_(componentFramerateTrials_.AddCollecter("Audio"))
     //, componentFrameRateTrialsIndexUpdate_(componentFramerateTrials_.AddCollecter("Update"))
@@ -54,6 +58,7 @@ namespace game
     {
         gui::Display::Instance()->SetMouseCursorVisibility(!flags_.will_hide_mouse);
 
+        sf::Clock durationClock_;
         sf::Clock secondClock_;
         sf::Clock frameClock;
 
@@ -65,6 +70,8 @@ namespace game
 
             // const std::size_t FRAMERATE_COLLECTER_INDEX { framerateTrials.AddCollecter(
             //    flags_.ToString()) };
+
+            durationClock_.restart();
 
             while (!iStatus_.IsLoopStopRequested())
             {
@@ -97,6 +104,8 @@ namespace game
                 stages_.HandlePopupResponseCallback();
 
                 Display();
+
+                ++frameCounter_;
             }
 
             // framerateTrials.EndAllContests();
@@ -113,6 +122,7 @@ namespace game
             throw;
         }
 
+        durationSec_ = durationClock_.getElapsedTime().asSeconds();
         ExecuteCleanup();
     }
 
@@ -214,10 +224,26 @@ namespace game
             return;
         }
 
-        iStatus_.SetFadeCurrentColor(gui::Display::Instance()->UpdateFadeColor(FRAME_TIME_SEC));
+        const auto NEW_COLOR { gui::Display::Instance()->UpdateFadeColor(FRAME_TIME_SEC) };
+        iStatus_.SetFadeCurrentColor(NEW_COLOR);
+
+        if (NEW_COLOR != prevFadeColor_)
+        {
+            ++fadeColorChangeCounter_;
+            prevFadeColor_ = NEW_COLOR;
+        }
 
         if (gui::Display::Instance()->IsFadeFinished())
         {
+            if (game::FadeDirection::In == iStatus_.GetFadeStatus().direction)
+            {
+                M_HP_LOG("fade in end  (after " << fadeColorChangeCounter_ << " color changes)");
+            }
+            else
+            {
+                M_HP_LOG("fade out end  (after " << fadeColorChangeCounter_ << " color changes)");
+            }
+
             iStatus_.SetFadeTargetColorReached();
             iStatus_.LoopStopRequest();
             stages_.SetIsFadingForAllStages(false);

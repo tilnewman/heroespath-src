@@ -51,7 +51,7 @@ namespace game
         {
             std::ostringstream ss;
 
-            ss << "cmd=fade, " << ((FadeDirection::In == direction) ? "in" : "out")
+            ss << "fade, " << ((FadeDirection::In == direction) ? "in" : "out")
                << ", fade_speed=" << speed << ", fade_color=" << color;
 
             if (set_will_draw_under_popup_opt)
@@ -135,7 +135,7 @@ namespace game
                 }
             };
 
-            ss << "cmd=execute";
+            ss << "run_game_loop";
 
             if (fade_opt)
             {
@@ -143,43 +143,34 @@ namespace game
                 ss << fade_opt->ToString();
             }
 
-            if (DoFlagsMatch(MakeForFade(
-                    FadeCommand(FadeDirection::In, 0.0f, false, sf::Color::Transparent))))
+            if (will_hide_mouse)
             {
                 prefixSeparatorString();
-                ss << "flags=fade_default_of_ignore_all";
+                ss << "hide_mouse";
             }
-            else
+
+            if (will_keystroke_exit)
             {
-                if (will_hide_mouse)
-                {
-                    prefixSeparatorString();
-                    ss << "hide_mouse";
-                }
+                prefixSeparatorString();
+                ss << "keystrokes_exit";
+            }
 
-                if (will_keystroke_exit)
-                {
-                    prefixSeparatorString();
-                    ss << "keystrokes_exit";
-                }
+            if (will_keystroke_ignore)
+            {
+                prefixSeparatorString();
+                ss << "keystrokes_ignored";
+            }
 
-                if (will_keystroke_ignore)
-                {
-                    prefixSeparatorString();
-                    ss << "keystrokes_ignored";
-                }
+            if (will_mouse_ignore)
+            {
+                prefixSeparatorString();
+                ss << "mouse_ignored";
+            }
 
-                if (will_mouse_ignore)
-                {
-                    prefixSeparatorString();
-                    ss << "mouse_ignored";
-                }
-
-                if (will_mouse_click_exit)
-                {
-                    prefixSeparatorString();
-                    ss << "mouse_clicks_exit";
-                }
+            if (will_mouse_click_exit)
+            {
+                prefixSeparatorString();
+                ss << "mouse_clicks_exit";
             }
 
             return ss.str();
@@ -269,10 +260,7 @@ namespace game
         PopupReplaceCommand & operator=(const PopupReplaceCommand &) = default;
         PopupReplaceCommand & operator=(PopupReplaceCommand &&) = default;
 
-        const std::string ToString() const
-        {
-            return "cmd=popup_spawn=" + popup_info.ToStringShort();
-        }
+        const std::string ToString() const { return "popup_spawn=" + popup_info.ToStringShort(); }
 
         popup::PopupInfo popup_info;
         misc::PopupCallback_t::IHandlerPtr_t handler_ptr;
@@ -324,7 +312,7 @@ namespace game
 
             if (will_remove_popup)
             {
-                ss << "cmd=popup_remove";
+                ss << "popup_remove";
             }
 
             if (execute_opt)

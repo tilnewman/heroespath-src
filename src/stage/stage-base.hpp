@@ -138,6 +138,10 @@ namespace stage
             const unsigned ANTIALIAS_LEVEL) const override;
 
     private:
+        void StageBaseCommonSetupTasks(
+            const gui::FontEnumVec_t & FONTS_TO_PRELOAD, const gui::SfxEnumVec_t & SFX_TO_PRELOAD);
+
+    private:
         static const float MOUSE_DRAG_MIN_DISTANCE_;
         //
         const std::string STAGE_NAME_;

@@ -69,26 +69,11 @@ namespace game
         virtual ~Status() = default;
 
         bool IsLoopRunning() const { return is_loop_running; }
-
-        void SetLoopRunning(const bool IS_LOOP_RUNNING) final
-        {
-            is_loop_running = IS_LOOP_RUNNING;
-            // M_HP_LOG_DBG("game loop " << ((IS_LOOP_RUNNING) ? "starting" : "stopped"));
-        }
+        void SetLoopRunning(const bool IS_LOOP_RUNNING) final { is_loop_running = IS_LOOP_RUNNING; }
 
         bool IsLoopStopRequested() const final { return is_loop_stop_requested; }
-
-        void LoopStopRequest() final
-        {
-            is_loop_stop_requested = true;
-            // M_HP_LOG_DBG("game loop stop requested");
-        }
-
-        void LoopStopRequestReset()
-        {
-            is_loop_stop_requested = false;
-            // M_HP_LOG_DBG("game loop stop request reset");
-        }
+        void LoopStopRequest() final { is_loop_stop_requested = true; }
+        void LoopStopRequestReset() { is_loop_stop_requested = false; }
 
         const FadeStatus GetFadeStatus() const final { return fade_status; }
 
@@ -105,50 +90,29 @@ namespace game
             fade_status.target_color = COLOR;
             fade_status.direction = FadeDirection::Out;
 
-            // std::string drawUnderMessage;
             if (SET_WILL_DRAW_UNDER_POPUP_OPT)
             {
                 fade_status.will_draw_under_popup = SET_WILL_DRAW_UNDER_POPUP_OPT.value();
-
-                // drawUnderMessage = " (will_draw_under_popup set to "
-                //    + misc::ToString(fade_status.will_draw_under_popup) + ")";
             }
-
-            // M_HP_LOG_DBG(
-            //    "fade out to " << fade_status.target_color << " started" << drawUnderMessage);
         }
 
         void StartFadeIn(const BoolOpt_t & SET_WILL_DRAW_UNDER_POPUP_OPT)
         {
             fade_status.is_fading = true;
             fade_status.target_color = sf::Color::Transparent;
-            fade_status.direction = FadeDirection::Out;
+            fade_status.direction = FadeDirection::In;
 
-            std::string drawUnderMessage;
             if (SET_WILL_DRAW_UNDER_POPUP_OPT)
             {
                 fade_status.will_draw_under_popup = SET_WILL_DRAW_UNDER_POPUP_OPT.value();
-
-                // drawUnderMessage = " (will_draw_under_popup set to "
-                //    + misc::ToString(fade_status.will_draw_under_popup) + ")";
             }
-
-            // M_HP_LOG_DBG("fade in started" << drawUnderMessage);
         }
 
         bool IsGameExitRequested() const final { return is_game_exit_requested; }
 
-        void GameExitRequest() final
-        {
-            is_game_exit_requested = true;
-            // M_HP_LOG_DBG("game exit requested");
-        }
+        void GameExitRequest() final { is_game_exit_requested = true; }
 
-        void GameExitRequestReset()
-        {
-            is_game_exit_requested = false;
-            // M_HP_LOG_DBG("game exit request reset");
-        }
+        void GameExitRequestReset() { is_game_exit_requested = false; }
 
         const std::string ToString() const
         {
@@ -167,11 +131,11 @@ namespace game
                 ss << "loop_is_running";
             }
 
-            if (is_loop_stop_requested)
-            {
-                prefixSeparatorString();
-                ss << "loop_exit_requested";
-            }
+            // if (is_loop_stop_requested)
+            //{
+            //    prefixSeparatorString();
+            //    ss << "loop_exit_requested";
+            //}
 
             if (is_game_exit_requested)
             {
@@ -179,8 +143,11 @@ namespace game
                 ss << "game_exit_requested";
             }
 
-            prefixSeparatorString();
-            ss << fade_status.ToString();
+            if (fade_status.is_fading)
+            {
+                prefixSeparatorString();
+                ss << fade_status.ToString();
+            }
 
             if (ss.str().empty())
             {

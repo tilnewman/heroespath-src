@@ -58,6 +58,30 @@ namespace stage
     {
         IStageUVec_t stageVec;
 
+        try
+        {
+            stageVec = CreateAll(SETUP_PACKET);
+        }
+        catch (const std::exception & EXCEPTION)
+        {
+            M_HP_LOG_ERR(
+                "Exception=\"" << EXCEPTION.what() << "\" thrown during "
+                               << Stage::ToString(SETUP_PACKET.stage)
+                               << " stage creation, which is fatal.  Re-Throwing "
+                                  "to kill the game.");
+
+            throw;
+        }
+
+        SetupAll(stageVec);
+
+        return stageVec;
+    }
+
+    IStageUVec_t StageFactory::CreateAll(const SetupPacket & SETUP_PACKET)
+    {
+        IStageUVec_t stageVec;
+
         switch (SETUP_PACKET.stage)
         {
             case stage::Stage::Settings:
@@ -197,12 +221,28 @@ namespace stage
             }
         }
 
+        return stageVec;
+    }
+
+    void StageFactory::SetupAll(IStageUVec_t & stageVec)
+    {
         for (auto & iStageUPtr : stageVec)
         {
-            iStageUPtr->Setup();
-        }
+            try
+            {
+                iStageUPtr->Setup();
+            }
+            catch (const std::exception & EXCEPTION)
+            {
+                M_HP_LOG_ERR(
+                    "Exception=\"" << EXCEPTION.what() << "\" thrown during "
+                                   << iStageUPtr->GetStageName()
+                                   << " stage setup, which is fatal.  Re-Throwing "
+                                      "to kill the game.");
 
-        return stageVec;
+                throw;
+            }
+        }
     }
 
     IStageUPtr_t StageFactory::MakePopup(const popup::PopupInfo & POPUP_INFO)

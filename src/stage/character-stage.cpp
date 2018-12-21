@@ -227,6 +227,7 @@ namespace stage
         if (PACKET.entity_ptr == helpButtonUPtr_.get())
         {
             Help1Popup();
+            PACKET.entity_ptr->SetMouseState(gui::MouseState::Up);
 
             return MakeCallbackHandlerMessage(
                 PACKET_DESCRIPTION, "help button clicked and spawned help popup #1");
@@ -234,6 +235,8 @@ namespace stage
 
         if (PACKET.entity_ptr == backButtonUPtr_.get())
         {
+            PACKET.entity_ptr->SetMouseState(gui::MouseState::Up);
+
             if (OnBackButton())
             {
                 return MakeCallbackHandlerMessage(
@@ -250,12 +253,16 @@ namespace stage
 
         if (PACKET.entity_ptr == saveButtonUPtr_.get())
         {
+            PACKET.entity_ptr->SetMouseState(gui::MouseState::Up);
+
             return MakeCallbackHandlerMessage(
                 PACKET_DESCRIPTION, "save button clicked " + OnSaveButton());
         }
 
         if (PACKET.entity_ptr == nextButtonUPtr_.get())
         {
+            PACKET.entity_ptr->SetMouseState(gui::MouseState::Up);
+
             return MakeCallbackHandlerMessage(
                 PACKET_DESCRIPTION, "next button clicked " + OnNextButton());
         }
@@ -479,9 +486,9 @@ namespace stage
                 bottomSymbol_.VisibleVerticalCenter() - (BUTTON_SIZE_V.y * 0.5f));
         };
 
-        auto setupButton = [&](gui::MainMenuButtonUPtr_t & buttonUPtr) {
-            static std::size_t buttonCounter(0);
+        std::size_t buttonCounter { 0 };
 
+        auto setupButton = [&](gui::MainMenuButtonUPtr_t & buttonUPtr) {
             buttonUPtr->SetEntityPos(
                 calcButtonPos(buttonCounter++, sfutil::Size(buttonUPtr->GetEntityRegion())));
 

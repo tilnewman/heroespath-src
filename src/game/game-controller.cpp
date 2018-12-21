@@ -44,6 +44,7 @@ namespace game
         , commandFactory_()
         , commandQueue_()
         , prePopupExecuteCommandWithoutFade_()
+        , commandCounter_(0)
     {
         M_HP_LOG_DBG("Subsystem Construction: GameController");
     }
@@ -112,16 +113,11 @@ namespace game
         }
     }
 
-    void GameController::PreTaskLogs(
-        const std::string & NAME_OF_TASK_ABOUT_TO_EXECUTE, const Command & COMMAND) const
+    void GameController::ExecptionLogging(const Command & COMMAND) const
     {
-        M_HP_LOG("Pre \"" << NAME_OF_TASK_ABOUT_TO_EXECUTE << "\" " << COMMAND.ToString());
-
         M_HP_LOG(
-            "Pre \"" << NAME_OF_TASK_ABOUT_TO_EXECUTE << "\" GameControllerStatus(stage="
-                     << GetStageName() << ", phase=" << game::Phase::ToString(GetPhase())
-                     << ", cmd_q_size=" << commandQueue_.Size() << ", " << status_.ToString()
-                     << ")");
+            "Exception during execution of " + COMMAND.ToString() + ", GameController"
+            + status_.ToString());
     }
 
     void GameController::PlayGame()
@@ -164,11 +160,22 @@ namespace game
 
     void GameController::StageChangeActualNonPopupReplace(const stage::SetupPacket & SETUP_PACKET)
     {
+        M_HP_LOG(
+            "changing from " << GetStageName() << " stage to "
+                             << stage::Stage::ToString(SETUP_PACKET.stage) << " stage.");
+
+        if (activeStages_.HasPopupStage())
+        {
+            M_HP_LOG("Detected a popup just before a stage change.  Removing the popup first...");
+            StageChangeActualPopupRemove();
+        }
+
         const auto ALL_STAGE_NAMES_BEFORE { activeStages_.AllStageNames() };
 
         stageTracker_.SetCurrent(SETUP_PACKET.stage);
 
         activeStages_.RemoveNonPopupStages();
+
         if (activeStages_.HasAnyStages() == false)
         {
             M_HP_LOG("GameController detected all stages destroyed.  Clearing caches...");
@@ -217,6 +224,7 @@ namespace game
         }
 
         activeStages_.AddNonPopupStages(SETUP_PACKET);
+        M_HP_LOG("stage replace confirmed");
     }
 
     void GameController::StageChangeActualPopupReplace(
@@ -225,19 +233,21 @@ namespace game
     {
         stageTracker_.SetCurrent(stage::Stage::Popup);
         activeStages_.ReplacePopupStage(POPUP_INFO, POPUP_HANDLER_PTR);
+        M_HP_LOG("popup replace confirmed: " + POPUP_INFO.Name());
     }
 
     void GameController::StageChangeActualPopupRemove()
     {
         stageTracker_.SetCurrentToNonPopupPrevious();
         activeStages_.RemovePopupStage();
+        M_HP_LOG("popup remove confirmed");
     }
 
     void GameController::ExecuteGameCommand(const Command & COMMAND)
     {
-        // this order is critical
-
-        PreTaskLogs("GameCommand", COMMAND);
+        M_HP_LOG(
+            "#" << ++commandCounter_ << " Begin: " << COMMAND.ToString() << " while in "
+                << GetStageName() << " stage with GameController" << status_.ToString());
 
         if (COMMAND.music_opt)
         {
@@ -266,7 +276,7 @@ namespace game
             }
             catch (const std::exception & EXCEPTION)
             {
-                PreTaskLogs("Music Exception", COMMAND);
+                ExecptionLogging(COMMAND);
 
                 M_HP_LOG_ERR(
                     "Exception=\"" << EXCEPTION.what()
@@ -283,7 +293,7 @@ namespace game
             }
             catch (const std::exception & EXCEPTION)
             {
-                PreTaskLogs("Stage Replace Exception", COMMAND);
+                ExecptionLogging(COMMAND);
 
                 M_HP_LOG_FAT(
                     "Exception=\"" << EXCEPTION.what()
@@ -306,7 +316,7 @@ namespace game
             }
             catch (const std::exception & EXCEPTION)
             {
-                PreTaskLogs("Popup Replace Exception", COMMAND);
+                ExecptionLogging(COMMAND);
 
                 M_HP_LOG_FAT(
                     "Exception=\""
@@ -327,7 +337,7 @@ namespace game
             }
             catch (const std::exception & EXCEPTION)
             {
-                PreTaskLogs("Popup Remove Exception", COMMAND);
+                ExecptionLogging(COMMAND);
 
                 M_HP_LOG_FAT(
                     "Exception=\"" << EXCEPTION.what()
@@ -343,10 +353,10 @@ namespace game
         {
             const auto EXECUTE_COMMAND { COMMAND.execute_opt.value() };
 
-            if (stage::Stage::IsPlayableAndNotPopup(stageTracker_.GetCurrent()))
+            if (stage::Stage::IsPlayableAndNotPopup(stageTracker_.GetCurrent())
+                && !EXECUTE_COMMAND.fade_opt)
             {
                 prePopupExecuteCommandWithoutFade_ = EXECUTE_COMMAND;
-                prePopupExecuteCommandWithoutFade_.fade_opt = boost::none;
             }
 
             if (EXECUTE_COMMAND.fade_opt)
@@ -357,7 +367,7 @@ namespace game
                 }
                 catch (const std::exception & EXCEPTION)
                 {
-                    PreTaskLogs("Fade Exception", COMMAND);
+                    ExecptionLogging(COMMAND);
 
                     M_HP_LOG_ERR(
                         "Exception=\"" << EXCEPTION.what()
@@ -373,12 +383,19 @@ namespace game
                 {
                     status_.LoopStopRequestReset();
                     game::Loop loop(activeStages_, status_, EXECUTE_COMMAND);
+                    M_HP_LOG("game loop begin");
                     loop.Execute();
+
+                    M_HP_LOG(
+                        "game loop end  (after " << loop.DurationSec() << " seconds and "
+                                                 << loop.FrameCount() << " frames)");
+
+                    status_.LoopStopRequestReset();
                 }
             }
             catch (const std::exception & EXCEPTION)
             {
-                PreTaskLogs("GameLoop Exception", COMMAND);
+                ExecptionLogging(COMMAND);
 
                 M_HP_LOG_FAT(
                     "Exception=\""
@@ -401,6 +418,8 @@ namespace game
                 TransitionTo(stage::Stage::Exit);
             }
         }
+
+        M_HP_LOG("#" << commandCounter_ << " End: " << COMMAND.ToString());
     }
 
     void GameController::ExecuteGameCommandFade(const FadeCommand & FADE_COMMAND)
@@ -408,11 +427,13 @@ namespace game
         const auto IS_FADING_IN { (FADE_COMMAND.direction == FadeDirection::In) };
         if (IS_FADING_IN)
         {
+            M_HP_LOG("fade in begin");
             gui::Display::Instance()->FadeInStart(FADE_COMMAND.speed);
             status_.StartFadeIn(FADE_COMMAND.set_will_draw_under_popup_opt);
         }
         else
         {
+            M_HP_LOG("fade out begin");
             gui::Display::Instance()->FadeOutStart(FADE_COMMAND.color, FADE_COMMAND.speed);
             status_.StartFadeOut(FADE_COMMAND.color, FADE_COMMAND.set_will_draw_under_popup_opt);
         }
@@ -490,7 +511,7 @@ namespace game
 
     void GameController::StageChangePostPopupSpawn(const PopupReplaceCommand & POPUP_ADD_COMMAND)
     {
-        M_HP_LOG("popup spawn post: " << POPUP_ADD_COMMAND.popup_info.ToStringShort());
+        M_HP_LOG("popup spawn requested: " << POPUP_ADD_COMMAND.popup_info.ToStringShort());
         RequestLoopExit();
 
         commandQueue_.ClearAndPush(commandFactory_.MakeCommandsForPopupSpawn(
@@ -511,8 +532,9 @@ namespace game
         }
 
         M_HP_LOG(
-            "popup remove post: type=" << popup::PopupButtons::ToString(TYPE)
-                                       << ", selection=" << SELECTION);
+            "popup remove requested: will remove "
+            << stage::Stage::ToString(stageTracker_.GetCurrent()) << " because button press="
+            << popup::PopupButtons::ToString(TYPE) << " and selection=" << SELECTION);
 
         const auto CURRENT_EXECUTION_COMMAND_WITHOUT_FADE { prePopupExecuteCommandWithoutFade_ };
 
@@ -576,13 +598,15 @@ namespace game
         }
 
         M_HP_LOG(
-            "non-popup stage create/replace post: stage="
+            "stage create/replace requested: "
             << stage::Stage::ToString(STAGE_SETUP_COMMAND.stage));
 
         RequestLoopExit();
 
-        commandQueue_.ClearAndPush(
-            commandFactory_.MakeCommandsForNonPopupStageReplace(STAGE_SETUP_COMMAND));
+        const auto HAS_CURRENT_STAGE { (stageTracker_.GetCurrent() != stage::Stage::None) };
+
+        commandQueue_.ClearAndPush(commandFactory_.MakeCommandsForNonPopupStageReplace(
+            STAGE_SETUP_COMMAND, HAS_CURRENT_STAGE));
     }
 
 } // namespace game

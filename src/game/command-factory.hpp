@@ -29,7 +29,7 @@ namespace game
             MakeCommandsForPopupRemove(const ExecuteCommand & EXECUTE_COMMAND_BEFORE_CHANGE) const;
 
         const CommandVec_t MakeCommandsForNonPopupStageReplace(
-            const StageReplaceCommand & STAGE_SETUP_COMMAND) const;
+            const StageReplaceCommand & STAGE_SETUP_COMMAND, const bool HAS_CURRENT_STAGE) const;
 
     private:
         void VerifyNoneAreEmpty(

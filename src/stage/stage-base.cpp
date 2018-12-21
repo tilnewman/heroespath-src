@@ -41,7 +41,7 @@ namespace stage
         const std::string & NAME,
         const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
         const gui::SfxEnumVec_t & SFX_TO_PRELOAD)
-        : STAGE_NAME_(std::string(NAME).append("_StageBase"))
+        : STAGE_NAME_(std::string(NAME))
         , stageRegion_(gui::Display::Instance()->FullScreenRect())
         , entityPVec_()
         , entityWithFocusPtrOpt_()
@@ -52,8 +52,7 @@ namespace stage
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
     {
-        gui::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
-        gui::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
+        StageBaseCommonSetupTasks(FONTS_TO_PRELOAD, SFX_TO_PRELOAD);
     }
 
     StageBase::StageBase(
@@ -61,7 +60,7 @@ namespace stage
         const sf::FloatRect & REGION,
         const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
         const gui::SfxEnumVec_t & SFX_TO_PRELOAD)
-        : STAGE_NAME_(std::string(NAME).append("_StageBase"))
+        : STAGE_NAME_(std::string(NAME))
         , stageRegion_(REGION)
         , entityPVec_()
         , entityWithFocusPtrOpt_()
@@ -72,11 +71,17 @@ namespace stage
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
     {
+        StageBaseCommonSetupTasks(FONTS_TO_PRELOAD, SFX_TO_PRELOAD);
+    }
+
+    void StageBase::StageBaseCommonSetupTasks(
+        const gui::FontEnumVec_t & FONTS_TO_PRELOAD, const gui::SfxEnumVec_t & SFX_TO_PRELOAD)
+    {
         gui::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
         gui::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
     }
 
-    StageBase::~StageBase() {}
+    StageBase::~StageBase() = default;
 
     game::Phase::Enum StageBase::GetPhase() const
     {
