@@ -56,13 +56,10 @@ namespace gui
         , public SliderBar::Callback_t::IHandler_t
     {
     public:
-        // if using this constructor, Setup() must be called before any other function
-        explicit TextRegion(const std::string & NAME);
-
         // scrollbars will only be created if a valid IStagePtr is provided
-        TextRegion(
+        explicit TextRegion(
             const std::string & NAME,
-            const TextInfo & TEXT_INFO,
+            const TextInfo & TEXT_INFO = TextInfo(),
             const sf::FloatRect & REGION = sf::FloatRect(),
             const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
             const stage::IStagePtrOpt_t & ISTAGE_PTR_OPT = boost::none);
@@ -78,9 +75,10 @@ namespace gui
             const SliderBar::Callback_t::Packet_t &,
             const std::string & PACKET_DESCRIPTION_IGNORED) override;
 
+        // default values will be ignored/replaced by the original values set by the constructor
         void Setup(
             const TextInfo & TEXT_INFO,
-            const sf::FloatRect & REGION,
+            const sf::FloatRect & REGION = sf::FloatRect(),
             const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
             const stage::IStagePtrOpt_t & ISTAGE_PTR_OPT = boost::none);
 
@@ -89,12 +87,11 @@ namespace gui
         void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
         void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-        const std::string GetText() const { return textInfoOrig_.text; }
+        const std::string GetText() const { return textInfo_.text; }
         void SetText(const std::string &);
 
-        // void Append(const TextRegion &);
-        const TextInfo GetTextInfo() const { return textInfoOrig_; }
-        void ShrinkEntityRegionToFitActualTextRegion();
+        const TextInfo GetTextInfo() const { return textInfo_; }
+
         const sf::FloatRect ActualTextRegion() const;
 
     protected:
@@ -106,14 +103,19 @@ namespace gui
         void OnColorChange() override;
 
     protected:
+        TextInfo textInfo_;
         BoxEntityUPtr_t boxEntityUPtr_;
         SliderBarUPtr_t sliderBarUPtr_;
         stage::IStagePtrOpt_t stagePtrOpt_;
         RenderTextureUPtr_t renderTextureUPtr_;
         sf::Sprite sprite_;
         bool willDraw_;
-        sf::FloatRect regionOrig_;
-        TextInfo textInfoOrig_;
+
+        // This class is often constructed with REGION width/height <= 0.0f in order to guide how
+        // the text rendering works, and after rendering these original width/height values are lost
+        // when the entity and sprite are setup with actual region sizes, so this member saves those
+        // original invalid values so that future re-renderings work the same way.
+        sf::Vector2f origSize_;
     };
 
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;

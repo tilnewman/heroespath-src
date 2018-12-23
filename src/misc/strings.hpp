@@ -185,7 +185,8 @@ namespace misc
         return ss.str();
     }
 
-    const std::string MakeLoggableString(const std::string &);
+    const std::string MakeLoggableString(
+        const std::string &, const std::size_t MAX_SIZE = 40, const bool WILL_ADD_ELIPSIS = true);
 
     // empty input always returns false, if the given vector is empty then returns false, any
     // STRS_TO_FIND that are empty will be ignored, any STRS_TO_FIND that are longer than

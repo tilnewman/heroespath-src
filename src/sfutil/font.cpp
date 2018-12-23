@@ -9,6 +9,8 @@
 //
 #include "font.hpp"
 
+#include <SFML/Graphics/Text.hpp>
+
 #include "misc/strings.hpp"
 
 namespace sf
@@ -31,6 +33,52 @@ namespace sfutil
     {
         std::ostringstream ss;
         ss << misc::MakeToStringPrefix(OPTIONS, "Font") << F;
+        return ss.str();
+    }
+
+    const std::string TextStyleToString(const sf::Uint32 TEXT_STYLE)
+    {
+        if (TEXT_STYLE == sf::Text::Style::Regular)
+        {
+            return "Regular";
+        }
+
+        std::ostringstream ss;
+
+        auto appendSeparatorAndString = [&](const std::string & STR) {
+            if (ss.str().empty() == false)
+            {
+                ss << "/";
+            }
+
+            ss << STR;
+        };
+
+        if (TEXT_STYLE & sf::Text::Style::Bold)
+        {
+            appendSeparatorAndString("Bold");
+        }
+
+        if (TEXT_STYLE & sf::Text::Style::Italic)
+        {
+            appendSeparatorAndString("Italic");
+        }
+
+        if (TEXT_STYLE & sf::Text::Style::StrikeThrough)
+        {
+            appendSeparatorAndString("StrikeThrough");
+        }
+
+        if (TEXT_STYLE & sf::Text::Style::Underlined)
+        {
+            appendSeparatorAndString("Underlined");
+        }
+
+        if (ss.str().empty())
+        {
+            ss << "(error_unknown_sf_text_style=" << TEXT_STYLE << ")";
+        }
+
         return ss.str();
     }
 

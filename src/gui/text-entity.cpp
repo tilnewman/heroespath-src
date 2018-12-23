@@ -204,10 +204,9 @@ namespace gui
                 finalRegion.width = 0.0f;
                 finalRegion.height = 0.0f;
 
-                const auto RENDER_RESULT { TextRenderer::ToTexture(
-                    TEXT_INFO, finalRegion, renderTextureUPtr, finalRegion) };
+                finalRegion = TextRenderer::ToTexture(TEXT_INFO, finalRegion, renderTextureUPtr);
 
-                if ((RENDER_RESULT == false) || !renderTextureUPtr)
+                if ((finalRegion == sf::FloatRect()) || !renderTextureUPtr)
                 {
                     cacheMap_.Erase(TEXT_INFO);
                     continue;

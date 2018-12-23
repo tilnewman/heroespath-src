@@ -49,6 +49,8 @@ namespace sfutil
         const sf::Font & F,
         const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default);
 
+    const std::string TextStyleToString(const sf::Uint32 TEXT_STYLE);
+
 } // namespace sfutil
 } // namespace heroespath
 

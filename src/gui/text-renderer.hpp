@@ -37,18 +37,17 @@ namespace gui
     {
         TextRenderer() = delete;
 
-        // if returns true then renderTextureUPtr and *renderTextureUPtr were not changed,
-        // REGION.height is ignored/not-enforced, REGION.width is ignored/not-enforced if <=
-        // 0.0f, the caller is responsible for checking if Result.region != REGION because
-        // Justification can change position, the RenderTexture might have been re-used so its
-        // size might not match Size(REGION) or Size(Result.region)
-        static bool ToTexture(
-            const TextInfo &,
-            const sf::FloatRect & BOUNDING_REGION,
-            RenderTextureUPtr_t &,
-            sf::FloatRect & finalRegion);
+        // Returns all zeros on failure with RenderTextureUPtr_t reset() to null otherwise width
+        // and height are both > zero and RenderTextureUPtr_t is not null.  This function cannot
+        // create a Sliderbar, so REGION.height is always ignored and the returned height might be
+        // greater than BOUNDING_REGION.height.  If REGION.width <= 0.0f then it is ignored.  The
+        // RenderTexture will be re-used if it is big enough, so the returned size is the actual
+        // minimally enclosing size.
+        static const sf::FloatRect ToTexture(
+            const TextInfo &, const sf::FloatRect & BOUNDING_REGION, RenderTextureUPtr_t &);
 
-        // same as Render() above only this version will setup the sprite on success
+        // same as ToTexture() above only this function will setup the sprite on success with global
+        // bounds equal to what ToTexture() returns
         static bool ToSprite(
             const TextInfo &,
             const sf::FloatRect & BOUNDING_REGION,
@@ -57,7 +56,8 @@ namespace gui
 
     private:
         // does not destroy/re-create the RenderTexture if it is already big enough
-        static void Draw(const text_rendering::RenderedLines &, sf::RenderTexture &);
+        static bool DrawRenderedLinesOffScreen(
+            const text_rendering::RenderedLines &, RenderTextureUPtr_t &);
     };
 
 } // namespace gui

@@ -29,34 +29,30 @@ namespace heroespath
 namespace gui
 {
 
-    TextRegion::TextRegion(const std::string & NAME)
-        : Entity(std::string(NAME).append("_TextRegion(name_only_constructor)"), 0.0f, 0.0f)
-        , boxEntityUPtr_()
-        , sliderBarUPtr_()
-        , stagePtrOpt_()
-        , renderTextureUPtr_()
-        , sprite_()
-        , willDraw_(false)
-        , regionOrig_()
-        , textInfoOrig_()
-    {}
-
+    // this constructor's initializer list does not intialize members, see Setup()
     TextRegion::TextRegion(
         const std::string & NAME,
         const TextInfo & TEXT_INFO,
         const sf::FloatRect & REGION,
         const BoxEntityInfo & BOX_INFO,
         const stage::IStagePtrOpt_t & ISTAGE_PTR_OPT)
-        : Entity(std::string(NAME).append("_TextRegion"), REGION)
+        : Entity(
+            NAME + "_TextRegion(\"" + misc::MakeLoggableString(TEXT_INFO.text, 10, false) + "\")",
+            REGION)
+        , textInfo_()
         , boxEntityUPtr_()
         , sliderBarUPtr_()
         , stagePtrOpt_()
         , renderTextureUPtr_()
         , sprite_()
         , willDraw_(false)
-        , regionOrig_()
-        , textInfoOrig_()
+        , origSize_()
     {
+        // text regions cannot do anything with focus, they can only take focus away from the
+        // BoxEntity's underneath them that can and should be the ones changing with focus, so
+        // prevent all TextRegions from taking focus here
+        SetWillAcceptFocus(false);
+
         Setup(TEXT_INFO, REGION, BOX_INFO, ISTAGE_PTR_OPT);
     }
 
@@ -84,7 +80,7 @@ namespace gui
             return "";
         }
 
-        const auto TEXT_HEIGHT_ACTUAL { static_cast<float>(renderTextureUPtr_->getSize().y) };
+        const auto TEXT_HEIGHT_ACTUAL { ActualTextRegion().height };
 
         if (TEXT_HEIGHT_ACTUAL < GetEntityRegion().height)
         {
@@ -107,27 +103,45 @@ namespace gui
     }
 
     void TextRegion::Setup(
-        const TextInfo & TEXT_INFO,
-        const sf::FloatRect & REGION,
-        const BoxEntityInfo & BOX_INFO,
+        const TextInfo & TEXT_INFO_PARAM,
+        const sf::FloatRect & REGION_PARAM,
+        const BoxEntityInfo & BOX_INFO_PARAM,
         const stage::IStagePtrOpt_t & ISTAGE_PTR_OPT)
     {
-        // set member states
+        if (TEXT_INFO_PARAM.text == " ")
+        {
+            M_HP_LOG_ERR(
+                "TEXT_INFO.text=\" \", which should not be happening anymore."
+                + M_HP_VAR_STR(GetEntityName()) + M_HP_VAR_STR(TEXT_INFO_PARAM.ToString()));
+        }
+
+        const auto REGION { (
+            (REGION_PARAM == sf::FloatRect())
+                ? sf::FloatRect(sfutil::Position(GetEntityRegion()), origSize_)
+                : REGION_PARAM) };
+
+        origSize_ = sfutil::Size(REGION);
+
+        const auto BOX_INFO { (
+            (BOX_INFO_PARAM == BoxEntityInfo() && boxEntityUPtr_) ? boxEntityUPtr_->Info()
+                                                                  : BOX_INFO_PARAM) };
+
+        if (ISTAGE_PTR_OPT)
+        {
+            stagePtrOpt_ = ISTAGE_PTR_OPT;
+        }
+
+        if (TEXT_INFO_PARAM != TextInfo())
+        {
+            textInfo_ = TEXT_INFO_PARAM;
+        }
+
         willDraw_ = false;
-        stagePtrOpt_ = ISTAGE_PTR_OPT;
 
-        // remember original values in case we need them for SetText()
-        regionOrig_ = REGION;
-        textInfoOrig_ = TEXT_INFO;
-
-        // prevent color changes when clicking on text or on the scrollbar
-        SetWillAcceptFocus(false);
-
-        SetupRender(TEXT_INFO, REGION);
+        SetupRender(textInfo_, REGION);
         SetupSliderbar(REGION);
         SetupEntityRegion(REGION);
         SetupBox(BOX_INFO, REGION);
-        // EstablishWhichLinesToDraw(0.0f);
     }
 
     void TextRegion::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -140,18 +154,11 @@ namespace gui
         // Don't draw the Box or SliderBar here.  They are being drawn by the stage.
 
         target.draw(sprite_, states);
-
-        // target.draw(sfutil::MakeRectangleHollow(entityRegion_, sf::Color::Red),
-        // states);
-        //
-        // target.draw(
-        //    sfutil::MakeRectangleHollow(sprite_.getGlobalBounds(), sf::Color::Yellow),
-        //    states);
     }
 
     void TextRegion::SetEntityPos(const float POS_LEFT, const float POS_TOP)
     {
-        MoveEntityPos(POS_LEFT - entityRegion_.left, POS_TOP - entityRegion_.top);
+        MoveEntityPos((POS_LEFT - entityRegion_.left), (POS_TOP - entityRegion_.top));
     }
 
     void TextRegion::MoveEntityPos(const float HORIZ, const float VERT)
@@ -173,7 +180,12 @@ namespace gui
 
     void TextRegion::SetText(const std::string & NEW_TEXT)
     {
-        textInfoOrig_.text = NEW_TEXT;
+        if (NEW_TEXT == " ")
+        {
+            M_HP_LOG_ERR(
+                "NEW_TEXT=\" \", which should not be happening anymore."
+                + M_HP_VAR_STR(GetEntityName()) + M_HP_VAR_STR(textInfo_.ToString()));
+        }
 
         gui::BoxEntityInfo boxInfo;
         if (boxEntityUPtr_)
@@ -181,20 +193,22 @@ namespace gui
             boxInfo = boxEntityUPtr_->Info();
         }
 
-        Setup(textInfoOrig_, regionOrig_, boxInfo, stagePtrOpt_);
-    }
+        textInfo_.text = NEW_TEXT;
 
-    void TextRegion::ShrinkEntityRegionToFitActualTextRegion()
-    {
-        Entity::SetEntityRegion(sprite_.getGlobalBounds());
+        Setup(
+            textInfo_,
+            sf::FloatRect(sfutil::Position(GetEntityRegion()), origSize_),
+            boxInfo,
+            stagePtrOpt_);
     }
 
     const sf::FloatRect TextRegion::ActualTextRegion() const { return sprite_.getGlobalBounds(); }
 
     void TextRegion::SetupRender(const TextInfo & TEXT_INFO, const sf::FloatRect & REGION)
     {
-        if (TEXT_INFO.IsValid() == false)
+        if (TEXT_INFO.WillDraw() == false)
         {
+            willDraw_ = false;
             return;
         }
 
@@ -219,12 +233,7 @@ namespace gui
         const auto HAS_BOTH_HORIZ_AND_VERT_LIMIT { (
             (REGION.width > 0.0f) && (REGION.height > 0.0f)) };
 
-        if (HAS_BOTH_HORIZ_AND_VERT_LIMIT == false)
-        {
-            return;
-        }
-
-        if (!renderTextureUPtr_)
+        if (!HAS_BOTH_HORIZ_AND_VERT_LIMIT || !willDraw_)
         {
             return;
         }
@@ -232,12 +241,7 @@ namespace gui
         const auto DOES_HEIGHT_EXCEED_LIMIT { (
             static_cast<float>(renderTextureUPtr_->getSize().y) > REGION.height) };
 
-        if (DOES_HEIGHT_EXCEED_LIMIT == false)
-        {
-            return;
-        }
-
-        if (!stagePtrOpt_)
+        if (!DOES_HEIGHT_EXCEED_LIMIT || !stagePtrOpt_)
         {
             return;
         }
@@ -260,47 +264,46 @@ namespace gui
         stagePtrOpt_.value()->EntityAdd(sliderBarUPtr_, true);
     }
 
-    void TextRegion::SetupEntityRegion(const sf::FloatRect & REGION_PARAM)
+    void TextRegion::SetupEntityRegion(const sf::FloatRect & REGION_ORIG)
     {
+        const auto ACTUAL_REGION { ActualTextRegion() };
+
         // set the entity region to the TEXT_REGION except for width and height, if either of those
         // is <= 0 then use the actual size of the rendered text
-        const sf::FloatRect NEW_REGION(
-            REGION_PARAM.left,
-            REGION_PARAM.top,
-            ((misc::IsRealZeroOrLess(REGION_PARAM.width)) ? sfutil::Width(sprite_)
-                                                          : REGION_PARAM.width),
-            ((misc::IsRealZeroOrLess(REGION_PARAM.height)) ? sfutil::Height(sprite_)
-                                                           : REGION_PARAM.height));
+        auto newRegion { REGION_ORIG };
 
-        Entity::SetEntityRegion(NEW_REGION);
+        newRegion.width
+            = ((misc::IsRealZeroOrLess(REGION_ORIG.width)) ? ACTUAL_REGION.width
+                                                           : REGION_ORIG.width);
+
+        newRegion.height
+            = ((misc::IsRealZeroOrLess(REGION_ORIG.height)) ? ACTUAL_REGION.height
+                                                            : REGION_ORIG.height);
+
+        Entity::SetEntityRegion(newRegion);
     }
 
     void TextRegion::SetupBox(const BoxEntityInfo & BOX_INFO, const sf::FloatRect & REGION)
     {
-        // remove existing first
         if (stagePtrOpt_ && boxEntityUPtr_)
         {
             stagePtrOpt_.value()->EntityRemove(boxEntityUPtr_);
             boxEntityUPtr_.reset();
         }
 
-        if (!stagePtrOpt_)
+        if (!stagePtrOpt_ || (BOX_INFO == BoxEntityInfo()))
         {
             return;
         }
 
-        if (BOX_INFO == BoxEntityInfo())
-        {
-            return;
-        }
-
-        boxEntityUPtr_ = std::make_unique<BoxEntity>("TextRegion's", REGION, BOX_INFO);
+        boxEntityUPtr_ = std::make_unique<BoxEntity>(GetEntityName() + "'s_", REGION, BOX_INFO);
         stagePtrOpt_.value()->EntityAdd(boxEntityUPtr_);
     }
 
     void TextRegion::OnColorChange()
     {
         sprite_.setColor(entityFgColor_);
+        textInfo_.color = entityFgColor_;
 
         if (boxEntityUPtr_)
         {

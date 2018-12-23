@@ -58,6 +58,7 @@ namespace gui
         {
             const auto ACTUAL_POSITION { (
                 SCREEN_POS_V + sfutil::Position(region) + justifyOffsetV) };
+
             const auto ACTUAL_SIZE { sfutil::Size(region) };
             return sf::FloatRect(ACTUAL_POSITION, ACTUAL_SIZE);
         }

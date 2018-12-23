@@ -15,6 +15,7 @@
 #include "gui/text-region.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
+#include "sfutil/display.hpp"
 #include "sfutil/primitives.hpp"
 
 namespace heroespath
@@ -22,9 +23,9 @@ namespace heroespath
 namespace gui
 {
 
-    const float TextEntryBox::INNER_PAD_(2.0f);
-    const float TextEntryBox::CURSOR_WIDTH_(0.0f);
-    const float TextEntryBox::CURSOR_BLINK_DELAY_SEC_(0.5);
+    const float TextEntryBox::INNER_PAD_ { 3.0f };
+    const float TextEntryBox::CURSOR_WIDTH_ { 0.0f };
+    const float TextEntryBox::CURSOR_BLINK_DELAY_SEC_ { 0.5 };
 
     TextEntryBox::TextEntryBox(
         const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
@@ -55,14 +56,24 @@ namespace gui
         const sf::Color & CURSOR_COLOR,
         const BoxEntityInfo & BOX_INFO)
     {
-        cursorColor_ = CURSOR_COLOR;
         SetEntityRegion(REGION);
 
+        boxEntity_.Setup(REGION, BOX_INFO);
+
         innerRegion_ = REGION;
+
+        if (BOX_INFO != BoxEntityInfo())
+        {
+            innerRegion_ = boxEntity_.InnerRegion();
+            SetEntityRegion(boxEntity_.OuterRegion());
+        }
+
         innerRegion_.left += INNER_PAD_;
         innerRegion_.top += INNER_PAD_;
         innerRegion_.width -= (INNER_PAD_ * 2.0f);
         innerRegion_.height -= (INNER_PAD_ * 2.0f);
+
+        cursorColor_ = CURSOR_COLOR;
 
         auto cursorRegion { innerRegion_ };
         cursorRegion.width = CURSOR_WIDTH_;
@@ -70,42 +81,18 @@ namespace gui
 
         textInfo_ = TEXT_INFO;
 
-        boxEntity_.Setup(boxEntity_.GetEntityRegion(), BOX_INFO);
-    }
+        sf::FloatRect initialTextRegion(innerRegion_);
+        initialTextRegion.width = 0.0f;
 
-    void TextEntryBox::UpdateText()
-    {
-        if (textInfo_.text.empty() == false)
-        {
-            sf::FloatRect r(innerRegion_);
-            r.width = 0.0f;
-
-            textRegionUPtr_ = std::make_unique<TextRegion>(
-                std::string(GetEntityName()).append("'s"), textInfo_, r);
-
-            cursorRect_.SetPos(
-                innerRegion_.left + textRegionUPtr_->GetEntityRegion().width + 3.0f,
-                cursorRect_.Rect().top);
-        }
-        else
-        {
-            textRegionUPtr_.reset();
-        }
-
-        if (callbackHandlerPtrOpt_)
-        {
-            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), *this, "");
-        }
+        textRegionUPtr_ = std::make_unique<TextRegion>(
+            std::string(GetEntityName()).append("'s"), textInfo_, initialTextRegion);
     }
 
     void TextEntryBox::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw(boxEntity_, states);
 
-        if (textRegionUPtr_)
-        {
-            textRegionUPtr_->draw(target, states);
-        }
+        textRegionUPtr_->draw(target, states);
 
         if (willDrawCursor_ && HasFocus())
         {
@@ -113,34 +100,23 @@ namespace gui
         }
     }
 
-    void TextEntryBox::SetText(const std::string & NEW_TEXT)
+    void TextEntryBox::SetText(const std::string & TEXT)
     {
-        textInfo_.text = NEW_TEXT;
-        UpdateText();
+        textInfo_.text = TEXT;
+        textRegionUPtr_->SetText(TEXT);
 
-        if (!textRegionUPtr_)
+        const auto CURSOR_POS_LEFT { innerRegion_.left
+                                     + (textRegionUPtr_->ActualTextRegion().width + 3.0f) };
+
+        cursorRect_.SetPos(CURSOR_POS_LEFT, cursorRect_.Rect().top);
+
+        if (callbackHandlerPtrOpt_)
         {
-            cursorRect_.SetPos(innerRegion_.left, cursorRect_.Rect().top);
-        }
-        else
-        {
-            cursorRect_.SetPos(
-                innerRegion_.left + textRegionUPtr_->GetEntityRegion().width,
-                cursorRect_.Rect().top);
+            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), *this, "");
         }
     }
 
-    const std::string TextEntryBox::GetText() const
-    {
-        if (!textRegionUPtr_)
-        {
-            return "";
-        }
-        else
-        {
-            return textRegionUPtr_->GetText();
-        }
-    }
+    const std::string TextEntryBox::GetText() const { return textRegionUPtr_->GetText(); }
 
     bool TextEntryBox::KeyPress(const sf::Event::KeyEvent & KE)
     {
@@ -152,419 +128,41 @@ namespace gui
         return true;
     }
 
-    bool TextEntryBox::KeyRelease(const sf::Event::KeyEvent & KE)
+    bool TextEntryBox::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        char charToAppend(0);
-        switch (KE.code)
+        std::string text { GetText() };
+
+        if ((KEY_EVENT.code == sf::Keyboard::Left) || (KEY_EVENT.code == sf::Keyboard::BackSpace))
         {
-            case sf::Keyboard::A:
+            if (text.empty() == false)
             {
-                if (KE.shift)
-                    charToAppend = 'A';
-                else
-                    charToAppend = 'a';
-                break;
+                text.pop_back();
+                SetText(text);
             }
-            case sf::Keyboard::B:
-            {
-                if (KE.shift)
-                    charToAppend = 'B';
-                else
-                    charToAppend = 'b';
-                break;
-            }
-            case sf::Keyboard::C:
-            {
-                if (KE.shift)
-                    charToAppend = 'C';
-                else
-                    charToAppend = 'c';
-                break;
-            }
-            case sf::Keyboard::D:
-            {
-                if (KE.shift)
-                    charToAppend = 'D';
-                else
-                    charToAppend = 'd';
-                break;
-            }
-            case sf::Keyboard::E:
-            {
-                if (KE.shift)
-                    charToAppend = 'E';
-                else
-                    charToAppend = 'e';
-                break;
-            }
-            case sf::Keyboard::F:
-            {
-                if (KE.shift)
-                    charToAppend = 'F';
-                else
-                    charToAppend = 'f';
-                break;
-            }
-            case sf::Keyboard::G:
-            {
-                if (KE.shift)
-                    charToAppend = 'G';
-                else
-                    charToAppend = 'g';
-                break;
-            }
-            case sf::Keyboard::H:
-            {
-                if (KE.shift)
-                    charToAppend = 'H';
-                else
-                    charToAppend = 'h';
-                break;
-            }
-            case sf::Keyboard::I:
-            {
-                if (KE.shift)
-                    charToAppend = 'I';
-                else
-                    charToAppend = 'i';
-                break;
-            }
-            case sf::Keyboard::J:
-            {
-                if (KE.shift)
-                    charToAppend = 'J';
-                else
-                    charToAppend = 'j';
-                break;
-            }
-            case sf::Keyboard::K:
-            {
-                if (KE.shift)
-                    charToAppend = 'K';
-                else
-                    charToAppend = 'k';
-                break;
-            }
-            case sf::Keyboard::L:
-            {
-                if (KE.shift)
-                    charToAppend = 'L';
-                else
-                    charToAppend = 'l';
-                break;
-            }
-            case sf::Keyboard::M:
-            {
-                if (KE.shift)
-                    charToAppend = 'M';
-                else
-                    charToAppend = 'm';
-                break;
-            }
-            case sf::Keyboard::N:
-            {
-                if (KE.shift)
-                    charToAppend = 'N';
-                else
-                    charToAppend = 'n';
-                break;
-            }
-            case sf::Keyboard::O:
-            {
-                if (KE.shift)
-                    charToAppend = 'O';
-                else
-                    charToAppend = 'o';
-                break;
-            }
-            case sf::Keyboard::P:
-            {
-                if (KE.shift)
-                    charToAppend = 'P';
-                else
-                    charToAppend = 'p';
-                break;
-            }
-            case sf::Keyboard::Q:
-            {
-                if (KE.shift)
-                    charToAppend = 'Q';
-                else
-                    charToAppend = 'q';
-                break;
-            }
-            case sf::Keyboard::R:
-            {
-                if (KE.shift)
-                    charToAppend = 'R';
-                else
-                    charToAppend = 'r';
-                break;
-            }
-            case sf::Keyboard::S:
-            {
-                if (KE.shift)
-                    charToAppend = 'S';
-                else
-                    charToAppend = 's';
-                break;
-            }
-            case sf::Keyboard::T:
-            {
-                if (KE.shift)
-                    charToAppend = 'T';
-                else
-                    charToAppend = 't';
-                break;
-            }
-            case sf::Keyboard::U:
-            {
-                if (KE.shift)
-                    charToAppend = 'U';
-                else
-                    charToAppend = 'u';
-                break;
-            }
-            case sf::Keyboard::V:
-            {
-                if (KE.shift)
-                    charToAppend = 'V';
-                else
-                    charToAppend = 'v';
-                break;
-            }
-            case sf::Keyboard::W:
-            {
-                if (KE.shift)
-                    charToAppend = 'W';
-                else
-                    charToAppend = 'w';
-                break;
-            }
-            case sf::Keyboard::X:
-            {
-                if (KE.shift)
-                    charToAppend = 'X';
-                else
-                    charToAppend = 'x';
-                break;
-            }
-            case sf::Keyboard::Y:
-            {
-                if (KE.shift)
-                    charToAppend = 'Y';
-                else
-                    charToAppend = 'y';
-                break;
-            }
-            case sf::Keyboard::Z:
-            {
-                if (KE.shift)
-                    charToAppend = 'Z';
-                else
-                    charToAppend = 'z';
-                break;
-            }
-            case sf::Keyboard::Num0:
-            {
-                charToAppend = '0';
-                break;
-            }
-            case sf::Keyboard::Num1:
-            {
-                charToAppend = '1';
-                break;
-            }
-            case sf::Keyboard::Num2:
-            {
-                charToAppend = '2';
-                break;
-            }
-            case sf::Keyboard::Num3:
-            {
-                charToAppend = '3';
-                break;
-            }
-            case sf::Keyboard::Num4:
-            {
-                charToAppend = '4';
-                break;
-            }
-            case sf::Keyboard::Num5:
-            {
-                charToAppend = '5';
-                break;
-            }
-            case sf::Keyboard::Num6:
-            {
-                charToAppend = '6';
-                break;
-            }
-            case sf::Keyboard::Num7:
-            {
-                charToAppend = '7';
-                break;
-            }
-            case sf::Keyboard::Num8:
-            {
-                charToAppend = '8';
-                break;
-            }
-            case sf::Keyboard::Num9:
-            {
-                charToAppend = '9';
-                break;
-            }
-            case sf::Keyboard::Dash:
-            {
-                if (KE.shift)
-                    charToAppend = '_';
-                else
-                    charToAppend = '-';
-                break;
-            }
-            case sf::Keyboard::Period:
-            {
-                if (KE.shift)
-                    charToAppend = '>';
-                else
-                    charToAppend = '.';
-                break;
-            }
-            case sf::Keyboard::Right:
-            case sf::Keyboard::Space:
-            {
-                charToAppend = ' ';
-                break;
-            }
-            case sf::Keyboard::Left:
-            case sf::Keyboard::BackSpace:
-            {
-                if (textInfo_.text.empty() == false)
-                    textInfo_.text.pop_back();
 
-                UpdateText();
-
-                break;
-            }
-            case sf::Keyboard::Multiply:
-            {
-                charToAppend = '*';
-                break;
-            }
-            case sf::Keyboard::Escape:
-            case sf::Keyboard::Unknown:
-            case sf::Keyboard::LControl:
-            case sf::Keyboard::LShift:
-            case sf::Keyboard::LSystem:
-            case sf::Keyboard::LAlt:
-            case sf::Keyboard::RControl:
-            case sf::Keyboard::RShift:
-            case sf::Keyboard::RSystem:
-            case sf::Keyboard::RAlt:
-            case sf::Keyboard::LBracket:
-            case sf::Keyboard::RBracket:
-            case sf::Keyboard::Menu:
-            {
-                break;
-            }
-            case sf::Keyboard::Comma:
-            {
-                if (KE.shift)
-                    charToAppend = '<';
-                else
-                    charToAppend = ',';
-                break;
-            }
-            case sf::Keyboard::Quote:
-            {
-                if (KE.shift)
-                    charToAppend = '\"';
-                else
-                    charToAppend = '\'';
-                break;
-            }
-            case sf::Keyboard::Slash:
-            {
-                break;
-            }
-            case sf::Keyboard::SemiColon:
-            {
-                charToAppend = ':';
-                break;
-            }
-            case sf::Keyboard::BackSlash:
-            case sf::Keyboard::Tilde:
-            case sf::Keyboard::Equal:
-            case sf::Keyboard::Return:
-            case sf::Keyboard::Tab:
-            case sf::Keyboard::PageUp:
-            case sf::Keyboard::PageDown:
-            case sf::Keyboard::End:
-            case sf::Keyboard::Home:
-            case sf::Keyboard::Insert:
-            case sf::Keyboard::Delete:
-            case sf::Keyboard::Add:
-            case sf::Keyboard::Subtract:
-            case sf::Keyboard::Divide:
-            case sf::Keyboard::Up:
-            case sf::Keyboard::Down:
-            case sf::Keyboard::Numpad0:
-            case sf::Keyboard::Numpad1:
-            case sf::Keyboard::Numpad2:
-            case sf::Keyboard::Numpad3:
-            case sf::Keyboard::Numpad4:
-            case sf::Keyboard::Numpad5:
-            case sf::Keyboard::Numpad6:
-            case sf::Keyboard::Numpad7:
-            case sf::Keyboard::Numpad8:
-            case sf::Keyboard::Numpad9:
-            case sf::Keyboard::F1:
-            case sf::Keyboard::F2:
-            case sf::Keyboard::F3:
-            case sf::Keyboard::F4:
-            case sf::Keyboard::F5:
-            case sf::Keyboard::F6:
-            case sf::Keyboard::F7:
-            case sf::Keyboard::F8:
-            case sf::Keyboard::F9:
-            case sf::Keyboard::F10:
-            case sf::Keyboard::F11:
-            case sf::Keyboard::F12:
-            case sf::Keyboard::F13:
-            case sf::Keyboard::F14:
-            case sf::Keyboard::F15:
-            case sf::Keyboard::Pause:
-            case sf::Keyboard::KeyCount:
-            default:
-            {
-                charToAppend = 0;
-                break;
-            }
-        }
-
-        bool isWithinBounds(true);
-        if (textRegionUPtr_)
-        {
-            if (false == textRegionUPtr_->GetText().empty())
-            {
-                if ((textRegionUPtr_->GetEntityRegion().width > (innerRegion_.width - 30.0f)))
-                {
-                    isWithinBounds = false;
-                }
-            }
-        }
-
-        if ((charToAppend != 0) && isWithinBounds)
-        {
-            textInfo_.text = textInfo_.text.append(1, charToAppend);
-            UpdateText();
             return true;
         }
-        else
+
+        const auto CHAR { KeyToCharacter(KEY_EVENT.code, KEY_EVENT.shift) };
+
+        if (CHAR == 0)
         {
             return false;
         }
+
+        text += CHAR;
+        SetText(text);
+
+        const auto IS_TOO_LONG { (textRegionUPtr_->ActualTextRegion().width > innerRegion_.width) };
+
+        if (IS_TOO_LONG)
+        {
+            text.pop_back();
+            SetText(text);
+            return false;
+        }
+
+        return true;
     }
 
     bool TextEntryBox::UpdateTime(const float ELAPSED_TIME_SEC)
@@ -589,7 +187,276 @@ namespace gui
     {
         cursorColor_ = TEXT_COLOR;
         textInfo_.color = TEXT_COLOR;
-        UpdateText();
+        textRegionUPtr_->SetEntityColorFg(TEXT_COLOR);
+    }
+
+    void TextEntryBox::SetEntityPos(const float POS_LEFT, const float POS_TOP)
+    {
+        const auto DIFF_V { sf::Vector2f(POS_LEFT, POS_TOP) - GetEntityPos() };
+        MoveEntityPos(DIFF_V.x, DIFF_V.y);
+    }
+
+    void TextEntryBox::MoveEntityPos(const float HORIZ, const float VERT)
+    {
+        Entity::MoveEntityPos(HORIZ, VERT);
+
+        boxEntity_.MoveEntityPos(HORIZ, VERT);
+        cursorRect_.MovePos(HORIZ, VERT);
+        sfutil::Move(innerRegion_, sf::Vector2f(HORIZ, VERT));
+        textRegionUPtr_->MoveEntityPos(HORIZ, VERT);
+    }
+
+    char TextEntryBox::KeyToCharacter(
+        const sf::Keyboard::Key KEY_CODE, const bool IS_SHIFT_DOWN) const
+    {
+        char character = [KEY_CODE]() {
+            switch (KEY_CODE)
+            {
+                case sf::Keyboard::A:
+                {
+                    return 'a';
+                }
+                case sf::Keyboard::B:
+                {
+                    return 'b';
+                }
+                case sf::Keyboard::C:
+                {
+                    return 'c';
+                }
+                case sf::Keyboard::D:
+                {
+                    return 'd';
+                }
+                case sf::Keyboard::E:
+                {
+                    return 'e';
+                }
+                case sf::Keyboard::F:
+                {
+                    return 'f';
+                }
+                case sf::Keyboard::G:
+                {
+                    return 'g';
+                }
+                case sf::Keyboard::H:
+                {
+                    return 'h';
+                }
+                case sf::Keyboard::I:
+                {
+                    return 'i';
+                }
+                case sf::Keyboard::J:
+                {
+                    return 'j';
+                }
+                case sf::Keyboard::K:
+                {
+                    return 'k';
+                }
+                case sf::Keyboard::L:
+                {
+                    return 'l';
+                }
+                case sf::Keyboard::M:
+                {
+                    return 'm';
+                }
+                case sf::Keyboard::N:
+                {
+                    return 'n';
+                }
+                case sf::Keyboard::O:
+                {
+                    return 'o';
+                }
+                case sf::Keyboard::P:
+                {
+                    return 'p';
+                }
+                case sf::Keyboard::Q:
+                {
+                    return 'q';
+                }
+                case sf::Keyboard::R:
+                {
+                    return 'r';
+                }
+                case sf::Keyboard::S:
+                {
+                    return 's';
+                }
+                case sf::Keyboard::T:
+                {
+                    return 't';
+                }
+                case sf::Keyboard::U:
+                {
+                    return 'u';
+                }
+                case sf::Keyboard::V:
+                {
+                    return 'v';
+                }
+                case sf::Keyboard::W:
+                {
+                    return 'w';
+                }
+                case sf::Keyboard::X:
+                {
+                    return 'x';
+                }
+                case sf::Keyboard::Y:
+                {
+                    return 'y';
+                }
+                case sf::Keyboard::Z:
+                {
+                    return 'z';
+                }
+                case sf::Keyboard::Num0:
+                {
+                    return '0';
+                }
+                case sf::Keyboard::Num1:
+                {
+                    return '1';
+                }
+                case sf::Keyboard::Num2:
+                {
+                    return '2';
+                }
+                case sf::Keyboard::Num3:
+                {
+                    return '3';
+                }
+                case sf::Keyboard::Num4:
+                {
+                    return '4';
+                }
+                case sf::Keyboard::Num5:
+                {
+                    return '5';
+                }
+                case sf::Keyboard::Num6:
+                {
+                    return '6';
+                }
+                case sf::Keyboard::Num7:
+                {
+                    return '7';
+                }
+                case sf::Keyboard::Num8:
+                {
+                    return '8';
+                }
+                case sf::Keyboard::Num9:
+                {
+                    return '9';
+                }
+                case sf::Keyboard::Dash:
+                {
+                    return '-';
+                }
+                case sf::Keyboard::Period:
+                {
+                    return '.';
+                }
+                case sf::Keyboard::Right:
+                case sf::Keyboard::Space:
+                {
+                    return ' ';
+                }
+                case sf::Keyboard::Multiply:
+                {
+                    return '*';
+                }
+                case sf::Keyboard::Comma:
+                {
+                    return ',';
+                }
+                case sf::Keyboard::Quote:
+                {
+                    return '\'';
+                }
+                case sf::Keyboard::SemiColon:
+                {
+                    return ':';
+                }
+                case sf::Keyboard::Slash:
+                case sf::Keyboard::Left:
+                case sf::Keyboard::BackSpace:
+                case sf::Keyboard::Escape:
+                case sf::Keyboard::Unknown:
+                case sf::Keyboard::LControl:
+                case sf::Keyboard::LShift:
+                case sf::Keyboard::LSystem:
+                case sf::Keyboard::LAlt:
+                case sf::Keyboard::RControl:
+                case sf::Keyboard::RShift:
+                case sf::Keyboard::RSystem:
+                case sf::Keyboard::RAlt:
+                case sf::Keyboard::LBracket:
+                case sf::Keyboard::RBracket:
+                case sf::Keyboard::Menu:
+                case sf::Keyboard::BackSlash:
+                case sf::Keyboard::Tilde:
+                case sf::Keyboard::Equal:
+                case sf::Keyboard::Return:
+                case sf::Keyboard::Tab:
+                case sf::Keyboard::PageUp:
+                case sf::Keyboard::PageDown:
+                case sf::Keyboard::End:
+                case sf::Keyboard::Home:
+                case sf::Keyboard::Insert:
+                case sf::Keyboard::Delete:
+                case sf::Keyboard::Add:
+                case sf::Keyboard::Subtract:
+                case sf::Keyboard::Divide:
+                case sf::Keyboard::Up:
+                case sf::Keyboard::Down:
+                case sf::Keyboard::Numpad0:
+                case sf::Keyboard::Numpad1:
+                case sf::Keyboard::Numpad2:
+                case sf::Keyboard::Numpad3:
+                case sf::Keyboard::Numpad4:
+                case sf::Keyboard::Numpad5:
+                case sf::Keyboard::Numpad6:
+                case sf::Keyboard::Numpad7:
+                case sf::Keyboard::Numpad8:
+                case sf::Keyboard::Numpad9:
+                case sf::Keyboard::F1:
+                case sf::Keyboard::F2:
+                case sf::Keyboard::F3:
+                case sf::Keyboard::F4:
+                case sf::Keyboard::F5:
+                case sf::Keyboard::F6:
+                case sf::Keyboard::F7:
+                case sf::Keyboard::F8:
+                case sf::Keyboard::F9:
+                case sf::Keyboard::F10:
+                case sf::Keyboard::F11:
+                case sf::Keyboard::F12:
+                case sf::Keyboard::F13:
+                case sf::Keyboard::F14:
+                case sf::Keyboard::F15:
+                case sf::Keyboard::Pause:
+                case sf::Keyboard::KeyCount:
+                default:
+                {
+                    return char(0);
+                }
+            }
+        }();
+
+        if (IS_SHIFT_DOWN)
+        {
+            misc::ToUpper(character);
+        }
+
+        return character;
     }
 
 } // namespace gui

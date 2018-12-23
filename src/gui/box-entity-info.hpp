@@ -20,7 +20,6 @@
 #include <SFML/Graphics/Color.hpp>
 
 #include <memory>
-#include <string>
 #include <tuple>
 
 namespace heroespath

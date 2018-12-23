@@ -312,17 +312,22 @@ namespace misc
         return finalStr;
     }
 
-    const std::string MakeLoggableString(const std::string & ORIG_STR)
+    const std::string MakeLoggableString(
+        const std::string & ORIG_STR, const std::size_t MAX_SIZE, const bool WILL_ADD_ELIPSIS)
     {
-        std::string newString(ORIG_STR);
+        auto newString { ORIG_STR };
 
         boost::algorithm::replace_all(newString, "\n", "\\n");
 
-        const std::size_t MAX_SIZE { 40 };
         if (newString.size() > MAX_SIZE)
         {
-            newString.resize(MAX_SIZE - 3);
-            newString += "...";
+            newString.resize(MAX_SIZE);
+
+            if (WILL_ADD_ELIPSIS && (MAX_SIZE > 3))
+            {
+                newString.resize(MAX_SIZE - 3);
+                newString += "...";
+            }
         }
 
         return newString;

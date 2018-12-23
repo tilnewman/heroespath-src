@@ -130,7 +130,9 @@ namespace stage
         , bottomSymbol_()
         //, selectedImageIndex_(0)
         , characterImageFilenamesVec_()
-        , woodCachedTexture_("media-image-background-tile-wood")
+        , woodCachedTexture_(
+              "media-image-background-tile-wood",
+              (gui::ImageOpt::Default | gui::ImageOpt::Repeated))
     {}
 
     CharacterStage::~CharacterStage() { StageBase::ClearAllEntities(); }
@@ -505,7 +507,7 @@ namespace stage
     {
         /*
         gui::TextInfo raceRadioButtonSetTextInfo(
-            " ",
+            "",
             gui::GuiFont::System,
             RADIO_BUTTON_TEXT_SIZE_,
             LIGHT_TEXT_COLOR_,
@@ -547,7 +549,7 @@ namespace stage
     {
         /*
         gui::TextInfo roleRadioButtonSetTextInfo(
-            " ",
+            "",
             gui::GuiFont::System,
             RADIO_BUTTON_TEXT_SIZE_,
             LIGHT_TEXT_COLOR_,
@@ -681,12 +683,6 @@ namespace stage
 
     void CharacterStage::Setup_NameLabel()
     {
-        const sf::FloatRect REGION(
-            (StageRegion().width * 0.5f) - 150.0f,
-            sfutil::Bottom(stageTitle_.Region()) - 20.0f,
-            0.0f,
-            0.0f);
-
         const gui::TextInfo NAME_LABEL_TEXT_INFO(
             "(name your character here)",
             gui::GuiFont::System,
@@ -696,12 +692,11 @@ namespace stage
             sf::Text::Italic);
 
         nInsTextRegionUPtr_
-            = std::make_unique<gui::TextRegion>("NameLabel", NAME_LABEL_TEXT_INFO, REGION);
+            = std::make_unique<gui::TextRegion>("NameLabel", NAME_LABEL_TEXT_INFO, sf::FloatRect());
 
         nInsTextRegionUPtr_->SetEntityPos(
-            (StageRegion().width * 0.5f) - (nInsTextRegionUPtr_->GetEntityRegion().width * 0.5f)
-                + 45.0f,
-            nInsTextRegionUPtr_->GetEntityPos().y);
+            sfutil::DisplayCenterHoriz(nInsTextRegionUPtr_->GetEntityRegion().width),
+            sfutil::Bottom(stageTitle_.Region()));
 
         EntityAdd(nInsTextRegionUPtr_);
     }
@@ -710,23 +705,21 @@ namespace stage
     {
         creature::NameInfo creatureNameInfo;
 
-        const auto WIDTH { creatureNameInfo.DefaultTextEntryBoxWidth() };
-
-        const sf::FloatRect REGION(
-            (StageRegion().width * 0.5f) - (WIDTH * 0.5f),
-            nInsTextRegionUPtr_->GetEntityRegion().top
-                + nInsTextRegionUPtr_->GetEntityRegion().height,
-            WIDTH,
-            55.0f);
-
         gui::BoxEntityInfo textEntryBoxInfo;
         textEntryBoxInfo.SetupImage(woodCachedTexture_);
         textEntryBoxInfo.SetupBorder(true);
         textEntryBoxInfo.focus_colors = sfutil::color::GuiFocusColors;
 
         gui::TextInfo nameEntryTextInfo(creatureNameInfo.MakeTextInfo());
-        nameEntryTextInfo.text = " ";
+        nameEntryTextInfo.text = "";
         nameEntryTextInfo.color = DESC_TEXT_COLOR_;
+
+        const sf::FloatRect REGION(
+            sfutil::DisplayCenterHoriz(creatureNameInfo.DefaultTextEntryBoxWidth()),
+            (sfutil::Bottom(nInsTextRegionUPtr_->GetEntityRegion())
+             + sfutil::ScreenRatioToPixelsVert(0.0075f)),
+            creatureNameInfo.DefaultTextEntryBoxWidth(),
+            sfutil::ScreenRatioToPixelsVert(0.03f));
 
         nameTextEntryBoxUPtr_ = std::make_unique<gui::TextEntryBox>(
             gui::TextEntryBox::Callback_t::IHandlerPtr_t(this),
@@ -743,7 +736,7 @@ namespace stage
     {
         /*
         gui::TextInfo sexRadioButtonSetTextInfo(
-            " ",
+            "",
             gui::GuiFont::System,
             RADIO_BUTTON_TEXT_SIZE_,
             LIGHT_TEXT_COLOR_,
@@ -2166,7 +2159,7 @@ namespace stage
             animStatsDelayPerSec_ = misc::random::Float(0.05f, 0.25f);
 
             gui::TextInfo textInfo(
-                " ",
+                "",
                 gui::GuiFont::Number,
                 40,
                 sf::Color::White,

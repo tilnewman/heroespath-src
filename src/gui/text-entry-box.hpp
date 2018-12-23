@@ -34,11 +34,6 @@ namespace gui
     public:
         using Callback_t = misc::Callback<TextEntryBox>;
 
-        TextEntryBox(const TextEntryBox &) = delete;
-        TextEntryBox(TextEntryBox &&) = delete;
-        TextEntryBox & operator=(const TextEntryBox &) = delete;
-        TextEntryBox & operator=(TextEntryBox &&) = delete;
-
         TextEntryBox(
             const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
             const std::string & NAME,
@@ -49,6 +44,11 @@ namespace gui
 
         virtual ~TextEntryBox();
 
+        TextEntryBox(const TextEntryBox &) = delete;
+        TextEntryBox(TextEntryBox &&) = delete;
+        TextEntryBox & operator=(const TextEntryBox &) = delete;
+        TextEntryBox & operator=(TextEntryBox &&) = delete;
+
         void Setup(
             const sf::FloatRect & REGION,
             const TextInfo & TEXT_INFO,
@@ -57,7 +57,7 @@ namespace gui
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        void SetText(const std::string & NEW_TEXT);
+        void SetText(const std::string & TEXT);
         const std::string GetText() const;
 
         bool KeyPress(const sf::Event::KeyEvent &) override;
@@ -67,17 +67,20 @@ namespace gui
 
         void SetTextColor(const sf::Color & TEXT_COLOR);
 
+        void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
+
     protected:
         void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
 
     private:
-        void UpdateText();
         void OnColorChange() override;
+        char KeyToCharacter(const sf::Keyboard::Key KEY_CODE, const bool IS_SHIFT_DOWN) const;
 
         static const float INNER_PAD_;
         static const float CURSOR_WIDTH_;
         static const float CURSOR_BLINK_DELAY_SEC_;
-        //
+
         BoxEntity boxEntity_;
         TextInfo textInfo_;
         ColoredRect cursorRect_;

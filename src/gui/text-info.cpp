@@ -31,7 +31,7 @@ namespace gui
 
     TextInfo::TextInfo()
         : text("")
-        , font_letters(GuiFont::Count)
+        , font_letters(GuiFont::Default)
         , font_numbers(GuiFont::Number)
         , size(FontManager::Instance()->Size_Normal())
         , color(sf::Color::White)
@@ -90,168 +90,61 @@ namespace gui
         }
     }
 
-    // TextInfo::TextInfo(
-    //    const TextInfo & TEXT_INFO_TO_COPY,
-    //    const GuiFont::Enum NEW_LETTERS_FONT,
-    //    const GuiFont::Enum NEW_NUMBERS_FONT)
-    //    : TextInfo(
-    //          TEXT_INFO_TO_COPY,
-    //          "",
-    //          sf::Color::Transparent,
-    //          0,
-    //          NEW_LETTERS_FONT,
-    //          NEW_NUMBERS_FONT)
-    //{}
-
     bool TextInfo::IsValid() const
     {
         return (
-            (text.empty() == false) && EnumUtil<GuiFont>::IsValid(font_letters)
-            && EnumUtil<GuiFont>::IsValid(font_numbers) && (size > 0));
+            EnumUtil<GuiFont>::IsValid(font_letters) && EnumUtil<GuiFont>::IsValid(font_numbers));
     }
 
     const std::string TextInfo::ToString(
         const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        auto appendWithSeparator = [&](std::ostringstream & strstrm, const auto & THING) {
-            if (strstrm.str().empty() == false)
+        std::ostringstream ss;
+
+        auto appendWithSeparator = [&](const auto & THING) {
+            if (ss.str().empty() == false)
             {
-                strstrm << SEPARATOR;
+                ss << SEPARATOR;
             }
 
-            strstrm << THING;
+            ss << THING;
         };
-
-        std::ostringstream ssInfo;
-        std::ostringstream ssInvalid;
 
         if (*this == TextInfo())
         {
-            appendWithSeparator(ssInvalid, "default_constructed");
-        }
-
-        if (WillDraw() == false)
-        {
-            appendWithSeparator(ssInvalid, "will_draw_false");
-        }
-        else if (IsValid() == false)
-        {
-            appendWithSeparator(ssInvalid, "is_valid_false");
-        }
-
-        if (text.empty())
-        {
-            appendWithSeparator(ssInvalid, "text_empty");
+            ss << "default";
         }
         else
         {
-            appendWithSeparator(ssInfo, misc::Quoted(misc::MakeLoggableString(text)));
-        }
-
-        if (EnumUtil<GuiFont>::IsValid(font_letters))
-        {
-            appendWithSeparator(ssInfo, GuiFont::ToString(font_letters));
-        }
-        else
-        {
-            appendWithSeparator(
-                ssInvalid,
-                "letter_font=" + misc::ToString(EnumUtil<GuiFont>::ToUnderlyingType(font_letters)));
-        }
-
-        if (GuiFont::Number != font_numbers)
-        {
-            if (EnumUtil<GuiFont>::IsValid(font_numbers))
+            if (IsValid() == false)
             {
-                appendWithSeparator(ssInfo, GuiFont::ToString(font_numbers));
+                appendWithSeparator("invalid");
             }
-            else
+            else if (WillDraw() == false)
             {
-                appendWithSeparator(
-                    ssInvalid,
-                    "letter_font="
-                        + misc::ToString(EnumUtil<GuiFont>::ToUnderlyingType(font_numbers)));
-            }
-        }
-
-        appendWithSeparator(ssInfo, misc::ToString(size));
-        appendWithSeparator(ssInfo, sfutil::ToString(color, misc::ToStringPrefix::SimpleName));
-
-        if (EnumUtil<gui::Justified>::IsValid(justified))
-        {
-            appendWithSeparator(ssInfo, gui::Justified::ToString(justified));
-        }
-        else
-        {
-            appendWithSeparator(
-                ssInvalid,
-                "justify=" + misc::ToString(EnumUtil<Justified>::ToUnderlyingType(justified)));
-        }
-
-        if (0 != style)
-        {
-            std::ostringstream ssStyle;
-
-            if (style & sf::Text::Style::Bold)
-            {
-                appendWithSeparator(ssStyle, "Bold");
+                appendWithSeparator("not_visible");
             }
 
-            if (style & sf::Text::Style::Italic)
-            {
-                appendWithSeparator(ssStyle, "Italic");
-            }
-
-            if (style & sf::Text::Style::Underlined)
-            {
-                appendWithSeparator(ssStyle, "Underlined");
-            }
-
-            if (style & sf::Text::Style::StrikeThrough)
-            {
-                appendWithSeparator(ssStyle, "StrikeThrough");
-            }
-
-            if (ssStyle.str().empty())
-            {
-                appendWithSeparator(ssInvalid, "unknown_style=" + misc::ToString(style));
-            }
-            else
-            {
-                appendWithSeparator(ssInfo, ssStyle.str());
-            }
-        }
-
-        std::ostringstream ssFinal;
-
-        if (WILL_WRAP == Wrap::Yes)
-        {
-            ssFinal << "(";
-        }
-
-        if (ssInfo.str().empty() == false)
-        {
-            ssFinal << ssInfo.str();
-        }
-
-        if (ssInvalid.str().empty() == false)
-        {
-            appendWithSeparator(ssFinal, ssInvalid.str());
+            appendWithSeparator(misc::Quoted(misc::MakeLoggableString(text)));
+            appendWithSeparator("font=" + GuiFont::ToString(font_letters));
+            appendWithSeparator("num_font=" + GuiFont::ToString(font_numbers));
+            appendWithSeparator(sfutil::ToString(color, misc::ToStringPrefix::SimpleName));
+            appendWithSeparator(gui::Justified::ToString(justified));
+            appendWithSeparator(sfutil::TextStyleToString(style));
         }
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            ssFinal << ")";
+            ss.str("(" + ss.str() + ")");
         }
 
         if (WILL_PREFIX)
         {
-            return std::string("TextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
-                + ssFinal.str();
+            return std::string("TextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=") + ss.str();
         }
         else
         {
-            return ssFinal.str();
+            return ss.str();
         }
     }
 

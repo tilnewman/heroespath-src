@@ -40,7 +40,7 @@ namespace gui
             const unsigned int SIZE,
             const sf::Color & COLOR = sf::Color::White,
             const Justified::Enum JUSTIFIED = Justified::Left,
-            const sf::Uint32 STYLE = 0); // 0=sf::Text::Style::Regular
+            const sf::Uint32 STYLE = 0); // zero is sf::Text::Style::Regular
 
         // creates a modified copy of another TextInfo, params with default values ignored
         TextInfo(
@@ -51,13 +51,6 @@ namespace gui
             const GuiFont::Enum LETTERS_FONT = GuiFont::Count,
             const GuiFont::Enum NUMBERS_FONT = GuiFont::Count);
 
-        // creates a TextInfo that is a copy of another with different fonts, params with
-        // default values ignored
-        // TextInfo(
-        //    const TextInfo & TEXT_INFO_TO_COPY,
-        //    const GuiFont::Enum NEW_LETTERS_FONT,
-        //    const GuiFont::Enum NEW_NUMBERS_FONT = GuiFont::Count);
-
         TextInfo(const TextInfo &) = default;
         TextInfo(TextInfo &&) = default;
         TextInfo & operator=(const TextInfo &) = default;
@@ -67,7 +60,10 @@ namespace gui
         bool IsValid() const;
 
         // returns true if IsValid() and color is not transparent
-        bool WillDraw() const { return (IsValid() && (color.a > 0)); }
+        bool WillDraw() const
+        {
+            return (IsValid() && (color.a > 0) && (size > 0) && !text.empty());
+        }
 
         const std::string ToString(
             const bool WILL_PREFIX = true,
