@@ -9,6 +9,7 @@
 //
 // radio-or-check-set.hpp
 //
+#include "gui/box-entity-info.hpp"
 #include "gui/brightness-enum.hpp"
 #include "gui/entity.hpp"
 #include "gui/mouse-text-info.hpp"
@@ -28,12 +29,12 @@ namespace heroespath
 namespace gui
 {
 
+    class BoxEntity;
+    using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+
     class RadioOrCheckEntity;
     using RadioOrCheckEntityUPtr_t = std::unique_ptr<RadioOrCheckEntity>;
     using RadioOrCheckEntityUVec_t = std::vector<RadioOrCheckEntityUPtr_t>;
-
-    using TitleValidPair_t = std::pair<std::string, bool>;
-    using TitleValidPairVec_t = std::vector<TitleValidPair_t>;
 
     // Responsible for implementing either a set of radio buttons or check boxes.
     class RadioOrCheckSet : public Entity
@@ -42,13 +43,7 @@ namespace gui
         struct EventPacket
         {
             EventPacket(
-                const misc::NotNull<RadioOrCheckSet *> SET_PTR, const std::size_t CHANGED_INDEX)
-                : set_ptr(SET_PTR)
-                , has_changed_index(CHANGED_INDEX < SET_PTR->Size())
-                , changed_index(
-                      ((CHANGED_INDEX < SET_PTR->Size()) ? CHANGED_INDEX : SET_PTR->Size()))
-                , is_changed_index_selected(SET_PTR->IsSelected(CHANGED_INDEX))
-            {}
+                const misc::NotNull<RadioOrCheckSet *> SET_PTR, const std::size_t CHANGED_INDEX);
 
             EventPacket(const EventPacket &) = default;
             EventPacket(EventPacket &&) = default;
@@ -63,15 +58,11 @@ namespace gui
 
         using Callback_t = misc::Callback<EventPacket>;
 
-        RadioOrCheckSet(const RadioOrCheckSet &) = delete;
-        RadioOrCheckSet(RadioOrCheckSet &&) = delete;
-        RadioOrCheckSet & operator=(const RadioOrCheckSet &) = delete;
-        RadioOrCheckSet & operator=(RadioOrCheckSet &&) = delete;
-
         RadioOrCheckSet(
             const std::string & NAME,
-            const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
+            const Callback_t::IHandlerPtr_t & CALLBACK_HANDLER_PTR,
             RadioOrCheckEntityUVec_t,
+            const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
             const float TOP_AND_BOTTOM_SPACER = 0.0f,
             const float LEFT_AND_RIGHT_SPACER = 0.0f,
             const float BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER = 0.0f,
@@ -79,17 +70,28 @@ namespace gui
 
         RadioOrCheckSet(
             const std::string & NAME,
-            const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
+            const Callback_t::IHandlerPtr_t & CALLBACK_HANDLER_PTR,
             const bool IS_RADIO_BUTTON, // if not then check-box is assumed
             const Brightness::Enum BRIGHTNESS,
             const MouseTextInfo & MOUSE_TEXT_INFO,
-            const TitleValidPairVec_t & TITLE_VALID_PAIR_VEC,
+            const std::vector<std::string> & TITLE_VEC,
+            const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
             const float TOP_AND_BOTTOM_SPACER = 0.0f,
             const float LEFT_AND_RIGHT_SPACER = 0.0f,
             const float BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER = 0.0f,
             const float BETWEEN_ELEMENTS_VERT_SPACER = 0.0f);
 
         virtual ~RadioOrCheckSet();
+
+        RadioOrCheckSet(const RadioOrCheckSet &) = delete;
+        RadioOrCheckSet(RadioOrCheckSet &&) = delete;
+        RadioOrCheckSet & operator=(const RadioOrCheckSet &) = delete;
+        RadioOrCheckSet & operator=(RadioOrCheckSet &&) = delete;
+
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
+
+        void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
 
         // no-opt, no sense in setting the mouse state of a set of entities
         bool SetMouseState(const MouseState::Enum) override { return false; }
@@ -111,29 +113,37 @@ namespace gui
 
         const SizetOpt_t FirstSelectedIndex() const;
 
-        // returns true if entity at INDEX is selected, returns false not only if not selected
-        // but also if INDEX is out of range
+        // returns false if not selected or if INDEX is out of range
         bool IsSelected(const std::size_t INDEX) const;
 
-        // returns true if any entities are selected, always returns true if this is a radio
-        // button set
+        // returns true if any are selected or if this is a radio button set
         bool AreAnySelected() const { return !!FirstSelectedIndex(); }
 
-        // returns true if entity at INDEX was changed from un-selected to selected
+        // returns false if already selected or INDEX is out of range
         bool SelectIndex(const std::size_t INDEX);
 
-        // returns true if the entity at INDEX was changed from selected to un-selected, returns
-        // false if INDEX is out of range or if INDEX was a selected radio button
+        // returns false if INDEX is out of range or if INDEX was a selected radio button
         bool UnSelectIndex(const std::size_t INDEX);
 
-        // returns true if the selection was changed at INDEX, returns false if INDEX is out of
-        // range or if INDEX was a selected radio button
+        // returns false if INDEX is out of range or is  a selected radio button
         bool ChangeIndex(const std::size_t INDEX);
+
+        // returns true if the check-box or radio-button is invalid/grayed-out/disabled
+        bool Invalid(const std::size_t INDEX) const;
+
+        void Invalid(const std::size_t INDEX, const bool IS_INVALID);
 
     protected:
         void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
 
     private:
+        void Setup(
+            const BoxEntityInfo & BOX_INFO,
+            const float TOP_AND_BOTTOM_SPACER,
+            const float LEFT_AND_RIGHT_SPACER,
+            const float BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER,
+            const float BETWEEN_ELEMENTS_VERT_SPACER);
+
         void PositionElements(
             const float TOP_AND_BOTTOM_SPACER,
             const float LEFT_AND_RIGHT_SPACER,
@@ -145,7 +155,8 @@ namespace gui
         void TriggerCallbackForChangedIndex(const std::size_t INDEX);
 
         RadioOrCheckEntityUVec_t entityUVec_;
-        Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
+        Callback_t::IHandlerPtr_t callbackHandlerPtr_;
+        BoxEntityUPtr_t boxUPtr_;
     };
 
     using RadioOrCheckSetPtr_t = misc::NotNull<RadioOrCheckSet *>;

@@ -11,7 +11,6 @@
 //
 #include "character-stage.hpp"
 
-#include "creature/body-type.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature-factory.hpp"
 #include "creature/creature.hpp"
@@ -31,8 +30,9 @@
 #include "gui/font-manager.hpp"
 #include "gui/gui-images.hpp"
 #include "gui/ouroboros.hpp"
+#include "gui/radio-or-check-entity.hpp"
+#include "gui/radio-or-check-set.hpp"
 #include "gui/sound-manager.hpp"
-#include "gui/text-info.hpp"
 #include "item/inventory.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
@@ -116,11 +116,11 @@ namespace stage
               stage::Stage::Next,
               gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this)))
         , statSetBase_()
-        //, raceRadioButtonUPtr_()
+        , raceRadioButtonUPtr_()
         , racetDescTextRegionUPtr_()
-        //, roleRadioButtonUPtr_()
+        , roleRadioButtonUPtr_()
         , roletDescTextRegionUPtr_()
-        //, sexRadioButtonUPtr_()
+        , sexRadioButtonUPtr_()
         , nameTextEntryBoxUPtr_()
         , attrDescTextRegionUPtr_()
         , sbInsTextRegionUPtr_()
@@ -137,24 +137,25 @@ namespace stage
 
     CharacterStage::~CharacterStage() { StageBase::ClearAllEntities(); }
 
-    /*bool CharacterStage::HandleCallback(
-        const gui::RadioButton::Callback_t::PacketPtr_t  RADIOBUTTON_WRAPPER)
+    const std::string CharacterStage::HandleCallback(
+        const gui::RadioOrCheckSet::Callback_t::Packet_t &, const std::string &)
     {
-        // was change to race
-        if (raceRadioButtonUPtr_.get() == RADIOBUTTON_WRAPPER.PTR_)
-        {
-            return RaceChange(
-                static_cast<creature::race::Enum>(RADIOBUTTON_WRAPPER.PTR_->GetSelectedNumber()));
-        }
+        // TODO
+        return "";
 
-        // was change to role
-        if (roleRadioButtonUPtr_.get() == RADIOBUTTON_WRAPPER.PTR_)
-        {
-            return RoleChange();
-        }
-
-        return true;
-    }*/
+        //// was change to race
+        // if (raceRadioButtonUPtr_.get() == RADIOBUTTON_WRAPPER.PTR_)
+        //{
+        //    return RaceChange(
+        //        static_cast<creature::race::Enum>(RADIOBUTTON_WRAPPER.PTR_->GetSelectedNumber()));
+        //}
+        //
+        //// was change to role
+        // if (roleRadioButtonUPtr_.get() == RADIOBUTTON_WRAPPER.PTR_)
+        //{
+        //    return RoleChange();
+        //}
+    }
 
     const std::string CharacterStage::HandleCallback(
         const misc::PopupCallback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
@@ -270,6 +271,20 @@ namespace stage
         }
 
         return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "popup callback NOT HANDLED");
+    }
+
+    const std::string CharacterStage::HandleCallback(
+        const gui::SliderBar::Callback_t::Packet_t &, const std::string &)
+    {
+        // TODO
+        return "";
+    }
+
+    const std::string CharacterStage::HandleCallback(
+        const gui::TextEntryBox::Callback_t::Packet_t &, const std::string &)
+    {
+        // TODO
+        return "";
     }
 
     void CharacterStage::Setup()
@@ -389,6 +404,9 @@ namespace stage
         target.draw(bottomSymbol_, states);
         StageBase::draw(target, states);
         target.draw(statBox_, states);
+        target.draw(*sexRadioButtonUPtr_, states);
+        target.draw(*raceRadioButtonUPtr_, states);
+        target.draw(*roleRadioButtonUPtr_, states);
     }
 
     bool CharacterStage::KeyPress(const sf::Event::KeyEvent & KEY_EVENT)
@@ -505,56 +523,29 @@ namespace stage
 
     void CharacterStage::Setup_RaceRadioButtons()
     {
-        /*
-        gui::TextInfo raceRadioButtonSetTextInfo(
-            "",
-            gui::GuiFont::System,
-            RADIO_BUTTON_TEXT_SIZE_,
-            LIGHT_TEXT_COLOR_,
-            gui::Justified::Left);
-
         std::vector<std::string> raceNameVec;
         for (EnumUnderlying_t i(0); i < creature::race::Count_PlayerRaces; ++i)
         {
             raceNameVec.emplace_back(creature::race::Name(static_cast<creature::race::Enum>(i)));
         }
 
-        const sf::FloatRect REGION(
-            sfutil::MapByRes(40.0f, 1525.0f), sfutil::Bottom(stageTitle_.Region()), 0.0f,
-        0.0f);
-
-        gui::BoxEntityInfo radioButtonBoxInfo;
-        radioButtonBoxInfo.SetupImage(woodCachedTexture_);
-        radioButtonBoxInfo.SetupBorder(true);
-        radioButtonBoxInfo.focus_colors = gui::Defaults::GuiFocusColors;
-        raceRadioButtonUPtr_ = std::make_unique<gui::RadioButtonSet>(
-            gui::RadioButtonSetCallbackHandlerPtr_t(this),
+        raceRadioButtonUPtr_ = std::make_unique<gui::RadioOrCheckSet>(
             "RaceSelection",
-            REGION.left,
-            REGION.top,
-            raceRadioButtonSetTextInfo,
-            raceNameVec,
-            0,
+            gui::RadioOrCheckSet::Callback_t::IHandlerPtr_t(this),
+            true,
             gui::Brightness::Bright,
-            std::vector<std::size_t>(),
-            radioButtonBoxInfo,
-            gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
-            0.0f);
+            gui::MouseTextInfo("", gui::GuiFont::System, RADIO_BUTTON_TEXT_SIZE_),
+            raceNameVec,
+            MakeGuiBoxEntityInfo());
+
+        raceRadioButtonUPtr_->SetEntityPos(
+            sfutil::ScreenRatioToPixelsHoriz(0.1f), sfutil::Bottom(stageTitle_.Region()));
 
         EntityAdd(raceRadioButtonUPtr_);
-        */
     }
 
     void CharacterStage::Setup_RoleRadioButtons()
     {
-        /*
-        gui::TextInfo roleRadioButtonSetTextInfo(
-            "",
-            gui::GuiFont::System,
-            RADIO_BUTTON_TEXT_SIZE_,
-            LIGHT_TEXT_COLOR_,
-            gui::Justified::Left);
-
         std::vector<std::string> roleNameVec;
         for (std::size_t i(0); i < creature::role::PlayerRoleCount; ++i)
         {
@@ -565,33 +556,21 @@ namespace stage
             }
         }
 
-        const auto POS_TOP { raceRadioButtonUPtr_->GetEntityRegion().top
-                             + raceRadioButtonUPtr_->GetEntityRegion().height
-                             + sfutil::MapByRes(35.0f, 75.0f) };
-
-        const sf::FloatRect REGION(sfutil::MapByRes(15.0f, 1300.0f), POS_TOP, 0.0f, 0.0f);
-
-        gui::BoxEntityInfo radioButtonBoxInfo;
-        radioButtonBoxInfo.SetupImage(woodCachedTexture_);
-        radioButtonBoxInfo.SetupBorder(true);
-        radioButtonBoxInfo.focus_colors = gui::Defaults::GuiFocusColors;
-
-        roleRadioButtonUPtr_ = std::make_unique<gui::RadioButtonSet>(
-            gui::RadioButtonSetCallbackHandlerPtr_t(this),
+        roleRadioButtonUPtr_ = std::make_unique<gui::RadioOrCheckSet>(
             "RoleSelection",
-            REGION.left,
-            REGION.top,
-            roleRadioButtonSetTextInfo,
-            roleNameVec,
-            0,
+            gui::RadioOrCheckSet::Callback_t::IHandlerPtr_t(this),
+            true,
             gui::Brightness::Bright,
-            std::vector<std::size_t>(),
-            radioButtonBoxInfo,
-            gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
-            -5.0f);
+            gui::MouseTextInfo("", gui::GuiFont::System, RADIO_BUTTON_TEXT_SIZE_),
+            roleNameVec,
+            MakeGuiBoxEntityInfo());
+
+        roleRadioButtonUPtr_->SetEntityPos(
+            sfutil::ScreenRatioToPixelsHoriz(0.1f),
+            (sfutil::Bottom(raceRadioButtonUPtr_->GetEntityRegion())
+             + sfutil::ScreenRatioToPixelsVert(0.1f)));
 
         EntityAdd(roleRadioButtonUPtr_);
-        */
     }
 
     void CharacterStage::Setup_RaceDescriptionBox()
@@ -705,11 +684,6 @@ namespace stage
     {
         creature::NameInfo creatureNameInfo;
 
-        gui::BoxEntityInfo textEntryBoxInfo;
-        textEntryBoxInfo.SetupImage(woodCachedTexture_);
-        textEntryBoxInfo.SetupBorder(true);
-        textEntryBoxInfo.focus_colors = sfutil::color::GuiFocusColors;
-
         gui::TextInfo nameEntryTextInfo(creatureNameInfo.MakeTextInfo());
         nameEntryTextInfo.text = "";
         nameEntryTextInfo.color = DESC_TEXT_COLOR_;
@@ -727,54 +701,28 @@ namespace stage
             REGION,
             nameEntryTextInfo,
             LIGHT_TEXT_COLOR_,
-            textEntryBoxInfo);
+            MakeGuiBoxEntityInfo());
 
         EntityAdd(nameTextEntryBoxUPtr_);
     }
 
     void CharacterStage::Setup_SexRadioButtons()
     {
-        /*
-        gui::TextInfo sexRadioButtonSetTextInfo(
-            "",
-            gui::GuiFont::System,
-            RADIO_BUTTON_TEXT_SIZE_,
-            LIGHT_TEXT_COLOR_,
-            gui::Justified::Left);
-
-        std::vector<std::string> sexNameVec;
-        sexNameVec.emplace_back("Male");
-        sexNameVec.emplace_back("Female");
-
-        const sf::FloatRect TEMP_EMPTY_REGION(0.0f, 0.0f, 0.0f, 0.0f);
-
-        gui::BoxEntityInfo radioButtonBoxInfo;
-        radioButtonBoxInfo.SetupImage(woodCachedTexture_);
-        radioButtonBoxInfo.SetupBorder(true);
-        radioButtonBoxInfo.focus_colors = gui::Defaults::GuiFocusColors;
-
-        sexRadioButtonUPtr_ = std::make_unique<gui::RadioButtonSet>(
-            gui::RadioButtonSetCallbackHandlerPtr_t(this),
+        sexRadioButtonUPtr_ = std::make_unique<gui::RadioOrCheckSet>(
             "SexSelection",
-            0.0f,
-            0.0f,
-            sexRadioButtonSetTextInfo,
-            sexNameVec,
-            0,
+            gui::RadioOrCheckSet::Callback_t::IHandlerPtr_t(this),
+            true,
             gui::Brightness::Bright,
-            std::vector<std::size_t>(),
-            radioButtonBoxInfo,
-            5.0f,
-            0.0f);
+            gui::MouseTextInfo("", gui::GuiFont::System, RADIO_BUTTON_TEXT_SIZE_),
+            std::vector<std::string> { "Male", "Female" },
+            MakeGuiBoxEntityInfo());
 
         sexRadioButtonUPtr_->SetEntityPos(
-            (StageRegion().width * 0.5f) - (sexRadioButtonUPtr_->GetEntityRegion().width * 0.5f),
-            nameTextEntryBoxUPtr_->GetEntityPos().y
-                + nameTextEntryBoxUPtr_->GetEntityRegion().height
-                + sfutil::MapByRes(25.0f, 70.0f));
+            sfutil::DisplayCenterHoriz(sexRadioButtonUPtr_->GetEntityRegion().width),
+            (sfutil::Bottom(nameTextEntryBoxUPtr_->GetEntityRegion())
+             + sfutil::ScreenRatioToPixelsVert(0.05f)));
 
         EntityAdd(sexRadioButtonUPtr_);
-        */
     }
 
     void CharacterStage::Setup_SpacebarInstructionText()
@@ -2542,6 +2490,15 @@ namespace stage
         saveButtonUPtr_->SetMouseState(NEW_MOUSE_STATE);
         helpButtonUPtr_->SetMouseState(NEW_MOUSE_STATE);
         nextButtonUPtr_->SetMouseState(NEW_MOUSE_STATE);
+    }
+
+    const gui::BoxEntityInfo CharacterStage::MakeGuiBoxEntityInfo() const
+    {
+        gui::BoxEntityInfo boxInfo;
+        boxInfo.SetupImage(woodCachedTexture_);
+        boxInfo.SetupBorder(true);
+        boxInfo.focus_colors = sfutil::color::GuiFocusColors;
+        return boxInfo;
     }
 
 } // namespace stage

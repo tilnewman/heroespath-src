@@ -41,11 +41,6 @@ namespace gui
         using CacheMap_t = misc::VectorMap<TextInfo, RenderTextureUPtr_t>;
 
     public:
-        TextEntity(const TextEntity &) = delete;
-        TextEntity(TextEntity &&) = delete;
-        TextEntity & operator=(const TextEntity &) = delete;
-        TextEntity & operator=(TextEntity &&) = delete;
-
         explicit TextEntity(
             const std::string & NAME,
             const bool WILL_CACHE = true,
@@ -59,6 +54,11 @@ namespace gui
             const float TEXT_WIDTH_LIMIT = 0.0f,
             const bool WILL_CACHE = true,
             const bool WILL_PLAY_MOUSEOVER_TICK_SFX = false);
+
+        TextEntity(const TextEntity &) = delete;
+        TextEntity(TextEntity &&) = delete;
+        TextEntity & operator=(const TextEntity &) = delete;
+        TextEntity & operator=(TextEntity &&) = delete;
 
         virtual ~TextEntity();
 

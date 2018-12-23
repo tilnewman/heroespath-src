@@ -9,103 +9,140 @@
 //
 #include "radio-or-check-set.hpp"
 
+#include "gui/box-entity.hpp"
 #include "gui/image-entity.hpp"
 #include "gui/radio-or-check-entity.hpp"
 #include "gui/text-entity.hpp"
+#include "sfutil/primitives.hpp"
 #include "sfutil/size-and-scale.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace heroespath
 {
 namespace gui
 {
 
+    RadioOrCheckSet::EventPacket::EventPacket(
+        const misc::NotNull<RadioOrCheckSet *> SET_PTR, const std::size_t CHANGED_INDEX)
+        : set_ptr(SET_PTR)
+        , has_changed_index(CHANGED_INDEX < SET_PTR->Size())
+        , changed_index(((CHANGED_INDEX < SET_PTR->Size()) ? CHANGED_INDEX : SET_PTR->Size()))
+        , is_changed_index_selected(SET_PTR->IsSelected(CHANGED_INDEX))
+    {}
+
     RadioOrCheckSet::RadioOrCheckSet(
         const std::string & NAME,
-        const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
+        const Callback_t::IHandlerPtr_t & CALLBACK_HANDLER_PTR,
         RadioOrCheckEntityUVec_t ENTITY_UVEC,
+        const BoxEntityInfo & BOX_INFO,
         const float TOP_AND_BOTTOM_SPACER,
         const float LEFT_AND_RIGHT_SPACER,
         const float BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER,
         const float BETWEEN_ELEMENTS_VERT_SPACER)
         : Entity(NAME + "_RadioOrCheckSet_", 0.0f, 0.0f)
         , entityUVec_(std::move(ENTITY_UVEC))
-        , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
+        , callbackHandlerPtr_(CALLBACK_HANDLER_PTR)
+        , boxUPtr_()
     {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (entityUVec_.empty() == false),
-            "RadioOrCheckSet::RadioOrCheckSet() was given an ENTITY_UVEC that was empty.");
-
-        PositionElements(
+        Setup(
+            BOX_INFO,
             TOP_AND_BOTTOM_SPACER,
             LEFT_AND_RIGHT_SPACER,
             BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER,
             BETWEEN_ELEMENTS_VERT_SPACER);
-
-        if (entityUVec_.front()->IsRadioButton())
-        {
-            entityUVec_.front()->Select(true);
-        }
     }
 
     RadioOrCheckSet::RadioOrCheckSet(
         const std::string & NAME,
-        const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
+        const Callback_t::IHandlerPtr_t & CALLBACK_HANDLER_PTR,
         const bool IS_RADIO_BUTTON,
         const Brightness::Enum BRIGHTNESS,
         const MouseTextInfo & MOUSE_TEXT_INFO,
-        const TitleValidPairVec_t & TITLE_VALID_PAIR_VEC,
+        const std::vector<std::string> & TITLE_VEC,
+        const BoxEntityInfo & BOX_INFO,
         const float TOP_AND_BOTTOM_SPACER,
         const float LEFT_AND_RIGHT_SPACER,
         const float BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER,
         const float BETWEEN_ELEMENTS_VERT_SPACER)
         : Entity(NAME + "_RadioOrCheckSet_", 0.0f, 0.0f)
         , entityUVec_()
-        , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
+        , callbackHandlerPtr_(CALLBACK_HANDLER_PTR)
+        , boxUPtr_()
     {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (TITLE_VALID_PAIR_VEC.empty() == false),
-            "RadioOrCheckSet::RadioOrCheckSet() was given an TITLE_VALID_PAIR_VEC that was "
-            "empty.");
-
-        for (const auto & TITLE_VALID_PAIR : TITLE_VALID_PAIR_VEC)
+        for (const auto & TITLE_STR : TITLE_VEC)
         {
-            MouseTextInfo mti(MOUSE_TEXT_INFO);
-            mti.up.text = TITLE_VALID_PAIR.first;
-            mti.down.text = TITLE_VALID_PAIR.first;
-            mti.over.text = TITLE_VALID_PAIR.first;
-            mti.disabled.text = TITLE_VALID_PAIR.first;
+            auto mouseTextInfo(MOUSE_TEXT_INFO);
+            mouseTextInfo.up.text = TITLE_STR;
+            mouseTextInfo.down.text = TITLE_STR;
+            mouseTextInfo.over.text = TITLE_STR;
+            mouseTextInfo.disabled.text = TITLE_STR;
 
             entityUVec_.emplace_back(std::make_unique<gui::RadioOrCheckEntity>(
                 "RadioOrCheckEntity_For_" + GetEntityName(),
-                TITLE_VALID_PAIR.second,
+                true,
                 IS_RADIO_BUTTON,
                 BRIGHTNESS,
-                mti));
+                mouseTextInfo));
         }
 
-        PositionElements(
+        Setup(
+            BOX_INFO,
             TOP_AND_BOTTOM_SPACER,
             LEFT_AND_RIGHT_SPACER,
             BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER,
             BETWEEN_ELEMENTS_VERT_SPACER);
-
-        if (IS_RADIO_BUTTON)
-        {
-            entityUVec_.front()->Select(true);
-        }
     }
 
     RadioOrCheckSet::~RadioOrCheckSet() = default;
 
+    void RadioOrCheckSet::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        if (boxUPtr_)
+        {
+            target.draw(*boxUPtr_, states);
+        }
+
+        for (auto & entityUPtr : entityUVec_)
+        {
+            target.draw(*entityUPtr, states);
+        }
+    }
+
+    void RadioOrCheckSet::SetEntityPos(const float POS_LEFT, const float POS_TOP)
+    {
+        MoveEntityPos((POS_LEFT - entityRegion_.left), (POS_TOP - entityRegion_.top));
+    }
+
+    void RadioOrCheckSet::MoveEntityPos(const float HORIZ, const float VERT)
+    {
+        Entity::MoveEntityPos(HORIZ, VERT);
+
+        if (boxUPtr_)
+        {
+            boxUPtr_->MoveEntityPos(HORIZ, VERT);
+        }
+
+        for (auto & entityUPtr : entityUVec_)
+        {
+            entityUPtr->MoveEntityPos(HORIZ, VERT);
+        }
+    }
+
     bool RadioOrCheckSet::MouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
+        if (entityUVec_.empty())
+        {
+            return false;
+        }
+
         const auto ENTITY_COUNT { entityUVec_.size() };
 
         std::size_t indexOfEntityThatChangedState { ENTITY_COUNT };
 
         for (std::size_t i(0); i < ENTITY_COUNT; ++i)
         {
-            auto & entityUPtr { entityUVec_[i] };
+            auto & entityUPtr { entityUVec_.at(i) };
 
             if (entityUPtr->MouseUp(MOUSE_POS_V))
             {
@@ -113,18 +150,16 @@ namespace gui
             }
         }
 
-        if ((indexOfEntityThatChangedState < ENTITY_COUNT)
-            && entityUVec_[indexOfEntityThatChangedState]->IsRadioButton()
-            && entityUVec_[indexOfEntityThatChangedState]->IsSelected())
-        {
-            UnSelectAllExcept(indexOfEntityThatChangedState);
-            TriggerCallbackForChangedIndex(indexOfEntityThatChangedState);
-            return true;
-        }
-        else
+        if (indexOfEntityThatChangedState >= ENTITY_COUNT
+            || !entityUVec_.at(indexOfEntityThatChangedState)->IsRadioButton()
+            || !entityUVec_.at(indexOfEntityThatChangedState)->IsSelected())
         {
             return false;
         }
+
+        UnSelectAllExcept(indexOfEntityThatChangedState);
+        TriggerCallbackForChangedIndex(indexOfEntityThatChangedState);
+        return true;
     }
 
     bool RadioOrCheckSet::MouseDown(const sf::Vector2f & MOUSE_POS_V)
@@ -162,7 +197,7 @@ namespace gui
         const auto ENTITY_COUNT { entityUVec_.size() };
         for (std::size_t i(0); i < ENTITY_COUNT; ++i)
         {
-            if (entityUVec_[i]->IsSelected())
+            if (entityUVec_.at(i)->IsSelected())
             {
                 selectedIndexes.emplace_back(i);
             }
@@ -176,7 +211,7 @@ namespace gui
         const auto ENTITY_COUNT { entityUVec_.size() };
         for (std::size_t i(0); i < ENTITY_COUNT; ++i)
         {
-            if (entityUVec_[i]->IsSelected())
+            if (entityUVec_.at(i)->IsSelected())
             {
                 return i;
             }
@@ -187,16 +222,16 @@ namespace gui
 
     bool RadioOrCheckSet::IsSelected(const std::size_t INDEX) const
     {
-        return ((INDEX < entityUVec_.size()) && entityUVec_[INDEX]->IsSelected());
+        return ((INDEX < entityUVec_.size()) && entityUVec_.at(INDEX)->IsSelected());
     }
 
     bool RadioOrCheckSet::SelectIndex(const std::size_t INDEX)
     {
-        if ((INDEX < entityUVec_.size()) && !entityUVec_[INDEX]->IsSelected())
+        if ((INDEX < entityUVec_.size()) && !entityUVec_.at(INDEX)->IsSelected())
         {
-            entityUVec_[INDEX]->Select(true);
+            entityUVec_.at(INDEX)->Select(true);
 
-            if (entityUVec_[INDEX]->IsRadioButton())
+            if (entityUVec_.at(INDEX)->IsRadioButton())
             {
                 UnSelectAllExcept(INDEX);
             }
@@ -212,10 +247,10 @@ namespace gui
 
     bool RadioOrCheckSet::UnSelectIndex(const std::size_t INDEX)
     {
-        if ((INDEX < entityUVec_.size()) && entityUVec_[INDEX]->IsSelected()
-            && !entityUVec_[INDEX]->IsRadioButton())
+        if ((INDEX < entityUVec_.size()) && entityUVec_.at(INDEX)->IsSelected()
+            && !entityUVec_.at(INDEX)->IsRadioButton())
         {
-            entityUVec_[INDEX]->Select(false);
+            entityUVec_.at(INDEX)->Select(false);
             TriggerCallbackForChangedIndex(INDEX);
             return true;
         }
@@ -229,7 +264,7 @@ namespace gui
     {
         if (INDEX < entityUVec_.size())
         {
-            if (entityUVec_[INDEX]->IsSelected())
+            if (entityUVec_.at(INDEX)->IsSelected())
             {
                 return UnSelectIndex(INDEX);
             }
@@ -242,16 +277,64 @@ namespace gui
         return false;
     }
 
+    bool RadioOrCheckSet::Invalid(const std::size_t INDEX) const
+    {
+        return ((INDEX < entityUVec_.size()) && entityUVec_.at(INDEX)->IsInvalid());
+    }
+
+    void RadioOrCheckSet::Invalid(const std::size_t INDEX, const bool IS_INVALID)
+    {
+        if (INDEX < entityUVec_.size())
+        {
+            entityUVec_.at(INDEX)->Invalid(IS_INVALID);
+        }
+    }
+
     void RadioOrCheckSet::TriggerCallbackForChangedIndex(const std::size_t INDEX)
     {
-        if (callbackHandlerPtrOpt_)
+        if (entityUVec_.empty())
         {
-            const Callback_t::Packet_t EVENT_PACKET(misc::MakeNotNull(this), INDEX);
+            return;
+        }
 
-            std::ostringstream ss;
-            ss << "RadioOrCheckSet(" << GetEntityName() << "\", index-changed=" << INDEX << ")";
+        const Callback_t::Packet_t EVENT_PACKET(misc::MakeNotNull(this), INDEX);
 
-            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), EVENT_PACKET, ss.str());
+        std::ostringstream ss;
+        ss << "RadioOrCheckSet(" << GetEntityName() << "\", index-changed=" << INDEX << ")";
+
+        Callback_t::HandleAndLog(*callbackHandlerPtr_, EVENT_PACKET, ss.str());
+    }
+
+    void RadioOrCheckSet::Setup(
+        const BoxEntityInfo & BOX_INFO,
+        const float TOP_AND_BOTTOM_SPACER,
+        const float LEFT_AND_RIGHT_SPACER,
+        const float BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER,
+        const float BETWEEN_ELEMENTS_VERT_SPACER)
+    {
+        if (entityUVec_.empty())
+        {
+            M_HP_LOG_WRN(
+                "RadioOrCheckSet constructed with an empty ENTITY_UVEC or an empty TITLE_VEC.");
+
+            return;
+        }
+
+        PositionElements(
+            TOP_AND_BOTTOM_SPACER,
+            LEFT_AND_RIGHT_SPACER,
+            BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER,
+            BETWEEN_ELEMENTS_VERT_SPACER);
+
+        if (BOX_INFO != BoxEntityInfo())
+        {
+            boxUPtr_
+                = std::make_unique<BoxEntity>(GetEntityName() + "'s_", GetEntityRegion(), BOX_INFO);
+        }
+
+        if (entityUVec_.front()->IsRadioButton())
+        {
+            entityUVec_.front()->Select(true);
         }
     }
 
@@ -279,6 +362,7 @@ namespace gui
 
             const auto TEXT_POS_LEFT { IMAGE_POS_LEFT + IMAGE_SIZE_V.x
                                        + BETWEEN_IMAGE_AND_TEXT_HORIZ_SPACER };
+
             entityUPtr->TextEntity()->SetEntityPos(TEXT_POS_LEFT, TEXT_POS_TOP);
 
             const auto POS_RIGHT { TEXT_POS_LEFT + TEXT_SIZE_V.x + LEFT_AND_RIGHT_SPACER };
@@ -303,9 +387,9 @@ namespace gui
         const auto ENTITY_COUNT { entityUVec_.size() };
         for (std::size_t i(0); i < ENTITY_COUNT; ++i)
         {
-            if ((i != INDEX) && (entityUVec_[i]->IsSelected()))
+            if ((i != INDEX) && (entityUVec_.at(i)->IsSelected()))
             {
-                entityUVec_[i]->Select(false);
+                entityUVec_.at(i)->Select(false);
             }
         }
     }

@@ -58,7 +58,7 @@ namespace stage
     // manages the CharacterCreation process
     class CharacterStage
         : public stage::StageBase
-        //, public gui::RadioButtonSet::Callback_t::IHandler_t
+        , public gui::RadioOrCheckSet::Callback_t::IHandler_t
         , public misc::PopupCallback_t::IHandler_t
         , public gui::SliderBar::Callback_t::IHandler_t
         , public gui::ImageTextEntity::Callback_t::IHandler_t
@@ -73,30 +73,22 @@ namespace stage
         CharacterStage & operator=(const CharacterStage &) = delete;
         CharacterStage & operator=(CharacterStage &&) = delete;
 
-        // required by callback handler
-
-        // bool HandleCallback(const gui::RadioButton::Callback_t::PacketPtr_t )
-        // override;
+        const std::string HandleCallback(
+            const gui::RadioOrCheckSet::Callback_t::Packet_t &, const std::string &) override;
 
         const std::string HandleCallback(
             const misc::PopupCallback_t::Packet_t &,
             const std::string & PACKET_DESCRIPTION) override;
 
         const std::string HandleCallback(
-            const gui::SliderBar::Callback_t::Packet_t &, const std::string &) override
-        {
-            return "";
-        }
-
-        const std::string HandleCallback(
             const gui::ImageTextEntity::Callback_t::Packet_t &,
             const std::string & PACKET_DESCRIPTION) override;
 
         const std::string HandleCallback(
-            const gui::TextEntryBox::Callback_t::Packet_t &, const std::string &) override
-        {
-            return "";
-        }
+            const gui::SliderBar::Callback_t::Packet_t &, const std::string &) override;
+
+        const std::string HandleCallback(
+            const gui::TextEntryBox::Callback_t::Packet_t &, const std::string &) override;
 
         void Setup() override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
@@ -177,6 +169,8 @@ namespace stage
 
         void SetMenuButtonsDisabledWhileStatsAreAnimating(const bool WILL_DISABLE);
 
+        const gui::BoxEntityInfo MakeGuiBoxEntityInfo() const;
+
     private:
         // const creature::Trait_t STAT_INVALID_;
         // const creature::Trait_t STAT_INITIAL_MAX_;
@@ -196,40 +190,40 @@ namespace stage
 
         const float SMOKE_ANIM_SPEED_MIN_;
         const float SMOKE_ANIM_SPEED_MAX_;
-        //
+
         const unsigned int DESC_TEXT_FONT_SIZE_;
         const unsigned int RADIO_BUTTON_TEXT_SIZE_;
-        //
+
         StatBox statBox_;
         gui::OuroborosUPtr_t ouroborosUPtr_;
         gui::StageTitle stageTitle_;
-        //
+
         gui::SliderDrift<float> smokeAnimSliderDriftX_;
         gui::SliderDrift<float> smokeAnimSliderDriftY_;
         gui::MainMenuBackground background_;
         gui::AnimationUPtr_t smokeAnimUPtr_;
-        //
+
         gui::MainMenuButtonUPtr_t backButtonUPtr_;
         gui::MainMenuButtonUPtr_t saveButtonUPtr_;
         gui::MainMenuButtonUPtr_t helpButtonUPtr_;
         gui::MainMenuButtonUPtr_t nextButtonUPtr_;
-        //
+
         creature::StatSet statSetBase_;
-        //
-        // gui::RadioButtonSetUPtr_t raceRadioButtonUPtr_;
+
+        gui::RadioOrCheckSetUPtr_t raceRadioButtonUPtr_;
         gui::TextRegionUPtr_t racetDescTextRegionUPtr_;
-        // gui::RadioButtonSetUPtr_t roleRadioButtonUPtr_;
+        gui::RadioOrCheckSetUPtr_t roleRadioButtonUPtr_;
         gui::TextRegionUPtr_t roletDescTextRegionUPtr_;
-        // gui::RadioButtonSetUPtr_t sexRadioButtonUPtr_;
+        gui::RadioOrCheckSetUPtr_t sexRadioButtonUPtr_;
         gui::TextEntryBoxUPtr_t nameTextEntryBoxUPtr_;
-        //
+
         gui::TextRegionUPtr_t attrDescTextRegionUPtr_;
-        //
+
         gui::TextRegionUPtr_t sbInsTextRegionUPtr_;
         gui::SliderOscillator<sf::Uint8, float> sbInsTextSlider_;
         gui::TextRegionUPtr_t nInsTextRegionUPtr_;
         gui::SliderOscillator<sf::Uint8, float> nInsTextSlider_;
-        //
+
         gui::BottomSymbol bottomSymbol_;
         std::vector<std::string> characterImageFilenamesVec_;
         gui::CachedTexture woodCachedTexture_;

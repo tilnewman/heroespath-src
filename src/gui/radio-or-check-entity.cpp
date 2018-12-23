@@ -60,16 +60,18 @@ namespace gui
 
         const sf::Vector2f IMAGE_POS_V(IMAGE_POS_LEFT, IMAGE_POS_TOP);
 
+        const sf::Vector2f DEFAULT_SCALE(1.0f, 1.0f);
+
         const EntityImageInfo IMAGE_INFO_UP(
-            GUI_ELEMENTS_CACHED_TEXTURE, IMAGE_POS_V, sf::Vector2f(1.0f, 1.0f), TEXTURE_RECT_UP);
+            GUI_ELEMENTS_CACHED_TEXTURE, IMAGE_POS_V, DEFAULT_SCALE, TEXTURE_RECT_UP);
 
         const EntityImageInfo IMAGE_INFO_DOWN(
-            GUI_ELEMENTS_CACHED_TEXTURE, IMAGE_POS_V, sf::Vector2f(1.0f, 1.0f), TEXTURE_RECT_DOWN);
+            GUI_ELEMENTS_CACHED_TEXTURE, IMAGE_POS_V, DEFAULT_SCALE, TEXTURE_RECT_DOWN);
 
         const EntityImageInfo IMAGE_INFO_DISABLED(
             GUI_ELEMENTS_CACHED_TEXTURE,
             IMAGE_POS_V,
-            sf::Vector2f(1.0f, 1.0f),
+            DEFAULT_SCALE,
             TEXTURE_RECT_UP,
             MOUSE_TEXT_INFO.disabled.color);
 

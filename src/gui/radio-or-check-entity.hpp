@@ -34,11 +34,6 @@ namespace gui
     class RadioOrCheckEntity : public ImageTextEntity
     {
     public:
-        RadioOrCheckEntity(const RadioOrCheckEntity &) = delete;
-        RadioOrCheckEntity(RadioOrCheckEntity &&) = delete;
-        RadioOrCheckEntity & operator=(const RadioOrCheckEntity &) = delete;
-        RadioOrCheckEntity & operator=(RadioOrCheckEntity &&) = delete;
-
         // if ColorOpt_t is initialized then the initial state is invalid
         RadioOrCheckEntity(
             const std::string & NAME,
@@ -51,6 +46,11 @@ namespace gui
             const float BETWEEN_SPACER = 0.0f);
 
         virtual ~RadioOrCheckEntity() = default;
+
+        RadioOrCheckEntity(const RadioOrCheckEntity &) = delete;
+        RadioOrCheckEntity(RadioOrCheckEntity &&) = delete;
+        RadioOrCheckEntity & operator=(const RadioOrCheckEntity &) = delete;
+        RadioOrCheckEntity & operator=(RadioOrCheckEntity &&) = delete;
 
         // does nothing, it makes no sense for the owning entity to change state, use Select()
         // or Invalid() to change the state

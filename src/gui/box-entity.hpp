@@ -27,6 +27,7 @@ namespace heroespath
 {
 namespace gui
 {
+
     using SpriteOpt_t = boost::optional<sf::Sprite>;
 
     // Responsible for implementing an Entity that is a simple box on screen with a customizable
@@ -76,8 +77,8 @@ namespace gui
         // same as OuterRegion() if there is no border
         const sf::FloatRect InnerRegion() const { return innerRegion_; }
 
-        friend bool operator<(const BoxEntity & L, const BoxEntity & R);
-        friend bool operator==(const BoxEntity & L, const BoxEntity & R);
+        // friend bool operator<(const BoxEntity & L, const BoxEntity & R);
+        // friend bool operator==(const BoxEntity & L, const BoxEntity & R);
 
     private:
         BoxEntityInfo backgroundInfo_;
@@ -90,43 +91,43 @@ namespace gui
 
     using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
-    inline bool operator<(const BoxEntity & L, const BoxEntity & R)
-    {
-        return std::tie(
-                   L.backgroundInfo_,
-                   L.border_,
-                   L.coloredRect_,
-                   L.sprite_,
-                   L.willDrawImage_,
-                   L.innerRegion_)
-            < std::tie(
-                   R.backgroundInfo_,
-                   R.border_,
-                   R.coloredRect_,
-                   R.sprite_,
-                   R.willDrawImage_,
-                   R.innerRegion_);
-    }
-
-    inline bool operator==(const BoxEntity & L, const BoxEntity & R)
-    {
-        return std::tie(
-                   L.backgroundInfo_,
-                   L.border_,
-                   L.coloredRect_,
-                   L.sprite_,
-                   L.willDrawImage_,
-                   L.innerRegion_)
-            == std::tie(
-                   R.backgroundInfo_,
-                   R.border_,
-                   R.coloredRect_,
-                   R.sprite_,
-                   R.willDrawImage_,
-                   R.innerRegion_);
-    }
-
-    inline bool operator!=(const BoxEntity & L, const BoxEntity & R) { return !(L == R); }
+    // inline bool operator<(const BoxEntity & L, const BoxEntity & R)
+    //{
+    //    return std::tie(
+    //               L.backgroundInfo_,
+    //               L.border_,
+    //               L.coloredRect_,
+    //               L.sprite_,
+    //               L.willDrawImage_,
+    //               L.innerRegion_)
+    //        < std::tie(
+    //               R.backgroundInfo_,
+    //               R.border_,
+    //               R.coloredRect_,
+    //               R.sprite_,
+    //               R.willDrawImage_,
+    //               R.innerRegion_);
+    //}
+    //
+    // inline bool operator==(const BoxEntity & L, const BoxEntity & R)
+    //{
+    //    return std::tie(
+    //               L.backgroundInfo_,
+    //               L.border_,
+    //               L.coloredRect_,
+    //               L.sprite_,
+    //               L.willDrawImage_,
+    //               L.innerRegion_)
+    //        == std::tie(
+    //               R.backgroundInfo_,
+    //               R.border_,
+    //               R.coloredRect_,
+    //               R.sprite_,
+    //               R.willDrawImage_,
+    //               R.innerRegion_);
+    //}
+    //
+    // inline bool operator!=(const BoxEntity & L, const BoxEntity & R) { return !(L == R); }
 
 } // namespace gui
 } // namespace heroespath

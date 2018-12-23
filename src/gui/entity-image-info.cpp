@@ -66,7 +66,7 @@ namespace gui
     {
         will_resize_instead_of_fit = WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION;
 
-        FloatRectOpt_t rectOpt;
+        FloatRectOpt_t rectOpt { boost::none };
 
         if (POS_V_OPT || SCALE_V_OPT)
         {
@@ -80,9 +80,15 @@ namespace gui
 
             if (SCALE_V_OPT)
             {
-                const auto SIZE_V { sf::Vector2f(TEXTURE.Get().getSize()) };
-                rectOpt->width = SCALE_V_OPT->x * SIZE_V.x;
-                rectOpt->height = SCALE_V_OPT->y * SIZE_V.y;
+                sf::Vector2f sizeV { TEXTURE.Get().getSize() };
+
+                if (TEXTURE_REGION_OPT)
+                {
+                    sizeV = sf::Vector2f { sfutil::Size(*TEXTURE_REGION_OPT) };
+                }
+
+                rectOpt->width = SCALE_V_OPT->x * sizeV.x;
+                rectOpt->height = SCALE_V_OPT->y * sizeV.y;
             }
         }
 
