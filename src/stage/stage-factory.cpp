@@ -251,13 +251,15 @@ namespace stage
         {
             case popup::PopupStage::Generic:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageGeneric>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageGeneric>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
             case popup::PopupStage::CharacterSelect:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageCharacterSelect>(
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageCharacterSelect>(
                     POPUP_INFO) };
 
                 popupStageUPtr->Setup();
@@ -265,25 +267,31 @@ namespace stage
             }
             case popup::PopupStage::CombatOver:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageCombatOver>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageCombatOver>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
             case popup::PopupStage::ImageFade:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageImageFade>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageImageFade>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
             case popup::PopupStage::ImageSelect:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageImageSelect>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageImageSelect>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
             case popup::PopupStage::InventoryPrompt:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageInventoryPrompt>(
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageInventoryPrompt>(
                     POPUP_INFO) };
 
                 popupStageUPtr->Setup();
@@ -291,37 +299,49 @@ namespace stage
             }
             case popup::PopupStage::Musicsheet:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageMusicSheet>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageMusicSheet>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
             case popup::PopupStage::NumberSelect:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageNumberSelect>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageNumberSelect>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
             case popup::PopupStage::ResolutionChange:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageResChange>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageResChange>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
             case popup::PopupStage::Spellbook:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageSpellbook>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageSpellbook>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
             case popup::PopupStage::SystemError:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageSystemError>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageSystemError>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
             case popup::PopupStage::TreasureTrap:
             {
-                auto popupStageUPtr { std::make_unique<popup::PopupStageTreasureTrap>(POPUP_INFO) };
+                IStageUPtr_t popupStageUPtr { std::make_unique<popup::PopupStageTreasureTrap>(
+                    POPUP_INFO) };
+
                 popupStageUPtr->Setup();
                 return popupStageUPtr;
             }
@@ -332,6 +352,7 @@ namespace stage
                 ss << "stage::StageFactory::MakePopup(popup_info={" << POPUP_INFO.ToStringShort()
                    << "}) but the stage=" << popup::PopupStage::ToString(POPUP_INFO.Stage())
                    << ") is invalid (out of bounds).";
+
                 throw std::range_error(ss.str());
             }
         }
