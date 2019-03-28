@@ -29,7 +29,7 @@
 #include "gui/text-region.hpp"
 #include "misc/callback.hpp"
 #include "misc/not-null.hpp"
-#include "stage/character-stage-anim-num.hpp"
+#include "stage/character-stage-stat-anim.hpp"
 #include "stage/character-stage-stat-box.hpp"
 #include "stage/stage-base.hpp"
 
@@ -41,9 +41,6 @@ namespace heroespath
 {
 namespace gui
 {
-    class Animation;
-    using AnimationUPtr_t = std::unique_ptr<Animation>;
-
     class Ouroboros;
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
@@ -112,7 +109,7 @@ namespace stage
         void Setup_NameTextEntryBox();
         void Setup_SexRadioButtons();
         void Setup_SpacebarInstructionText();
-        void Setup_SmokeAnimation(const float ATTRIB_BOX_TOP);
+        void Setup_StatsAnim();
 
         // returns the vertical position on screen
         float Setup_AttributeDescriptionBox();
@@ -188,20 +185,14 @@ namespace stage
         const std::string POPUP_NAME_HELP_3_;
         const std::string POPUP_NAME_IMAGE_SELECTION_;
 
-        const float SMOKE_ANIM_SPEED_MIN_;
-        const float SMOKE_ANIM_SPEED_MAX_;
-
         const unsigned int DESC_TEXT_FONT_SIZE_;
         const unsigned int RADIO_BUTTON_TEXT_SIZE_;
 
-        StatBox statBox_;
+        gui::MainMenuBackground background_;
         gui::OuroborosUPtr_t ouroborosUPtr_;
         gui::StageTitle stageTitle_;
-
-        gui::SliderDrift<float> smokeAnimSliderDriftX_;
-        gui::SliderDrift<float> smokeAnimSliderDriftY_;
-        gui::MainMenuBackground background_;
-        gui::AnimationUPtr_t smokeAnimUPtr_;
+        StatBox statBox_;
+        StatAnim statAnim_;
 
         gui::MainMenuButtonUPtr_t backButtonUPtr_;
         gui::MainMenuButtonUPtr_t saveButtonUPtr_;

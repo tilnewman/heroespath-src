@@ -57,8 +57,6 @@ namespace gui
         MouseTextInfo threeTextInfosHolder_;
 
         TextRegionUPtr_t textRegionUPtr_;
-        float labelOffsetX_;
-        float labelOffsetY_;
     };
 
 } // namespace gui

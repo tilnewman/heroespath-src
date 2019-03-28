@@ -46,8 +46,8 @@ namespace gui
             true)
         , threeTextInfosHolder_(THREE_TEXT_INFOS_HOLDER)
         , textRegionUPtr_(std::make_unique<TextRegion>("SliderBarLabeled's"))
-        , labelOffsetX_(LABEL_POS_OFFSET_LEFT)
-        , labelOffsetY_(LABEL_POS_OFFSET_TOP)
+    //, labelOffsetX_(LABEL_POS_OFFSET_LEFT)
+    //, labelOffsetY_(LABEL_POS_OFFSET_TOP)
     {
         std::ostringstream ss;
         ss << static_cast<int>(PositionRatio());

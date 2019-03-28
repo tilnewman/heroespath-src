@@ -22,7 +22,6 @@
 #include "creature/role-stats.hpp"
 #include "creature/sex-enum.hpp"
 #include "creature/title.hpp"
-#include "gui/animation-factory.hpp"
 #include "gui/box-entity.hpp"
 #include "gui/creature-image-paths.hpp"
 #include "gui/display.hpp"
@@ -79,26 +78,21 @@ namespace stage
         , POPUP_NAME_HELP_2_("HelpMessage2")
         , POPUP_NAME_HELP_3_("HelpMessage3")
         , POPUP_NAME_IMAGE_SELECTION_("ImageSelection")
-        , SMOKE_ANIM_SPEED_MIN_(0.05f)
-        , SMOKE_ANIM_SPEED_MAX_(0.5f)
         , DESC_TEXT_FONT_SIZE_(gui::FontManager::Instance()->Size_Small())
         , RADIO_BUTTON_TEXT_SIZE_(gui::FontManager::Instance()->Size_Largeish())
-        , statBox_(
-              stage::IStagePtr_t(this),
-              sfutil::ScreenRatioToPixelsHoriz(0.125f),
-              (4.0f / 3.5f),
-              LIGHT_TEXT_COLOR_)
+        , background_()
         , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("CharacterStage's"))
         , stageTitle_(
               gui::MenuImage::CreateCharacters,
               true,
               gui::StageTitle::DEFAULT_SYMBOL_HEIGHT_SCREEN_RATIO_,
               (gui::StageTitle::DEFAULT_SYMBOL_TO_TITLE_HEIGHT_RATIO_ * 0.8f))
-        , smokeAnimSliderDriftX_()
-        , smokeAnimSliderDriftY_()
-        , background_()
-        , smokeAnimUPtr_(gui::AnimationFactory::Make(
-              gui::Animations::SmokeSwirl, sfutil::MapByRes(1.0f, 3.0f)))
+        , statBox_(
+              stage::IStagePtr_t(this),
+              sfutil::ScreenRatioToPixelsHoriz(0.125f),
+              (4.0f / 3.5f),
+              LIGHT_TEXT_COLOR_)
+        , statAnim_()
         , backButtonUPtr_(std::make_unique<gui::MainMenuButton>(
               gui::MenuImage::Back,
               stage::Stage::Previous,
@@ -296,7 +290,7 @@ namespace stage
         Setup_RoleRadioButtons();
         Setup_RaceDescriptionBox();
         Setup_RoleDescriptionBox();
-        const auto ATTRIB_BOX_TOP { Setup_AttributeDescriptionBox() };
+        // const auto ATTRIB_BOX_TOP { Setup_AttributeDescriptionBox() };
         Setup_NameLabel();
         Setup_NameTextEntryBox();
         Setup_SexRadioButtons();
@@ -306,17 +300,29 @@ namespace stage
         //    sfutil::Bottom(sbInsTextRegionUPtr_->GetEntityRegion())
         //    + sfutil::ScreenRatioToPixelsVert(0.01f));
 
-        Setup_SmokeAnimation(ATTRIB_BOX_TOP);
-
         // setup initial config of radio buttons
         AdjustRoleRadioButtonsForRace(static_cast<creature::race::Enum>(0));
 
         Setup_RoleDescriptionBox();
+        Setup_StatsAnim();
+    }
+
+    void CharacterStage::Setup_StatsAnim()
+    {
+        sf::FloatRect animRegion;
+
+        animRegion.left = sfutil::Right(statBox_.RegionOuter());
+        animRegion.width = (sfutil::DisplaySize().x - animRegion.left);
+        animRegion.top = sfutil::Bottom(stageTitle_.Region());
+        animRegion.height = (attrDescTextRegionUPtr_->GetEntityRegion().top - animRegion.top);
+
+        statAnim_.Setup(animRegion);
     }
 
     void CharacterStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
+        statAnim_.UpdateTime(ELAPSED_TIME_SECONDS);
         /*
         // oscillate the spacebar instruction text's color to help players know what to do initially
         if (AreAnyStatsIgnored() && (false == AreAnyAnimNumStillMoving()))
@@ -407,31 +413,24 @@ namespace stage
         target.draw(*sexRadioButtonUPtr_, states);
         target.draw(*raceRadioButtonUPtr_, states);
         target.draw(*roleRadioButtonUPtr_, states);
+        target.draw(statAnim_, states);
     }
 
     bool CharacterStage::KeyPress(const sf::Event::KeyEvent & KEY_EVENT)
     {
         const auto RESULT { StageBase::KeyPress(KEY_EVENT) };
-        return RESULT;
-        /*if ((KEY_EVENT.code == sf::Keyboard::Space) && (false == isAnimStats_)
-            && (false == nameTextEntryBoxUPtr_->HasFocus()))
-        {
-            gui::SoundManager::Instance()
-                ->GetSoundEffectSet(gui::sound_effect_set::Wind)
-                .PlayRandom();
 
-            animStatsTimeCounterSec_ = 0.0f;
-            animStatsDelayPerSec_ = 0.01f; // any fraction of a second will work here
-            isAnimStats_ = true;
-            SetMenuButtonsDisabledWhileStatsAreAnimating(true);
-            isWaitingForStats_ = false;
-            UndoAndClearStatModifierChanges();
+        if ((KEY_EVENT.code == sf::Keyboard::Space) && (false == nameTextEntryBoxUPtr_->HasFocus()))
+        {
+            // statAnim_.WillSpinFaster(true);
+            // SetMenuButtonsDisabledWhileStatsAreAnimating(true);
+            // UndoAndClearStatModifierChanges();
             return true;
         }
         else
         {
             return RESULT;
-        }*/
+        }
     }
 
     bool CharacterStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
@@ -454,8 +453,7 @@ namespace stage
 
         if (KEY_EVENT.code == sf::Keyboard::Space)
         {
-            /*isAnimStats_ = false;
-            isWaitingForStats_ = true;*/
+            // statAnim_.WillSpinFaster(false);
             return true;
         }
         else
@@ -567,7 +565,7 @@ namespace stage
 
         roleRadioButtonUPtr_->SetEntityPos(
             sfutil::ScreenRatioToPixelsHoriz(0.1f),
-            (sfutil::Bottom(raceRadioButtonUPtr_->GetEntityRegion())
+            (sfutil::Bottom(roleRadioButtonUPtr_->GetEntityRegion())
              + sfutil::ScreenRatioToPixelsVert(0.1f)));
 
         EntityAdd(roleRadioButtonUPtr_);
@@ -821,38 +819,6 @@ namespace stage
             statsIntPosTop_,
             STAT_TEXT_INFO);
     }*/
-
-    void CharacterStage::Setup_SmokeAnimation(const float ATTRIB_BOX_TOP)
-    {
-        EntityAdd(smokeAnimUPtr_);
-
-        const auto DRIFT_LIMIT_LEFT { StageRegion().width * 0.65f };
-        const auto DRIFT_LIMIT_RIGHT { StageRegion().width
-                                       - smokeAnimUPtr_->GetEntityRegion().width };
-
-        smokeAnimSliderDriftX_ = gui::SliderDrift<float>(
-            DRIFT_LIMIT_LEFT,
-            DRIFT_LIMIT_RIGHT,
-            SMOKE_ANIM_SPEED_MIN_,
-            SMOKE_ANIM_SPEED_MAX_,
-            misc::random::Float(DRIFT_LIMIT_LEFT, DRIFT_LIMIT_RIGHT),
-            misc::random::Float(DRIFT_LIMIT_LEFT, DRIFT_LIMIT_RIGHT));
-
-        const auto VERT_OVERLAP { sfutil::ScreenRatioToPixelsVert(0.0333f) };
-
-        const auto DRIFT_LIMIT_TOP { sfutil::Bottom(stageTitle_.Region()) - VERT_OVERLAP };
-
-        const auto DRIFT_LIMIT_BOTTOM { (ATTRIB_BOX_TOP - smokeAnimUPtr_->GetEntityRegion().height)
-                                        + (VERT_OVERLAP * 2.0f) };
-
-        smokeAnimSliderDriftY_ = gui::SliderDrift<float>(
-            DRIFT_LIMIT_TOP,
-            DRIFT_LIMIT_BOTTOM,
-            SMOKE_ANIM_SPEED_MIN_,
-            SMOKE_ANIM_SPEED_MAX_,
-            misc::random::Float(DRIFT_LIMIT_TOP, DRIFT_LIMIT_BOTTOM),
-            misc::random::Float(DRIFT_LIMIT_TOP, DRIFT_LIMIT_BOTTOM));
-    }
 
     float CharacterStage::Setup_AttributeDescriptionBox()
     {
