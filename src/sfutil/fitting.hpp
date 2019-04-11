@@ -29,92 +29,80 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
     // if either ORIG or LIMIT is <= zero then that dimension is ignored during fitting, if both
     // LIMITs are <= zero then fitting is skipped but SCALE is still applied
-    template <typename T, typename = std::enable_if_t<std::is_same<T, float>::value>>
-    constexpr const sf::Vector2<T>
-        FitCopy(const sf::Vector2<T> & ORIG, const sf::Vector2<T> & LIMIT, const T SCALE = 1.0f)
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Vector2<T1> FitCopy(
+        const sf::Vector2<T1> & ORIG,
+        const sf::Vector2<T2> & LIMIT,
+        const Scale_t SCALE_ORIG = 1.0f)
     {
-        // can assume T = float
+        double scaleAdj { 1.0 };
 
-        float scaleToUse { 1.0f };
+        auto scaleBasedOnWidth = [&]() constexpr
+        {
+            return static_cast<double>(LIMIT.x) / static_cast<double>(ORIG.x);
+        };
 
-        auto scaleBasedOnWidth = [&]() constexpr->float { return (LIMIT.x / ORIG.x); };
-        auto scaleBasedOnHeight = [&]() constexpr->float { return (LIMIT.y / ORIG.y); };
+        auto scaleBasedOnHeight = [&]() constexpr
+        {
+            return static_cast<double>(LIMIT.y) / static_cast<double>(ORIG.y);
+        };
 
         const auto IS_HORIZ_LIMIT_ZERO_OR_LESS { misc::IsRealZeroOrLess(LIMIT.x) };
         const auto IS_VERT_LIMIT_ZERO_OR_LESS { misc::IsRealZeroOrLess(LIMIT.y) };
 
         if (IS_HORIZ_LIMIT_ZERO_OR_LESS && IS_VERT_LIMIT_ZERO_OR_LESS)
         {
-            scaleToUse = 1.0f;
+            scaleAdj = 1.0;
         }
         else if (IS_HORIZ_LIMIT_ZERO_OR_LESS)
         {
             if (misc::IsRealZeroOrLess(ORIG.y) == false)
             {
-                scaleToUse = scaleBasedOnHeight();
+                scaleAdj = scaleBasedOnHeight();
             }
         }
         else if (IS_VERT_LIMIT_ZERO_OR_LESS)
         {
             if (misc::IsRealZeroOrLess(ORIG.x) == false)
             {
-                scaleToUse = scaleBasedOnWidth();
+                scaleAdj = scaleBasedOnWidth();
             }
         }
         else if (misc::IsRealZeroOrLess(ORIG.x))
         {
             if (misc::IsRealZeroOrLess(ORIG.y) == false)
             {
-                scaleToUse = scaleBasedOnHeight();
+                scaleAdj = scaleBasedOnHeight();
             }
         }
         else if (misc::IsRealZeroOrLess(ORIG.y))
         {
             if (misc::IsRealZeroOrLess(ORIG.x) == false)
             {
-                scaleToUse = scaleBasedOnWidth();
+                scaleAdj = scaleBasedOnWidth();
             }
         }
         else
         {
             // at this point we know none of the ORIG or LIMIT values are zero or less
 
-            scaleToUse = scaleBasedOnWidth();
+            scaleAdj = scaleBasedOnWidth();
 
-            if ((scaleToUse * ORIG.y) > LIMIT.y)
+            if ((scaleAdj * static_cast<double>(ORIG.y)) > static_cast<double>(LIMIT.y))
             {
-                scaleToUse = scaleBasedOnHeight();
+                scaleAdj = scaleBasedOnHeight();
             }
         }
 
-        return (ORIG * (scaleToUse * SCALE));
+        return sf::Vector2<T1> { sf::Vector2<double> { ORIG }
+                                 * (static_cast<double>(scaleAdj)
+                                    * static_cast<double>(SCALE_ORIG)) };
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
     // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename std::
-            enable_if<std::is_floating_point<Scale_t> {} && (!std::is_same<T1, T2> {}), int>::type
-        = 0>
-    constexpr const sf::Vector2<T1> FitCopy(
-        const sf::Vector2<T1> & ORIG, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
-    {
-        return sf::Vector2<T1>(
-            FitCopy(sf::Vector2f(ORIG), sf::Vector2f(LIMIT), static_cast<float>(SCALE)));
-    }
-
-    // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
-    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
-    // zero or less then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Vector2<T1> FitCopy(
         const T1 WIDTH_ORIG,
         const T1 HEIGHT_ORIG,
@@ -131,15 +119,7 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
     // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename std::enable_if<
-            ((std::is_integral<T2> {} || std::is_floating_point<T2> {})
-             && (!std::is_same<T2, bool> {}) && std::is_floating_point<Scale_t> {}),
-            int>::type
-        = 0>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Vector2<T1> FitCopy(
         const sf::Vector2<T1> & ORIG,
         const T2 WIDTH_LIMIT,
@@ -152,11 +132,7 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
     // rescaled to SCALE, if either LIMIT is <= zero then that dimension is ignored, if both LIMITs
     // are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Vector2<T1> FitCopy(
         const sf::Vector2<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -166,11 +142,7 @@ namespace sfutil
     // rescales orig to the maximum size that fits within LIMIT and then applies SCALE,
     // if either LIMIT or orig is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr void
         Fit(sf::Vector2<T1> & orig, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -180,11 +152,7 @@ namespace sfutil
     // rescales orig to the maximum size that fits within the size of LIMIT and then
     // applies SCALE, if either LIMIT or orig is <= zero then that dimension is ignored, if both
     // LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr void
         Fit(sf::Vector2<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -214,11 +182,7 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
     // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Rect<T1> FitCopy(
         const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -231,15 +195,7 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
     // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename std::enable_if<
-            ((std::is_integral<T2> {} || std::is_floating_point<T2> {})
-             && (!std::is_same<T2, bool> {}) && std::is_floating_point<Scale_t> {}),
-            int>::type
-        = 0>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Rect<T1> FitCopy(
         const sf::Rect<T1> & ORIG,
         const T2 WIDTH_LIMIT,
@@ -252,11 +208,7 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
     // rescaled to SCALE, if either LIMIT or ORIG is <= zero then that dimension is ignored, if
     // both LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Rect<T1>
         FitCopy(const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -265,14 +217,7 @@ namespace sfutil
 
     // returns a scale that would make ORIG the maximum size that fits within LIMIT, if both LIMITs
     // are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename std::enable_if<
-            ((std::is_integral<T2> {} || std::is_floating_point<T2> {})
-             && (!std::is_same<T2, bool> {})),
-            int>::type
-        = 0>
+    template <typename T1, typename T2>
     constexpr float
         ScaleThatFits(const sf::Vector2<T1> & ORIG, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT)
     {
@@ -297,14 +242,7 @@ namespace sfutil
 
     // returns a scale that would make ORIG the maximum size that fits within LIMIT, if both LIMITs
     // are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename std::enable_if<
-            ((std::is_integral<T2> {} || std::is_floating_point<T2> {})
-             && (!std::is_same<T2, bool> {})),
-            int>::type
-        = 0>
+    template <typename T1, typename T2>
     constexpr float
         ScaleThatFits(const sf::Rect<T1> & ORIG, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT)
     {
@@ -322,11 +260,7 @@ namespace sfutil
     // rescales orig to the maximum size that fits within LIMIT and then applies SCALE,
     // if either LIMIT or orig is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr void
         Fit(sf::Rect<T1> & orig, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -336,11 +270,7 @@ namespace sfutil
     // rescales orig to the maximum size that fits within the size of LIMIT and then
     // applies SCALE, if either LIMIT or orig is <= zero then that dimension is ignored, if both
     // LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr void Fit(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
         Fit(orig, Size(LIMIT), SCALE);
@@ -367,11 +297,7 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE
     // and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Rect<T1> FitAndReCenterCopy(
         const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -394,15 +320,7 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE
     // and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename std::enable_if<
-            ((std::is_integral<T2> {} || std::is_floating_point<T2> {})
-             && (!std::is_same<T2, bool> {}) && std::is_floating_point<Scale_t> {}),
-            int>::type
-        = 0>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Rect<T1> FitAndReCenterCopy(
         const sf::Rect<T1> & ORIG,
         const T2 WIDTH_LIMIT,
@@ -415,11 +333,7 @@ namespace sfutil
     // rescales orig to the maximum size that fits within LIMIT and is then rescaled to SCALE
     // and then recentered to ORIG, if either LIMIT or orig is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr void FitAndReCenter(
         sf::Rect<T1> & orig, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -429,15 +343,7 @@ namespace sfutil
     // rescales orig to the maximum size that fits within LIMIT and is then rescaled to SCALE
     // and then recentered to orig, if either LIMIT or orig is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename std::enable_if<
-            ((std::is_integral<T2> {} || std::is_floating_point<T2> {})
-             && (!std::is_same<T2, bool> {}) && std::is_floating_point<Scale_t> {}),
-            int>::type
-        = 0>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr void FitAndReCenter(
         sf::Rect<T1> & orig,
         const T2 WIDTH_LIMIT,
@@ -450,11 +356,7 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
     // rescaled to SCALE and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that
     // dimension is ignored, if both LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Rect<T1> FitAndReCenterCopy(
         const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -477,11 +379,7 @@ namespace sfutil
     // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
     // rescaled to SCALE and then centered to LIMIT, if either LIMIT or ORIG is <= zero then that
     // dimension is ignored, if both LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Rect<T1> FitAndCenterCopy(
         const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -504,11 +402,7 @@ namespace sfutil
     // rescales orig to the maximum size that fits within the size of LIMIT and is then rescaled to
     // SCALE and then recentered to ORIG, if either LIMIT or orig is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr void
         FitAndReCenter(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
@@ -518,11 +412,7 @@ namespace sfutil
     // rescales orig to the maximum size that fits within the size of LIMIT and is then rescaled to
     // SCALE and then centered to LIMIT, if either LIMIT or orig is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr void
         FitAndCenterTo(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {

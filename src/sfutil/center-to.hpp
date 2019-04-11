@@ -32,11 +32,7 @@ namespace sfutil
     }
 
     // returns a copy of A rescaled to SCALE_V and then repositioned to the center of B
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t>
     constexpr const sf::Rect<T1> CenterToCopy(
         const sf::Rect<T1> & A, const sf::Rect<T2> & B, const sf::Vector2<Scale_t> & SCALE_V)
     {
@@ -49,11 +45,7 @@ namespace sfutil
     }
 
     // returns a copy of A rescaled to SCALE and then repositioned to the center of B
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr const sf::Rect<T1>
         CenterToCopy(const sf::Rect<T1> & A, const sf::Rect<T2> & B, const Scale_t SCALE = 1.0f)
     {
@@ -61,11 +53,7 @@ namespace sfutil
     }
 
     // rescales a to SCALE and then repositions it to the center of B
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t>
     constexpr void
         CenterTo(sf::Rect<T1> & a, const sf::Rect<T2> & B, const sf::Vector2<Scale_t> & SCALE_V)
     {
@@ -73,11 +61,7 @@ namespace sfutil
     }
 
     // rescales a to SCALE and then repositions it to the center of B
-    template <
-        typename T1,
-        typename T2,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T1, typename T2, typename Scale_t = float>
     constexpr void CenterTo(sf::Rect<T1> & a, const sf::Rect<T2> & B, const Scale_t SCALE = 1.0f)
     {
         CenterTo(a, B, sf::Vector2<Scale_t>(SCALE, SCALE));

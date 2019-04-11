@@ -119,45 +119,45 @@ struct EnumStringHow
 // see misc/enum-util.hpp
 struct EnumStringHow;
 
-template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
 inline constexpr T operator~(const T X)
 {
     return static_cast<T>(~static_cast<EnumUnderlying_t>(X));
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
 inline constexpr T operator|(const T L, const T R)
 {
     return static_cast<T>(static_cast<EnumUnderlying_t>(L) | static_cast<EnumUnderlying_t>(R));
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
 inline constexpr T operator&(const T L, const T R)
 {
     return static_cast<T>(static_cast<EnumUnderlying_t>(L) & static_cast<EnumUnderlying_t>(R));
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
 inline constexpr T operator^(const T L, const T R)
 {
     return static_cast<T>(static_cast<EnumUnderlying_t>(L) ^ static_cast<EnumUnderlying_t>(R));
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
 inline constexpr T & operator|=(T & l, const T R)
 {
     l = static_cast<T>(static_cast<EnumUnderlying_t>(l) | static_cast<EnumUnderlying_t>(R));
     return l;
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
 inline constexpr T & operator&=(T & l, const T R)
 {
     l = static_cast<T>(static_cast<EnumUnderlying_t>(l) & static_cast<EnumUnderlying_t>(R));
     return l;
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
 inline constexpr T & operator^=(T & l, const T R)
 {
     l = static_cast<T>(static_cast<EnumUnderlying_t>(l) ^ static_cast<EnumUnderlying_t>(R));
@@ -168,10 +168,10 @@ template <
     typename T1,
     typename T2,
     typename std::enable_if<
-        (std::is_enum<T1> {} && (std::is_same<T1, T2> {} || std::is_same<T2, EnumUnderlying_t> {}))
-            || (std::is_enum<T2> {}
-                && (std::is_same<T1, T2> {} || std::is_same<T1, EnumUnderlying_t> {}))
-            || (std::is_same<T1, EnumUnderlying_t> {} && std::is_same<T2, EnumUnderlying_t> {}),
+        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
+            || (std::is_enum_v<
+                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
+            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
         int>::type
     = 0>
 inline constexpr void BitSet(T1 & orig, const T2 BITS_TO_SET)
@@ -183,10 +183,10 @@ template <
     typename T1,
     typename T2,
     typename std::enable_if<
-        (std::is_enum<T1> {} && (std::is_same<T1, T2> {} || std::is_same<T2, EnumUnderlying_t> {}))
-            || (std::is_enum<T2> {}
-                && (std::is_same<T1, T2> {} || std::is_same<T1, EnumUnderlying_t> {}))
-            || (std::is_same<T1, EnumUnderlying_t> {} && std::is_same<T2, EnumUnderlying_t> {}),
+        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
+            || (std::is_enum_v<
+                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
+            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
         int>::type
     = 0>
 inline constexpr T1 BitSetCopy(const T1 ORIG, const T2 BITS_TO_SET)
@@ -200,10 +200,10 @@ template <
     typename T1,
     typename T2,
     typename std::enable_if<
-        (std::is_enum<T1> {} && (std::is_same<T1, T2> {} || std::is_same<T2, EnumUnderlying_t> {}))
-            || (std::is_enum<T2> {}
-                && (std::is_same<T1, T2> {} || std::is_same<T1, EnumUnderlying_t> {}))
-            || (std::is_same<T1, EnumUnderlying_t> {} && std::is_same<T2, EnumUnderlying_t> {}),
+        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
+            || (std::is_enum_v<
+                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
+            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
         int>::type
     = 0>
 inline constexpr void BitClear(T1 & orig, const T2 BITS_TO_CLEAR)
@@ -215,10 +215,10 @@ template <
     typename T1,
     typename T2,
     typename std::enable_if<
-        (std::is_enum<T1> {} && (std::is_same<T1, T2> {} || std::is_same<T2, EnumUnderlying_t> {}))
-            || (std::is_enum<T2> {}
-                && (std::is_same<T1, T2> {} || std::is_same<T1, EnumUnderlying_t> {}))
-            || (std::is_same<T1, EnumUnderlying_t> {} && std::is_same<T2, EnumUnderlying_t> {}),
+        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
+            || (std::is_enum_v<
+                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
+            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
         int>::type
     = 0>
 inline constexpr T1 BitClearCopy(const T1 ORIG, const T2 BITS_TO_CLEAR)
@@ -232,10 +232,10 @@ template <
     typename T1,
     typename T2,
     typename std::enable_if<
-        (std::is_enum<T1> {} && (std::is_same<T1, T2> {} || std::is_same<T2, EnumUnderlying_t> {}))
-            || (std::is_enum<T2> {}
-                && (std::is_same<T1, T2> {} || std::is_same<T1, EnumUnderlying_t> {}))
-            || (std::is_same<T1, EnumUnderlying_t> {} && std::is_same<T2, EnumUnderlying_t> {}),
+        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
+            || (std::is_enum_v<
+                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
+            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
         int>::type
     = 0>
 inline constexpr void BitToggle(T1 & orig, const T2 BITS_TO_TOGGLE)
@@ -247,10 +247,10 @@ template <
     typename T1,
     typename T2,
     typename std::enable_if<
-        (std::is_enum<T1> {} && (std::is_same<T1, T2> {} || std::is_same<T2, EnumUnderlying_t> {}))
-            || (std::is_enum<T2> {}
-                && (std::is_same<T1, T2> {} || std::is_same<T1, EnumUnderlying_t> {}))
-            || (std::is_same<T1, EnumUnderlying_t> {} && std::is_same<T2, EnumUnderlying_t> {}),
+        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
+            || (std::is_enum_v<
+                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
+            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
         int>::type
     = 0>
 inline constexpr T1 BitToggleCopy(const T1 ORIG, const T2 BITS_TO_TOGGLE)

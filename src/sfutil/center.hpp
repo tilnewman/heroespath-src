@@ -37,53 +37,35 @@ namespace sfutil
 
     // returns the position that would center something of size (WIDTH, HEIGHT) to the center of the
     // screen
-    template <
-        typename T,
-        typename std::enable_if<
-            ((std::is_integral<T> {} || std::is_floating_point<T> {})
-             && (!std::is_same<T, bool> {})),
-            int>::type
-        = 0>
+    template <typename T>
     const sf::Vector2f CenterCopy(const T WIDTH, const T HEIGHT)
     {
         return CenterCopy(sf::Vector2<T>(WIDTH, HEIGHT));
     }
 
     // returns a copy of R rescaled to SCALE_V and then repositioned to the center of the screen
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     const sf::FloatRect CenterCopy(const sf::Rect<T> & R, const sf::Vector2<Scale_t> & SCALE_V)
     {
         return CenterToCopy(sf::FloatRect(R), DisplayRect(), SCALE_V);
     }
 
     // returns a copy of R rescaled to SCALE and then repositioned to the center of the screen
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     const sf::FloatRect CenterCopy(const sf::Rect<T> & R, const Scale_t SCALE = 1.0f)
     {
         return CenterCopy(sf::FloatRect(R), sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
     // rescales r to SCALE and then repositions to the center of the screen
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     void Center(sf::Rect<T> & r, const sf::Vector2<Scale_t> & SCALE_V)
     {
         CenterTo(r, DisplayRect(), SCALE_V);
     }
 
     // rescales r to SCALE and then repositions to the center of the screen
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     void Center(sf::Rect<T> & r, const Scale_t SCALE = 1.0f)
     {
         Center(r, sf::Vector2<Scale_t>(SCALE, SCALE));
@@ -96,24 +78,14 @@ namespace sfutil
     void Center(sf::Sprite & s);
 
     // returns the horizontal screen position that would center something of WIDTH
-    template <
-        typename T,
-        typename std::enable_if<
-            ((std::is_integral<T> {} || std::is_floating_point<T> {}) && !std::is_same<T, bool> {}),
-            int>::type
-        = 0>
+    template <typename T>
     float DisplayCenterHoriz(const T WIDTH)
     {
         return Center().x - (static_cast<float>(WIDTH) * 0.5f);
     }
 
     // returns the vertical screen position that would center something of HEIGHT
-    template <
-        typename T,
-        typename std::enable_if<
-            ((std::is_integral<T> {} || std::is_floating_point<T> {}) && !std::is_same<T, bool> {}),
-            int>::type
-        = 0>
+    template <typename T>
     float DisplayCenterVert(const T HEIGHT)
     {
         return Center().y - (static_cast<float>(HEIGHT) * 0.5f);

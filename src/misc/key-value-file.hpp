@@ -140,7 +140,7 @@ namespace misc
 
             // lexical_cast<>() does not work as expected with one byte arithmetic types, so
             // this block is a work-around for that
-            if constexpr (misc::is_number_non_floating_point_v<T> && (sizeof(T) == 1))
+            if constexpr (misc::are_integral_nobool_v<T> && (sizeof(T) == 1))
             {
                 const int NUMBER_MIN_INT { std::numeric_limits<int>::lowest() };
                 const int NUMBER_MAX_INT { std::numeric_limits<int>::max() };

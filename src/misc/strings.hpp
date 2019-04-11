@@ -114,7 +114,7 @@ namespace misc
     }
 
     // empty strings always return RETURN_ON_ERROR
-    template <typename T, typename = std::enable_if_t<is_number_v<T>>>
+    template <typename T, typename = std::enable_if_t<are_number_v<T>>>
     T ToNumber(const std::string & STR, const T RETURN_ON_ERROR)
     {
         if (STR.empty())
@@ -159,7 +159,7 @@ namespace misc
             OPTIONS, CONTAINER_NAME, NAMESPACE_PREFIX_STR, typeName);
     }
 
-    template <typename T = int, typename = std::enable_if_t<is_number_non_floating_point_v<T>>>
+    template <typename T = int, typename = std::enable_if_t<are_integral_nobool_v<T>>>
     const std::string NumberToStringWithOrdinalSuffix(const T NUMBER)
     {
         std::ostringstream ss;
@@ -208,7 +208,7 @@ namespace misc
     //      Find(1, "...", -1)   returns 1
     //      Find(2, "...", -1)   returns 234
     //      Find(3, "...", -1)   returns -1
-    template <typename T = int, typename = std::enable_if_t<is_number_non_floating_point_v<T>>>
+    template <typename T = int, typename = std::enable_if_t<are_integral_nobool_v<T>>>
     T FindNumber(const std::size_t NTH_NUMBER, const std::string & STR, const T RETURN_ON_ERROR)
     {
         const auto NUMBER_STR_VEC { MakeNumberStrings(STR) };
@@ -227,7 +227,7 @@ namespace misc
     }
 
     // handy version of the FindNumber() function above, see comments for FindNumber()
-    template <typename T = int, typename = std::enable_if_t<is_number_non_floating_point_v<T>>>
+    template <typename T = int, typename = std::enable_if_t<are_integral_nobool_v<T>>>
     T FindNumberLast(const std::string & STR, const T RETURN_ON_ERROR)
     {
         const auto NUMBER_STR_VEC { MakeNumberStrings(STR) };

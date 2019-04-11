@@ -79,10 +79,7 @@ namespace sfutil
     }
 
     // returns a copy of V scaled by SCALE_V, same as (V.x * SCALE_V.x) and (V.y * SCALE_V.y)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Vector2<T>
         ScaleCopy(const sf::Vector2<T> & V, const sf::Vector2<Scale_t> & SCALE_V)
     {
@@ -92,30 +89,21 @@ namespace sfutil
     }
 
     // returns a copy of V scaled by SCALE, same as (V * SCALE)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Vector2<T> ScaleCopy(const sf::Vector2<T> & V, const Scale_t SCALE)
     {
         return ScaleCopy(V, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
     // scales v by SCALE_V, same as (v.x *= SCALE_V.x) and (v.y *= SCALE_V.y)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr void Scale(sf::Vector2<T> & v, const sf::Vector2<Scale_t> & SCALE_V)
     {
         v = ScaleCopy(v, SCALE_V);
     }
 
     // scales v by SCALE, same as (v *= SCALE)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr void Scale(sf::Vector2<T> & v, const Scale_t SCALE)
     {
         v = ScaleCopy(v, SCALE);
@@ -123,10 +111,7 @@ namespace sfutil
 
     // returns a copy of R dimensionally scaled by SCALE_V, same as (R.left/width * SCALE_V.x) and
     // (R.top/height * SCALE_V.y)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Rect<T>
         ScaleRectLinearCopy(const sf::Rect<T> & R, const sf::Vector2<Scale_t> & SCALE_V)
     {
@@ -137,10 +122,7 @@ namespace sfutil
     }
 
     // returns a copy of R with all members scaled by SCALE, same as (R.* * SCALE)
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr const sf::Rect<T>
         ScaleRectLinearCopy(const sf::Rect<T> & R, const Scale_t SCALE = 1.0f)
     {
@@ -148,10 +130,7 @@ namespace sfutil
     }
 
     // scales all r members by SCALE, same as (r.* *= SCALE)
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr void ScaleRectLinear(sf::Rect<T> & r, const Scale_t SCALE = 1.0f)
     {
         r = ScaleRectLinearCopy(r, SCALE);
@@ -159,10 +138,7 @@ namespace sfutil
 
     // dimensionally scales r by SCALE_V, same as (r.left/width *= SCALE_V.x) and (r.top/height *=
     // SCALE_V.y)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr void ScaleRectLinear(sf::Rect<T> & r, const sf::Vector2<Scale_t> & SCALE_V)
     {
         r = ScaleRectLinearCopy(r, SCALE_V);
@@ -170,20 +146,14 @@ namespace sfutil
 
     // returns the size of R scaled by SCALE_V, same as (R.width * SCALE_V.x) and (R.height *
     // SCALE_V.y)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Vector2<T> Size(const sf::Rect<T> & R, const sf::Vector2<Scale_t> & SCALE_V)
     {
         return ScaleCopy(sf::Vector2<T>(R.width, R.height), SCALE_V);
     }
 
     // returns the size of R scaled by SCALE
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr const sf::Vector2<T> Size(const sf::Rect<T> & R, const Scale_t SCALE = 1.0f)
     {
         return Size(R, sf::Vector2<Scale_t>(SCALE, SCALE));
@@ -202,10 +172,7 @@ namespace sfutil
     const sf::Vector2f Size(const gui::Text & T, const float SCALE = 1.0f);
 
     // returns a copy of R with size scaled by SCALE and then re-centered to the orig center of R
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Rect<T>
         ScaleAndReCenterCopy(const sf::Rect<T> & R, const sf::Vector2<Scale_t> & SCALE_V)
     {
@@ -215,40 +182,28 @@ namespace sfutil
     }
 
     // returns a copy of R with size scaled by SCALE and then re-centered to the orig center of R
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Rect<T> ScaleAndReCenterCopy(const sf::Rect<T> & R, const Scale_t & SCALE)
     {
         return ScaleAndReCenterCopy(R, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
     // scales the size of r by SCALE and then re-centers to the orig center of R
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr void ScaleAndReCenter(sf::Rect<T> & r, const sf::Vector2<Scale_t> & SCALE_V)
     {
         r = ScaleAndReCenterCopy(r, SCALE_V);
     }
 
     // scales the size of r by SCALE and then re-centers to the orig center of R
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr void ScaleAndReCenter(sf::Rect<T> & r, const Scale_t & SCALE)
     {
         r = ScaleAndReCenterCopy(r, SCALE);
     }
 
     // returns a copy of V scaled by SCALE_V, same as (V.x * SCALE_V.x) and (V.y * SCALE_V.y)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Vector2<T>
         ScaleSizeCopy(const sf::Vector2<T> & V, const sf::Vector2<Scale_t> & SCALE_V)
     {
@@ -256,10 +211,7 @@ namespace sfutil
     }
 
     // returns a copy of V scaled by SCALE, same as (V * SCALE)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Vector2<T> ScaleSizeCopy(const sf::Vector2<T> & V, const Scale_t SCALE)
     {
         return ScaleCopy(V, sf::Vector2<Scale_t>(SCALE, SCALE));
@@ -267,10 +219,7 @@ namespace sfutil
 
     // returns a copy of R with size scaled by SCALE_V, same as (R.width * SCALE_V.x) and (R.height
     // * SCALE_V.y)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Rect<T>
         ScaleSizeCopy(const sf::Rect<T> & R, const sf::Vector2<Scale_t> & SCALE_V)
     {
@@ -278,40 +227,28 @@ namespace sfutil
     }
 
     // returns a copy of R with size scaled by SCALE, same as (R.width/height * SCALE)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Rect<T> ScaleSizeCopy(const sf::Rect<T> & R, const Scale_t SCALE)
     {
         return ScaleSizeCopy(R, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
     // scales the size of r by SCALE_V, same as (r.width *= SCALE_V.x) and (r.height *= SCALE_V.y)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr void ScaleSize(sf::Rect<T> & r, const sf::Vector2<Scale_t> & SCALE_V)
     {
         r = ScaleSizeCopy(r, SCALE_V);
     }
 
     // scales the size of r by SCALE, same as (r.width/height *= SCALE)
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr void ScaleSize(sf::Rect<T> & r, const Scale_t SCALE)
     {
         ScaleSize(r, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
     // returns a copy of R rescaled to SCALE_V and recentered
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Rect<T>
         ScaleSizeAndReCenterCopy(const sf::Rect<T> & R, const sf::Vector2<Scale_t> & SCALE_V)
     {
@@ -320,30 +257,21 @@ namespace sfutil
 
     // returns a copy of R with size scaled by SCALE (same as ScaleSize(R, SCALE) and then
     // re-centered
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr const sf::Rect<T> ScaleSizeAndReCenterCopy(const sf::Rect<T> & R, const Scale_t SCALE)
     {
         return ScaleSizeAndReCenterCopy(R, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
     // scales r by SCALE_V and then re-centers
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr void ScaleSizeAndReCenter(sf::Rect<T> & r, const sf::Vector2<Scale_t> & SCALE_V)
     {
         CenterTo(r, r, SCALE_V);
     }
 
     // scales r by SCALE and then re-centers
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t>
     constexpr void ScaleSizeAndReCenter(sf::Rect<T> & r, const Scale_t SCALE)
     {
         ScaleSizeAndReCenter(r, sf::Vector2<Scale_t>(SCALE, SCALE));
@@ -510,10 +438,7 @@ namespace sfutil
 
     // returns a copy of R that has the smaller dimension set equal to the larger then scaled to
     // SCALE
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr const sf::Rect<T> GrowToSquareCopy(const sf::Rect<T> & R, const Scale_t SCALE = 1.0f)
     {
         const float NEW_SIZE { static_cast<float>(std::max(R.width, R.height))
@@ -524,10 +449,7 @@ namespace sfutil
 
     // changes R so that the smaller dimension is set equal to the larger then scaled to
     // SCALE
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr void GrowToSquare(sf::Rect<T> & r, const Scale_t SCALE = 1.0f)
     {
         r = GrowToSquareCopy(r, SCALE);
@@ -535,10 +457,7 @@ namespace sfutil
 
     // returns a copy of R that has the larger dimension set equal to the smaller then scaled to
     // SCALE
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr const sf::Rect<T>
         ShrinkToSquareCopy(const sf::Rect<T> & R, const Scale_t SCALE = 1.0f)
     {
@@ -550,10 +469,7 @@ namespace sfutil
 
     // changes r so that the larger dimension is set equal to the smaller then scaled to
     // SCALE
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr void ShrinkToSquare(sf::Rect<T> & r, const Scale_t SCALE = 1.0f)
     {
         r = ShrinkToSquareCopy(r, SCALE);
@@ -561,10 +477,7 @@ namespace sfutil
 
     // returns a copy of R that has the smaller dimension set equal to the larger then scaled to
     // SCALE and then recentered
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr const sf::Rect<T>
         GrowToSquareAndReCenterCopy(const sf::Rect<T> & R, const Scale_t SCALE = 1.0f)
     {
@@ -578,10 +491,7 @@ namespace sfutil
 
     // changes r so that the smaller dimension is set equal to the larger then scaled to SCALE and
     // then recentered
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr void GrowToSquareAndReCenter(sf::Rect<T> & r, const Scale_t SCALE = 1.0f)
     {
         r = GrowToSquareAndReCenterCopy(r, SCALE);
@@ -589,10 +499,7 @@ namespace sfutil
 
     // returns a copy of R that has the larger dimension set equal to the smaller then scaled to
     // SCALE and then recentered
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr const sf::Rect<T>
         ShrinkToSquareAndReCenterCopy(const sf::Rect<T> & R, const Scale_t SCALE = 1.0f)
     {
@@ -606,10 +513,7 @@ namespace sfutil
 
     // changes r so that the larger dimension is set equal to the smaller then scaled to
     // SCALE and then recentered
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    template <typename T, typename Scale_t = float>
     constexpr void ShrinkToSquareAndReCenter(sf::Rect<T> & r, const Scale_t SCALE = 1.0f)
     {
         r = ShrinkToSquareAndReCenterCopy(r, SCALE);

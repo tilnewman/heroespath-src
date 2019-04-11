@@ -9,55 +9,91 @@
 //
 // type-helpers.hpp
 //
-#include <type_traits>
 
 namespace heroespath
 {
 namespace misc
 {
-
-    template <typename T>
-    struct is_number
+    // static_assert won't work in template functions, so this is a handy work-around.
+    // usage:  static_assert(dependant_false_v<T>, message);
+    template <typename... T>
+    struct dependant_false
     {
-        using value_type = bool;
-        static constexpr bool value = std::is_arithmetic_v<T>;
-        constexpr operator value_type() const noexcept { return value; }
-        constexpr value_type operator()() const noexcept { return value; }
-    };
-
-    template <>
-    struct is_number<bool>
-    {
-        using value_type = bool;
         static constexpr bool value = false;
-        constexpr operator value_type() const noexcept { return value; }
-        constexpr value_type operator()() const noexcept { return value; }
     };
 
-    template <>
-    struct is_number<const bool>
-    {
-        using value_type = bool;
-        static constexpr bool value = false;
-        constexpr operator value_type() const noexcept { return value; }
-        constexpr value_type operator()() const noexcept { return value; }
-    };
+    template <typename... T>
+    inline constexpr bool dependant_false_v = dependant_false<T...>::value;
 
-    template <typename T>
-    inline constexpr bool is_number_v = is_number<T>::value;
+    template <typename T, typename... Ts>
+    struct are_any : std::disjunction<std::is_same<std::remove_cv_t<T>, std::remove_cv_t<Ts>>...>
+    {};
 
-    template <typename T>
-    struct is_number_non_floating_point
-    {
-        using value_type = bool;
-        static constexpr bool value = (is_number_v<T> && !std::is_floating_point_v<T>);
-        constexpr operator value_type() const noexcept { return value; }
-        constexpr value_type operator()() const noexcept { return value; }
-    };
+    template <typename... T>
+    inline constexpr bool are_any_v = are_any<T...>::value;
 
-    template <typename T>
-    inline constexpr bool is_number_non_floating_point_v = is_number_non_floating_point<T>::value;
+    template <typename T, typename... Ts>
+    struct are_none : std::integral_constant<bool, (are_any_v<T, Ts...> == false)>
+    {};
 
+    template <typename... T>
+    inline constexpr bool are_none_v = are_none<T...>::value;
+
+    template <typename T, typename... Ts>
+    struct are_all : std::conjunction<std::is_same<std::remove_cv_t<T>, std::remove_cv_t<Ts>>...>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_all_v = are_all<T...>::value;
+
+    template <typename... T>
+    using are_same = are_all<T...>;
+
+    template <typename... T>
+    inline constexpr bool are_same_v = are_same<T...>::value;
+
+    template <typename... T>
+    struct are_floating_point : std::conjunction<std::is_floating_point<std::remove_cv_t<T>>...>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_floating_point_v = are_floating_point<T...>::value;
+
+    template <typename... T>
+    struct are_integral : std::conjunction<std::is_integral<std::remove_cv_t<T>>...>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_integral_v = are_integral<T...>::value;
+
+    template <typename... T>
+    struct are_integral_nobool
+        : std::integral_constant<bool, (are_integral_v<T...> && are_none_v<bool, T...>)>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_integral_nobool_v = are_integral_nobool<T...>::value;
+
+    template <typename... T>
+    struct are_arithmetic : std::conjunction<std::is_arithmetic<std::remove_cv_t<T>>...>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_arithmetic_v = are_arithmetic<T...>::value;
+
+    template <typename... T>
+    struct are_arithmetic_nobool
+        : std::integral_constant<bool, (are_arithmetic_v<T...> && are_none_v<bool, T...>)>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_arithmetic_nobool_v = are_arithmetic_nobool<T...>::value;
+
+    template <typename... T>
+    using are_number = are_arithmetic_nobool<T...>;
+
+    template <typename... T>
+    inline constexpr bool are_number_v = are_number<T...>::value;
 } // namespace misc
 } // namespace heroespath
 

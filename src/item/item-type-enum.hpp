@@ -474,6 +474,14 @@ namespace item
 
     struct set_type : public EnumBaseCounting<EnumFirstValue::Not>
     {
+        enum xyz
+        {
+            beef,
+            chicken
+        };
+        xyz x = xyz::beef;
+        std::underlying_type_t<xyz> y;
+
         enum Enum : EnumUnderlying_t
         {
             Not = 0,
