@@ -22,7 +22,9 @@
 namespace heroespath
 {
 
-using EnumUnderlying_t = std::size_t;
+// Can't use std::size_t, because technically enums are not supposed to be 8bytes/64bits, and if
+// std::size_t is in MSVC, then there are tons of warnings about narrowing conversions.
+using EnumUnderlying_t = unsigned int;
 
 enum class Wrap : bool
 {
