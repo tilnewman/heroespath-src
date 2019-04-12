@@ -14,69 +14,54 @@
 #include <limits> //for epsilon
 #include <type_traits> // for enable_if
 
+#include "misc/compile-assert.hpp"
+#include "misc/type-helpers.hpp"
+
 namespace heroespath
 {
 namespace misc
 {
 
     template <typename T>
-    constexpr typename std::
-        enable_if_t<(std::is_integral<T>::value && !std::is_same<T, bool>::value), bool>
-        IsRealClose(const T A, const T B)
+    constexpr bool IsRealClose(const T A, const T B)
     {
-        return (A == B);
+        if constexpr (are_integral_nobool_v<T>)
+        {
+            return (A == B);
+        }
+        else if constexpr (are_floating_point_v<T>)
+        {
+            const auto MAX_OR_ONE { std::max({ T(1), std::abs(A), std::abs(B) }) };
+            return (std::abs(A - B) < (std::numeric_limits<T>::epsilon() * MAX_OR_ONE));
+        }
+        else
+        {
+            M_HP_COMPILE_ERROR_INVALID_TYPES(T);
+        }
     }
 
     template <typename T>
-    constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool>
-        IsRealClose(const T A, const T B)
-    {
-        const auto MAX_OR_ONE { std::max({ T(1), std::abs(A), std::abs(B) }) };
-        return (std::abs(A - B) < (std::numeric_limits<T>::epsilon() * MAX_OR_ONE));
-    }
-
-    template <typename T>
-    constexpr typename std::
-        enable_if_t<(std::is_integral<T>::value && !std::is_same<T, bool>::value), bool>
-        IsRealOne(const T X)
-    {
-        return (X == 1);
-    }
-
-    template <typename T>
-    constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool> IsRealOne(const T X)
+    constexpr bool IsRealOne(const T X)
     {
         return IsRealClose(X, T(1));
     }
 
     template <typename T>
-    constexpr typename std::
-        enable_if_t<(std::is_integral<T>::value && !std::is_same<T, bool>::value), bool>
-        IsRealZero(const T X)
-    {
-        return (X == 0);
-    }
-
-    template <typename T>
-    constexpr typename std::
-        enable_if_t<(std::is_integral<T>::value && !std::is_same<T, bool>::value), bool>
-        IsRealZeroOrLess(const T X)
-    {
-        return (X <= 0);
-    }
-
-    template <typename T>
-    constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool>
-        IsRealZero(const T X)
+    constexpr bool IsRealZero(const T X)
     {
         return IsRealClose(X, T(0));
     }
 
     template <typename T>
-    constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool>
-        IsRealZeroOrLess(const T X)
+    constexpr bool IsRealZeroOrLess(const T X)
     {
         return ((X < T(0)) || IsRealZero(X));
+    }
+
+    template <typename T>
+    constexpr bool IsRealZeroOrMore(const T X)
+    {
+        return ((X > T(0)) || IsRealZero(X));
     }
 
 } // namespace misc
