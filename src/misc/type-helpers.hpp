@@ -60,6 +60,20 @@ namespace misc
     inline constexpr bool are_floating_point_v = are_floating_point<T...>::value;
 
     template <typename... T>
+    struct are_all_enum : std::conjunction<std::is_enum<std::remove_cv_t<T>>...>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_all_enum_v = are_all_enum<T...>::value;
+
+    template <typename... T>
+    struct are_any_enum : std::disjunction<std::is_enum<std::remove_cv_t<T>>...>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_any_enum_v = are_any_enum<T...>::value;
+
+    template <typename... T>
     struct are_integral : std::conjunction<std::is_integral<std::remove_cv_t<T>>...>
     {};
 
@@ -94,6 +108,7 @@ namespace misc
 
     template <typename... T>
     inline constexpr bool are_number_v = are_number<T...>::value;
+
 } // namespace misc
 } // namespace heroespath
 

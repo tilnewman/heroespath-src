@@ -19,6 +19,8 @@
 #include <string>
 #include <type_traits> //for enable_if
 
+#include "misc/type-helpers.hpp"
+
 namespace heroespath
 {
 
@@ -166,16 +168,32 @@ inline constexpr T & operator^=(T & l, const T R)
     return l;
 }
 
+namespace helpers
+{
+
+    using namespace heroespath::misc;
+
+    template <typename T1, typename T2>
+    struct are_bitwise_enum_types_valid
+        : std::integral_constant<
+              bool,
+              ((are_same_v<
+                    T1,
+                    T2> && (are_all_v<EnumUnderlying_t, T1, T2> || are_all_enum_v<T1, T2>))
+               || (are_same_v<T1, EnumUnderlying_t> && are_all_enum_v<T2>)
+               || (are_same_v<T2, EnumUnderlying_t> && are_all_enum_v<T1>))>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_bitwise_enum_types_valid_v
+        = are_bitwise_enum_types_valid<T...>::value;
+
+} // namespace helpers
+
 template <
     typename T1,
     typename T2,
-    typename std::enable_if<
-        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
-            || (std::is_enum_v<
-                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
-            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
-        int>::type
-    = 0>
+    typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
 inline constexpr void BitSet(T1 & orig, const T2 BITS_TO_SET)
 {
     orig |= BITS_TO_SET;
@@ -184,13 +202,7 @@ inline constexpr void BitSet(T1 & orig, const T2 BITS_TO_SET)
 template <
     typename T1,
     typename T2,
-    typename std::enable_if<
-        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
-            || (std::is_enum_v<
-                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
-            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
-        int>::type
-    = 0>
+    typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
 inline constexpr T1 BitSetCopy(const T1 ORIG, const T2 BITS_TO_SET)
 {
     T1 copy { ORIG };
@@ -201,13 +213,7 @@ inline constexpr T1 BitSetCopy(const T1 ORIG, const T2 BITS_TO_SET)
 template <
     typename T1,
     typename T2,
-    typename std::enable_if<
-        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
-            || (std::is_enum_v<
-                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
-            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
-        int>::type
-    = 0>
+    typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
 inline constexpr void BitClear(T1 & orig, const T2 BITS_TO_CLEAR)
 {
     orig &= ~BITS_TO_CLEAR;
@@ -216,13 +222,7 @@ inline constexpr void BitClear(T1 & orig, const T2 BITS_TO_CLEAR)
 template <
     typename T1,
     typename T2,
-    typename std::enable_if<
-        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
-            || (std::is_enum_v<
-                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
-            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
-        int>::type
-    = 0>
+    typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
 inline constexpr T1 BitClearCopy(const T1 ORIG, const T2 BITS_TO_CLEAR)
 {
     T1 copy { ORIG };
@@ -233,13 +233,7 @@ inline constexpr T1 BitClearCopy(const T1 ORIG, const T2 BITS_TO_CLEAR)
 template <
     typename T1,
     typename T2,
-    typename std::enable_if<
-        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
-            || (std::is_enum_v<
-                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
-            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
-        int>::type
-    = 0>
+    typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
 inline constexpr void BitToggle(T1 & orig, const T2 BITS_TO_TOGGLE)
 {
     orig ^= BITS_TO_TOGGLE;
@@ -248,13 +242,7 @@ inline constexpr void BitToggle(T1 & orig, const T2 BITS_TO_TOGGLE)
 template <
     typename T1,
     typename T2,
-    typename std::enable_if<
-        (std::is_enum_v<T1> && (std::is_same_v<T1, T2> || std::is_same_v<T2, EnumUnderlying_t>))
-            || (std::is_enum_v<
-                    T2> && (std::is_same_v<T1, T2> || std::is_same_v<T1, EnumUnderlying_t>))
-            || (std::is_same_v<T1, EnumUnderlying_t> && std::is_same_v<T2, EnumUnderlying_t>),
-        int>::type
-    = 0>
+    typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
 inline constexpr T1 BitToggleCopy(const T1 ORIG, const T2 BITS_TO_TOGGLE)
 {
     T1 copy { ORIG };
