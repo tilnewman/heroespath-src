@@ -38,8 +38,8 @@ namespace sfutil
         const auto B_X { static_cast<double>(B.x) };
         const auto B_Y { static_cast<double>(B.y) };
 
-        const auto DIFF_X_ABS { misc::ABS(B_X - A_X) };
-        const auto DIFF_Y_ABS { misc::ABS(B_Y - A_Y) };
+        const auto DIFF_X_ABS { std::abs(B_X - A_X) };
+        const auto DIFF_Y_ABS { std::abs(B_Y - A_Y) };
 
         if (DIFF_X_ABS > DIFF_Y_ABS)
         {

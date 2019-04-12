@@ -19,18 +19,6 @@ namespace heroespath
 namespace misc
 {
 
-    template <class T>
-    constexpr typename std::enable_if_t<std::is_signed<T>::value, T> ABS(const T X)
-    {
-        return ((X < 0) ? -X : X);
-    }
-
-    template <class T>
-    constexpr typename std::enable_if_t<!std::is_signed<T>::value, T> ABS(const T X)
-    {
-        return X;
-    }
-
     template <typename T>
     constexpr typename std::
         enable_if_t<(std::is_integral<T>::value && !std::is_same<T, bool>::value), bool>
@@ -43,8 +31,8 @@ namespace misc
     constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool>
         IsRealClose(const T A, const T B)
     {
-        const auto MAX_OR_ONE { std::max({ T(1), ABS(A), ABS(B) }) };
-        return (ABS(A - B) < (std::numeric_limits<T>::epsilon() * MAX_OR_ONE));
+        const auto MAX_OR_ONE { std::max({ T(1), std::abs(A), std::abs(B) }) };
+        return (std::abs(A - B) < (std::numeric_limits<T>::epsilon() * MAX_OR_ONE));
     }
 
     template <typename T>

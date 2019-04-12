@@ -54,7 +54,7 @@ namespace misc
 
         const StrongNumericType Abs() const
         {
-            return StrongNumericType<T, Parameter_t>(misc::ABS(this->m_value));
+            return StrongNumericType<T, Parameter_t>(std::abs(this->m_value));
         }
 
         StrongNumericType & operator=(const StrongNumericType & RHS)
