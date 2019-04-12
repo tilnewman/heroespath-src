@@ -146,26 +146,16 @@ namespace map
     {
         switch (DIRECTION)
         {
-            case gui::Direction::Up:
-            {
-                return MoveUp(ADJUSTMENT);
+            case gui::Direction::Up: { return MoveUp(ADJUSTMENT);
             }
-            case gui::Direction::Down:
-            {
-                return MoveDown(ADJUSTMENT);
+            case gui::Direction::Down: { return MoveDown(ADJUSTMENT);
             }
-            case gui::Direction::Left:
-            {
-                return MoveLeft(ADJUSTMENT);
+            case gui::Direction::Left: { return MoveLeft(ADJUSTMENT);
             }
-            case gui::Direction::Right:
-            {
-                return MoveRight(ADJUSTMENT);
+            case gui::Direction::Right: { return MoveRight(ADJUSTMENT);
             }
             case gui::Direction::Count:
-            default:
-            {
-                return false;
+            default: { return false;
             }
         }
     }
@@ -312,7 +302,7 @@ namespace map
 
             --offScreenTileRectI_.top;
             UpdateOffScreenMapPosOffset();
-            MoveOffscreenTextureRects(sf::Vector2f(0.0f, tileSizeVI_.y));
+            MoveOffscreenTextureRects(sf::Vector2f(0.0f, static_cast<float>(tileSizeVI_.y)));
             UpdateAndReDrawAfterMapTileChange();
             return true;
         }
@@ -356,7 +346,7 @@ namespace map
 
             ++offScreenTileRectI_.top;
             UpdateOffScreenMapPosOffset();
-            MoveOffscreenTextureRects(sf::Vector2f(0.0f, -tileSizeVI_.y));
+            MoveOffscreenTextureRects(sf::Vector2f(0.0f, static_cast<float>(-tileSizeVI_.y)));
             UpdateAndReDrawAfterMapTileChange();
             return true;
         }
@@ -399,7 +389,7 @@ namespace map
 
             --offScreenTileRectI_.left;
             UpdateOffScreenMapPosOffset();
-            MoveOffscreenTextureRects(sf::Vector2f(tileSizeVI_.x, 0.0f));
+            MoveOffscreenTextureRects(sf::Vector2f(static_cast<float>(tileSizeVI_.x), 0.0f));
             UpdateAndReDrawAfterMapTileChange();
             return true;
         }
@@ -443,7 +433,7 @@ namespace map
 
             ++offScreenTileRectI_.left;
             UpdateOffScreenMapPosOffset();
-            MoveOffscreenTextureRects(sf::Vector2f(-tileSizeVI_.x, 0.0f));
+            MoveOffscreenTextureRects(sf::Vector2f(static_cast<float>(-tileSizeVI_.x), 0.0f));
             UpdateAndReDrawAfterMapTileChange();
             return true;
         }
