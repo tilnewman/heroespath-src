@@ -12,6 +12,7 @@
 #include "misc/timing-scoped.hpp"
 
 #include <chrono>
+#include <memory>
 #include <string>
 #include <vector>
 
