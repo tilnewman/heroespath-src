@@ -15,8 +15,8 @@
 #include "misc/strings.hpp"
 #include "misc/type-helpers.hpp"
 
+#include "misc/nameof.hpp"
 #include <boost/math/constants/constants.hpp> //for boost::math::constants::pi etc.
-#include <boost/type_index.hpp>
 
 #include <string>
 #include <tuple>
@@ -61,8 +61,8 @@ namespace gui
             if (SPEED < 0.0f)
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given SPEED<"
-                    + boost::typeindex::type_id<T>().pretty_name() + ">=" + misc::ToString(SPEED)
+                    "(" + FILE_FUNC_LINE_STR + ")  The given SPEED<" + NAMEOF_TYPE_T_STR(T)
+                    + ">=" + misc::ToString(SPEED)
                     + " is less than zero which is invalid.  This slider will be "
                       "stopped.");
 
@@ -79,9 +79,9 @@ namespace gui
             if (START_AT_ORIG < FROM)
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<"
-                    + boost::typeindex::type_id<T>().pretty_name() + ">="
-                    + misc::ToString(START_AT_ORIG) + " is invalid (<FROM)(<" + misc::ToString(FROM)
+                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<" + NAMEOF_TYPE_T_STR(T)
+                    + ">=" + misc::ToString(START_AT_ORIG) + " is invalid (<FROM)(<"
+                    + misc::ToString(FROM)
                     + ").  The actual starting ratio will be set to that FROM("
                     + misc::ToString(FROM) + ").");
 
@@ -90,10 +90,10 @@ namespace gui
             else if (START_AT_ORIG > TO)
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<"
-                    + boost::typeindex::type_id<T>().pretty_name() + ">="
-                    + misc::ToString(START_AT_ORIG) + " is invalid (>TO)(>" + misc::ToString(TO)
-                    + ").  The actual start value will be set to " + misc::ToString(TO) + ".");
+                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<" + NAMEOF_TYPE_T_STR(T)
+                    + ">=" + misc::ToString(START_AT_ORIG) + " is invalid (>TO)(>"
+                    + misc::ToString(TO) + ").  The actual start value will be set to "
+                    + misc::ToString(TO) + ".");
 
                 startAtFinal = TO;
             }
@@ -108,9 +108,8 @@ namespace gui
             if (misc::IsRealClose(FROM, TO))
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given FROM<"
-                    + boost::typeindex::type_id<T>().pretty_name() + ">=" + misc::ToString(FROM)
-                    + " is the same as the given TO=" + misc::ToString(TO)
+                    "(" + FILE_FUNC_LINE_STR + ")  The given FROM<" + NAMEOF_TYPE_T_STR(T) + ">="
+                    + misc::ToString(FROM) + " is the same as the given TO=" + misc::ToString(TO)
                     + ", which is invalid.  This slider will be stopped.");
 
                 isStopped = true;
@@ -133,9 +132,8 @@ namespace gui
             if (misc::IsRealClose(VALUE_MIN_FINAL, VALUE_MAX_FINAL))
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The VALUE_MIN_FINAL<"
-                    + boost::typeindex::type_id<T>().pretty_name() + ">("
-                    + misc::ToString(VALUE_MIN_FINAL) + ") is equal to the VALUE_MAX_FINAL("
+                    "(" + FILE_FUNC_LINE_STR + ")  The VALUE_MIN_FINAL<" + NAMEOF_TYPE_T_STR(T)
+                    + ">(" + misc::ToString(VALUE_MIN_FINAL) + ") is equal to the VALUE_MAX_FINAL("
                     + misc::ToString(VALUE_MAX_FINAL)
                     + ", which is invalid.  This slider will be stopped.");
 
@@ -152,8 +150,7 @@ namespace gui
 
                 M_HP_LOG_ERR(
                     "(" + FILE_FUNC_LINE_STR + ")  The VALUE_TO_START_AT_ORIG<"
-                    + boost::typeindex::type_id<T>().pretty_name() + ">("
-                    + misc::ToString(VALUE_TO_START_AT_ORIG)
+                    + NAMEOF_TYPE_T_STR(T) + ">(" + misc::ToString(VALUE_TO_START_AT_ORIG)
                     + ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] or ["
                     + misc::ToString(VALUE_MIN_FINAL) + ", " + misc::ToString(VALUE_MAX_FINAL)
                     + "].  VALUE_TO_START_AT_ORIG will be changed/clamped to "
@@ -170,8 +167,7 @@ namespace gui
 
                 M_HP_LOG_ERR(
                     "(" + FILE_FUNC_LINE_STR + ")  The VALUE_OF_FIRST_TARGET_ORIG<"
-                    + boost::typeindex::type_id<T>().pretty_name() + ">("
-                    + misc::ToString(VALUE_OF_FIRST_TARGET_ORIG)
+                    + NAMEOF_TYPE_T_STR(T) + ">(" + misc::ToString(VALUE_OF_FIRST_TARGET_ORIG)
                     + ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] or ["
                     + misc::ToString(VALUE_MIN_FINAL) + ", " + misc::ToString(VALUE_MAX_FINAL)
                     + "].  VALUE_OF_FIRST_TARGET_ORIG will be changed/clamped to "
@@ -192,9 +188,8 @@ namespace gui
                 }
 
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The valueToStartAtFinal<"
-                    + boost::typeindex::type_id<T>().pretty_name() + ">("
-                    + misc::ToString(valueToStartAtFinal) + ")=valueOfFirstTargetFinal("
+                    "(" + FILE_FUNC_LINE_STR + ")  The valueToStartAtFinal<" + NAMEOF_TYPE_T_STR(T)
+                    + ">(" + misc::ToString(valueToStartAtFinal) + ")=valueOfFirstTargetFinal("
                     + misc::ToString(VALUE_OF_FIRST_TARGET_FINAL_BEFORE)
                     + "), which is invalid.  So valueOfFirstTargetFinal has been changed to  "
                     + misc::ToString(valueOfFirstTargetFinal) + ".");
@@ -611,8 +606,7 @@ namespace gui
             }
             else
             {
-                return misc::Random(
-                    std::min(speedMin_, speedMax_), std::max(speedMin_, speedMax_));
+                return misc::Random(std::min(speedMin_, speedMax_), std::max(speedMin_, speedMax_));
             }
         }
 

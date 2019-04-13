@@ -21,7 +21,7 @@
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <cstddef> //for std::size_t
 #include <string>
@@ -51,8 +51,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (MAP.Empty() == false),
                 "creature::nonplayer::MappedRandomFloatChance(T=\""
-                    << boost::typeindex::type_id<T>().pretty_name()
-                    << "\") called when the map was empty.");
+                    << NAMEOF_TYPE_T_STR(T) << "\") called when the map was empty.");
 
             auto chanceSubTotal { 0.0f };
             for (const auto & NEXT_MAP_PAIR : MAP)
@@ -63,7 +62,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((misc::IsRealZero(chanceSubTotal) == false) && (chanceSubTotal > 0.0f)),
                 "creature::nonplayer::MappedRandomFloatChance(T=\""
-                    << boost::typeindex::type_id<T>().pretty_name() << "\", size=" << MAP.Size()
+                    << NAMEOF_TYPE_T_STR(T) << "\", size=" << MAP.Size()
                     << ") called when the map's chance total is zero or less.");
 
             const auto RAND { misc::Random(0.0f, chanceSubTotal) };
@@ -94,8 +93,7 @@ namespace creature
             // if we get here something is wrong, so log everything
 
             std::ostringstream ss;
-            ss << "creature::nonplayer::MappedRandomFloatChance(T=\""
-               << boost::typeindex::type_id<T>().pretty_name()
+            ss << "creature::nonplayer::MappedRandomFloatChance(T=\"" << NAMEOF_TYPE_T_STR(T)
                << "\") failed to random select.  chanceSubTotal=" << chanceSubTotal
                << ", RAND=" << RAND << ", MAP={";
 
@@ -278,7 +276,7 @@ namespace creature
 
             M_HP_LOG(
                 "WARNING:  creature::nonplayer::MappedRandomItemChance(T=\""
-                << boost::typeindex::type_id<T>().pretty_name()
+                << NAMEOF_TYPE_T_STR(T)
                 << "\") failed random selection.  Choosing first with a count of one by "
                    "default.");
 

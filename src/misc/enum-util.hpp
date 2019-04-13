@@ -19,7 +19,7 @@
 #include "misc/log.hpp"
 #include "misc/vector-map.hpp"
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -226,10 +226,7 @@ namespace enum_helpers
 template <typename EnumWrapper_t>
 struct EnumUtil
 {
-    static const std::string TypeName()
-    {
-        return boost::typeindex::type_id<EnumWrapper_t>().pretty_name() + "::Enum";
-    }
+    static const std::string TypeName() { return NAMEOF_TYPE_T_STR(EnumWrapper_t) + "::Enum"; }
 
     // this may look redundant but callers can pass in the enum type (EnumWrapper::Enum)
     // and get the underlying type (EnumUnderlying_t) back

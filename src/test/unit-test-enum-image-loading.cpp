@@ -28,7 +28,7 @@
 #include "sfutil/fitting.hpp"
 #include "sfutil/size-and-scale.hpp"
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -51,7 +51,7 @@ void TestEnumImageLoading()
         const sf::Texture & TEXTURE { CACHED_TEXTURE.Get() };
 
         std::ostringstream ss;
-        ss << "TestImageLoading<" << boost::typeindex::type_id<EnumWrapper_t>().pretty_name()
+        ss << "TestImageLoading<" << NAMEOF_TYPE_T_STR(EnumWrapper_t)
            << "> on image with index/value=" << index
            << ", enum=" << EnumWrapper_t::ToString(ENUM_VALUE);
 

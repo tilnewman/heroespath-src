@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <cmath> //for std::fabs
 #include <limits> //for epsilon
-#include <type_traits> // for enable_if
 
 #include "misc/compile-assert.hpp"
 #include "misc/type-helpers.hpp"

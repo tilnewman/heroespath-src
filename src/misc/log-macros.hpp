@@ -27,8 +27,7 @@
 
 #define M_HP_STREAM_VAR(var) ", " #var "=" << var
 
-#define M_HP_STREAM_TYPE(the_type)                                                                 \
-    ", " #the_type << "=" << boost::typeindex::type_id<the_type>().pretty_name()
+#define M_HP_STREAM_TYPE(the_type) ", " #the_type << "=" << NAMEOF_TYPE_T_STR(the_type)
 
 //
 

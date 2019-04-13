@@ -15,8 +15,8 @@
 #pragma warning(disable : 4266)
 #endif
 
+#include "misc/nameof.hpp"
 #include <boost/test/unit_test.hpp>
-#include <boost/type_index.hpp>
 
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
 #pragma warning(pop)
@@ -46,11 +46,10 @@ void testSlider(
     const float ADJUSTMENT,
     const std::size_t ITERATION_COUNT_MIN)
 {
-    std::cout << "testSlider<Value_t=" << boost::typeindex::type_id<Value_t>().pretty_name()
-              << ", Slider_t=" << boost::typeindex::type_id<Slider_t>().pretty_name()
-              << ">(from=" << FROM << ", to=" << TO << ", start_at=" << START_AT
-              << ", adjustment=" << ADJUSTMENT << ", iteration_count_min=" << ITERATION_COUNT_MIN
-              << ")" << std::endl;
+    std::cout << "testSlider<Value_t=" << NAMEOF_TYPE_T_STR(Value_t)
+              << ", Slider_t=" << NAMEOF_TYPE_T_STR(Slider_t) << ">(from=" << FROM << ", to=" << TO
+              << ", start_at=" << START_AT << ", adjustment=" << ADJUSTMENT
+              << ", iteration_count_min=" << ITERATION_COUNT_MIN << ")" << std::endl;
 
     BOOST_CHECK(IsRealClose(slider.From(), FROM));
     BOOST_CHECK(IsRealClose(slider.To(), TO));

@@ -13,8 +13,8 @@
 #include "misc/strings.hpp"
 #include "misc/type-helpers.hpp"
 
+#include "misc/nameof.hpp"
 #include <boost/lexical_cast.hpp>
-#include <boost/type_index.hpp>
 
 #include <string>
 #include <vector>
@@ -164,8 +164,8 @@ namespace misc
                 {
                     M_HP_LOG_ERR(
                         "For key=\""
-                        << KEY << "\" boost::lexical_cast<"
-                        << boost::typeindex::type_id<T>().pretty_name() << ">(value=\"" << VALUE_STR
+                        << KEY << "\" boost::lexical_cast<" << NAMEOF_TYPE_T_STR(T) << ">(value=\""
+                        << VALUE_STR
                         << "\") fails because the desired type is a one-byte type with a range "
                            "limited to ["
                         << NUMBER_MIN_T_AS_INT << ", " << NUMBER_MAX_T_AS_INT
@@ -188,10 +188,9 @@ namespace misc
             catch (const std::exception & EXCEPTION)
             {
                 M_HP_LOG_ERR(
-                    "For key=\"" << KEY << "\" boost::lexical_cast<"
-                                 << boost::typeindex::type_id<T>().pretty_name() << ">(value=\""
-                                 << VALUE_STR << "\") threw exception \"" << EXCEPTION.what()
-                                 << "\".  Returning return_on_conversion_error="
+                    "For key=\"" << KEY << "\" boost::lexical_cast<" << NAMEOF_TYPE_T_STR(T)
+                                 << ">(value=\"" << VALUE_STR << "\") threw exception \""
+                                 << EXCEPTION.what() << "\".  Returning return_on_conversion_error="
                                  << RETURN_IF_CONVERSION_ERROR << ".  "
                                  << M_HP_VAR_STR(RETURN_IF_NOT_FOUND)
                                  << M_HP_VAR_STR(RETURN_IF_CONVERSION_ERROR));

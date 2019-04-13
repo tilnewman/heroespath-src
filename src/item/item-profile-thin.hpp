@@ -14,7 +14,7 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-type-wrapper.hpp"
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <exception>
 #include <sstream>

@@ -9,7 +9,7 @@
 //
 // not-null.hpp
 //
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <algorithm>
 #include <iosfwd>
@@ -38,8 +38,8 @@ namespace misc
             if (nullptr == ptr_)
             {
                 throw std::runtime_error(
-                    "NotNull<T=" + boost::typeindex::type_id<T>().pretty_name() + ", U="
-                    + boost::typeindex::type_id<U>().pretty_name() + ">(U && u) but u==nullptr.");
+                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ", U=" + NAMEOF_TYPE_T_STR(U)
+                    + ">(U && u) but u==nullptr.");
             }
         }
 
@@ -50,8 +50,7 @@ namespace misc
             if (nullptr == ptr_)
             {
                 throw std::runtime_error(
-                    "NotNull<T=" + boost::typeindex::type_id<T>().pretty_name()
-                    + ">(T u) but u==nullptr.");
+                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ">(T u) but u==nullptr.");
             }
         }
 
@@ -67,9 +66,8 @@ namespace misc
             if (UNIQUE_PTR.get() == nullptr)
             {
                 throw std::runtime_error(
-                    "NotNull<T=" + boost::typeindex::type_id<T>().pretty_name()
-                    + ">(const std::unique_ptr<" + boost::typeindex::type_id<U>().pretty_name()
-                    + "> & uptr) but uptr.get()==nullptr.");
+                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ">(const std::unique_ptr<"
+                    + NAMEOF_TYPE_T_STR(U) + "> & uptr) but uptr.get()==nullptr.");
             }
         }
 
@@ -80,9 +78,8 @@ namespace misc
             if (SHARED_PTR.get() == nullptr)
             {
                 throw std::runtime_error(
-                    "NotNull<T=" + boost::typeindex::type_id<T>().pretty_name()
-                    + ">(const std::shared_ptr<" + boost::typeindex::type_id<U>().pretty_name()
-                    + "> & sptr) but sptr.get()==nullptr.");
+                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ">(const std::shared_ptr<"
+                    + NAMEOF_TYPE_T_STR(U) + "> & sptr) but sptr.get()==nullptr.");
             }
         }
 
@@ -95,8 +92,7 @@ namespace misc
             if (nullptr == ptr_)
             {
                 throw std::runtime_error(
-                    "NotNull<T=" + boost::typeindex::type_id<T>().pretty_name()
-                    + ">::get() called when ptr_==nullptr.");
+                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ">::get() called when ptr_==nullptr.");
             }
 
             return ptr_;

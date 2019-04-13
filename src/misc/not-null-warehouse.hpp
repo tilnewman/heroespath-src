@@ -13,7 +13,7 @@
 #include "misc/log-macros.hpp"
 #include "misc/not-null.hpp"
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <exception>
 #include <memory>
@@ -52,8 +52,7 @@ namespace misc
             const auto SIZE { Size() };
 
             std::ostringstream ss;
-            ss << "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
-               << "> destructing, ";
+            ss << "misc::NotNullWarehouse<" << NAMEOF_TYPE_T_STR(T) << "> destructing, ";
 
             if (SIZE != 0)
             {
@@ -76,7 +75,7 @@ namespace misc
                     {
                         M_HP_LOG_ERR(
                             "misc::NotNullWarehouse<"
-                            << boost::typeindex::type_id<T>().pretty_name()
+                            << NAMEOF_TYPE_T_STR(T)
                             << ">::Destructor found an object that was not free'd: "
                             << uPtr->ToString());
                     }
@@ -141,7 +140,7 @@ namespace misc
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptrToStore != nullptr),
-                "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
+                "misc::NotNullWarehouse<" << NAMEOF_TYPE_T_STR(T)
                                           << ">::StoreImpl() given a nullptr.");
 
             const auto NUM_SLOTS { uPtrVec_.size() };
@@ -155,8 +154,8 @@ namespace misc
                 if (STORED_PTR == ptrToStore)
                 {
                     std::ostringstream ss;
-                    ss << "misc::Warehouse<" << boost::typeindex::type_id<T>().pretty_name()
-                       << ">::StoreImpl(" << ptrToStore->ToString() << ") was already stored.";
+                    ss << "misc::Warehouse<" << NAMEOF_TYPE_T_STR(T) << ">::StoreImpl("
+                       << ptrToStore->ToString() << ") was already stored.";
 
                     throw std::runtime_error(ss.str());
                 }
@@ -183,7 +182,7 @@ namespace misc
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptrToFree != nullptr),
-                "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
+                "misc::NotNullWarehouse<" << NAMEOF_TYPE_T_STR(T)
                                           << ">::FreeImpl() given a nullptr.");
 
             for (auto & uPtr : uPtrVec_)
@@ -198,8 +197,7 @@ namespace misc
 
             M_HP_LOG_ERR(
                 "misc::NotNullWarehouse<"
-                << boost::typeindex::type_id<T>().pretty_name() << ">::FreeImpl("
-                << ptrToFree->ToString()
+                << NAMEOF_TYPE_T_STR(T) << ">::FreeImpl(" << ptrToFree->ToString()
                 << ") not found.  Will delete manually.  Cross your fingers...");
 
             delete ptrToFree;

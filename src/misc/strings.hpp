@@ -13,8 +13,8 @@
 #include "misc/to-string-prefix-enum.hpp"
 #include "misc/type-helpers.hpp"
 
+#include "misc/nameof.hpp"
 #include <boost/lexical_cast.hpp>
-#include <boost/type_index.hpp>
 
 #include <sstream>
 #include <string>
@@ -95,8 +95,8 @@ namespace misc
         catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_WRN(
-                "misc::ToString<" << boost::typeindex::type_id<T>().pretty_name()
-                                  << ">() threw std::exception=\"" << EXCEPTION.what()
+                "misc::ToString<" << NAMEOF_TYPE_T_STR(T) << ">() threw std::exception=\""
+                                  << EXCEPTION.what()
                                   << "\".  Returning an empty string "
                                      "and continuing....");
 
@@ -105,7 +105,7 @@ namespace misc
         catch (...)
         {
             M_HP_LOG_WRN(
-                "misc::ToString<" << boost::typeindex::type_id<T>().pretty_name()
+                "misc::ToString<" << NAMEOF_TYPE_T_STR(T)
                                   << ">() threw an unknown exception.  Returning an empty string "
                                      "and continuing....");
 
@@ -151,7 +151,7 @@ namespace misc
         {
             if (OPTIONS & ToStringPrefix::Typename)
             {
-                typeName = std::string("<") + boost::typeindex::type_id<T>().pretty_name() + ">";
+                typeName = "<" + NAMEOF_TYPE_T_STR(T) + ">";
             }
         }
 

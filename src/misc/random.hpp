@@ -21,7 +21,7 @@
 #include <tuple>
 #include <typeinfo>
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 namespace heroespath
 {
@@ -71,8 +71,7 @@ namespace misc
                     << SEED_STR
                     << ", seed_size=" << (seedSequence.size() * sizeof(std::seed_seq::result_type))
                     << "bytes, warm_up_count=" << std::to_string(WARM_UP_COUNT_)
-                    << ", first_random_number<"
-                    << boost::typeindex::type_id<Engine_t::result_type>().pretty_name()
+                    << ", first_random_number<" << NAMEOF_TYPE_T_STR(Engine_t::result_type)
                     << ">=" << engine_());
             }
 
@@ -187,8 +186,7 @@ namespace misc
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (CONTAINER.empty() == false),
-            "Given an empty " << boost::typeindex::type_id<Container_t>().pretty_name()
-                              << " container.");
+            "Given an empty " << NAMEOF_TYPE_T_STR(Container_t) << " container.");
 
         return Random(CONTAINER.size() - static_cast<std::size_t>(1));
     }
@@ -200,7 +198,7 @@ namespace misc
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (container.empty() == false),
-            "Given an empty " << boost::typeindex::type_id<Container_t>().pretty_name()
+            "Given an empty " << NAMEOF_TYPE_T_STR(Container_t)
                               << " container. (non-const version)");
 
         const auto RANDOM_INDEX { RandomIndex(container) };
@@ -219,8 +217,7 @@ namespace misc
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (CONTAINER.empty() == false),
-            "Given an empty " << boost::typeindex::type_id<Container_t>().pretty_name()
-                              << " container. (const version)");
+            "Given an empty " << NAMEOF_TYPE_T_STR(Container_t) << " container. (const version)");
 
         const auto RANDOM_INDEX { RandomIndex(CONTAINER) };
 

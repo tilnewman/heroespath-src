@@ -31,7 +31,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <algorithm>
 #include <array>
@@ -1056,8 +1056,8 @@ namespace gui
         {
             std::ostringstream ss;
 
-            ss << "ListBox<" << boost::typeindex::type_id<Stage_t>().pretty_name() << ", "
-               << boost::typeindex::type_id<Element_t>().pretty_name() << ">(entity_name=\"";
+            ss << "ListBox<" << NAMEOF_TYPE_T_STR(Stage_t) << ", " << NAMEOF_TYPE_T_STR(Element_t)
+               << ">(entity_name=\"";
 
             if (ENTITY_NAME.empty())
             {

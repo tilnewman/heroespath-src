@@ -11,7 +11,7 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <ostream>
 #include <sstream>
@@ -44,7 +44,7 @@ namespace misc
             return ss.str();
         }
 
-        const std::string TypeName() const { return boost::typeindex::type_id<T>().pretty_name(); }
+        const std::string TypeName() const { return NAMEOF_TYPE_T_STR(T); }
 
         inline bool operator==(const StrongType & RHS) const
         {

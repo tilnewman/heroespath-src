@@ -22,7 +22,7 @@
 #pragma warning(pop)
 #endif
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <algorithm>
 #include <iomanip>
@@ -110,30 +110,23 @@ template <typename T, typename U>
 void printIteratorCompareInfo(const std::string & S1, const std::string & S2)
 {
     std::cout << S1 << "\n"
-              << S2 << "\n\t" << boost::typeindex::type_id<T>().pretty_name() << "\n\t"
-              << boost::typeindex::type_id<U>().pretty_name() << "\n\t\titer_category="
-              << boost::typeindex::type_id<typename T::iterator_category>().pretty_name()
-              << "\n\t\t           \"\"="
-              << boost::typeindex::type_id<typename U::iterator_category>().pretty_name()
-              << "\n\t\t   value_type="
-              << boost::typeindex::type_id<typename T::value_type>().pretty_name()
-              << "\n\t\t           \"\"="
-              << boost::typeindex::type_id<typename U::value_type>().pretty_name()
-              << "\n\t\t,  pointer_type="
-              << boost::typeindex::type_id<typename T::pointer_type>().pretty_name()
-              << "\n\t\t,          \"\"="
-              << boost::typeindex::type_id<typename U::pointer_type>().pretty_name() << std::endl;
+              << S2 << "\n\t" << NAMEOF_TYPE_T_STR(T) << "\n\t" << NAMEOF_TYPE_T_STR(U)
+              << "\n\t\titer_category=" << NAMEOF_TYPE_T_STR(typename T::iterator_category)
+              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T_STR(typename U::iterator_category)
+              << "\n\t\t   value_type=" << NAMEOF_TYPE_T_STR(typename T::value_type)
+              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T_STR(typename U::value_type)
+              << "\n\t\t,  pointer_type=" << NAMEOF_TYPE_T_STR(typename T::pointer_type)
+              << "\n\t\t,          \"\"=" << NAMEOF_TYPE_T_STR(typename U::pointer_type)
+              << std::endl;
 };
 
 template <typename T>
 void printIteratorInfo(const std::string & S, T)
 {
-    std::cout << S << ", " << boost::typeindex::type_id<T>().pretty_name() << ", \titer_category="
-              << boost::typeindex::type_id<typename T::iterator_category>().pretty_name()
-              << ", \t   value_type="
-              << boost::typeindex::type_id<typename T::value_type>().pretty_name()
-              << ", \t,  pointer_type="
-              << boost::typeindex::type_id<typename T::pointer_type>().pretty_name() << std::endl;
+    std::cout << S << ", " << NAMEOF_TYPE_T_STR(T)
+              << ", \titer_category=" << NAMEOF_TYPE_T_STR(typename T::iterator_category)
+              << ", \t   value_type=" << NAMEOF_TYPE_T_STR(typename T::value_type)
+              << ", \t,  pointer_type=" << NAMEOF_TYPE_T_STR(typename T::pointer_type) << std::endl;
 };
 
 inline void testSet1(VectorMap_t & vm, const std::string & MESSAGE, const std::size_t TEST_INDEX)

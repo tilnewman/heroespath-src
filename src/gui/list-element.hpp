@@ -23,7 +23,7 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 
-#include <boost/type_index.hpp>
+#include "misc/nameof.hpp"
 
 #include <memory>
 #include <sstream>
@@ -67,7 +67,7 @@ namespace gui
             {
                 std::ostringstream ss;
                 ss << LE.textRegionUPtr_->GetEntityName() << "CopyMadeBy_ListElement<"
-                   << boost::typeindex::type_id<Element_t>().pretty_name()
+                   << NAMEOF_TYPE_T_STR(Element_t)
                    << ">::CopyConstructor(MakingCopyOf_" + LE.ToString() << ")_";
 
                 textRegionUPtr_
@@ -306,7 +306,7 @@ namespace gui
         const std::string ToString() const
         {
             std::ostringstream ss;
-            ss << "ListElement<" << boost::typeindex::type_id<Element_t>().pretty_name() << ">("
+            ss << "ListElement<" << NAMEOF_TYPE_T_STR(Element_t) << ">("
                << ((HasElement()) ? "HasElement" : "NoElement") << ")("
                << ((cachedTextureOpt_) ? cachedTextureOpt_->Path() : "NoImage") << ")("
                << ((textRegionUPtr_) ? "\"" + textRegionUPtr_->GetText() + "\"" : "NoText") << ")";
