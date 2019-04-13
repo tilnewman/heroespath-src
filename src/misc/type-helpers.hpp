@@ -9,6 +9,8 @@
 //
 // type-helpers.hpp
 //
+#include <iterator>
+#include <type_traits>
 
 namespace heroespath
 {

@@ -9,9 +9,8 @@
 //
 #include "angles.hpp"
 
+#include "misc/math-constants.hpp"
 #include "sfutil/display.hpp"
-
-#include <boost/math/constants/constants.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -27,7 +26,7 @@ namespace sfutil
             (std::max(BEGIN_POS_V.y, END_POS_V.y) - std::min(BEGIN_POS_V.y, END_POS_V.y))
             / (std::max(BEGIN_POS_V.x, END_POS_V.x) - std::min(BEGIN_POS_V.x, END_POS_V.x))) };
 
-        const auto ANGLE_DEGREES { (ANGLE_RADIANS * 180.0f) / boost::math::constants::pi<float>() };
+        const auto ANGLE_DEGREES { (ANGLE_RADIANS * 180.0f) / misc::math::pi<float> };
 
         if (BEGIN_POS_V.x < END_POS_V.x)
         {

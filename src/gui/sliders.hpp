@@ -11,12 +11,12 @@
 //
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/math-constants.hpp"
 #include "misc/random.hpp"
 #include "misc/strings.hpp"
 #include "misc/type-helpers.hpp"
 
 #include "misc/nameof.hpp"
-#include <boost/math/constants/constants.hpp> //for boost::math::constants::pi etc.
 
 #include <string>
 #include <tuple>
@@ -222,9 +222,9 @@ namespace gui
             , speed_(SPEED)
             , value_(SliderValidators::StartAtClamp(
                   0.0f, 1.0f, START_AT_ORIG, M_HP_FILE_FUNC_LINE_STR))
-            , radiansFrom_(boost::math::constants::half_pi<float>())
-            , radiansTo_(1.5f * boost::math::constants::pi<float>())
-            , radians_(radiansFrom_ + (boost::math::constants::pi<float>() * value_))
+            , radiansFrom_(misc::math::half_pi<float>)
+            , radiansTo_(1.5f * misc::math::pi<float>)
+            , radians_(radiansFrom_ + (misc::math::pi<float> * value_))
         {
             SliderValidators::SpeedShouldNotBeNegative(isStopped_, SPEED, M_HP_FILE_FUNC_LINE_STR);
 
