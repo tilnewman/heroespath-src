@@ -21,14 +21,14 @@
 
 // in release builds use throw
 
-#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(str_stuff)                                             \
+#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(exp, str_stuff)                                        \
     {                                                                                              \
         M_HP_LOG_FAT(str_stuff);                                                                   \
                                                                                                    \
         std::ostringstream _m_oss_assertorlogandthrow_temp;                                        \
                                                                                                    \
         _m_oss_assertorlogandthrow_temp << "M_HP_ASSERT_OR_LOG_AND_THROW  FAILED: " << str_stuff   \
-                                        << " (" << __FILE__ << ":" << __LINE__ << ")";             \
+                                        << M_HP_FILE_FUNC_LINE_STR << " (" << #exp << ")==false";  \
                                                                                                    \
         throw std::runtime_error(_m_oss_assertorlogandthrow_temp.str());                           \
     }
@@ -38,7 +38,7 @@
         {                                                                                          \
             if (!(exp))                                                                            \
             {                                                                                      \
-                M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(str_stuff)                                     \
+                M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(exp, str_stuff)                                \
             }                                                                                      \
         }                                                                                          \
     }
@@ -48,7 +48,7 @@
         {                                                                                          \
             if constexpr (!(exp))                                                                  \
             {                                                                                      \
-                M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(str_stuff)                                     \
+                M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(exp, str_stuff)                                \
             }                                                                                      \
         }                                                                                          \
     }
