@@ -184,7 +184,7 @@ void TestBitFieldEnum()
         typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
-        (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
+        (misc::are_same_v<EnumUnderlying_t, UnderlyingTypeActual_t>),
         EnumUtil<EnumWrapper_t>::TypeName()
             << "Underlying type was: "
             << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
@@ -217,7 +217,7 @@ void TestCountingEnum()
         typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
-        (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
+        (misc::are_same_v<EnumUnderlying_t, UnderlyingTypeActual_t>),
         EnumUtil<EnumWrapper_t>::TypeName()
             << "Underlying type was: "
             << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
@@ -299,21 +299,13 @@ struct Counting : public EnumBaseCounting<EnumFirstValue::None>
     {
         switch (ENUM_VALUE)
         {
-            case None:
-            {
-                return "None";
+            case None: { return "None";
             }
-            case One:
-            {
-                return "One";
+            case One: { return "One";
             }
-            case Two:
-            {
-                return "Two";
+            case Two: { return "Two";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -398,8 +390,7 @@ BOOST_AUTO_TEST_CASE(Case_1_MiscEnumUtil_Counting_Tests)
 {
     TestCountingEnum<Counting>();
 
-    BOOST_CHECK(
-        (std::is_same<std::underlying_type<Counting::Enum>::type, EnumUnderlying_t>::value));
+    BOOST_CHECK((misc::are_same_v<std::underlying_type<Counting::Enum>::type, EnumUnderlying_t>));
 
     BOOST_CHECK(Counting::None == static_cast<Counting::Enum>(0));
     BOOST_CHECK(Counting::One == static_cast<Counting::Enum>(1));
@@ -535,7 +526,7 @@ BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
 
     using Under_t = std::underlying_type<Bitfield::Enum>::type;
 
-    BOOST_CHECK((std::is_same<Under_t, EnumUnderlying_t>::value));
+    BOOST_CHECK((are_same_v<Under_t, EnumUnderlying_t>));
 
     {
         Under_t none { 0 };

@@ -147,7 +147,7 @@ namespace misc
         const std::string & NAMESPACE_PREFIX_STR = "")
     {
         std::string typeName;
-        if constexpr (std::is_same<T, void>::value == false)
+        if constexpr (are_same_v<T, void> == false)
         {
             if (OPTIONS & ToStringPrefix::Typename)
             {
@@ -262,9 +262,7 @@ namespace misc
         const bool WILL_WRAP = false,
         const std::string & PREFIX = "")
     {
-        const bool IS_STR_TYPE { (
-            std::is_same<std::remove_const_t<T>, char *>::value
-            || std::is_same<std::remove_const_t<T>, std::string>::value) };
+        const bool IS_STR_TYPE { (are_same_v<T, char *> || are_same_v<T, std::string>)};
 
         return string_helpers::NameEqualsValueStr(
             NAME, ToString(VALUE), WILL_WRAP, PREFIX, IS_STR_TYPE);

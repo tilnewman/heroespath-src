@@ -170,18 +170,15 @@ inline constexpr T & operator^=(T & l, const T R)
 
 namespace helpers
 {
-
-    using namespace heroespath::misc;
-
     template <typename T1, typename T2>
     struct are_bitwise_enum_types_valid
         : std::integral_constant<
               bool,
-              ((are_same_v<
+              ((misc::are_same_v<
                     T1,
-                    T2> && (are_all_v<EnumUnderlying_t, T1, T2> || are_all_enum_v<T1, T2>))
-               || (are_same_v<T1, EnumUnderlying_t> && are_all_enum_v<T2>)
-               || (are_same_v<T2, EnumUnderlying_t> && are_all_enum_v<T1>))>
+                    T2> && (misc::are_all_v<EnumUnderlying_t, T1, T2> || misc::are_all_enum_v<T1, T2>))
+               || (misc::are_same_v<T1, EnumUnderlying_t> && misc::are_all_enum_v<T2>)
+               || (misc::are_same_v<T2, EnumUnderlying_t> && misc::are_all_enum_v<T1>))>
     {};
 
     template <typename... T>

@@ -119,11 +119,9 @@ namespace misc
                 return RETURN_IF_NOT_FOUND;
             }
 
-            if constexpr (
-                std::is_same<std::remove_const_t<T>, bool>::value || std::is_same<T, bool>::value)
+            if constexpr (are_same_v<T, bool>)
             {
-                const auto VALUE_STR_CLEANED { misc::TrimWhitespaceCopy(
-                    misc::ToLowerCopy(VALUE_STR)) };
+                const auto VALUE_STR_CLEANED { TrimWhitespaceCopy(ToLowerCopy(VALUE_STR)) };
 
                 if ((VALUE_STR_CLEANED == "yes") || (VALUE_STR_CLEANED == "1")
                     || (VALUE_STR_CLEANED == "true"))
@@ -140,7 +138,7 @@ namespace misc
 
             // lexical_cast<>() does not work as expected with one byte arithmetic types, so
             // this block is a work-around for that
-            if constexpr (misc::are_integral_nobool_v<T> && (sizeof(T) == 1))
+            if constexpr (are_integral_nobool_v<T> && (sizeof(T) == 1))
             {
                 const int NUMBER_MIN_INT { std::numeric_limits<int>::lowest() };
                 const int NUMBER_MAX_INT { std::numeric_limits<int>::max() };
@@ -173,7 +171,7 @@ namespace misc
                         << NUMBER_MIN_T_AS_INT << ", " << NUMBER_MAX_T_AS_INT
                         << "] and the given value of \"" << VALUE_STR << "\" or (" << RESULT_AS_INT
                         << ") is outside of that range.  Returning return_on_conversion_error="
-                        << misc::ToString(RETURN_IF_CONVERSION_ERROR));
+                        << ToString(RETURN_IF_CONVERSION_ERROR));
 
                     return RETURN_IF_CONVERSION_ERROR;
                 }

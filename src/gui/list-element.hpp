@@ -108,7 +108,7 @@ namespace gui
             , textRegionUPtr_()
             , isValid_(IS_VALID)
         {
-            if constexpr (!std::is_same<Element_t, NoElement_t>::value)
+            if constexpr (!misc::are_same_v<Element_t, NoElement_t>)
             {
                 elementOpt_ = ELEMENT_OPT;
             }
@@ -175,7 +175,7 @@ namespace gui
 
         bool HasElement() const
         {
-            if constexpr (std::is_same<Element_t, NoElement_t>::value)
+            if constexpr (misc::are_same_v<Element_t, NoElement_t>)
             {
                 return false;
             }

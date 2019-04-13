@@ -240,7 +240,7 @@ struct EnumUtil
 
     static constexpr bool IsValid(const EnumUnderlying_t ENUM_VALUE)
     {
-        if constexpr (std::is_same<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>::value)
+        if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
         {
             return (ENUM_VALUE <= enum_helpers::CountingEnum<EnumWrapper_t>::LargestValidValue());
         }
@@ -257,7 +257,7 @@ struct EnumUtil
 
     static constexpr EnumUnderlying_t LargestValidValue()
     {
-        if constexpr (std::is_same<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>::value)
+        if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
         {
             return enum_helpers::CountingEnum<EnumWrapper_t>::LargestValidValue();
         }
@@ -270,7 +270,7 @@ struct EnumUtil
     static const std::string
         ToString(const EnumUnderlying_t ENUM_VALUE, const EnumStringHow & HOW = EnumStringHow())
     {
-        if constexpr (std::is_same<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>::value)
+        if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
         {
             return EnumWrapper_t::ToString(static_cast<typename EnumWrapper_t::Enum>(ENUM_VALUE));
         }
@@ -290,7 +290,7 @@ struct EnumUtil
     // case insensitive, returns Count on error
     static typename EnumWrapper_t::Enum FromString(const std::string & STR)
     {
-        if constexpr (std::is_same<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>::value)
+        if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
         {
             return enum_helpers::CountingEnum<EnumWrapper_t>::FromString(STR);
         }
