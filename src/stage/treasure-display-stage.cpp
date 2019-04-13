@@ -641,13 +641,13 @@ namespace stage
             const auto DEFAULT_CORPSE_KEY_STR_VEC { creature::race::CorpseImageKeys(
                 creature::race::Human) };
 
-            return misc::Vector::SelectRandom(DEFAULT_CORPSE_KEY_STR_VEC);
+            return misc::RandomSelect(DEFAULT_CORPSE_KEY_STR_VEC);
         }
         else
         {
             // Allow duplicates in corpseKeyStrVec so that the more a race was faced
             // during combat means the more likely that corpse image is shown.
-            return misc::Vector::SelectRandom(corpseKeyStrVec);
+            return misc::RandomSelect(corpseKeyStrVec);
         }
     }
 

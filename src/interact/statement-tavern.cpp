@@ -38,7 +38,7 @@ namespace interact
         {
             using namespace compose;
 
-            if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            if ((misc::Random(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 const auto BEAST_RACE_NAME { (
                     (DoesPartyHaveWolfens(PARTY)) ? std::string("wolfen ")
@@ -47,7 +47,7 @@ namespace interact
                 return "Is that " + std::string(BEAST_RACE_NAME) + "allowed in here?";
             }
 
-            switch (misc::random::Int(5))
+            switch (misc::Random(5))
             {
                 case 1:
                 {
@@ -81,7 +81,7 @@ namespace interact
         {
             using namespace compose;
 
-            if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            if ((misc::Random(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 const auto BEAST_RACE_NAME { (
                     (DoesPartyHaveWolfens(PARTY)) ? std::string("wolfen ")
@@ -92,7 +92,7 @@ namespace interact
                       "Nice " + std::string(BEAST_RACE_NAME) + ".  Does he" }) };
 
                 std::string secondPart { "" };
-                switch (misc::random::Int(6))
+                switch (misc::Random(6))
                 {
                     case 0:
                     {
@@ -136,7 +136,7 @@ namespace interact
                 return AppendIf(RandomOrEmpty(TavernNoises())) + FIRST_PART + secondPart + "?";
             }
 
-            switch (misc::random::Int(20))
+            switch (misc::Random(20))
             {
                 case 0:
                 {

@@ -1405,7 +1405,7 @@ namespace combat
                 continue;
             }
 
-            misc::Vector::ShuffleVec(cNodesOfBlockingTypeRolePVec);
+            misc::RandomShuffle(cNodesOfBlockingTypeRolePVec);
 
             while (cNodesOfBlockingTypeRolePVec.empty() == false)
             {

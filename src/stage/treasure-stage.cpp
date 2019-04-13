@@ -708,7 +708,7 @@ namespace stage
                 gui::sound_effect::TreasureOpen4,
                 gui::sound_effect::TreasureOpen5 };
 
-        return misc::Vector::SelectRandom(treasureOpeningSfx);
+        return misc::RandomSelect(treasureOpeningSfx);
     }
 
     void TreasureStage::LockPickSuccess()

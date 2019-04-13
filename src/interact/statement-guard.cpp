@@ -22,7 +22,7 @@ namespace interact
         {
             using namespace compose;
 
-            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            if ((misc::Random(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 return Random({ "I'll have to check if ", "I don't know if " })
                     + Random({ "that ", "your " }) + BeastRaceName(PARTY)
@@ -46,7 +46,7 @@ namespace interact
         {
             using namespace compose;
 
-            switch (misc::random::Int(6))
+            switch (misc::Random(6))
             {
                 case 0:
                 {
@@ -100,7 +100,7 @@ namespace interact
         {
             using namespace compose;
 
-            switch (misc::random::Int(7))
+            switch (misc::Random(7))
             {
                 case 0:
                 {

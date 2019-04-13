@@ -85,7 +85,7 @@ namespace combat
     Health_t Trap::RandomDamage() const
     {
         const auto RANDOM_DAMAGE { static_cast<double>(
-            misc::random::Int(damageRange_.Min().Get(), damageRange_.Max().Get())) };
+            misc::Random(damageRange_.Min().Get(), damageRange_.Max().Get())) };
 
         const auto SQRT_RANDOM_DAMAGE { std::sqrt(static_cast<double>(RANDOM_DAMAGE)) };
 
@@ -121,7 +121,7 @@ namespace combat
 
     std::size_t Trap::RandomEffectedPlayersCount() const
     {
-        return misc::random::SizeT(playerCountRange_.Min(), playerCountRange_.Max());
+        return misc::Random(playerCountRange_.Min(), playerCountRange_.Max());
     }
 
     Rank_t Trap::FindAveragePlayerRank() const

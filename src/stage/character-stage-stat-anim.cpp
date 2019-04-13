@@ -101,16 +101,16 @@ namespace stage
             REGION_RIGHT,
             ANIM_MOVE_SPEED_MIN_,
             ANIM_MOVE_SPEED_MAX_,
-            misc::random::Float(REGION_LEFT, REGION_RIGHT),
-            misc::random::Float(REGION_LEFT, REGION_RIGHT));
+            misc::Random(REGION_LEFT, REGION_RIGHT),
+            misc::Random(REGION_LEFT, REGION_RIGHT));
 
         animPosSliderVert_ = gui::SliderDrift<float>(
             REGION_TOP,
             REGION_BOTTOM,
             ANIM_MOVE_SPEED_MIN_,
             ANIM_MOVE_SPEED_MAX_,
-            misc::random::Float(REGION_TOP, REGION_BOTTOM),
-            misc::random::Float(REGION_TOP, REGION_BOTTOM));
+            misc::Random(REGION_TOP, REGION_BOTTOM),
+            misc::Random(REGION_TOP, REGION_BOTTOM));
     }
 
 } // namespace stage

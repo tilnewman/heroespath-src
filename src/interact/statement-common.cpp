@@ -34,7 +34,7 @@ namespace interact
         {
             using namespace compose;
 
-            if ((misc::random::Int(5) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            if ((misc::Random(5) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 return "Take your "
                     + Random({ "wretched",
@@ -47,7 +47,7 @@ namespace interact
                     + Random({ " somewhere else", " elsewhere" }) + PeriodOrBang();
             }
 
-            switch (misc::random::Int(7))
+            switch (misc::Random(7))
             {
                 case 0:
                 {
@@ -99,16 +99,16 @@ namespace interact
         {
             using namespace compose;
 
-            if ((misc::random::Int(10) == 0) && (DoesPartyHaveWolfens(PARTY)))
+            if ((misc::Random(10) == 0) && (DoesPartyHaveWolfens(PARTY)))
             {
                 return Random({ "Nice ", "Good " }) + Random({ "dog", "doggy" })
                     + Random({ ".  Easy", ".  Easy now", ".  Down", ".  Sit", ".  Roll over" })
                     + PeriodOrBang();
             }
 
-            if ((misc::random::Int(5) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            if ((misc::Random(5) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
-                const auto RAND_NUM { misc::random::Int(3) };
+                const auto RAND_NUM { misc::Random(3) };
                 if (RAND_NUM == 0)
                 {
                     return AppendIf(Random({ "Wow" + PeriodOrBang(),
@@ -146,7 +146,7 @@ namespace interact
                 }
             }
 
-            switch (misc::random::Int(15))
+            switch (misc::Random(15))
             {
                 case 0: { return CapFirstLetter(Random(PartyNames())) + Random({ "?", "!" });
                 }

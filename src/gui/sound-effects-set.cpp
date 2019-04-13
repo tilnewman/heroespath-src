@@ -121,7 +121,7 @@ namespace gui
         }
         else
         {
-            PlayAt(misc::random::SizeT(sfxEnums_.size() - 1));
+            PlayAt(misc::Random(sfxEnums_.size() - 1));
         }
     }
 
@@ -133,7 +133,7 @@ namespace gui
         }
         else
         {
-            return misc::Vector::SelectRandom(sfxEnums_);
+            return misc::RandomSelect(sfxEnums_);
         }
     }
 } // namespace gui

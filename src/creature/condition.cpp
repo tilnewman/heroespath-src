@@ -110,7 +110,7 @@ namespace creature
                     }
                 }
 
-                if (misc::random::Int(100) < (10 + CREATURE_PTR->Rank().As<int>()))
+                if (misc::Random(100) < (10 + CREATURE_PTR->Rank().As<int>()))
                 {
                     CREATURE_PTR->ConditionRemove(Conditions::Dazed);
 
@@ -171,7 +171,7 @@ namespace creature
                     }
                 }
 
-                if (misc::random::Int(100) < (15 + CREATURE_PTR->Rank().As<int>()))
+                if (misc::Random(100) < (15 + CREATURE_PTR->Rank().As<int>()))
                 {
                     CREATURE_PTR->ConditionRemove(Conditions::AsleepNatural);
 
@@ -191,7 +191,7 @@ namespace creature
                         Traits::Strength,
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))
-                    && (misc::random::Int(9) == 0))
+                    && (misc::Random(9) == 0))
                 {
                     creature::CondEnumVec_t condsRemoved;
 
@@ -215,12 +215,12 @@ namespace creature
                 else
                 {
                     const auto DAMAGE_BASE { (
-                        (CREATURE_PTR->IsPixie()) ? 0 : misc::random::Int(1, 5)) };
+                        (CREATURE_PTR->IsPixie()) ? 0 : misc::Random(1, 5)) };
 
                     const auto DAMAGE_RAND_MAX { std::max(
                         1, static_cast<int>(CREATURE_PTR->HealthNormal().As<float>() * 0.1f)) };
 
-                    const auto DAMAGE_FROM_HEALTH_NORMAL { misc::random::Int(1, DAMAGE_RAND_MAX) };
+                    const auto DAMAGE_FROM_HEALTH_NORMAL { misc::Random(1, DAMAGE_RAND_MAX) };
 
                     const Health_t DAMAGE_FINAL { Health_t(
                         -1 * (DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL)) };
@@ -302,7 +302,7 @@ namespace creature
                     }
                 }
 
-                if (misc::random::Int(100) < (8 + CREATURE_PTR->Rank().As<int>()))
+                if (misc::Random(100) < (8 + CREATURE_PTR->Rank().As<int>()))
                 {
                     CREATURE_PTR->ConditionRemove(Conditions::AsleepMagical);
 

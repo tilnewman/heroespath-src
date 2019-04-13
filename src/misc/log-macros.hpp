@@ -25,6 +25,11 @@
 #define M_HP_FILE_FUNC_LINE_STR_VAR                                                                \
     const std::string FILE_FUNC_LINE_STR { M_HP_FILE_FUNC_LINE_STR };
 
+#define M_HP_STREAM_VAR(var) ", " #var "=" << var
+
+#define M_HP_STREAM_TYPE(the_type)                                                                 \
+    ", " #the_type << "=" << boost::typeindex::type_id<the_type>().pretty_name()
+
 //
 
 namespace heroespath

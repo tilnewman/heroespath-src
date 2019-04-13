@@ -152,7 +152,7 @@ namespace item
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "treasure-coin-mult")) };
 
-        const auto COIN { Score_t::Make(COIN_BASE + misc::random::Int(COIN_RAND_BASE)) };
+        const auto COIN { Score_t::Make(COIN_BASE + misc::Random(COIN_RAND_BASE)) };
 
         const auto GEM_BASE { static_cast<int>(
             scores.Gem().As<float>()
@@ -164,7 +164,7 @@ namespace item
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "treasure-gem-mult")) };
 
-        const auto GEM { Score_t::Make(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
+        const auto GEM { Score_t::Make(GEM_BASE + misc::Random(GEM_RAND_BASE)) };
 
         const auto MAGIC_BASE { static_cast<creature::Trait_t>(
             scores.Magic().As<float>()
@@ -176,7 +176,7 @@ namespace item
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "treasure-magic-mult")) };
 
-        const auto MAGIC { Score_t::Make(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
+        const auto MAGIC { Score_t::Make(MAGIC_BASE + misc::Random(MAGIC_RAND_BASE)) };
 
         const auto RELIGIOUS_BASE { static_cast<creature::Trait_t>(
             scores.Religious().As<float>()
@@ -189,7 +189,7 @@ namespace item
                 "treasure-religious-mult")) };
 
         const auto RELIGIOUS { Score_t::Make(
-            RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE)) };
+            RELIGIOUS_BASE + misc::Random(RELIGIOUS_RAND_BASE)) };
 
         return TreasureScores(COIN, GEM, MAGIC, RELIGIOUS);
     }
@@ -291,7 +291,7 @@ namespace item
 
         ItemFactory itemFactory;
 
-        const auto ITEM_PTR { itemFactory.Make(misc::Vector::SelectRandom(fallbackItemProfiles_)) };
+        const auto ITEM_PTR { itemFactory.Make(misc::RandomSelect(fallbackItemProfiles_)) };
 
         itemCache_OutParam.items_pvec.emplace_back(ITEM_PTR);
     }
@@ -305,7 +305,7 @@ namespace item
             (POSSIBLE_SELECTIONS.empty() == false),
             "combat::TreasureFactory::SelectRandomWeighted() was given an empty vector.");
 
-        const auto RAND_WEIGHT { misc::random::Double(WEIGHT_SUM) };
+        const auto RAND_WEIGHT { misc::Random(WEIGHT_SUM) };
 
         double runningWeightSum { 0.0 };
         for (std::size_t i(0); i <= INDEX_LIMIT; ++i)

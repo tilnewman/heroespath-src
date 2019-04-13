@@ -113,35 +113,6 @@ namespace misc
             return finalVec;
         }
 
-        template <typename T>
-        static void ShuffleVec(std::vector<T> & v)
-        {
-            if (v.size() > 1)
-            {
-                std::shuffle(v.begin(), v.end(), random::MersenneTwister::engine);
-            }
-        }
-
-        template <typename T>
-        static T & SelectRandom(std::vector<T> & vector)
-        {
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (vector.empty() == false),
-                "misc::Vector::SelectRandom(non-const) was given an empty vector.");
-
-            return vector[misc::random::SizeT(vector.size() - 1)];
-        }
-
-        template <typename T>
-        static const T & SelectRandom(const std::vector<T> & VECTOR)
-        {
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (VECTOR.empty() == false),
-                "misc::Vector::SelectRandom(const) was given an empty vector.");
-
-            return VECTOR[misc::random::SizeT(VECTOR.size() - 1)];
-        }
-
         enum JoinOpt : unsigned
         {
             None = 0,

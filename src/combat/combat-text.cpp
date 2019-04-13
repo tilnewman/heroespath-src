@@ -420,9 +420,9 @@ namespace combat
                     "surges", "charges", "leaps", "rushes", "springs"
                 };
 
-                ss << misc::Vector::SelectRandom(strVec);
+                ss << misc::RandomSelect(strVec);
 
-                if (misc::random::Bool())
+                if (misc::RandomBool())
                 {
                     ss << " forward";
                 }
@@ -771,7 +771,7 @@ namespace combat
 
         std::sort(strVec.begin(), strVec.end());
         strVec.erase(std::unique(strVec.begin(), strVec.end()), strVec.end());
-        return misc::Vector::SelectRandom(strVec);
+        return misc::RandomSelect(strVec);
     }
 
     const std::string
@@ -1247,7 +1247,7 @@ namespace combat
 
     const std::string Text::InitialCombatStatusMessagePrefix() const
     {
-        switch (misc::random::Int(4))
+        switch (misc::Random(4))
         {
             case 0:
             {

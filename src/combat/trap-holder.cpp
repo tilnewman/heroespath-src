@@ -319,7 +319,7 @@ namespace combat
                 severityRatioMax = 1.0f;
             }
 
-            return misc::Vector::SelectRandom(
+            return misc::RandomSelect(
                 GetWithSeverityRatioBetween(severityRatioMin, severityRatioMax));
         }
 

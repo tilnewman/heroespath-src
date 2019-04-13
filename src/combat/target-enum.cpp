@@ -117,7 +117,7 @@ namespace combat
 
     const std::string TargetType::ActionPhrase(const Enum TARGET_TYPE)
     {
-        const std::string PREAMBLE { ((misc::random::Bool()) ? "at " : "upon ") };
+        const std::string PREAMBLE { ((misc::RandomBool()) ? "at " : "upon ") };
 
         switch (TARGET_TYPE)
         {

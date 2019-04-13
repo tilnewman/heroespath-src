@@ -695,7 +695,7 @@ namespace gui
 
         if (musicInfo.Which() == music::CombatIntro)
         {
-            musicInfo = misc::Vector::SelectRandom(combatIntroMusicInfoVec_);
+            musicInfo = misc::RandomSelect(combatIntroMusicInfoVec_);
             musicUPtr = OpenMusic(musicInfo.Filename(), music::Directory(music::CombatIntro));
         }
         else

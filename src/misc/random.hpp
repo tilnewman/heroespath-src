@@ -14,117 +14,223 @@
 
 #include <algorithm>
 #include <array>
-#include <cmath> //for std::nextafter()
-#include <limits> //for std::uniform_..._distribution() and numeric_limits<>
+#include <cmath>
+#include <iterator>
+#include <limits>
 #include <random>
+#include <tuple>
 #include <typeinfo>
-#include <vector>
+
+#include <boost/type_index.hpp>
 
 namespace heroespath
 {
 namespace misc
 {
-    namespace random
+    namespace random_helpers
     {
 
-        // This single engine and seed is used for all randomness in the game engine
-        struct MersenneTwister
+        class MersenneTwister19937
         {
-            static void Seed()
+        public:
+            using Engine_t = std::mt19937_64;
+
+            MersenneTwister19937() = delete;
+
+            static void Setup()
             {
-                std::array<int, engine.state_size> seedData;
-                std::random_device randDevice;
-                std::generate_n(seedData.data(), seedData.size(), std::ref(randDevice));
-                std::seed_seq seedSequence(seedData.begin(), seedData.end());
-                engine.seed(seedSequence);
+                std::random_device randomDevice;
+
+                // Seed Method #1 Complete
+                // This seed method brings out the best in mt19937, but now it is std::see_seq that
+                // is limiting your entropy.
+                //
+                // std::array<std::random_device::result_type, engine_.state_size> initialSeed;
+                // std::generate_n(initialSeed.data(), initialSeed.size(), std::ref(randomDevice));
+                // std::seed_seq seedSequence(initialSeed.begin(), initialSeed.end());
+                // engine_.seed(seedSequence);
+                // const std::string SEED_STR { "(way too big to log)" };
+
+                // Seed Method #2 Quick and Dirty
+                //  This is the quickest and simplest way to seed, and it makes recording the seed
+                //  for replay and troubleshooting easy.  The MT19937 is an amazing algorithm but
+                //  you will never see it when seeding like this.  This will make the output less
+                //  than perfectly uniform and reduce the period dramatically, but not in any way
+                //  casual users would ever see.  This is still lightyears better than
+                //  srand(time(NULL)) and rand() could ever be.
+                //
+                const auto SEED { randomDevice() };
+                std::seed_seq seedSequence { SEED };
+                engine_.seed(seedSequence);
+                const std::string SEED_STR { std::to_string(SEED) };
+
+                engine_.discard(WARM_UP_COUNT_);
+
+                M_HP_LOG(
+                    "Random Number Generator Setup:  engine=std::mt19937_64, seed="
+                    << SEED_STR
+                    << ", seed_size=" << (seedSequence.size() * sizeof(std::seed_seq::result_type))
+                    << "bytes, warm_up_count=" << std::to_string(WARM_UP_COUNT_)
+                    << ", first_random_number<"
+                    << boost::typeindex::type_id<Engine_t::result_type>().pretty_name()
+                    << ">=" << engine_());
             }
 
-            static std::mt19937 engine;
+            static Engine_t & Engine() noexcept { return engine_; }
+
+        private:
+            static Engine_t engine_;
+            static const unsigned long long WARM_UP_COUNT_ { 1 << 20 };
         };
 
-        template <typename T>
-        inline T Real(const T THE_MIN, const T THE_MAX)
+        template <typename T, typename = std::enable_if_t<are_arithmetic_nobool_v<T>>>
+        T RandomImpl(const T THE_MIN, const T THE_MAX)
         {
-            if (misc::IsRealClose(THE_MIN, THE_MAX))
+            if constexpr (are_floating_point_v<T>)
             {
-                return THE_MIN;
+                std::uniform_real_distribution<T> realDistribution(THE_MIN, THE_MAX);
+                return realDistribution(random_helpers::MersenneTwister19937::Engine());
             }
             else
             {
-                // Tested uniform_real_distribution on both Windows and MacOS over ranges
-                // where min==max and where min>max.  In both cases the distribution didn't
-                // crash and behaved as expected.  So no need to check that min<max.
-
-                // uniform_real_distribution is [x,y) so the nextafter() call is needed
-                std::uniform_real_distribution<T> uniformDist(
-                    THE_MIN, std::nextafter(THE_MAX, std::numeric_limits<T>::max()));
-
-                return uniformDist(MersenneTwister::engine);
+                std::uniform_int_distribution<T> intDistribution(THE_MIN, THE_MAX);
+                return intDistribution(random_helpers::MersenneTwister19937::Engine());
             }
         }
 
-        inline double Double(const double THE_MIN, const double THE_MAX)
+    } // namespace random_helpers
+
+    // this is really just an error handling wrapper around RandomImpl()
+    template <typename T, typename = std::enable_if_t<are_arithmetic_nobool_v<T>>>
+    T Random(const T THE_MIN, const T THE_MAX_ORIG)
+    {
+        // std::uniform_int_distribution doesn't work with single byte types
+        if constexpr (sizeof(T) == 1)
         {
-            return Real<double>(THE_MIN, THE_MAX);
+            return static_cast<T>(
+                Random(static_cast<int>(THE_MIN), static_cast<int>(THE_MAX_ORIG)));
         }
-
-        inline double Double(const double THE_MAX = 1.0) { return Double(0.0, THE_MAX); }
-
-        inline float Float(const float THE_MIN, const float THE_MAX)
+        else
         {
-            return Real<float>(THE_MIN, THE_MAX);
-        }
+            if (THE_MIN > THE_MAX_ORIG)
+            {
+                return Random(THE_MAX_ORIG, THE_MIN);
+            }
 
-        inline float Float(const float THE_MAX = 1.0f) { return Float(0.0f, THE_MAX); }
-
-        // The result is undefined if T is not one of: short, int, long, long long, unsigned short,
-        // unsigned int, unsigned long, or unsigned long long.
-        template <typename T>
-        inline T NonReal(const T THE_MIN, const T THE_MAX)
-        {
-            // Tested uniform_int_distribution<int> on both Windows and MacOS over ranges where
-            // min==max and where min>max.  In both cases the distribution didn't crash and behaved
-            // as expected, except when min>max when it seemed to return random out-of-range values.
-            // So to ensure results within range check that min<=max.
-
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (THE_MIN <= THE_MAX),
-                "misc::random::NonReal<" << typeid(T).name() << ">(min=" << THE_MIN << ", max="
-                                         << THE_MAX << ")  The min was not <= the max.");
-            if (THE_MIN == THE_MAX)
+            // TODO
+            // if (THE_MIN == THE_MAX_ORIG)
+            if (IsRealClose(THE_MIN, THE_MAX_ORIG))
             {
                 return THE_MIN;
             }
-            else
+
+            // std::uniform_real_distribution is over the half-closed interval [MIN, MAX) so we need
+            // to advance the MAX or else it will be impossible to return the MAX.
+            T theMaxFinal { NextAfterIfReal(THE_MAX_ORIG) };
+
+            // std::uniform_whatever_distribution will crashes/undefined behavior if the difference
+            // (MAX - MIN) overflows, so handle that special case here
+            if constexpr (std::is_signed_v<T>)
             {
-                // uniform_int_distribution is [x,y] so no nextafter() call is needed
-                std::uniform_int_distribution<T> uni_dist(THE_MIN, THE_MAX);
-                return uni_dist(MersenneTwister::engine);
+                const T THE_MAX_FINAL_LIMIT { (THE_MIN + std::numeric_limits<T>::max()) };
+
+                if ((THE_MIN < T(0)) && (THE_MAX_FINAL_LIMIT < theMaxFinal))
+                {
+                    M_HP_LOG_ERR(
+                        "Unable to generate random number with the [MIN,MAX] given because the "
+                        "difference (MAX-MIN) overflows.  Will generate a random number over a "
+                        "reduced "
+                        "range instead."
+                        << M_HP_STREAM_TYPE(T) << M_HP_STREAM_VAR(THE_MIN)
+                        << M_HP_STREAM_VAR(THE_MAX_ORIG) << M_HP_STREAM_VAR(theMaxFinal)
+                        << ((IsRealClose(THE_MAX_ORIG, theMaxFinal)) ? "(same)" : "(different)")
+                        << M_HP_STREAM_VAR(THE_MAX_FINAL_LIMIT));
+
+                    theMaxFinal = THE_MAX_FINAL_LIMIT;
+                }
             }
+
+            return random_helpers::RandomImpl(THE_MIN, theMaxFinal);
         }
+    }
 
-        template <typename T>
-        inline T NonReal(const T THE_MAX)
-        {
-            return NonReal<T>(0, THE_MAX);
-        }
+    template <typename T>
+    T Random(const T THE_MAX)
+    {
+        return Random(T(0), THE_MAX);
+    }
 
-        inline int Int(const int THE_MIN, const int THE_MAX)
-        {
-            return NonReal<int>(THE_MIN, THE_MAX);
-        }
+    template <typename T>
+    T Random()
+    {
+        return Random(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max());
+    }
 
-        inline int Int(const int THE_MAX) { return Int(0, THE_MAX); }
+    inline bool RandomBool() { return (Random(1) == 1); }
 
-        inline std::size_t SizeT(const std::size_t THE_MIN, const std::size_t THE_MAX)
-        {
-            return NonReal<std::size_t>(THE_MIN, THE_MAX);
-        }
+    template <typename Iterator_t, typename = std::enable_if_t<are_random_access_v<Iterator_t>>>
+    void RandomShuffle(const Iterator_t BEGIN, const Iterator_t END)
+    {
+        std::shuffle(BEGIN, END, random_helpers::MersenneTwister19937::Engine());
+    }
 
-        inline std::size_t SizeT(const std::size_t THE_MAX) { return SizeT(0, THE_MAX); }
+    template <
+        typename Container_t,
+        typename = std::enable_if_t<are_random_access_v<typename Container_t::iterator>>>
+    void RandomShuffle(Container_t & container)
+    {
+        RandomShuffle(std::begin(container), std::end(container));
+    }
 
-        inline bool Bool() { return (Int(1) == 1); }
-    } // namespace random
+    template <typename Container_t>
+    std::size_t RandomIndex(const Container_t & CONTAINER)
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (CONTAINER.empty() == false),
+            "Given an empty " << boost::typeindex::type_id<Container_t>().pretty_name()
+                              << " container.");
+
+        return Random(CONTAINER.size() - static_cast<std::size_t>(1));
+    }
+
+    template <
+        typename Container_t,
+        typename = std::enable_if_t<are_random_access_v<typename Container_t::iterator>>>
+    typename Container_t::value_type & RandomSelect(Container_t & container)
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (container.empty() == false),
+            "Given an empty " << boost::typeindex::type_id<Container_t>().pretty_name()
+                              << " container. (non-const version)");
+
+        const auto RANDOM_INDEX { RandomIndex(container) };
+
+        const auto RANDOM_INDEX_DIFF_T {
+            static_cast<typename Container_t::iterator::difference_type>(RANDOM_INDEX)
+        };
+
+        return *(std::begin(container) + RANDOM_INDEX_DIFF_T);
+    }
+
+    template <
+        typename Container_t,
+        typename = std::enable_if_t<are_random_access_v<typename Container_t::iterator>>>
+    const typename Container_t::value_type & RandomSelect(const Container_t & CONTAINER)
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (CONTAINER.empty() == false),
+            "Given an empty " << boost::typeindex::type_id<Container_t>().pretty_name()
+                              << " container. (const version)");
+
+        const auto RANDOM_INDEX { RandomIndex(CONTAINER) };
+
+        const auto RANDOM_INDEX_DIFF_T {
+            static_cast<typename Container_t::iterator::difference_type>(RANDOM_INDEX)
+        };
+
+        return *(std::begin(CONTAINER) + RANDOM_INDEX_DIFF_T);
+    }
+
 } // namespace misc
 } // namespace heroespath
 

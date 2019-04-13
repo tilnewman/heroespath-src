@@ -219,12 +219,12 @@ namespace avatar
 
     float Model::RandomBlinkDelay() const
     {
-        return misc::random::Float(TIME_BETWEEN_BLINK_MIN_SEC_, TIME_BETWEEN_BLINK_MAX_SEC_);
+        return misc::Random(TIME_BETWEEN_BLINK_MIN_SEC_, TIME_BETWEEN_BLINK_MAX_SEC_);
     }
 
     float Model::RandomWalkDelay() const
     {
-        return misc::random::Float(TIME_BETWEEN_WALK_MIN_SEC_, TIME_BETWEEN_WALK_MAX_SEC_);
+        return misc::Random(TIME_BETWEEN_WALK_MIN_SEC_, TIME_BETWEEN_WALK_MAX_SEC_);
     }
 
     void Model::ExtendTimeUntilNextBlinkIfNeeded(const float PREV_BLINK_DELAY)
@@ -360,7 +360,7 @@ namespace avatar
             return walkRectIndex_;
         }
 
-        return misc::Vector::SelectRandom(possibleWalkRectIndexes_);
+        return misc::RandomSelect(possibleWalkRectIndexes_);
     }
 
     const sf::Vector2f Model::RandomWalkTarget() const
@@ -382,8 +382,8 @@ namespace avatar
         const auto RECT { walkRects_.at(walkRectIndex_) };
 
         const sf::Vector2f NEW_WALK_TARGET_POS_V(
-            misc::random::Float(RECT.left, RECT.left + RECT.width),
-            misc::random::Float(RECT.top, RECT.top + RECT.height));
+            misc::Random(RECT.left, RECT.left + RECT.width),
+            misc::Random(RECT.top, RECT.top + RECT.height));
 
         if (RECT.contains(NEW_WALK_TARGET_POS_V) == false)
         {
@@ -433,7 +433,7 @@ namespace avatar
             }
             else
             {
-                return misc::Vector::SelectRandom(dirVec);
+                return misc::RandomSelect(dirVec);
             }
         }
         else

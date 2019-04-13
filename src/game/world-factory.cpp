@@ -59,7 +59,7 @@ namespace game
                   avatar::Avatar::NameEnum::Pants,
                   avatar::Avatar::NameEnum::Thug,
                   avatar::Avatar::NameEnum::Whitebeard },
-                0, // misc::random::SizeT(0, 3),
+                0, // misc::Random(0, 3),
                 false));
         }
     }

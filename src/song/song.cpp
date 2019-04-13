@@ -464,7 +464,7 @@ namespace song
         {
             ss << "fingers ";
 
-            switch (misc::random::Int(3))
+            switch (misc::Random(3))
             {
                 case 1:
                 {
@@ -494,7 +494,7 @@ namespace song
         {
             ss << "hands ";
 
-            switch (misc::random::Int(3))
+            switch (misc::Random(3))
             {
                 case 1:
                 {
@@ -528,7 +528,7 @@ namespace song
     {
         if (SongType::Guitar == type_)
         {
-            switch (misc::random::Int(3))
+            switch (misc::Random(3))
             {
                 case 1: { return "melody";
                 }
@@ -542,7 +542,7 @@ namespace song
         }
         else
         {
-            switch (misc::random::Int(3))
+            switch (misc::Random(3))
             {
                 case 1: { return "drumming";
                 }
@@ -560,7 +560,7 @@ namespace song
     {
         if (SongType::Guitar == type_)
         {
-            switch (misc::random::Int(2))
+            switch (misc::Random(2))
             {
                 case 1: { return "melody";
                 }
@@ -572,7 +572,7 @@ namespace song
         }
         else
         {
-            if (misc::random::Bool())
+            if (misc::RandomBool())
             {
                 return "rhythm";
             }

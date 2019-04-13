@@ -1020,7 +1020,7 @@ namespace stage
                     creature::Creature character(
                         false,
                         nameSS.str(),
-                        ((misc::random::Bool()) ? creature::sex::Female : creature::sex::Male),
+                        ((misc::RandomBool()) ? creature::sex::Female : creature::sex::Male),
                         RACE_ENUM,
                         ROLE_ENUM,
                         creature::StatSet(10_str, 10_acc, 10_cha, 10_lck, 10_spd, 10_int),
@@ -1394,11 +1394,11 @@ namespace stage
 
                 if (length < 3.0f)
                 {
-                    length += misc::random::Float();
+                    length += misc::Random(1.0f);
                 }
                 else
                 {
-                    length += misc::random::Float(1.0f, length);
+                    length += misc::Random(1.0f, length);
                 }
             }
 
@@ -1526,14 +1526,14 @@ namespace stage
 
                 if (WILL_MAKE_SMALL)
                 {
-                    const auto GROWTH_HORIZ { misc::random::Float(
+                    const auto GROWTH_HORIZ { misc::Random(
                         GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - horizGrowthPrev))) };
 
                     horizGrowthPrev = GROWTH_HORIZ;
 
                     width += GROWTH_HORIZ;
 
-                    const auto GROWTH_VERT { misc::random::Float(
+                    const auto GROWTH_VERT { misc::Random(
                         GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - vertGrowthPrev))) };
 
                     vertGrowthPrev = GROWTH_VERT;
@@ -1542,8 +1542,8 @@ namespace stage
                 }
                 else
                 {
-                    width += misc::random::Float(1.0f, GROWTH_MAX);
-                    height += misc::random::Float(1.0f, GROWTH_MAX);
+                    width += misc::Random(1.0f, GROWTH_MAX);
+                    height += misc::Random(1.0f, GROWTH_MAX);
                 }
             }
 
@@ -1625,14 +1625,14 @@ namespace stage
 
                 if (WILL_MAKE_SMALL)
                 {
-                    const auto GROWTH_HORIZ { misc::random::Float(
+                    const auto GROWTH_HORIZ { misc::Random(
                         GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - horizGrowthPrev))) };
 
                     horizGrowthPrev = GROWTH_HORIZ;
 
                     width += GROWTH_HORIZ;
 
-                    const auto GROWTH_VERT { misc::random::Float(
+                    const auto GROWTH_VERT { misc::Random(
                         GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - vertGrowthPrev))) };
 
                     vertGrowthPrev = GROWTH_VERT;
@@ -1641,8 +1641,8 @@ namespace stage
                 }
                 else
                 {
-                    width += misc::random::Float(1.0f, GROWTH_MAX);
-                    height += misc::random::Float(1.0f, GROWTH_MAX);
+                    width += misc::Random(1.0f, GROWTH_MAX);
+                    height += misc::Random(1.0f, GROWTH_MAX);
                 }
             }
 

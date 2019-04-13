@@ -81,7 +81,7 @@ namespace spell
         {
             case Spells::Sparks:
             {
-                const auto RANDOM_VALUE { misc::random::Int(3) };
+                const auto RANDOM_VALUE { misc::Random(3) };
 
                 if (RANDOM_VALUE == 0)
                 {
@@ -106,7 +106,7 @@ namespace spell
             }
             case Spells::Bandage:
             {
-                const auto RANDOM_VALUE { misc::random::Int(3) };
+                const auto RANDOM_VALUE { misc::Random(3) };
 
                 if (RANDOM_VALUE == 0)
                 {

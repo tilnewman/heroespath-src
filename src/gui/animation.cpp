@@ -119,7 +119,7 @@ namespace gui
     {
         const auto VARY_SEC_MAX { 0.02f };
         timePerFrameSec_ -= VARY_SEC_MAX * 0.5f;
-        timePerFrameSec_ += misc::random::Float(VARY_SEC_MAX);
+        timePerFrameSec_ += misc::Random(VARY_SEC_MAX);
     }
 
     const Animation::IndexRectVec_t Animation::MakeFrameIndexRects(

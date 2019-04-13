@@ -455,7 +455,7 @@ namespace creature
                 return;
             }
 
-            const float RAND(misc::random::Float(0.0f, chanceCombined));
+            const float RAND(misc::Random(0.0f, chanceCombined));
 
             // Need to select WEAPON_SET.count weapons in WEAPON_SET.chanceMap, so
             // make a mapping of count to chance that has been selected already or not.
@@ -1244,7 +1244,7 @@ namespace creature
 
             // final determination of which material will be primary
             const auto SUBTOTAL { chanceCool + chanceMetal + chancePrecious };
-            const auto RAND { misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) };
+            const auto RAND { misc::Random(0.0f, std::max(1.0f, SUBTOTAL)) };
 
             if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
             {
@@ -1381,7 +1381,7 @@ namespace creature
 
             // final determination of which material will be secondary
             const auto SUBTOTAL { chanceCool + chanceMetal + chancePrecious };
-            const auto RAND { misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) };
+            const auto RAND { misc::Random(0.0f, std::max(1.0f, SUBTOTAL)) };
 
             if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
             {

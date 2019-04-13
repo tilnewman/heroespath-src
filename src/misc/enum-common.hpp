@@ -17,7 +17,6 @@
 //
 #include <cstddef> //for std::size_t
 #include <string>
-#include <type_traits> //for enable_if
 
 #include "misc/type-helpers.hpp"
 

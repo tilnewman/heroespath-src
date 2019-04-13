@@ -493,7 +493,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     BOOST_CHECK(
         MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(2.0f, 3.0f), Orientation::Count)
         == (std::vector<sf::Vector2f> {
-            { 10.0f, 10.0f }, { 12.0f, 10.0f }, { 12.0f, 13.0f }, { 10.0f, 13.0f } }));
+               { 10.0f, 10.0f }, { 12.0f, 10.0f }, { 12.0f, 13.0f }, { 10.0f, 13.0f } }));
 
     {
         const std::vector<sf::Vector2f> POS_VEC_10_10_LIMIT_E4_0 {
@@ -550,22 +550,22 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     BOOST_CHECK(
         MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 6.0f), Orientation::Horiz)
         == (std::vector<sf::Vector2f> {
-            { 16.0f, 10.0f }, { 20.0f, 10.0f }, { 20.0f, 16.0f }, { 16.0f, 16.0f } }));
+               { 16.0f, 10.0f }, { 20.0f, 10.0f }, { 20.0f, 16.0f }, { 16.0f, 16.0f } }));
 
     BOOST_CHECK(
         MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 6.0f), Orientation::Vert)
         == (std::vector<sf::Vector2f> {
-            { 10.0f, 14.0f }, { 14.0f, 14.0f }, { 14.0f, 20.0f }, { 10.0f, 20.0f } }));
+               { 10.0f, 14.0f }, { 14.0f, 14.0f }, { 14.0f, 20.0f }, { 10.0f, 20.0f } }));
 
     BOOST_CHECK(
         MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 6.0f), Orientation::Both)
         == (std::vector<sf::Vector2f> {
-            { 16.0f, 14.0f }, { 20.0f, 14.0f }, { 20.0f, 20.0f }, { 16.0f, 20.0f } }));
+               { 16.0f, 14.0f }, { 20.0f, 14.0f }, { 20.0f, 20.0f }, { 16.0f, 20.0f } }));
 
     BOOST_CHECK(
         MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 6.0f), Orientation::Count)
         == (std::vector<sf::Vector2f> {
-            { 10.0f, 10.0f }, { 14.0f, 10.0f }, { 14.0f, 16.0f }, { 10.0f, 16.0f } }));
+               { 10.0f, 10.0f }, { 14.0f, 10.0f }, { 14.0f, 16.0f }, { 10.0f, 16.0f } }));
 
     //
 
@@ -1221,13 +1221,14 @@ BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
     BOOST_CHECK(
         CenterCopy(RECT_I)
         == sf::FloatRect(
-            SCREEN_CENTER_V - (sf::Vector2f(300.0f, 400.0f) * 0.5f), sf::Vector2f(300.0f, 400.0f)));
+               SCREEN_CENTER_V - (sf::Vector2f(300.0f, 400.0f) * 0.5f),
+               sf::Vector2f(300.0f, 400.0f)));
 
     BOOST_CHECK(
         CenterCopy(RECT_I, SCALE_V_F)
         == sf::FloatRect(
-            SCREEN_CENTER_V - ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F * 0.5f),
-            ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F)));
+               SCREEN_CENTER_V - ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F * 0.5f),
+               ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F)));
 
     heroespath::gui::Display::Release();
     heroespath::misc::Log::Release();
@@ -2283,7 +2284,7 @@ BOOST_AUTO_TEST_CASE(ToStringTests)
 BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)
 {
     srand(static_cast<unsigned>(time(nullptr)));
-    heroespath::misc::random::MersenneTwister::Seed();
+    heroespath::misc::random_helpers::MersenneTwister19937::Setup();
 
     std::vector<sf::Texture> textures;
 

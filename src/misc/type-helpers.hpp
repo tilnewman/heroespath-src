@@ -109,6 +109,16 @@ namespace misc
     template <typename... T>
     inline constexpr bool are_number_v = are_number<T...>::value;
 
+    template <typename... T>
+    struct are_random_access
+        : std::conjunction<std::is_convertible<
+              typename std::iterator_traits<T>::iterator_category,
+              std::random_access_iterator_tag>...>
+    {};
+
+    template <typename... T>
+    inline constexpr bool are_random_access_v = are_random_access<T...>::value;
+
 } // namespace misc
 } // namespace heroespath
 

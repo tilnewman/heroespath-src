@@ -1610,7 +1610,7 @@ namespace creature
 
     bool Creature::TraitBonusTest(const Traits::Enum ENUM) const
     {
-        return (misc::random::Int(100) < bonusSet_.GetCopy(ENUM).Current());
+        return (misc::Random(100) < bonusSet_.GetCopy(ENUM).Current());
     }
 
     const TraitSet Creature::TraitsWorking() const

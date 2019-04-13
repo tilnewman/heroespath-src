@@ -54,7 +54,7 @@ namespace creature
     {
         return MakeAndEquipPlayer(
             NAME,
-            ((misc::random::Bool()) ? creature::sex::Female : creature::sex::Male),
+            ((misc::RandomBool()) ? creature::sex::Female : creature::sex::Male),
             RACE,
             ROLE,
             STATS,
@@ -122,19 +122,19 @@ namespace creature
     const CreaturePtr_t CreatureFactory::MakeGoblinGrunt() const
     {
         const StatSet STATS(
-            Strength_t(13 + misc::random::Int(5)),
-            Accuracy_t(13 + misc::random::Int(5)),
-            Charm_t(5 + misc::random::Int(5)),
-            Luck_t(5 + misc::random::Int(5)),
-            Speed_t(13 + misc::random::Int(5)),
-            Intell_t(3 + misc::random::Int(5)));
+            Strength_t(13 + misc::Random(5)),
+            Accuracy_t(13 + misc::Random(5)),
+            Charm_t(5 + misc::Random(5)),
+            Luck_t(5 + misc::Random(5)),
+            Speed_t(13 + misc::Random(5)),
+            Intell_t(3 + misc::Random(5)));
 
         return MakeAndEquipEnemy(
-            ((misc::random::Int(100) < 75) ? sex::Male : sex::Female),
+            ((misc::Random(100) < 75) ? sex::Male : sex::Female),
             race::Goblin,
             role::Grunt,
             STATS,
-            Health_t(misc::random::Int(10, 20)));
+            Health_t(misc::Random(10, 20)));
     }
 
 } // namespace creature

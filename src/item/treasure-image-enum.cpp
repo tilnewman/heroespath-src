@@ -64,7 +64,7 @@ namespace item
         {
             case BonePile:
             {
-                const auto RAND { misc::random::Int(2) };
+                const auto RAND { misc::Random(2) };
                 if (RAND == 0)
                 {
                     return "media-image-bone-pile-bone-pile-1";

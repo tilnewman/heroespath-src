@@ -52,7 +52,7 @@ namespace interact
                 ".  The master needs me."
             };
 
-            switch (misc::random::Int(2))
+            switch (misc::Random(2))
             {
                 case 0:
                 {
@@ -87,7 +87,7 @@ namespace interact
         {
             using namespace compose;
 
-            switch (misc::random::Int(18))
+            switch (misc::Random(18))
             {
                 case 0:
                 {

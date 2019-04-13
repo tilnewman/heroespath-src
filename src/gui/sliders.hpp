@@ -611,7 +611,7 @@ namespace gui
             }
             else
             {
-                return misc::random::Float(
+                return misc::Random(
                     std::min(speedMin_, speedMax_), std::max(speedMin_, speedMax_));
             }
         }
@@ -622,7 +622,7 @@ namespace gui
             // convert to doubles because there is no misc::random<T> yet...
             const double MIN_DOUBLE { static_cast<double>(std::min(MIN_ORIG, MAX_ORIG)) };
             const double MAX_DOUBLE { static_cast<double>(std::max(MIN_ORIG, MAX_ORIG)) };
-            const T RANDOM_VALUE { static_cast<T>(misc::random::Double(MIN_DOUBLE, MAX_DOUBLE)) };
+            const T RANDOM_VALUE { static_cast<T>(misc::Random(MIN_DOUBLE, MAX_DOUBLE)) };
 
             if (misc::IsRealClose(RANDOM_VALUE, VALUE_TO_AVOID_ORIG))
             {

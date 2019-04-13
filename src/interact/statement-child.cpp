@@ -34,12 +34,12 @@ namespace interact
         {
             using namespace compose;
 
-            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            if ((misc::Random(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 return "A " + BeastRaceName(PARTY) + "!";
             }
 
-            switch (misc::random::Int(5))
+            switch (misc::Random(5))
             {
                 case 0:
                 {
@@ -70,12 +70,12 @@ namespace interact
         {
             using namespace compose;
 
-            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            if ((misc::Random(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 return "A " + BeastRaceName(PARTY) + "!";
             }
 
-            switch (misc::random::Int(9))
+            switch (misc::Random(9))
             {
                 case 0:
                 {

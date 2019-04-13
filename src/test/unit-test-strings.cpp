@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case)
   *
 BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 {
-    auto makeRandomChar = []() { return static_cast<char>(misc::random::Int(32, 90)); };
+    auto makeRandomChar = []() { return static_cast<char>(misc::Random(32, 90)); };
 
     auto makeRandomString = [makeRandomChar](const std::size_t LENGTH) {
         std::string str;
@@ -159,7 +159,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 
         for (std::size_t testIteration(0); testIteration <= REPEAT_TEST_COUNT; ++testIteration)
         {
-            // misc::Vector::ShuffleVec(strings);
+            // misc::RandomShuffle(strings);
 
             trash.clear();
 

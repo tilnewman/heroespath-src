@@ -108,7 +108,7 @@ namespace stage
         , partyTextRegionUPtr_()
         , warningTextInfo_()
         , warningTextRegionUPtr_()
-        , warningTextSlider_(150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255)))
+        , warningTextSlider_(150, 255, 4.0f, static_cast<sf::Uint8>(misc::Random(150, 255)))
         , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("PartyStage's"))
         , willDisplayCharacterCountWarningText_(false)
         , unplayedCharactersPVec_()

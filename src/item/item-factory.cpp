@@ -227,7 +227,7 @@ namespace item
 
                 for (std::size_t i(0); i < ACTUAL_COUNT_TO_DISPLAY; ++i)
                 {
-                    const auto & PROFILE { misc::Vector::SelectRandom(tempProfiles) };
+                    const auto & PROFILE { misc::RandomSelect(tempProfiles) };
                     auto itemPtr { Make(PROFILE) };
 
                     randNameAndDescSS << "\tName=\"" << itemPtr->Name() << "\"\n\tDesc=\""

@@ -84,7 +84,7 @@ namespace game
         }
 
         srand(static_cast<unsigned>(time(nullptr)));
-        misc::random::MersenneTwister::Seed();
+        misc::random_helpers::MersenneTwister19937::Setup();
 
         Setup_ParseCommandLineArguments(ARGC, argv);
 

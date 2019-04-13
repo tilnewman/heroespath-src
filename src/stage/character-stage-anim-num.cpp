@@ -47,7 +47,7 @@ namespace stage
         , isHeldDown_(false)
         , textInfo_(TEXT_INFO)
         , text_()
-        , sliderX_(misc::random::Float(0.5f, 0.7f))
+        , sliderX_(misc::Random(0.5f, 0.7f))
         , // this controls the speed
         timerSec_(0.0f)
         , prevPosX_(-1.0f) // any negative value will work here

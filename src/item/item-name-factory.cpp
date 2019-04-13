@@ -244,7 +244,7 @@ namespace item
 
     const std::string ItemNameFactory::RandomCoatedPhrase() const
     {
-        if (misc::random::Bool())
+        if (misc::RandomBool())
         {
             return "dripping with";
         }
@@ -256,7 +256,7 @@ namespace item
 
     const std::string ItemNameFactory::RandomCoatedAdjective() const
     {
-        switch (misc::random::Int(3))
+        switch (misc::Random(3))
         {
             case 0:
             {
@@ -284,7 +284,7 @@ namespace item
 
     const std::string ItemNameFactory::RandomClaspNoun() const
     {
-        switch (misc::random::Int(2))
+        switch (misc::Random(2))
         {
             case 1:
             {

@@ -532,7 +532,7 @@ namespace map
             walkRegions.emplace_back(walkRegion);
         }
 
-        misc::Vector::ShuffleVec(walkRegions);
+        misc::RandomShuffle(walkRegions);
 
         // Had problems with NPCs starting at positions that collided with the player so this rect
         // is not adjust for collision detection with other avatars
@@ -552,8 +552,8 @@ namespace map
             for (int attemptCounter(0); attemptCounter < ATTEMPTS_PER_WALK_RECT; ++attemptCounter)
             {
                 const sf::Vector2f RAW_PROPOSED_NPC_POS_V(
-                    misc::random::Float(WALK_REGION.rect.left, sfutil::Right(WALK_REGION.rect)),
-                    misc::random::Float(WALK_REGION.rect.top, sfutil::Bottom(WALK_REGION.rect)));
+                    misc::Random(WALK_REGION.rect.left, sfutil::Right(WALK_REGION.rect)),
+                    misc::Random(WALK_REGION.rect.top, sfutil::Bottom(WALK_REGION.rect)));
 
                 const sf::FloatRect RAW_PROPOSED_NPC_RECT(
                     (RAW_PROPOSED_NPC_POS_V - (AVATAR_IMAGE_SIZE_V * 0.5f)), AVATAR_IMAGE_SIZE_V);

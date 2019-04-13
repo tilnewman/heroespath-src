@@ -459,7 +459,7 @@ namespace popup
         }
         else
         {
-            return misc::Vector::SelectRandom(accentPaths_);
+            return misc::RandomSelect(accentPaths_);
         }
     }
 

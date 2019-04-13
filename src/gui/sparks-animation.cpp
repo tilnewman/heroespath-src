@@ -51,7 +51,7 @@ namespace gui
             sprite_.setScale(1.0f, 1.0f);
             sprite_.setOrigin(
                 sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
-            sprite_.rotate(misc::random::Float(360.0f));
+            sprite_.rotate(misc::Random(360.0f));
             sprite_.setOrigin(0.0f, 0.0f);
             //
             sprite_.setPosition(startPosV_);
@@ -149,30 +149,30 @@ namespace gui
                 const auto EMITTER_VERTICAL_SPAN { (SPRAY_RATIO_MINOR_ * REGION_.height) };
                 const auto START_POS_TOP { ((REGION_.top + (REGION_.height * 0.5f))
                                             - (EMITTER_VERTICAL_SPAN * 0.5f))
-                                           + misc::random::Float(EMITTER_VERTICAL_SPAN) };
+                                           + misc::Random(EMITTER_VERTICAL_SPAN) };
 
-                const auto EMITTER_HORIZ_OFFSET { misc::random::Float(
+                const auto EMITTER_HORIZ_OFFSET { misc::Random(
                     SPRAY_RATIO_MINOR_ * 0.5f * REGION_.width) };
                 const auto START_POS_LEFT { (
                     (WILL_EMIT_RIGHT_) ? REGION_.left + EMITTER_HORIZ_OFFSET
                                        : (REGION_.left + REGION_.width) - EMITTER_HORIZ_OFFSET) };
 
-                const auto TARGET_VERT_SPAN { misc::random::Float(
+                const auto TARGET_VERT_SPAN { misc::Random(
                     REGION_.height * SPRAY_RATIO_MAJOR_) };
                 const auto END_POS_TOP { (
-                    (misc::random::Bool()) ? START_POS_TOP + TARGET_VERT_SPAN
+                    (misc::RandomBool()) ? START_POS_TOP + TARGET_VERT_SPAN
                                            : START_POS_TOP - TARGET_VERT_SPAN) };
 
                 const auto TARGET_HORIZ_SPAN_MIN { (REGION_.width * SPRAY_RATIO_MINOR_) };
                 const auto TARGET_HORIZ_SPAN_MAX { (REGION_.width * SPRAY_RATIO_MAJOR_) };
-                const auto TARGET_HORIZ_SPAN { misc::random::Float(
+                const auto TARGET_HORIZ_SPAN { misc::Random(
                     TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };
                 const auto END_POS_LEFT { (
                     (WILL_EMIT_RIGHT_) ? START_POS_LEFT + TARGET_HORIZ_SPAN
                                        : START_POS_LEFT - TARGET_HORIZ_SPAN) };
 
                 const sf::Texture & RANDOM_TEXTURE_REF { [&]() {
-                    const auto RAND { misc::random::Int(2) };
+                    const auto RAND { misc::Random(2) };
                     if (RAND == 0)
                     {
                         return sparkCachedTexture1_.Get();
@@ -198,9 +198,9 @@ namespace gui
                     sf::Color(
                         255,
                         255,
-                        static_cast<sf::Uint8>(misc::random::Int(255)),
-                        static_cast<sf::Uint8>(misc::random::Int(0, 127))),
-                    sf::Color(255, 255, static_cast<sf::Uint8>(misc::random::Int(255)), 255)));
+                        static_cast<sf::Uint8>(misc::Random(255)),
+                        static_cast<sf::Uint8>(misc::Random(0, 127))),
+                    sf::Color(255, 255, static_cast<sf::Uint8>(misc::Random(255)), 255)));
             }
 
             for (auto & nextSpark : sparkVec_)
@@ -233,7 +233,7 @@ namespace gui
             else
             {
                 const auto VARIATION_SPAN { BASE * VARIANCE_RATIO };
-                return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
+                return (BASE - (VARIATION_SPAN * 0.5f)) + misc::Random(VARIATION_SPAN);
             }
         }
 

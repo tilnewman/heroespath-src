@@ -38,7 +38,7 @@ namespace interact
                 (CATEGORIES.empty() == false),
                 "interact::talk::Factory::Make() was given an empty category vector.");
 
-            const auto CATEGORY { misc::Vector::SelectRandom(CATEGORIES) };
+            const auto CATEGORY { misc::RandomSelect(CATEGORIES) };
 
             const auto & PARTY { game::Game::Instance()->State().Party() };
 

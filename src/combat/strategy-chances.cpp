@@ -292,7 +292,7 @@ namespace combat
             {
                 // if there are multiple FrequencyTypes that are certain or higher then choose
                 // randomly among them
-                const auto RAND(misc::random::Float(0.0f, cretainOrHigherChanceTotal));
+                const auto RAND(misc::Random(0.0f, cretainOrHigherChanceTotal));
                 auto subtotal { 0.0f };
                 for (const auto & NEXT_FREQCHANCE_PAIR : cretainOrHigherFreqTypeVec)
                 {
@@ -314,7 +314,7 @@ namespace combat
                 // then random select from any with a non-zero chance...
                 auto subtotal { 0.0f };
 
-                const auto RAND { misc::random::Float(
+                const auto RAND { misc::Random(
                     0.0f, ((DO_CHANCES_TOTAL_ONE_OR_LESS) ? 1.0f : totalOfAllFreqTypes)) };
 
                 for (const auto & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
@@ -374,7 +374,7 @@ namespace combat
                     total += NEXT_COUNTCHANCE_PAIR.second;
                 }
 
-                const auto RAND { misc::random::Float(0.0f, total) };
+                const auto RAND { misc::Random(0.0f, total) };
 
                 auto subtotal { 0.0f };
                 for (const auto & NEXT_COUNTCHANCE_PAIR : OUTNUMBER_RETREAT_CHANCE_MAP)

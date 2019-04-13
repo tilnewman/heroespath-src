@@ -273,7 +273,7 @@ namespace combat
                                                 creature::Conditions::Dazed,
                                                 creature::Conditions::Tripped };
 
-        misc::Vector::ShuffleVec(condsVecToAdd);
+        misc::RandomShuffle(condsVecToAdd);
 
         if (DAMAGE_ABS
             > (CREATURE_DEFENDING_PTR->HealthNormal()
@@ -306,7 +306,7 @@ namespace combat
         for (const auto NEXT_COND_ENUM : condsVecToAdd)
         {
             // only a 50/50 chance of adding conditions
-            if (misc::random::Float(1.0f) < CHANCE_CONDS_ADDED_RATIO)
+            if (misc::Random(1.0f) < CHANCE_CONDS_ADDED_RATIO)
             {
                 if ((NEXT_COND_ENUM == creature::Conditions::Dazed)
                     && AreAnyOfCondsContained(
@@ -904,18 +904,18 @@ namespace combat
         {
             if (LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_CRTS_PVEC.empty())
             {
-                return misc::Vector::SelectRandom(COMBAT_DISPLAY_PTR->FindClosestAmongOfType(
+                return misc::RandomSelect(COMBAT_DISPLAY_PTR->FindClosestAmongOfType(
                     CREATURE_ATTACKING_PTR, LIVE_ATTBLE_LOWH_NP_CRTS_PVEC, false));
             }
             else
             {
-                return misc::Vector::SelectRandom(COMBAT_DISPLAY_PTR->FindClosestAmongOfType(
+                return misc::RandomSelect(COMBAT_DISPLAY_PTR->FindClosestAmongOfType(
                     CREATURE_ATTACKING_PTR, LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_CRTS_PVEC, false));
             }
         }
         else
         {
-            return misc::Vector::SelectRandom(COMBAT_DISPLAY_PTR->FindClosestAmongOfType(
+            return misc::RandomSelect(COMBAT_DISPLAY_PTR->FindClosestAmongOfType(
                 CREATURE_ATTACKING_PTR, LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_TMPDIS_CRTS_PVEC, false));
         }
     }
@@ -954,7 +954,7 @@ namespace combat
         creature::CreaturePVec_t creaturesHurtPtrs { CREATURE_PICKING_THE_LOCK_PTR };
 
         auto allCharacterPtrs { game::Game::Instance()->State().Party().Characters() };
-        misc::Vector::ShuffleVec(allCharacterPtrs);
+        misc::RandomShuffle(allCharacterPtrs);
 
         const auto NUM_CHARACTERS_TO_ADD { TRAP.RandomEffectedPlayersCount() - 1 };
         std::size_t numCharactersAdded { 0 };
@@ -1047,7 +1047,7 @@ namespace combat
             static_cast<float>(attackAccToUse) * 0.4f) };
 
         const auto ATTACK_ACC_RAND_MAX { std::max(ATTACK_ACC_RAW, attackAccToUse) };
-        const auto ATTACK_ACC_RAND { misc::random::Int(ATTACK_ACC_RAND_MIN, ATTACK_ACC_RAND_MAX) };
+        const auto ATTACK_ACC_RAND { misc::Random(ATTACK_ACC_RAND_MIN, ATTACK_ACC_RAND_MAX) };
 
         const auto STAT_RATIO_AMAZING { misc::ConfigFile::Instance()->ValueOrDefault<float>(
             "fight-stats-amazing-ratio") };
@@ -1089,7 +1089,7 @@ namespace combat
             static_cast<float>(defendSpdToUse) * 0.4f) };
 
         const auto DEFEND_SPD_RAND_MAX { std::max(DEFEND_SPD_RAW, defendSpdToUse) };
-        const auto DEFEND_SPD_RAND { misc::random::Int(DEFEND_SPD_RAND_MIN, DEFEND_SPD_RAND_MAX) };
+        const auto DEFEND_SPD_RAND { misc::Random(DEFEND_SPD_RAND_MIN, DEFEND_SPD_RAND_MAX) };
 
         const auto IS_DEFENSE_AMAZING_DODGE {
             (defendSpdToUse >= STAT_HIGHER_THAN_AVERAGE)
@@ -1185,7 +1185,7 @@ namespace combat
             {
                 // In this case, both attacker and defender are players,
                 // so let fair coin toss determine the hit.
-                wasHit = misc::random::Bool();
+                wasHit = misc::RandomBool();
             }
             else
             {
@@ -1242,7 +1242,7 @@ namespace combat
         bool & isCriticalHit_OutParam,
         bool & didArmorAbsorb_OutParam) const
     {
-        const Health_t DAMAGE_FROM_WEAPON_RAW { misc::random::Int(
+        const Health_t DAMAGE_FROM_WEAPON_RAW { misc::Random(
             WEAPON_PTR->DamageMin().As<int>(), WEAPON_PTR->DamageMax().As<int>()) };
 
         // If weapon is fist and creature attacking is wearing gauntlets, then triple the damage.
@@ -1319,7 +1319,7 @@ namespace combat
         isPowerHit_OutParam
             = (CREATURE_ATTACKING_PTR->IsPlayerCharacter() && STRENGTH_TEST
                && (STRENGTH_CURRENT >= STAT_FLOOR)
-               && (misc::random::Float(1.0f) < POWER_HIT_CHANCE_RATIO));
+               && (misc::Random(1.0f) < POWER_HIT_CHANCE_RATIO));
 
         // there is a rare chance of a critical hit for players and non-players
         const auto ACCURACY_TEST { creature::Stats::Test(
@@ -1344,7 +1344,7 @@ namespace combat
         isCriticalHit_OutParam
             = ((CREATURE_ATTACKING_PTR->IsPlayerCharacter() || LUCK_TEST) && ACCURACY_TEST
                && ((ACCURACY_CURRENT >= STAT_FLOOR) || LUCK_TEST)
-               && (misc::random::Float(1.0f) < CRITICAL_HIT_CHANCE_RATIO));
+               && (misc::Random(1.0f) < CRITICAL_HIT_CHANCE_RATIO));
 
         Health_t damageFinal { DAMAGE_BASE };
 

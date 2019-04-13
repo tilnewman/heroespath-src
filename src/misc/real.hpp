@@ -23,7 +23,20 @@ namespace misc
 {
 
     template <typename T>
-    constexpr bool IsRealClose(const T A, const T B)
+    constexpr T ConstexprAbs(const T X) noexcept
+    {
+        if constexpr (std::is_signed_v<T>)
+        {
+            return ((X < T(0)) ? -X : X);
+        }
+        else
+        {
+            return X;
+        }
+    }
+
+    template <typename T>
+    constexpr bool IsRealClose(const T A, const T B) noexcept
     {
         if constexpr (are_integral_nobool_v<T>)
         {
@@ -31,8 +44,8 @@ namespace misc
         }
         else if constexpr (are_floating_point_v<T>)
         {
-            const auto MAX_OR_ONE { std::max({ T(1), std::abs(A), std::abs(B) }) };
-            return (std::abs(A - B) < (std::numeric_limits<T>::epsilon() * MAX_OR_ONE));
+            const auto MAX_OR_ONE { std::max({ T(1), ConstexprAbs(A), ConstexprAbs(B) }) };
+            return (ConstexprAbs(A - B) < (std::numeric_limits<T>::epsilon() * MAX_OR_ONE));
         }
         else
         {
@@ -41,27 +54,40 @@ namespace misc
     }
 
     template <typename T>
-    constexpr bool IsRealOne(const T X)
+    constexpr bool IsRealOne(const T X) noexcept
     {
         return IsRealClose(X, T(1));
     }
 
     template <typename T>
-    constexpr bool IsRealZero(const T X)
+    constexpr bool IsRealZero(const T X) noexcept
     {
         return IsRealClose(X, T(0));
     }
 
     template <typename T>
-    constexpr bool IsRealZeroOrLess(const T X)
+    constexpr bool IsRealZeroOrLess(const T X) noexcept
     {
         return ((X < T(0)) || IsRealZero(X));
     }
 
     template <typename T>
-    constexpr bool IsRealZeroOrMore(const T X)
+    constexpr bool IsRealZeroOrMore(const T X) noexcept
     {
         return ((X > T(0)) || IsRealZero(X));
+    }
+
+    template <typename T>
+    T NextAfterIfReal(const T X)
+    {
+        if constexpr (are_floating_point_v<T>)
+        {
+            return std::nextafter(X, std::numeric_limits<T>::max());
+        }
+        else
+        {
+            return X;
+        }
     }
 
 } // namespace misc

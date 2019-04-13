@@ -47,12 +47,12 @@ namespace creature
 
         /*
         const StatSet KNIGHT_STATS(
-            STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-            STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-            STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-            STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-            STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
-            STAT_BASE_LOW  + misc::random::Int(STAT_RAND));
+            STAT_BASE_HIGH + misc::Random(STAT_RAND),
+            STAT_BASE_HIGH + misc::Random(STAT_RAND),
+            STAT_BASE_LOW  + misc::Random(STAT_RAND),
+            STAT_BASE_LOW  + misc::Random(STAT_RAND),
+            STAT_BASE_HIGH + misc::Random(STAT_RAND),
+            STAT_BASE_LOW  + misc::Random(STAT_RAND));
 
         creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("K"),
@@ -62,12 +62,12 @@ namespace creature
         */
 
         const StatSet FIREBRAND_STATS(
-            Strength_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-            Accuracy_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-            Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Luck_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Speed_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-            Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
+            Strength_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)),
+            Accuracy_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)),
+            Charm_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Luck_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Speed_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)),
+            Intell_t(STAT_BASE_MED + misc::Random(STAT_RAND)));
 
         creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("F"),
@@ -77,12 +77,12 @@ namespace creature
 
         /*
         const StatSet ARCHER_STATS(
-            15 + misc::random::Int(6),
-            15 + misc::random::Int(10),
-            5  + misc::random::Int(6),
-            10 + misc::random::Int(6),
-            10 + misc::random::Int(8),
-            5  + misc::random::Int(6));
+            15 + misc::Random(6),
+            15 + misc::Random(10),
+            5  + misc::Random(6),
+            10 + misc::Random(6),
+            10 + misc::Random(8),
+            5  + misc::Random(6));
 
                 creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
                         MakeCharacterNameForTesting("A"),
@@ -92,12 +92,12 @@ namespace creature
 
 
         const StatSet WOLFEN_STATS(
-            STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
-            STAT_BASE_HIGH + 4 + misc::random::Int(STAT_RAND),
-            STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
-            STAT_BASE_MED  + misc::random::Int(STAT_RAND),
-            STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
-            STAT_BASE_LOW  + misc::random::Int(STAT_RAND));
+            STAT_BASE_HIGH + 7 + misc::Random(STAT_RAND),
+            STAT_BASE_HIGH + 4 + misc::Random(STAT_RAND),
+            STAT_BASE_LOW  + misc::Random(STAT_RAND),
+            STAT_BASE_MED  + misc::Random(STAT_RAND),
+            STAT_BASE_HIGH + 7 + misc::Random(STAT_RAND),
+            STAT_BASE_LOW  + misc::Random(STAT_RAND));
 
                 creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
                         MakeCharacterNameForTesting("W"),
@@ -107,12 +107,12 @@ namespace creature
         */
 
         const StatSet BARD_STATS(
-            Strength_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
-            Accuracy_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
-            Charm_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
-            Luck_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Speed_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
-            Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
+            Strength_t(STAT_BASE_MED + misc::Random(STAT_RAND)),
+            Accuracy_t(STAT_BASE_MED + misc::Random(STAT_RAND)),
+            Charm_t(STAT_BASE_MED + misc::Random(STAT_RAND)),
+            Luck_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Speed_t(STAT_BASE_MED + misc::Random(STAT_RAND)),
+            Intell_t(STAT_BASE_MED + misc::Random(STAT_RAND)));
 
         creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("B"),
@@ -121,12 +121,12 @@ namespace creature
             BARD_STATS));
 
         const StatSet BEASTMASTER_STATS(
-            Strength_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-            Accuracy_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
-            Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Luck_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Speed_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-            Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
+            Strength_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)),
+            Accuracy_t(STAT_BASE_MED + misc::Random(STAT_RAND)),
+            Charm_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Luck_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Speed_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)),
+            Intell_t(STAT_BASE_MED + misc::Random(STAT_RAND)));
 
         creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("G"),
@@ -135,12 +135,12 @@ namespace creature
             BEASTMASTER_STATS));
 
         const StatSet THIEF_STATS(
-            Strength_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Accuracy_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Luck_t(STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND)),
-            Speed_t(STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND)),
-            Intell_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)));
+            Strength_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Accuracy_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Charm_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Luck_t(STAT_BASE_HIGH + 7 + misc::Random(STAT_RAND)),
+            Speed_t(STAT_BASE_HIGH + 7 + misc::Random(STAT_RAND)),
+            Intell_t(STAT_BASE_LOW + misc::Random(STAT_RAND)));
 
         creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("T"),
@@ -149,12 +149,12 @@ namespace creature
             THIEF_STATS));
 
         const StatSet CLERIC_STATS(
-            Strength_t(1 + misc::random::Int(STAT_RAND)),
-            Accuracy_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Charm_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-            Luck_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
-            Speed_t(STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND)),
-            Intell_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)));
+            Strength_t(1 + misc::Random(STAT_RAND)),
+            Accuracy_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Charm_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)),
+            Luck_t(STAT_BASE_MED + misc::Random(STAT_RAND)),
+            Speed_t(STAT_BASE_HIGH + 20 + misc::Random(STAT_RAND)),
+            Intell_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)));
 
         creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("C"),
@@ -164,12 +164,12 @@ namespace creature
 
         /*
         const StatSet SORCERER_STATS(
-            1             +       misc::random::Int(STAT_RAND),
-            STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
-            STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
-            STAT_BASE_MED +       misc::random::Int(STAT_RAND),
-            STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND),
-            STAT_BASE_HIGH + 4 +  misc::random::Int(STAT_RAND));
+            1             +       misc::Random(STAT_RAND),
+            STAT_BASE_LOW +       misc::Random(STAT_RAND),
+            STAT_BASE_LOW +       misc::Random(STAT_RAND),
+            STAT_BASE_MED +       misc::Random(STAT_RAND),
+            STAT_BASE_HIGH + 20 + misc::Random(STAT_RAND),
+            STAT_BASE_HIGH + 4 +  misc::Random(STAT_RAND));
 
                 creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
                         MakeCharacterNameForTesting("S"),
@@ -179,12 +179,12 @@ namespace creature
                 */
 
         const StatSet SYLAVIN_STATS(
-            Strength_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-            Accuracy_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-            Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Luck_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-            Speed_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-            Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
+            Strength_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)),
+            Accuracy_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)),
+            Charm_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Luck_t(STAT_BASE_LOW + misc::Random(STAT_RAND)),
+            Speed_t(STAT_BASE_HIGH + misc::Random(STAT_RAND)),
+            Intell_t(STAT_BASE_MED + misc::Random(STAT_RAND)));
 
         creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("D"),

@@ -608,7 +608,7 @@ namespace combat
         }
         else
         {
-            gui::SoundManager::Instance()->SoundEffectPlay(misc::Vector::SelectRandom(sfxVec));
+            gui::SoundManager::Instance()->SoundEffectPlay(misc::RandomSelect(sfxVec));
         }
     }
 

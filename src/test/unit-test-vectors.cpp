@@ -342,7 +342,7 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Single)
     for (int i { 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
         const ts::IntVec_t A = { 1 };
-        const auto SINGLE_RESULT { misc::Vector::SelectRandom(A) };
+        const auto SINGLE_RESULT { misc::RandomSelect(A) };
 
         BOOST_CHECK_MESSAGE((SINGLE_RESULT == 1), "SelectRandom single, result=" << SINGLE_RESULT);
     }
@@ -355,7 +355,7 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Duplicates)
     for (int i { 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
         const ts::IntVec_t A = { 1, 1, 1 };
-        const auto DUPLICATE_RESULT { misc::Vector::SelectRandom(A) };
+        const auto DUPLICATE_RESULT { misc::RandomSelect(A) };
 
         BOOST_CHECK_MESSAGE(
             (DUPLICATE_RESULT == 1), "SelectRandom duplicates, result=" << DUPLICATE_RESULT);
@@ -369,7 +369,7 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Multiple)
     for (int i { 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
         const ts::IntVec_t A = { 1, 2, 3 };
-        const auto MULT_RESULT { misc::Vector::SelectRandom(A) };
+        const auto MULT_RESULT { misc::RandomSelect(A) };
 
         BOOST_CHECK_MESSAGE(
             (MULT_RESULT == 1) || (MULT_RESULT == 2) || (MULT_RESULT == 3),

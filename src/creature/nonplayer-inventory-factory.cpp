@@ -531,7 +531,7 @@ namespace creature
             // random select item::weapon
             auto randomSelectedWeaponType { typeKindChanceMap.begin()->first };
             auto chanceCumulative { 0.0f };
-            const auto RAND_WEAPON_TYPE_CHANCE { misc::random::Float() };
+            const auto RAND_WEAPON_TYPE_CHANCE { misc::Random(1.0f) };
             for (const auto & NEXT_TYPEKIND_PAIR : typeKindChanceMap)
             {
                 chanceCumulative += NEXT_TYPEKIND_PAIR.second.second;
@@ -547,7 +547,7 @@ namespace creature
             {
                 case item::weapon_type::Knife:
                 {
-                    const auto IS_DAGGER { misc::random::Float() < WEAPON_CHANCES.knife.is_dagger };
+                    const auto IS_DAGGER { misc::Random(1.0f) < WEAPON_CHANCES.knife.is_dagger };
 
                     item::ItemProfile profile;
 
@@ -585,7 +585,7 @@ namespace creature
                 {
                     item::ItemProfile profile;
 
-                    if (misc::random::Float() < WEAPON_CHANCES.staff.is_quarterstaff)
+                    if (misc::Random(1.0f) < WEAPON_CHANCES.staff.is_quarterstaff)
                     {
                         profile.SetQuarterStaff(
                             WEAPON_CHANCES.staff.RandomMaterialPri(),

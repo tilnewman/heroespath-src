@@ -46,15 +46,15 @@ namespace gui
             sprite_.setOrigin(
                 sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
 
-            sprite_.setRotation(misc::random::Float(360.0f));
+            sprite_.setRotation(misc::Random(360.0f));
 
             sprite_.setPosition(posV_);
             sprite_.setScale(0.0f, 0.0f);
 
             sprite_.setColor(sf::Color(
-                static_cast<sf::Uint8>(200 + misc::random::Int(55)),
-                static_cast<sf::Uint8>(200 + misc::random::Int(55)),
-                static_cast<sf::Uint8>(200 + misc::random::Int(55))));
+                static_cast<sf::Uint8>(200 + misc::Random(55)),
+                static_cast<sf::Uint8>(200 + misc::Random(55)),
+                static_cast<sf::Uint8>(200 + misc::Random(55))));
         }
 
         bool Sparkle::Update(const float ELAPSED_TIME_SEC)
@@ -71,7 +71,7 @@ namespace gui
             sprite_.setOrigin(
                 sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
 
-            sprite_.rotate(misc::random::Float(0.5f, 3.0f));
+            sprite_.rotate(misc::Random(0.5f, 3.0f));
 
             const auto SLIDER_POS { slider_.Update(ELAPSED_TIME_SEC) };
 
@@ -142,11 +142,11 @@ namespace gui
 
                 const auto ADJ_RECT { sfutil::ShrinkToSquareAndReCenterCopy(REGION_) };
 
-                const auto POS_LEFT { ADJ_RECT.left + misc::random::Float(ADJ_RECT.width) };
-                const auto POS_TOP { ADJ_RECT.top + misc::random::Float(ADJ_RECT.height) };
+                const auto POS_LEFT { ADJ_RECT.left + misc::Random(ADJ_RECT.width) };
+                const auto POS_TOP { ADJ_RECT.top + misc::Random(ADJ_RECT.height) };
 
                 const sf::Texture & RANDOM_TEXTURE_REF { [&]() {
-                    const auto RAND { misc::random::Int(2) };
+                    const auto RAND { misc::Random(2) };
                     if (RAND == 0)
                     {
                         return sparkCachedTexture1_.Get();
@@ -202,7 +202,7 @@ namespace gui
             else
             {
                 const auto VARIATION_SPAN { BASE * VARIANCE_RATIO };
-                return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
+                return (BASE - (VARIATION_SPAN * 0.5f)) + misc::Random(VARIATION_SPAN);
             }
         }
 

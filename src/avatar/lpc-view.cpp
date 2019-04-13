@@ -319,7 +319,7 @@ namespace avatar
             }
             case Pose::Blink:
             {
-                return misc::random::Float(
+                return misc::Random(
                     FRAME_DURATION_SEC_BLINK_MIN_, FRAME_DURATION_SEC_BLINK_MAX_);
             }
             case Pose::Fight:

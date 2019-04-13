@@ -52,25 +52,25 @@ namespace interact
         {
             inline const std::string Random(const std::vector<std::string> & V)
             {
-                return ((V.empty()) ? std::string() : std::string(misc::Vector::SelectRandom(V)));
+                return ((V.empty()) ? std::string() : std::string(misc::RandomSelect(V)));
             }
 
             template <typename T>
             inline const std::string Random(const std::vector<std::vector<T>> & VV)
             {
-                return ((VV.empty()) ? std::string(T()) : Random(misc::Vector::SelectRandom(VV)));
+                return ((VV.empty()) ? std::string(T()) : Random(misc::RandomSelect(VV)));
             }
 
             const std::string RandomWithEmpty(const std::vector<std::string> &);
 
             inline const std::string RandomOrEmpty(const std::vector<std::string> & STR_VEC)
             {
-                return ((misc::random::Bool()) ? "" : Random(STR_VEC));
+                return ((misc::RandomBool()) ? "" : Random(STR_VEC));
             }
 
             inline const std::string PeriodOrBang()
             {
-                return ((misc::random::Bool()) ? std::string(".") : std::string("!"));
+                return ((misc::RandomBool()) ? std::string(".") : std::string("!"));
             }
 
             inline const std::string
@@ -128,7 +128,7 @@ namespace interact
 
             inline const std::string RandomRaceOrRole()
             {
-                return ((misc::random::Bool()) ? Random(RaceNames()) : Random(RoleNames()));
+                return ((misc::RandomBool()) ? Random(RaceNames()) : Random(RoleNames()));
             }
 
             inline const std::vector<std::string> TimesOfDay()

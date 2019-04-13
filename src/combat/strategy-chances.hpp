@@ -88,7 +88,7 @@ namespace combat
                 T e { T::None }; // None is always zero
                 for (const auto & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
                 {
-                    if (misc::random::Float(0.0f, 1.0f) < NEXT_ENUMCHANCE_PAIR.second)
+                    if (misc::Random(0.0f, 1.0f) < NEXT_ENUMCHANCE_PAIR.second)
                     {
                         if (NEXT_ENUMCHANCE_PAIR.first == T::None)
                         {
@@ -126,7 +126,7 @@ namespace combat
                             return SUBTOTAL + PAIR.second;
                         }) };
 
-                    const auto RAND { misc::random::Float(0.0f, TOTAL) };
+                    const auto RAND { misc::Random(0.0f, TOTAL) };
 
                     auto subtotal { 0.0f };
                     for (const auto & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)

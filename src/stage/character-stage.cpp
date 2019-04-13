@@ -2070,7 +2070,7 @@ namespace stage
         {
             // reset timer to random value
             animStatsTimeCounterSec_ = 0.0f;
-            animStatsDelayPerSec_ = misc::random::Float(0.05f, 0.25f);
+            animStatsDelayPerSec_ = misc::Random(0.05f, 0.25f);
 
             gui::TextInfo textInfo(
                 "",
@@ -2079,9 +2079,9 @@ namespace stage
                 sf::Color::White,
                 gui::Justified::Left);
 
-            const auto NEXT_VAL { misc::random::Int(1, STAT_INITIAL_MAX_) };
+            const auto NEXT_VAL { misc::Random(1, STAT_INITIAL_MAX_) };
 
-            auto numToUse { misc::random::Int(1, 6) };
+            auto numToUse { misc::Random(1, 6) };
             if (initialRollCounter_ <= 6)
             {
                 numToUse = initialRollCounter_++;

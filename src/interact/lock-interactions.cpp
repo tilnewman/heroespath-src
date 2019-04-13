@@ -257,7 +257,7 @@ namespace interact
                 gui::sound_effect::LockPicking5, gui::sound_effect::LockPicking6,
                 gui::sound_effect::LockPicking7 };
 
-        return misc::Vector::SelectRandom(lockPickingSfx);
+        return misc::RandomSelect(lockPickingSfx);
     }
 
     void LockPicking::PlaySuccessSfx() const

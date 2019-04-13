@@ -98,7 +98,7 @@ namespace gui
                 std::remove(whichVec_.begin(), whichVec_.end(), currentlyPlaying_),
                 whichVec_.end());
 
-            return misc::Vector::SelectRandom(possibleSongs);
+            return misc::RandomSelect(possibleSongs);
         }
         else
         {

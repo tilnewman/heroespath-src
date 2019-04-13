@@ -164,7 +164,7 @@ namespace creature
             rollChance += RANK_BONUS;
         }
 
-        return (misc::random::Int(Trait::STAT_MAX_ESTIMATED_) < rollChance);
+        return (misc::Random(Trait::STAT_MAX_ESTIMATED_) < rollChance);
     }
 
     bool Stats::Versus(
@@ -297,7 +297,7 @@ namespace creature
                     if (CHALLENGER_PTR->IsPlayerCharacter() && DEFENDER_PTR->IsPlayerCharacter())
                     {
                         // handle everything tied and both are players by fair coin toss
-                        return misc::random::Bool();
+                        return misc::RandomBool();
                     }
                     else
                     {
@@ -326,7 +326,7 @@ namespace creature
 
     Trait_t Stats::LuckBonus(const CreaturePtr_t CREATURE_PTR)
     {
-        return misc::random::Int(static_cast<int>(
+        return misc::Random(static_cast<int>(
             static_cast<float>(CREATURE_PTR->TraitWorking(Traits::Luck))
             / misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "fight-stats-luck-adj-ratio")));

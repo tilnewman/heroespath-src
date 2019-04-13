@@ -49,7 +49,7 @@ namespace creature
         {
             item::ItemPtr_t weaponPtr { [&]() {
                 item::ItemProfile profile;
-                switch (misc::random::Int(2))
+                switch (misc::Random(2))
                 {
                     case 1:
                     {
@@ -102,7 +102,7 @@ namespace creature
         {
             item::ItemPtr_t weaponPtr { [&]() {
                 item::ItemProfile profile;
-                switch (misc::random::Int(2))
+                switch (misc::Random(2))
                 {
                     case 1:
                     {

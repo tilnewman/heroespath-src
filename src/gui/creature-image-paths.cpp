@@ -295,7 +295,7 @@ namespace gui
                 << CREATURE.ToString()
                 << "}) (which actually calls GetFilenames()) returned no filenames.");
 
-        return misc::Vector::SelectRandom(FILENAMES);
+        return misc::RandomSelect(FILENAMES);
     }
 
     bool CreatureImagePaths::WillHorizFlipToFaceRight(const creature::Creature & CREATURE)

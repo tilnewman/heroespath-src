@@ -622,7 +622,7 @@ namespace gui
 
         if (WILL_RANDOMIZE)
         {
-            return misc::Vector::SelectRandom(FILENAMES);
+            return misc::RandomSelect(FILENAMES);
         }
         else
         {

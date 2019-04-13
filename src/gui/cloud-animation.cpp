@@ -56,7 +56,7 @@ namespace gui
             sprite_.setOrigin(
                 sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
 
-            sprite_.rotate(misc::random::Float(360.0f));
+            sprite_.rotate(misc::Random(360.0f));
 
             sprite_.setOrigin(0.0f, 0.0f);
 
@@ -163,25 +163,25 @@ namespace gui
                 const auto HORIZ_CENTER { REGION_.left + (REGION_.width * 0.5f) };
                 const auto HORIZ_RAND_SPAN { (REGION_.width * 0.5f) * CENTER_VAR_RATIO_ };
                 const auto HORIZ_BASE { HORIZ_CENTER - (HORIZ_RAND_SPAN * 0.5f) };
-                const auto HORIZ_START_POS { HORIZ_BASE + misc::random::Float(HORIZ_RAND_SPAN) };
+                const auto HORIZ_START_POS { HORIZ_BASE + misc::Random(HORIZ_RAND_SPAN) };
 
                 const auto HORIZ_END_POS { (
                     (HORIZ_START_POS < HORIZ_CENTER)
-                        ? (HORIZ_START_POS - misc::random::Float(HORIZ_RAND_SPAN))
-                        : (HORIZ_START_POS + misc::random::Float(HORIZ_RAND_SPAN))) };
+                        ? (HORIZ_START_POS - misc::Random(HORIZ_RAND_SPAN))
+                        : (HORIZ_START_POS + misc::Random(HORIZ_RAND_SPAN))) };
 
                 const auto VERT_CENTER { REGION_.top + (REGION_.height * 0.5f) };
                 const auto VERT_RAND_SPAN { (REGION_.height * 0.5f) * CENTER_VAR_RATIO_ };
                 const auto VERT_BASE { VERT_CENTER - (VERT_RAND_SPAN * 0.5f) };
-                const auto VERT_START_POS { VERT_BASE + misc::random::Float(VERT_RAND_SPAN) };
+                const auto VERT_START_POS { VERT_BASE + misc::Random(VERT_RAND_SPAN) };
 
                 const auto VERT_END_POS { (
                     (VERT_START_POS < VERT_CENTER)
-                        ? (VERT_START_POS - misc::random::Float(VERT_RAND_SPAN))
-                        : (VERT_START_POS + misc::random::Float(VERT_RAND_SPAN))) };
+                        ? (VERT_START_POS - misc::Random(VERT_RAND_SPAN))
+                        : (VERT_START_POS + misc::Random(VERT_RAND_SPAN))) };
 
                 const sf::Texture & RANDOM_CLOUD_TEXTURE_REF = [&]() {
-                    const auto WHICH_TEXTURE_NUM { misc::random::Int(2) };
+                    const auto WHICH_TEXTURE_NUM { misc::Random(2) };
                     if (WHICH_TEXTURE_NUM == 2)
                     {
                         return cloudCachedTexture2_.Get();
@@ -198,7 +198,7 @@ namespace gui
 
                 auto rotationSpeedToUse { ValueWithRandomVariance(
                     ROTATION_SPEED_BASE_, ROTATION_SPEED_VAR_RATIO_) };
-                if (misc::random::Bool())
+                if (misc::RandomBool())
                 {
                     rotationSpeedToUse *= -1.0f;
                 }
@@ -212,13 +212,13 @@ namespace gui
                     ValueWithRandomVariance(END_SCALE_BASE_, END_SCALE_VAR_RATIO_),
                     rotationSpeedToUse,
                     sf::Color(
-                        static_cast<sf::Uint8>(104 + misc::random::Int(25)),
+                        static_cast<sf::Uint8>(104 + misc::Random(25)),
                         155,
-                        static_cast<sf::Uint8>(54 + misc::random::Int(50))),
+                        static_cast<sf::Uint8>(54 + misc::Random(50))),
                     sf::Color(
-                        static_cast<sf::Uint8>(104 + misc::random::Int(25)),
+                        static_cast<sf::Uint8>(104 + misc::Random(25)),
                         155,
-                        static_cast<sf::Uint8>(54 + misc::random::Int(50)),
+                        static_cast<sf::Uint8>(54 + misc::Random(50)),
                         0)));
             }
 
@@ -256,7 +256,7 @@ namespace gui
             else
             {
                 const auto VARIATION_SPAN { BASE * VARIANCE_RATIO };
-                return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
+                return (BASE - (VARIATION_SPAN * 0.5f)) + misc::Random(VARIATION_SPAN);
             }
         }
 

@@ -66,7 +66,7 @@ namespace creature
                     << boost::typeindex::type_id<T>().pretty_name() << "\", size=" << MAP.Size()
                     << ") called when the map's chance total is zero or less.");
 
-            const auto RAND { misc::random::Float(0.0f, chanceSubTotal) };
+            const auto RAND { misc::Random(0.0f, chanceSubTotal) };
 
             auto cumulativeChance { 0.0f };
             for (const auto & NEXT_MAP_PAIR : MAP)
@@ -153,7 +153,7 @@ namespace creature
 
             static ItemChances NoChance() { return ItemChances(); }
 
-            bool IsEquipped() const { return (misc::random::Float() < chance_equipped); }
+            bool IsEquipped() const { return (misc::Random(1.0f) < chance_equipped); }
 
             std::size_t CountOwned() const;
 
@@ -261,7 +261,7 @@ namespace creature
                 return std::make_pair(MAP.begin()->first, 0);
             }
 
-            const float RAND(misc::random::Float(0.0f, chanceSubTotal));
+            const float RAND(misc::Random(0.0f, chanceSubTotal));
 
             float cumulativeChance(0.0f);
             for (const auto & NEXT_MAP_PAIR_OUTER : MAP)
@@ -465,7 +465,7 @@ namespace creature
             {
                 return (
                     (coins_min < coins_max)
-                        ? Coin_t(misc::random::Int(coins_min.As<int>(), coins_max.As<int>()))
+                        ? Coin_t(misc::Random(coins_min.As<int>(), coins_max.As<int>()))
                         : coins_min);
             }
 

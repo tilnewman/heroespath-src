@@ -172,7 +172,7 @@ namespace creature
             {
                 if (NEXT_CHANCE_PAIR.second.IsOwned())
                 {
-                    coverChanceMap[NEXT_CHANCE_PAIR.first] = misc::random::Float();
+                    coverChanceMap[NEXT_CHANCE_PAIR.first] = misc::Random(1.0f);
                 }
             }
 
@@ -408,7 +408,7 @@ namespace creature
             }
 
             auto cumulative { 0.0f };
-            const auto RAND { misc::random::Float() };
+            const auto RAND { misc::Random(1.0f) };
             for (const auto & NEXT_TYPECHANCE_PAIR : wealthChanceMap)
             {
                 if (NEXT_TYPECHANCE_PAIR.first != wealthTypeChanceRemaining)
@@ -572,22 +572,22 @@ namespace creature
 
             // determine
             collector_type::Enum collectorType { None };
-            if (misc::random::Float() < chancePractical)
+            if (misc::Random(1.0f) < chancePractical)
             {
                 collectorType = static_cast<collector_type::Enum>(collectorType | Practical);
             }
 
-            if (misc::random::Float() < chanceCollector)
+            if (misc::Random(1.0f) < chanceCollector)
             {
                 collectorType = static_cast<collector_type::Enum>(collectorType | Collector);
             }
 
-            if (misc::random::Float() < chanceMinimalist)
+            if (misc::Random(1.0f) < chanceMinimalist)
             {
                 collectorType = static_cast<collector_type::Enum>(collectorType | Minimalist);
             }
 
-            if ((misc::random::Float() < chanceHoarder) && (0 == (collectorType & Minimalist)))
+            if ((misc::Random(1.0f) < chanceHoarder) && (0 == (collectorType & Minimalist)))
             {
                 collectorType = static_cast<collector_type::Enum>(collectorType | Hoarder);
             }
@@ -747,7 +747,7 @@ namespace creature
 
             // determine
             const auto RAND(
-                misc::random::Float(0.0f, (chanceRarely + chanceReligious + chanceRarely)));
+                misc::Random(0.0f, (chanceRarely + chanceReligious + chanceRarely)));
 
             if (RAND < chanceMagical)
             {

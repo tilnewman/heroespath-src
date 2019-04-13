@@ -277,8 +277,7 @@ namespace combat
                     << ") forced to take last-chance attack combat option.");
 
                 return TurnActionInfo(
-                    TurnAction::Attack,
-                    { misc::Vector::SelectRandom(LIVING_PLAYERS_IN_ATTACK_RANGE) });
+                    TurnAction::Attack, { misc::RandomSelect(LIVING_PLAYERS_IN_ATTACK_RANGE) });
             }
         }
 
@@ -310,11 +309,11 @@ namespace combat
 
                 if (REFINED_NOTFLYING_TARGETS_PVEC.empty() == false)
                 {
-                    return misc::Vector::SelectRandom(REFINED_NOTFLYING_TARGETS_PVEC);
+                    return misc::RandomSelect(REFINED_NOTFLYING_TARGETS_PVEC);
                 }
             }
 
-            return misc::Vector::SelectRandom(
+            return misc::RandomSelect(
                 COMBAT_DISPLAY_PTR->FindClosestLiving(CREATURE_DECIDING_PTR, REFINED_TARGETS_PVEC));
         }
 
@@ -327,12 +326,12 @@ namespace combat
 
                 if (SELECT_NOTFLYING_TARGETS_PVEC.empty() == false)
                 {
-                    return misc::Vector::SelectRandom(SELECT_NOTFLYING_TARGETS_PVEC);
+                    return misc::RandomSelect(SELECT_NOTFLYING_TARGETS_PVEC);
                 }
             }
 
             // select the closest of the select targets at random
-            return misc::Vector::SelectRandom(
+            return misc::RandomSelect(
                 COMBAT_DISPLAY_PTR->FindClosestLiving(CREATURE_DECIDING_PTR, SELECT_TARGETS_PVEC));
         }
 
@@ -361,11 +360,11 @@ namespace combat
         AdjustCreatueVecForMurderousIntent(CREATURE_DECIDING_TURN_INFO, availableTargetsPVec);
 
         // prefer those reachable considering flying...
-        const auto REACHABLE_AVAILABLE_TARGETS_PVEC {
-            ((IS_FLYING) ? availableTargetsPVec
-                         : creature::Algorithms::FindByIsFlying(
-                             availableTargetsPVec, creature::Algorithms::CriteriaOpt::DoesNotMeet))
-        };
+        const auto REACHABLE_AVAILABLE_TARGETS_PVEC { (
+            (IS_FLYING)
+                ? availableTargetsPVec
+                : creature::Algorithms::FindByIsFlying(
+                      availableTargetsPVec, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
 
         //...but accept those 'not reachable' if no other choice
         const auto POSSIBLE_TARGETS_PVEC { (
@@ -382,7 +381,7 @@ namespace combat
                 << CREATURE_DECIDING_PTR->NameAndRaceAndRole()
                 << ") FindClosestLiving() returned an empty vec.");
 
-        return misc::Vector::SelectRandom(CLOSEST_POSSIBLE_TARGETS_PVEC);
+        return misc::RandomSelect(CLOSEST_POSSIBLE_TARGETS_PVEC);
     }
 
     creature::CreaturePVec_t TurnDecider::FindSelectedTargets(const TurnInfo & TURN_INFO) const
@@ -401,7 +400,7 @@ namespace combat
             (TURN_INFO.GetIsFlying())
                 ? ALL_LIVING_PLAYERS_PVEC
                 : creature::Algorithms::FindByIsFlying(
-                    ALL_LIVING_PLAYERS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
+                      ALL_LIVING_PLAYERS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
 
         if (SELECTABLE_PLAYERS_PVEC.empty())
         {
@@ -792,16 +791,16 @@ namespace combat
         {
             // separate chance to retreat if daunted
             if ((CREATURE_DECIDING_PTR->HasCondition(creature::Conditions::Daunted)
-                 && (misc::random::Float() < misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                         "fight-chance-daunted-will-retreat"))))
+                 && (misc::Random(1.0f) < misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                                              "fight-chance-daunted-will-retreat"))))
             {
                 return TurnActionInfo(TurnAction::Retreat);
             }
 
             // separate chance to retreat if panicked
             if ((CREATURE_DECIDING_PTR->HasCondition(creature::Conditions::Panic)
-                 && (misc::random::Float() < misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                         "fight-chance-panicked-will-retreat"))))
+                 && (misc::Random(1.0f) < misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                                              "fight-chance-panicked-will-retreat"))))
             {
                 return TurnActionInfo(TurnAction::Retreat);
             }
@@ -877,7 +876,7 @@ namespace combat
 
                 // determine if will cast spell at random
                 if ((TURN_INFO.GetStrategyInfo().CastFreq() == strategy::FrequencyType::Always)
-                    || (misc::random::Float(1.0f) < CAST_CHANCE))
+                    || (misc::Random(1.0f) < CAST_CHANCE))
                 {
                     const auto FELLOWS_WITH_LOWEST_HEALTH_PVEC {
                         creature::Algorithms::FindLowestHealthRatio(
@@ -889,7 +888,7 @@ namespace combat
                     {
                         return DecideSpell(
                             CREATURE_DECIDING_PTR,
-                            misc::Vector::SelectRandom(FELLOWS_WITH_LOWEST_HEALTH_PVEC),
+                            misc::RandomSelect(FELLOWS_WITH_LOWEST_HEALTH_PVEC),
                             { combat::EffectType::CreatureHelpHeal });
                     }
                     else
@@ -965,7 +964,7 @@ namespace combat
 
             if (ROAR_CHANCE > 0.0f)
             {
-                const auto RAND { misc::random::Float(1.0f) };
+                const auto RAND { misc::Random(1.0f) };
                 if (RAND < ROAR_CHANCE)
                 {
                     actionChancesVec.emplace_back(
@@ -980,7 +979,7 @@ namespace combat
 
             if (FLY_CHANCE > 0.0f)
             {
-                const auto RAND { misc::random::Float(1.0f) };
+                const auto RAND { misc::Random(1.0f) };
                 if (RAND < FLY_CHANCE)
                 {
                     actionChancesVec.emplace_back(
@@ -995,7 +994,7 @@ namespace combat
 
             if (SKYPOUNCE_CHANCE > 0.0f)
             {
-                const auto RAND { misc::random::Float(1.0f) };
+                const auto RAND { misc::Random(1.0f) };
                 if (RAND < FLY_CHANCE)
                 {
                     actionChancesVec.emplace_back(
@@ -1010,7 +1009,7 @@ namespace combat
 
             if (LANDPOUNCE_CHANCE > 0.0f)
             {
-                const auto RAND { misc::random::Float(1.0f) };
+                const auto RAND { misc::Random(1.0f) };
                 if (RAND < FLY_CHANCE)
                 {
                     actionChancesVec.emplace_back(
@@ -1037,7 +1036,7 @@ namespace combat
                 if ((DECIDED_ACTION == TurnAction::LandPounce)
                     && (MOST_DESIRED_TARGET_CREATURE_DISTANCE != 0))
                 {
-                    creatureToActOn = misc::Vector::SelectRandom(PLAYERS_IN_MELEE_RANGE_PVEC);
+                    creatureToActOn = misc::RandomSelect(PLAYERS_IN_MELEE_RANGE_PVEC);
                 }
 
                 return TurnActionInfo(DECIDED_ACTION, { creatureToActOn });
@@ -1075,7 +1074,7 @@ namespace combat
             return TurnActionInfo();
         }
 
-        const auto RAND_FELLOW_WITH_LOWEST_HEALTH_PTR { misc::Vector::SelectRandom(
+        const auto RAND_FELLOW_WITH_LOWEST_HEALTH_PTR { misc::RandomSelect(
             creature::Algorithms::FindLowestHealthRatio(
                 creature::Algorithms::NonPlayers(creature::Algorithms::Living))) };
 
@@ -1108,7 +1107,7 @@ namespace combat
             return DecideSpell(
                 CREATURE_DECIDING_PTR,
                 MOST_DESIRED_TARGET_PTR,
-                { misc::Vector::SelectRandom(finalSpellPVec)->Effect() });
+                { misc::RandomSelect(finalSpellPVec)->Effect() });
         }
     }
 
@@ -1214,7 +1213,7 @@ namespace combat
                 << combat::EffectType::ToString(SPELL_EFFECTTYPE_VEC[0])
                 << " resulted in no spells.");
 
-        return misc::Vector::SelectRandom(spellsOfTypePVec);
+        return misc::RandomSelect(spellsOfTypePVec);
     }
 
     const TurnActionInfo TurnDecider::DecideIfFlying(
@@ -1222,8 +1221,7 @@ namespace combat
     {
         if ((TURN_INFO.GetIsFlying() == false) && (CREATURE_DECIDING_PTR->CanFly()))
         {
-            if (misc::random::Float(1.0f)
-                < ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyFreq()))
+            if (misc::Random(1.0f) < ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyFreq()))
             {
                 return TurnActionInfo(TurnAction::Fly);
             }
@@ -1263,7 +1261,7 @@ namespace combat
             (CREATURE_DECIDING_TURN_INFO.GetIsFlying())
                 ? AVAILABLE_TARGETS_PVEC
                 : creature::Algorithms::FindByIsFlying(
-                    AVAILABLE_TARGETS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
+                      AVAILABLE_TARGETS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
 
         if (REACHABLE_AVAILABLE_TARGETS_PVEC.empty())
         {
@@ -1280,8 +1278,7 @@ namespace combat
                 << CREATURE_DECIDING_PTR->NameAndRaceAndRole()
                 << ") FindClosestLiving() returned an empty vec.");
 
-        const auto TARGET_CREATURE_PTR { misc::Vector::SelectRandom(
-            CLOSEST_REACH_AVAIL_TARGETS_PVEC) };
+        const auto TARGET_CREATURE_PTR { misc::RandomSelect(CLOSEST_REACH_AVAIL_TARGETS_PVEC) };
 
         const auto BLOCKING_DISTANCE_TO_TARGET { COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
             CREATURE_DECIDING_PTR, TARGET_CREATURE_PTR) };
@@ -1327,8 +1324,8 @@ namespace combat
         }
         else if (
             ARE_ANY_TARGETS_UNCONSCIOUS
-            && (misc::random::Float(1.0f) < misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "fight-chance-enemies-ignore-unconscious")))
+            && (misc::Random(1.0f) < misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                                         "fight-chance-enemies-ignore-unconscious")))
         {
             // most of the time, don't consider unconscious targets
             pVec_OutParam = creature::Algorithms::FindByHasCondition(

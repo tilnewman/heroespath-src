@@ -38,14 +38,14 @@ namespace interact
 
             const auto TownName { [LEVEL]() { return map::Level::ToString(LEVEL); } };
 
-            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            if ((misc::Random(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 return "They let you " + Random({ "walk around", "in here", "in " + TownName() })
                     + " with " + Random(Combinations({ "that" }, { "beast", "creature", "thing" }))
                     + Random({ "?", "?!" });
             }
 
-            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            if ((misc::Random(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 return Random({ "They ", "The guard ", "The guards " })
                     + Random({ "allowed ", "let " })
@@ -53,7 +53,7 @@ namespace interact
                     + Random({ "?", "?!" });
             }
 
-            if (misc::random::Bool())
+            if (misc::RandomBool())
             {
                 return Random({ "You're not from ", "Not from " })
                     + Random({ "these parts", "around here", TownName() })
@@ -80,7 +80,7 @@ namespace interact
 
             const auto TownName { [LEVEL]() { return map::Level::ToString(LEVEL); } };
 
-            switch (misc::random::Int(5))
+            switch (misc::Random(5))
             {
                 case 0:
                 {

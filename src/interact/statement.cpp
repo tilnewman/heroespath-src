@@ -61,7 +61,7 @@ namespace interact
             {
                 std::vector<std::string> v(STR_VEC);
                 v.emplace_back("");
-                return misc::Vector::SelectRandom(STR_VEC);
+                return misc::RandomSelect(STR_VEC);
             }
 
             const std::vector<std::string> Combinations(

@@ -1941,7 +1941,7 @@ namespace gui
             }
         }
 
-        return misc::Vector::SelectRandom(vec);
+        return misc::RandomSelect(vec);
     }
 
     const std::string sound_effect::MapTransitionToString(const MapTransition TYPE)

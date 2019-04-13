@@ -11,17 +11,15 @@
 //
 #include "random.hpp"
 
-#include <random>
-
 namespace heroespath
 {
 namespace misc
 {
-    namespace random
+    namespace random_helpers
     {
 
-        std::mt19937 MersenneTwister::engine;
+        MersenneTwister19937::Engine_t MersenneTwister19937::engine_;
 
-    } // namespace random
+    } // namespace random_helpers
 } // namespace misc
 } // namespace heroespath

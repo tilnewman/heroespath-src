@@ -253,7 +253,7 @@ namespace popup
     const gui::ImageOptions PopupStageBase::AccentImageOptions() const
     {
         return gui::ImageOptions(
-            ((misc::random::Bool()) ? gui::ImageOpt::Default : gui::ImageOpt::FlipHoriz));
+            ((misc::RandomBool()) ? gui::ImageOpt::Default : gui::ImageOpt::FlipHoriz));
     }
 
     const sf::Vector2f PopupStageBase::BackgroundImageLocalSize() const

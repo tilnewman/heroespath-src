@@ -116,7 +116,7 @@ namespace creature
                     return std::make_pair(T::Count, 0.0f);
                 }
 
-                const auto RAND { misc::random::Float(0.0f, chanceTotal) };
+                const auto RAND { misc::Random(0.0f, chanceTotal) };
 
                 // random selection of one of the items
                 auto chanceCumulative { 0.0f };
