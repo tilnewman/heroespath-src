@@ -30,6 +30,18 @@ namespace misc
         template <typename T, typename = std::enable_if_t<are_floating_point_v<T>>>
         constexpr T one_over_two_pi = static_cast<T>(1.0L / (2.0L * pi_literal));
 
+        template <typename T, typename = std::enable_if_t<are_floating_point_v<T>>>
+        constexpr T DegreesToRadians(const T DEGREES)
+        {
+            return ((DEGREES * pi<T>) / T(180));
+        }
+
+        template <typename T, typename = std::enable_if_t<are_floating_point_v<T>>>
+        constexpr T RadiansToDegrees(const T RADIANS)
+        {
+            return ((RADIANS * T(180)) / pi<T>);
+        }
+
     } // namespace math
 } // namespace misc
 } // namespace heroespath

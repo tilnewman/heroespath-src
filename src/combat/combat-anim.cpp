@@ -292,7 +292,7 @@ namespace combat
         }
         else
         {
-            projAnimEndPosV_ = sfutil::ProjectToScreenEdge(
+            projAnimEndPosV_ = sfutil::ProjectJustPastScreenEdge(
                 CREATURE_ATTACKING_CENTER_POSV,
                 CREATURE_DEFENDING_CENTER_POSV,
                 sf::Vector2f(
@@ -809,9 +809,7 @@ namespace combat
             }
 
             case spell::Spells::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
