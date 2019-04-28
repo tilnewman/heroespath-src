@@ -84,6 +84,8 @@ namespace combat
 namespace stage
 {
 
+    using FloatRectOpt_t = gui::FloatRectOpt_t;
+
     // displays all the information about a player character including the inventory
     class InventoryStage
         : public stage::StageBase

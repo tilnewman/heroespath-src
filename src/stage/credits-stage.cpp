@@ -22,7 +22,7 @@
 #include "misc/real.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/position.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/primitives.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>

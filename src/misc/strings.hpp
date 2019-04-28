@@ -114,7 +114,7 @@ namespace misc
     }
 
     // empty strings always return RETURN_ON_ERROR
-    template <typename T, typename = std::enable_if_t<are_number_v<T>>>
+    template <typename T, typename = std::enable_if_t<misc::are_arithmetic_nobool_v<T>>>
     T ToNumber(const std::string & STR, const T RETURN_ON_ERROR)
     {
         if (STR.empty())

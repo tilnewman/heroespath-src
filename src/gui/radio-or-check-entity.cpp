@@ -13,8 +13,8 @@
 #include "gui/gui-images.hpp"
 #include "gui/image-entity.hpp"
 #include "gui/text-entity.hpp"
-#include "sfutil/center-of.hpp"
-#include "sfutil/size-and-scale.hpp"
+
+#include "sfutil/scale.hpp"
 
 namespace heroespath
 {
@@ -31,12 +31,12 @@ namespace gui
         const float TEXT_POS_TOP,
         const float BETWEEN_SPACER)
         : ImageTextEntity(
-            NAME + "_RadioOrCheckEntity",
-            MouseImageInfo(),
-            MouseTextInfo(),
-            boost::none,
-            ImageTextEntity::MouseStateSync::Image,
-            true)
+              NAME + "_RadioOrCheckEntity",
+              MouseImageInfo(),
+              MouseTextInfo(),
+              boost::none,
+              ImageTextEntity::MouseStateSync::Image,
+              true)
         , isRadioButton_(IS_RADIO_BUTTON)
         , isMouseDownOnImage_(false)
         , isMouseOverRegion_(false)

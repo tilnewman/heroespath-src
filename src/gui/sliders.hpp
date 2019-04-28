@@ -297,7 +297,7 @@ namespace gui
     // will be logged.  FROM>TO is supported and not considered an error, however, FROM==TO is
     // not supported and is considered an error that will cause Stop() to be called and an error
     // to be logged.
-    template <typename T, typename = std::enable_if_t<misc::are_number_v<T>>>
+    template <typename T, typename = std::enable_if_t<misc::are_arithmetic_nobool_v<T>>>
     class SliderFromTo
     {
     public:
@@ -381,7 +381,7 @@ namespace gui
     // clamped to that interval and an error will be logged. If START_AT is not zero then
     // the speed will not start slow and smooth.  Motion is fastest (bounce-like) when
     // START_AT=0.5.
-    template <typename T, typename = std::enable_if_t<misc::are_number_v<T>>>
+    template <typename T, typename = std::enable_if_t<misc::are_arithmetic_nobool_v<T>>>
     class SliderOscillator
     {
     public:
@@ -508,7 +508,7 @@ namespace gui
     // VALUE_OF_FIRST_TARGET is not within [VALUE_MIN, VALUE_MAX] then it is clamped and
     // an error is logged.  If VALUE_TO_START_AT=VALUE_OF_FIRST_TARGET then
     // VALUE_OF_FIRST_TARGET will be changed to either VALUE_MIN or VALUE_MAX.
-    template <typename T, typename = std::enable_if_t<misc::are_number_v<T>>>
+    template <typename T, typename = std::enable_if_t<misc::are_arithmetic_nobool_v<T>>>
     class SliderDrift
     {
     public:

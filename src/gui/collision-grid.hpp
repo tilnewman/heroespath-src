@@ -9,8 +9,10 @@
 //
 // collision-grid.hpp
 //
+#include "misc/strings.hpp"
 #include "misc/timing.hpp"
 #include "misc/vectors.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Rect.hpp>

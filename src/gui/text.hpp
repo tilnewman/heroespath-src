@@ -101,6 +101,11 @@ namespace gui
         const sf::Vector2f getScale() const { return sfText_.getScale(); }
         const sf::Vector2f getPosition() const { return sfText_.getPosition(); }
 
+        const sf::Vector2f getSize() const
+        {
+            return sf::Vector2f(sfText_.getGlobalBounds().width, sfText_.getGlobalBounds().height);
+        }
+
         float getLineSpacing() const;
 
         void setString(const std::string & NEW_STRING);

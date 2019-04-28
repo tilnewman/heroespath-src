@@ -44,6 +44,8 @@ namespace map
 
     using NpcModelMap_t = misc::VectorMap<game::NpcPtr_t, avatar::Model>;
 
+    using FloatRectVec_t = std::vector<sf::FloatRect>;
+
     // Responsible for all state and operation of a 2D map of the game world.
     class Map : public sf::Drawable
     {

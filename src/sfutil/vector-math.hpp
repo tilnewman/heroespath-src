@@ -18,26 +18,31 @@ namespace heroespath
 namespace sfutil
 {
 
-    // returns the vector magnitude of V
     template <typename T>
-    constexpr T Magnitude(const sf::Vector2<T> & V)
+    T Magnitude(const sf::Vector2<T> & V) noexcept
     {
-        return static_cast<T>(std::sqrt(
-            static_cast<double>(V.x) * static_cast<double>(V.x)
-            + static_cast<double>(V.y) * static_cast<double>(V.y)));
+        return static_cast<T>(std::sqrt((V.x * V.x) + (V.y * V.y)));
     }
 
-    // normalizes v
     template <typename T>
-    constexpr void Normalize(sf::Vector2<T> & v)
+    const sf::Vector2<T> NormalizeCopy(const sf::Vector2<T> & V) noexcept
     {
-        const auto MAGNITUDE { Magnitude(sf::Vector2<double>(v)) };
+        const T MAGNITUDE { Magnitude(V) };
 
-        if (misc::IsRealZero(MAGNITUDE) == false)
+        if (misc::IsRealZero(MAGNITUDE))
         {
-            v.x = static_cast<T>(static_cast<double>(v.x) / MAGNITUDE);
-            v.y = static_cast<T>(static_cast<double>(v.y) / MAGNITUDE);
+            return V;
         }
+        else
+        {
+            return sf::Vector2<T>((V.x / MAGNITUDE), (V.y / MAGNITUDE));
+        }
+    }
+
+    template <typename T>
+    void Normalize(sf::Vector2<T> & v)
+    {
+        v = NormalizeCopy(v);
     }
 
 } // namespace sfutil

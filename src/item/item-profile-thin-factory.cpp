@@ -19,7 +19,7 @@ namespace heroespath
 {
 namespace item
 {
-    const ItemProfileThinVec_t ItemProfileThinFactory::MakeAllWeapons() const
+    ItemProfileThinVec_t ItemProfileThinFactory::MakeAllWeapons() const
     {
         ItemProfileThinVec_t thinProfiles;
         misc::Vector::AppendMove(MakeWeaponSpecificAll<weapon::sword_type>(), thinProfiles);
@@ -35,7 +35,7 @@ namespace item
         return thinProfiles;
     }
 
-    const ItemProfileThinVec_t ItemProfileThinFactory::MakeAllArmor() const
+    ItemProfileThinVec_t ItemProfileThinFactory::MakeAllArmor() const
     {
         ItemProfileThinVec_t thinProfiles;
         misc::Vector::AppendMove(MakeArmorSpecificAll<armor::cover_type>(), thinProfiles);
@@ -50,7 +50,7 @@ namespace item
         return thinProfiles;
     }
 
-    const ItemProfileThinVec_t
+    ItemProfileThinVec_t
         ItemProfileThinFactory::MakeAllNamedTypes(const named_type::Enum NAMED_TYPE) const
     {
         auto removeIf { [](std::vector<ItemProfileThin> & thinProfiles, auto ifLambda) {
@@ -68,13 +68,9 @@ namespace item
 
         switch (NAMED_TYPE)
         {
-            case named_type::Wicked:
-            {
-                return MakeWeaponOfTypeAll(weapon_type::Pointed);
+            case named_type::Wicked: { return MakeWeaponOfTypeAll(weapon_type::Pointed);
             }
-            case named_type::Fiendish:
-            {
-                return MakeWeaponOfTypeAll(weapon_type::Bladed);
+            case named_type::Fiendish: { return MakeWeaponOfTypeAll(weapon_type::Bladed);
             }
 
             case named_type::Infernal:
@@ -90,22 +86,16 @@ namespace item
                 return thinProfiles;
             }
 
-            case named_type::Raging:
-            {
-                return MakeWeaponOfTypeAll(weapon_type::Club);
+            case named_type::Raging: { return MakeWeaponOfTypeAll(weapon_type::Club);
             }
 
             case named_type::Icy:
             case named_type::Winter:
             case named_type::Frigid:
-            case named_type::Diabolic:
-            {
-                return MakeWeaponOfTypeAll(weapon_type::Melee);
+            case named_type::Diabolic: { return MakeWeaponOfTypeAll(weapon_type::Melee);
             }
 
-            case named_type::Dancing:
-            {
-                return MakeWeaponOfTypeAll(weapon_type::Sword);
+            case named_type::Dancing: { return MakeWeaponOfTypeAll(weapon_type::Sword);
             }
 
             case named_type::Marauder:
@@ -223,9 +213,7 @@ namespace item
                          MakeArmorSpecific(armor::cover_type::Cloak) };
             }
 
-            case named_type::Searing:
-            {
-                return MakeWeaponOfTypeAll(weapon_type::Bladed);
+            case named_type::Searing: { return MakeWeaponOfTypeAll(weapon_type::Bladed);
             }
 
             case named_type::Burning:
@@ -344,16 +332,12 @@ namespace item
 
             case named_type::Robbers:
             case named_type::Thugs:
-            case named_type::Knaves:
-            {
-                return { MakeWeaponKnifeOrDagger(false) };
+            case named_type::Knaves: { return { MakeWeaponKnifeOrDagger(false) };
             }
 
             case named_type::Thief:
             case named_type::Muggers:
-            case named_type::Pirate:
-            {
-                return { MakeWeaponKnifeOrDagger(true) };
+            case named_type::Pirate: { return { MakeWeaponKnifeOrDagger(true) };
             }
 
             case named_type::Focus:
@@ -608,9 +592,7 @@ namespace item
             }
 
             case named_type::Imposters:
-            case named_type::Pickpocket:
-            {
-                return { MakeArmorSpecific(armor::cover_type::Robe) };
+            case named_type::Pickpocket: { return { MakeArmorSpecific(armor::cover_type::Robe) };
             }
 
             case named_type::Chill:
@@ -697,27 +679,21 @@ namespace item
                 return thinProfiles;
             }
 
-            case named_type::Charlatans:
-            {
-                return { MakeArmorSpecific(armor::cover_type::Vest) };
+            case named_type::Charlatans: { return { MakeArmorSpecific(armor::cover_type::Vest) };
             }
 
             case named_type::Burglar:
-            case named_type::Mountebank:
-            {
-                return { MakeArmorSpecific(armor::cover_type::Cloak) };
+            case named_type::Mountebank: { return { MakeArmorSpecific(armor::cover_type::Cloak) };
             }
 
             case named_type::Not:
             case named_type::Count:
-            default:
-            {
-                return {};
+            default: { return {};
             }
         }
     }
 
-    const ItemProfileThinVec_t
+    ItemProfileThinVec_t
         ItemProfileThinFactory::MakeAllSetTypes(const set_type::Enum SET_TYPE) const
     {
         switch (SET_TYPE)
@@ -1119,9 +1095,7 @@ namespace item
 
             case set_type::Not:
             case set_type::Count:
-            default:
-            {
-                return {};
+            default: { return {};
             }
         }
     }
@@ -1145,7 +1119,7 @@ namespace item
         return ItemProfileThin(armor::ArmorTypeWrapper(ARMOR_TYPE, BASE_TYPE), MISC_TYPE);
     }
 
-    const ItemProfileThinVec_t
+    ItemProfileThinVec_t
         ItemProfileThinFactory::MakeArmorNonSpecificAll(const armor_type::Enum ARMOR_TYPE) const
     {
         ItemProfileThinVec_t thinProfiles;
@@ -1159,7 +1133,7 @@ namespace item
         return thinProfiles;
     }
 
-    const ItemProfileThinVec_t ItemProfileThinFactory::MakeArmorNonSpecificAll(
+    ItemProfileThinVec_t ItemProfileThinFactory::MakeArmorNonSpecificAll(
         const armor::base_type::Enum BASE_TYPE) const
     {
         ItemProfileThinVec_t thinProfiles;
@@ -1172,7 +1146,7 @@ namespace item
         return thinProfiles;
     }
 
-    const ItemProfileThinVec_t ItemProfileThinFactory::MakeArmorNonSpecificAll() const
+    ItemProfileThinVec_t ItemProfileThinFactory::MakeArmorNonSpecificAll() const
     {
         ItemProfileThinVec_t thinProfiles;
 
@@ -1189,7 +1163,7 @@ namespace item
         return thinProfiles;
     }
 
-    const ItemProfileThinVec_t
+    ItemProfileThinVec_t
         ItemProfileThinFactory::MakeWeaponOfTypeAll(const weapon_type::Enum WEAPON_TYPE) const
     {
         ItemProfileThinVec_t thinProfiles;
@@ -1206,7 +1180,7 @@ namespace item
         return thinProfiles;
     }
 
-    const ItemProfileThinVec_t
+    ItemProfileThinVec_t
         ItemProfileThinFactory::MakeWeaponKnifeOrDaggerAll(const bool IS_DAGGER) const
     {
         return { MakeWeaponKnifeOrDagger(IS_DAGGER) };

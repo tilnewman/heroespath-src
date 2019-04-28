@@ -16,8 +16,8 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/position.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/common.hpp"
+#include "sfutil/scale.hpp"
 
 namespace heroespath
 {

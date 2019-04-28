@@ -13,8 +13,10 @@
 
 #include "gui/cached-texture.hpp"
 #include "misc/random.hpp"
+#include "misc/strings.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

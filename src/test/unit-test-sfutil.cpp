@@ -28,10 +28,10 @@
 #include "misc/random.hpp"
 #include "sfutil/angles.hpp"
 #include "sfutil/blend-mode.hpp"
-#include "sfutil/center-of.hpp"
-#include "sfutil/center-to.hpp"
+
 #include "sfutil/center.hpp"
 #include "sfutil/color.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/direction.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/distance.hpp"
@@ -40,16 +40,16 @@
 #include "sfutil/image-manip.hpp"
 #include "sfutil/keyboard.hpp"
 #include "sfutil/overlap.hpp"
-#include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
 #include "sfutil/rectangle-shape.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 #include "sfutil/sprite-texture.hpp"
 #include "sfutil/vector-and-rect.hpp"
 #include "sfutil/vector-math.hpp"
 #include "sfutil/vertex.hpp"
 #include "sfutil/video-mode.hpp"
 
+#include <SFML/Graphics.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 
 #include <iostream>
@@ -59,22 +59,227 @@
 #include "unit-test-test-stuff.hpp"
 
 using namespace test_stuff;
+using namespace heroespath;
 using namespace heroespath::gui;
 using namespace heroespath::sfutil;
 using namespace heroespath::misc;
 
-using heroespath::misc::IsRealClose;
+namespace intersects_test_stuff
+{
+
+#define M_TEST_INTERSECTION(rect_a, rect_b, expected)                                              \
+    {                                                                                              \
+        BOOST_CHECK_MESSAGE(                                                                       \
+            Intersects(RI_##rect_a, RI_##rect_b) == (RI_##expected != sf::IntRect(0, 0, 0, 0)),    \
+            "Intersects==(Exp==R0)(RI_" #rect_a "__tion__RI_" #rect_b "==RI_" #expected ")");      \
+                                                                                                   \
+        BOOST_CHECK_MESSAGE(                                                                       \
+            Intersection(RI_##rect_a, RI_##rect_b) == RI_##expected,                               \
+            "Expected(RI_" #rect_a "__tion__RI_" #rect_b "==RI_" #expected ")");                   \
+                                                                                                   \
+        BOOST_CHECK_MESSAGE(                                                                       \
+            Intersection(RI_##rect_a, RI_##rect_b) == Intersection(RI_##rect_b, RI_##rect_a),      \
+            "Transitive(RI_" #rect_a "__tion__RI_" #rect_b "==RI_" #expected ")");                 \
+    }
+
+#define M_TEST_EQUAL_INTERSECTS(rect_a, rect_b, expected)                                          \
+    {                                                                                              \
+        BOOST_CHECK_MESSAGE(                                                                       \
+            (RI_##rect_a.intersects(RI_##rect_b)) == expected,                                     \
+            "SFML==Expected(RI_" #rect_a "__ect__RI_" #rect_b " " #expected ")");                  \
+                                                                                                   \
+        BOOST_CHECK_MESSAGE(                                                                       \
+            Intersects(RI_##rect_a, RI_##rect_b) == expected,                                      \
+            "New==Expected(RI_" #rect_a "__ect__RI_" #rect_b " " #expected ")");                   \
+                                                                                                   \
+        BOOST_CHECK_MESSAGE(                                                                       \
+            (RI_##rect_a.intersects(RI_##rect_b)) == (RI_##rect_b.intersects(RI_##rect_a)),        \
+            "SFML_Transitive(RI_" #rect_a "__ect__RI_" #rect_b " " #expected ")");                 \
+                                                                                                   \
+        BOOST_CHECK_MESSAGE(                                                                       \
+            Intersects(RF_##rect_a, RF_##rect_b) == Intersects(RF_##rect_b, RF_##rect_a),          \
+            "New_Transitive(RF_" #rect_a "__ect__RF_" #rect_b " " #expected ")");                  \
+                                                                                                   \
+        BOOST_CHECK_MESSAGE(                                                                       \
+            (RI_##rect_a.intersects(RI_##rect_b)) == Intersects(RI_##rect_a, RI_##rect_b),         \
+            "SFML==New(RI_" #rect_a "__ect__RI_" #rect_b " " #expected ")");                       \
+    }
+
+} // namespace intersects_test_stuff
+
+namespace minimally_enclosing_test_stuff
+{
+
+template <typename T1, typename T2>
+void test(
+    const sf::Rect<T1> & RECT_A,
+    const sf::Rect<T2> & RECT_B,
+    const bool WILL_IGNORE_ANY_WITH_SIZE_ZERO_OR_LESS,
+    const sf::Rect<T1> & RECT_EXPECTED,
+    const std::string & TEST_NAME)
+{
+    using Rect_t = sf::Rect<T1>;
+    using RectVec_t = std::vector<Rect_t>;
+
+    const RectVec_t V { RECT_A, Rect_t { RECT_B } };
+    const RectVec_t V_REV { Rect_t { RECT_B }, RECT_A };
+
+    const auto RESULT { MinimallyEnclosing(
+        RECT_A, RECT_B, WILL_IGNORE_ANY_WITH_SIZE_ZERO_OR_LESS) };
+
+    const auto RESULT_REV { MinimallyEnclosing(
+        RECT_B, RECT_A, WILL_IGNORE_ANY_WITH_SIZE_ZERO_OR_LESS) };
+
+    const auto RESULT_VEC { MinimallyEnclosing(V, WILL_IGNORE_ANY_WITH_SIZE_ZERO_OR_LESS) };
+
+    const auto RESULT_VEC_REV { MinimallyEnclosing(V_REV, WILL_IGNORE_ANY_WITH_SIZE_ZERO_OR_LESS) };
+
+    std::ostringstream ss;
+    ss << "{" << TEST_NAME << "}, RECT_A=" << RECT_A << ", RECT_B=" << RECT_B
+       << ", WILL_IGNORE_ANY_WITH_SIZE_ZERO_OR_LESS=" << WILL_IGNORE_ANY_WITH_SIZE_ZERO_OR_LESS
+       << ", EXPECTED=" << RECT_EXPECTED;
+
+    const auto MESSAGE_STR = ss.str();
+
+    BOOST_CHECK_MESSAGE(RESULT == RECT_EXPECTED, MESSAGE_STR);
+    BOOST_CHECK_MESSAGE(RESULT_REV == RECT_EXPECTED, MESSAGE_STR);
+    BOOST_CHECK_MESSAGE(RESULT_VEC == RECT_EXPECTED, MESSAGE_STR);
+    BOOST_CHECK_MESSAGE(RESULT_VEC_REV == RECT_EXPECTED, MESSAGE_STR);
+
+    if (WILL_IGNORE_ANY_WITH_SIZE_ZERO_OR_LESS)
+    {
+        const auto RESULT_VEC_WITH_ZEROS1 { MinimallyEnclosing(
+            RectVec_t { Rect_t {}, RECT_A, Rect_t { RECT_B } }, true) };
+
+        const auto RESULT_VEC_WITH_ZEROS2 { MinimallyEnclosing(
+            RectVec_t { RECT_A, Rect_t {}, Rect_t { RECT_B } }, true) };
+
+        const auto RESULT_VEC_WITH_ZEROS3 { MinimallyEnclosing(
+            RectVec_t { RECT_A, Rect_t { RECT_B }, Rect_t {} }, true) };
+
+        const auto RESULT_VEC_WITH_ZEROS1B { MinimallyEnclosing(
+            RectVec_t { Rect_t {}, Rect_t {}, RECT_A, Rect_t { RECT_B } }, true) };
+
+        const auto RESULT_VEC_WITH_ZEROS2B { MinimallyEnclosing(
+            RectVec_t { RECT_A, Rect_t {}, Rect_t {}, Rect_t { RECT_B } }, true) };
+
+        const auto RESULT_VEC_WITH_ZEROS3B { MinimallyEnclosing(
+            RectVec_t { RECT_A, Rect_t { RECT_B }, Rect_t {}, Rect_t {} }, true) };
+
+        const auto RESULT_VEC_WITH_ZEROS4 { MinimallyEnclosing(
+            RectVec_t { Rect_t {}, RECT_A, Rect_t {}, Rect_t { RECT_B } }, true) };
+
+        const auto RESULT_VEC_WITH_ZEROS5 { MinimallyEnclosing(
+            RectVec_t { Rect_t {}, RECT_A, Rect_t { RECT_B }, Rect_t {} }, true) };
+
+        const auto RESULT_VEC_WITH_ZEROS6 { MinimallyEnclosing(
+            RectVec_t { RECT_A, Rect_t {}, Rect_t { RECT_B }, Rect_t {} }, true) };
+
+        const auto RESULT_VEC_WITH_ZEROS4B { MinimallyEnclosing(
+            RectVec_t { Rect_t {}, Rect_t {}, RECT_A, Rect_t {}, Rect_t {}, Rect_t { RECT_B } },
+            true) };
+
+        const auto RESULT_VEC_WITH_ZEROS5B { MinimallyEnclosing(
+            RectVec_t { Rect_t {}, Rect_t {}, RECT_A, Rect_t { RECT_B }, Rect_t {}, Rect_t {} },
+            true) };
+
+        const auto RESULT_VEC_WITH_ZEROS6B { MinimallyEnclosing(
+            RectVec_t { RECT_A, Rect_t {}, Rect_t {}, Rect_t { RECT_B }, Rect_t {}, Rect_t {} },
+            true) };
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS1 == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS2 == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS3 == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS1B == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS2B == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS3B == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS4 == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS5 == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS6 == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS4B == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS5B == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+
+        BOOST_CHECK_MESSAGE(
+            RESULT_VEC_WITH_ZEROS6B == RECT_EXPECTED,
+            "{" << TEST_NAME << "}, WITH_ZEROS, EXPECTED=" << RECT_EXPECTED);
+    }
+}
+
+template <typename T1, typename T2>
+void testWithAndWithoutIgnore(
+    const sf::Rect<T1> & RECT_A,
+    const sf::Rect<T2> & RECT_B,
+    const sf::Rect<T1> & RECT_EXPECTED,
+    const std::string & TEST_NAME)
+{
+    test(RECT_A, RECT_B, false, RECT_EXPECTED, TEST_NAME + " (both=false)");
+    test(RECT_A, RECT_B, true, RECT_EXPECTED, TEST_NAME + " (both=true)");
+}
+
+} // namespace minimally_enclosing_test_stuff
+
+BOOST_AUTO_TEST_CASE(Type_Helpers_Tests)
+{
+    BOOST_CHECK_MESSAGE(
+        (misc::are_any_v<sf::Sprite, sf::Sprite, sf::Image, sf::Texture, sf::RectangleShape>),
+        "are_any_v with two sf::Sprites should be true");
+
+    BOOST_CHECK_MESSAGE(!(has_getglobalbounds_v<int>), "should be false");
+
+    BOOST_CHECK_MESSAGE(
+        !(has_getglobalbounds_v<sf::FloatRect>),
+        "should be false even though it is an sf::FloatRect");
+
+    BOOST_CHECK_MESSAGE(
+        !(has_getglobalbounds_v<sf::IntRect>),
+        "should be false even though it is an sf::Rect<int>");
+
+    BOOST_CHECK((has_getglobalbounds_v<sf::Sprite>));
+    BOOST_CHECK((has_getglobalbounds_v<sf::RectangleShape>));
+}
 
 BOOST_AUTO_TEST_CASE(SFML_Default_Values_Tests)
 {
     auto areVectorValuesZero = [](const sf::Vector2f & V) {
-        return (!(V.x < 0.0f) && !(V.x > 0.0f) && !(V.y < 0.0f) && !(V.y > 0.0f));
+        return !((V.x < 0.0f) || (V.x > 0.0f) || (V.y < 0.0f) || (V.y > 0.0f));
     };
 
     auto areRectValuesZero = [](const sf::FloatRect & R) {
-        return (
-            !(R.left < 0.0f) && !(R.left > 0.0f) && !(R.top < 0.0f) && !(R.top > 0.0f)
-            && !(R.width < 0.0f) && !(R.width > 0.0f) && !(R.height < 0.0f) && !(R.height > 0.0f));
+        return !(
+            (R.left < 0.0f) || (R.left > 0.0f) || (R.top < 0.0f) || (R.top > 0.0f)
+            || (R.width < 0.0f) || (R.width > 0.0f) || (R.height < 0.0f) || (R.height > 0.0f));
     };
 
     const sf::Vector2f VZ(0.0f, 0.0f);
@@ -259,6 +464,72 @@ BOOST_AUTO_TEST_CASE(SFML_Default_Values_Tests)
             BOOST_CHECK(UniformInit {}.r == RZ);
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(vector_mult)
+{
+    const sf::Vector2f V0F(0.0f, 0.0f);
+    const sf::Vector2i V0I(V0F);
+
+    const sf::Vector2f V1F(1.0f, 1.0f);
+    const sf::Vector2i V1I(V1F);
+
+    const sf::Vector2f VN1F(-1.0f, -1.0f);
+    const sf::Vector2i VN1I(VN1F);
+
+    const float HALF(0.5f);
+    const float DOUBLE(2.0f);
+
+    const sf::Vector2f VHF(HALF, HALF);
+
+    const sf::Vector2f VDF(DOUBLE, DOUBLE);
+    const sf::Vector2i VDI(VDF);
+
+    const sf::Vector2f VRF(123.123f, 789.789f);
+    const sf::Vector2i VRI(V1F);
+
+    const sf::Vector2f VRHF(VRF * HALF);
+    const sf::Vector2i VRHI(VRI / 2);
+
+    const sf::Vector2f VRDF(VRF * DOUBLE);
+    const sf::Vector2i VRDI(VRI * 2);
+
+    const sf::Vector2f VRRF(VRF.x * VRF.x, VRF.y * VRF.y);
+    const sf::Vector2i VRRI(VRI.x * VRI.x, VRI.x * VRI.x);
+
+    BOOST_CHECK(VectorMult(V0F, V0F) == V0F);
+    BOOST_CHECK(VectorMult(V1F, V0F) == V0F);
+    BOOST_CHECK(VectorMult(VHF, V0F) == V0F);
+    BOOST_CHECK(VectorMult(VDF, V0F) == V0F);
+    BOOST_CHECK(VectorMult(V0F, V1F) == V0F);
+    BOOST_CHECK(VectorMult(V1F, V1F) == V1F);
+    BOOST_CHECK(VectorMult(VHF, V1F) == VHF);
+    BOOST_CHECK(VectorMult(VDF, V1F) == VDF);
+    BOOST_CHECK(VectorMult(VRF, V0F) == V0F);
+    BOOST_CHECK(VectorMult(VRF, V1F) == VRF);
+    BOOST_CHECK(VectorMult(VRF, VHF) == VRHF);
+    BOOST_CHECK(VectorMult(VRF, VDF) == VRDF);
+    BOOST_CHECK(VectorMult(VRF, VRF) == VRRF);
+
+    BOOST_CHECK(VectorMult(V0I, V0F) == V0I);
+    BOOST_CHECK(VectorMult(V1I, V0F) == V0I);
+    BOOST_CHECK(VectorMult(VDI, V0F) == V0I);
+    BOOST_CHECK(VectorMult(V0I, V1F) == V0I);
+    BOOST_CHECK(VectorMult(V1I, V1F) == V1I);
+    BOOST_CHECK(VectorMult(VDI, V1F) == VDI);
+    BOOST_CHECK(VectorMult(VRI, V0F) == V0I);
+    BOOST_CHECK(VectorMult(VRI, V1F) == VRI);
+    BOOST_CHECK(VectorMult(VRI, VHF) == VRHI);
+    BOOST_CHECK(VectorMult(VRI, VDF) == VRDI);
+
+    const auto RIRFIx { int(double(VRI.x) * double(VRF.x)) };
+    const auto RIRFIy { int(double(VRI.y) * double(VRF.y)) };
+    const sf::Vector2i V_RIRFI(RIRFIx, RIRFIy);
+    BOOST_CHECK(VectorMult(VRI, VRF) == V_RIRFI);
+    BOOST_CHECK(VectorMult(sf::Vector2i(10, 1000000), sf::Vector2f(0.1f, 0.000001f)) == V1I);
+    BOOST_CHECK(VectorMult(sf::Vector2i(10, 1000000), sf::Vector2f(-0.1f, -0.000001f)) == VN1I);
+    BOOST_CHECK(VectorMult(sf::Vector2i(-10, -1000000), sf::Vector2f(0.1f, 0.000001f)) == VN1I);
+    BOOST_CHECK(VectorMult(sf::Vector2i(-10, -1000000), sf::Vector2f(-0.1f, -0.000001f)) == V1I);
 }
 
 BOOST_AUTO_TEST_CASE(ColorMathTests)
@@ -774,109 +1045,109 @@ BOOST_AUTO_TEST_CASE(ZeroOrLessTests)
     const sf::Vector2f LOV(LARGER, ONE);
     const sf::Vector2f LLV(LARGER, LARGER);
 
-    BOOST_CHECK(IsZeroOrLessEither(ZNV));
-    BOOST_CHECK(IsZeroOrLessEither(ZZV));
-    BOOST_CHECK(IsZeroOrLessEither(ZPV));
-    BOOST_CHECK(IsZeroOrLessEither(ZOV));
-    BOOST_CHECK(IsZeroOrLessEither(ZLV));
-    BOOST_CHECK(IsZeroOrLessEither(NNV));
-    BOOST_CHECK(IsZeroOrLessEither(NZV));
-    BOOST_CHECK(IsZeroOrLessEither(NPV));
-    BOOST_CHECK(IsZeroOrLessEither(NOV));
-    BOOST_CHECK(IsZeroOrLessEither(NLV));
-    BOOST_CHECK(IsZeroOrLessEither(PNV));
-    BOOST_CHECK(IsZeroOrLessEither(PZV));
-    BOOST_CHECK(IsZeroOrLessEither(PPV) == false);
-    BOOST_CHECK(IsZeroOrLessEither(POV) == false);
-    BOOST_CHECK(IsZeroOrLessEither(PLV) == false);
-    BOOST_CHECK(IsZeroOrLessEither(ONV));
-    BOOST_CHECK(IsZeroOrLessEither(OZV));
-    BOOST_CHECK(IsZeroOrLessEither(OPV) == false);
-    BOOST_CHECK(IsZeroOrLessEither(OOV) == false);
-    BOOST_CHECK(IsZeroOrLessEither(OLV) == false);
-    BOOST_CHECK(IsZeroOrLessEither(LNV));
-    BOOST_CHECK(IsZeroOrLessEither(LZV));
-    BOOST_CHECK(IsZeroOrLessEither(LPV) == false);
-    BOOST_CHECK(IsZeroOrLessEither(LOV) == false);
-    BOOST_CHECK(IsZeroOrLessEither(LLV) == false);
+    BOOST_CHECK(IsZeroOrLessAny(ZNV));
+    BOOST_CHECK(IsZeroOrLessAny(ZZV));
+    BOOST_CHECK(IsZeroOrLessAny(ZPV));
+    BOOST_CHECK(IsZeroOrLessAny(ZOV));
+    BOOST_CHECK(IsZeroOrLessAny(ZLV));
+    BOOST_CHECK(IsZeroOrLessAny(NNV));
+    BOOST_CHECK(IsZeroOrLessAny(NZV));
+    BOOST_CHECK(IsZeroOrLessAny(NPV));
+    BOOST_CHECK(IsZeroOrLessAny(NOV));
+    BOOST_CHECK(IsZeroOrLessAny(NLV));
+    BOOST_CHECK(IsZeroOrLessAny(PNV));
+    BOOST_CHECK(IsZeroOrLessAny(PZV));
+    BOOST_CHECK(IsZeroOrLessAny(PPV) == false);
+    BOOST_CHECK(IsZeroOrLessAny(POV) == false);
+    BOOST_CHECK(IsZeroOrLessAny(PLV) == false);
+    BOOST_CHECK(IsZeroOrLessAny(ONV));
+    BOOST_CHECK(IsZeroOrLessAny(OZV));
+    BOOST_CHECK(IsZeroOrLessAny(OPV) == false);
+    BOOST_CHECK(IsZeroOrLessAny(OOV) == false);
+    BOOST_CHECK(IsZeroOrLessAny(OLV) == false);
+    BOOST_CHECK(IsZeroOrLessAny(LNV));
+    BOOST_CHECK(IsZeroOrLessAny(LZV));
+    BOOST_CHECK(IsZeroOrLessAny(LPV) == false);
+    BOOST_CHECK(IsZeroOrLessAny(LOV) == false);
+    BOOST_CHECK(IsZeroOrLessAny(LLV) == false);
 
-    BOOST_CHECK(IsZeroOrLessBoth(ZNV));
-    BOOST_CHECK(IsZeroOrLessBoth(ZZV));
-    BOOST_CHECK(IsZeroOrLessBoth(ZPV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(ZOV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(ZLV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(NNV));
-    BOOST_CHECK(IsZeroOrLessBoth(NZV));
-    BOOST_CHECK(IsZeroOrLessBoth(NPV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(NOV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(NLV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(PNV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(PZV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(PPV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(POV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(PLV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(ONV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(OZV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(OPV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(OOV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(OLV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(LNV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(LZV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(LPV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(LOV) == false);
-    BOOST_CHECK(IsZeroOrLessBoth(LLV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(ZNV));
+    BOOST_CHECK(IsZeroOrLessAll(ZZV));
+    BOOST_CHECK(IsZeroOrLessAll(ZPV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(ZOV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(ZLV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(NNV));
+    BOOST_CHECK(IsZeroOrLessAll(NZV));
+    BOOST_CHECK(IsZeroOrLessAll(NPV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(NOV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(NLV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(PNV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(PZV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(PPV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(POV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(PLV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(ONV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(OZV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(OPV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(OOV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(OLV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(LNV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(LZV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(LPV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(LOV) == false);
+    BOOST_CHECK(IsZeroOrLessAll(LLV) == false);
 
-    BOOST_CHECK(IsLessThanOneEither(ZNV));
-    BOOST_CHECK(IsLessThanOneEither(ZZV));
-    BOOST_CHECK(IsLessThanOneEither(ZPV));
-    BOOST_CHECK(IsLessThanOneEither(ZOV));
-    BOOST_CHECK(IsLessThanOneEither(ZLV));
-    BOOST_CHECK(IsLessThanOneEither(NNV));
-    BOOST_CHECK(IsLessThanOneEither(NZV));
-    BOOST_CHECK(IsLessThanOneEither(NPV));
-    BOOST_CHECK(IsLessThanOneEither(NOV));
-    BOOST_CHECK(IsLessThanOneEither(NLV));
-    BOOST_CHECK(IsLessThanOneEither(PNV));
-    BOOST_CHECK(IsLessThanOneEither(PZV));
-    BOOST_CHECK(IsLessThanOneEither(PPV));
-    BOOST_CHECK(IsLessThanOneEither(POV));
-    BOOST_CHECK(IsLessThanOneEither(PLV));
-    BOOST_CHECK(IsLessThanOneEither(ONV));
-    BOOST_CHECK(IsLessThanOneEither(OZV));
-    BOOST_CHECK(IsLessThanOneEither(OPV));
-    BOOST_CHECK(IsLessThanOneEither(OOV) == false);
-    BOOST_CHECK(IsLessThanOneEither(OLV) == false);
-    BOOST_CHECK(IsLessThanOneEither(LNV));
-    BOOST_CHECK(IsLessThanOneEither(LZV));
-    BOOST_CHECK(IsLessThanOneEither(LPV));
-    BOOST_CHECK(IsLessThanOneEither(LOV) == false);
-    BOOST_CHECK(IsLessThanOneEither(LLV) == false);
+    BOOST_CHECK(IsLessThanOneAny(ZNV));
+    BOOST_CHECK(IsLessThanOneAny(ZZV));
+    BOOST_CHECK(IsLessThanOneAny(ZPV));
+    BOOST_CHECK(IsLessThanOneAny(ZOV));
+    BOOST_CHECK(IsLessThanOneAny(ZLV));
+    BOOST_CHECK(IsLessThanOneAny(NNV));
+    BOOST_CHECK(IsLessThanOneAny(NZV));
+    BOOST_CHECK(IsLessThanOneAny(NPV));
+    BOOST_CHECK(IsLessThanOneAny(NOV));
+    BOOST_CHECK(IsLessThanOneAny(NLV));
+    BOOST_CHECK(IsLessThanOneAny(PNV));
+    BOOST_CHECK(IsLessThanOneAny(PZV));
+    BOOST_CHECK(IsLessThanOneAny(PPV));
+    BOOST_CHECK(IsLessThanOneAny(POV));
+    BOOST_CHECK(IsLessThanOneAny(PLV));
+    BOOST_CHECK(IsLessThanOneAny(ONV));
+    BOOST_CHECK(IsLessThanOneAny(OZV));
+    BOOST_CHECK(IsLessThanOneAny(OPV));
+    BOOST_CHECK(IsLessThanOneAny(OOV) == false);
+    BOOST_CHECK(IsLessThanOneAny(OLV) == false);
+    BOOST_CHECK(IsLessThanOneAny(LNV));
+    BOOST_CHECK(IsLessThanOneAny(LZV));
+    BOOST_CHECK(IsLessThanOneAny(LPV));
+    BOOST_CHECK(IsLessThanOneAny(LOV) == false);
+    BOOST_CHECK(IsLessThanOneAny(LLV) == false);
 
-    BOOST_CHECK(IsLessThanOneBoth(ZNV));
-    BOOST_CHECK(IsLessThanOneBoth(ZZV));
-    BOOST_CHECK(IsLessThanOneBoth(ZPV));
-    BOOST_CHECK(IsLessThanOneBoth(ZOV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(ZLV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(NNV));
-    BOOST_CHECK(IsLessThanOneBoth(NZV));
-    BOOST_CHECK(IsLessThanOneBoth(NPV));
-    BOOST_CHECK(IsLessThanOneBoth(NOV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(NLV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(PNV));
-    BOOST_CHECK(IsLessThanOneBoth(PZV));
-    BOOST_CHECK(IsLessThanOneBoth(PPV));
-    BOOST_CHECK(IsLessThanOneBoth(POV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(PLV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(ONV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(OZV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(OPV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(OOV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(OLV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(LNV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(LZV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(LPV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(LOV) == false);
-    BOOST_CHECK(IsLessThanOneBoth(LLV) == false);
+    BOOST_CHECK(IsLessThanOneAll(ZNV));
+    BOOST_CHECK(IsLessThanOneAll(ZZV));
+    BOOST_CHECK(IsLessThanOneAll(ZPV));
+    BOOST_CHECK(IsLessThanOneAll(ZOV) == false);
+    BOOST_CHECK(IsLessThanOneAll(ZLV) == false);
+    BOOST_CHECK(IsLessThanOneAll(NNV));
+    BOOST_CHECK(IsLessThanOneAll(NZV));
+    BOOST_CHECK(IsLessThanOneAll(NPV));
+    BOOST_CHECK(IsLessThanOneAll(NOV) == false);
+    BOOST_CHECK(IsLessThanOneAll(NLV) == false);
+    BOOST_CHECK(IsLessThanOneAll(PNV));
+    BOOST_CHECK(IsLessThanOneAll(PZV));
+    BOOST_CHECK(IsLessThanOneAll(PPV));
+    BOOST_CHECK(IsLessThanOneAll(POV) == false);
+    BOOST_CHECK(IsLessThanOneAll(PLV) == false);
+    BOOST_CHECK(IsLessThanOneAll(ONV) == false);
+    BOOST_CHECK(IsLessThanOneAll(OZV) == false);
+    BOOST_CHECK(IsLessThanOneAll(OPV) == false);
+    BOOST_CHECK(IsLessThanOneAll(OOV) == false);
+    BOOST_CHECK(IsLessThanOneAll(OLV) == false);
+    BOOST_CHECK(IsLessThanOneAll(LNV) == false);
+    BOOST_CHECK(IsLessThanOneAll(LZV) == false);
+    BOOST_CHECK(IsLessThanOneAll(LPV) == false);
+    BOOST_CHECK(IsLessThanOneAll(LOV) == false);
+    BOOST_CHECK(IsLessThanOneAll(LLV) == false);
 
     const sf::FloatRect ZNR(ZZV, ZNV);
     const sf::FloatRect ZZR(ZZV, ZZV);
@@ -904,109 +1175,109 @@ BOOST_AUTO_TEST_CASE(ZeroOrLessTests)
     const sf::FloatRect LOR(ZZV, LOV);
     const sf::FloatRect LLR(ZZV, LLV);
 
-    BOOST_CHECK(IsSizeZeroOrLessEither(ZNR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(ZZR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(ZPR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(ZOR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(ZLR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(NNR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(NZR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(NPR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(NOR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(NLR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(PNR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(PZR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(PPR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessEither(POR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessEither(PLR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessEither(ONR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(OZR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(OPR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessEither(OOR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessEither(OLR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessEither(LNR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(LZR));
-    BOOST_CHECK(IsSizeZeroOrLessEither(LPR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessEither(LOR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessEither(LLR) == false);
+    BOOST_CHECK(IsZeroOrLessAny(Size(ZNR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(ZZR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(ZPR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(ZOR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(ZLR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(NNR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(NZR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(NPR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(NOR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(NLR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(PNR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(PZR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(PPR)) == false);
+    BOOST_CHECK(IsZeroOrLessAny(Size(POR)) == false);
+    BOOST_CHECK(IsZeroOrLessAny(Size(PLR)) == false);
+    BOOST_CHECK(IsZeroOrLessAny(Size(ONR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(OZR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(OPR)) == false);
+    BOOST_CHECK(IsZeroOrLessAny(Size(OOR)) == false);
+    BOOST_CHECK(IsZeroOrLessAny(Size(OLR)) == false);
+    BOOST_CHECK(IsZeroOrLessAny(Size(LNR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(LZR)));
+    BOOST_CHECK(IsZeroOrLessAny(Size(LPR)) == false);
+    BOOST_CHECK(IsZeroOrLessAny(Size(LOR)) == false);
+    BOOST_CHECK(IsZeroOrLessAny(Size(LLR)) == false);
 
-    BOOST_CHECK(IsSizeZeroOrLessBoth(ZNR));
-    BOOST_CHECK(IsSizeZeroOrLessBoth(ZZR));
-    BOOST_CHECK(IsSizeZeroOrLessBoth(ZPR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(ZOR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(ZLR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(NNR));
-    BOOST_CHECK(IsSizeZeroOrLessBoth(NZR));
-    BOOST_CHECK(IsSizeZeroOrLessBoth(NPR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(NOR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(NLR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(PNR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(PZR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(PPR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(POR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(PLR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(ONR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(OZR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(OPR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(OOR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(OLR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(LNR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(LZR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(LPR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(LOR) == false);
-    BOOST_CHECK(IsSizeZeroOrLessBoth(LLR) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(ZNR)));
+    BOOST_CHECK(IsZeroOrLessAll(Size(ZZR)));
+    BOOST_CHECK(IsZeroOrLessAll(Size(ZPR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(ZOR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(ZLR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(NNR)));
+    BOOST_CHECK(IsZeroOrLessAll(Size(NZR)));
+    BOOST_CHECK(IsZeroOrLessAll(Size(NPR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(NOR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(NLR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(PNR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(PZR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(PPR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(POR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(PLR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(ONR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(OZR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(OPR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(OOR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(OLR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(LNR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(LZR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(LPR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(LOR)) == false);
+    BOOST_CHECK(IsZeroOrLessAll(Size(LLR)) == false);
 
-    BOOST_CHECK(IsSizeLessThanOneEither(ZNR));
-    BOOST_CHECK(IsSizeLessThanOneEither(ZZR));
-    BOOST_CHECK(IsSizeLessThanOneEither(ZPR));
-    BOOST_CHECK(IsSizeLessThanOneEither(ZOR));
-    BOOST_CHECK(IsSizeLessThanOneEither(ZLR));
-    BOOST_CHECK(IsSizeLessThanOneEither(NNR));
-    BOOST_CHECK(IsSizeLessThanOneEither(NZR));
-    BOOST_CHECK(IsSizeLessThanOneEither(NPR));
-    BOOST_CHECK(IsSizeLessThanOneEither(NOR));
-    BOOST_CHECK(IsSizeLessThanOneEither(NLR));
-    BOOST_CHECK(IsSizeLessThanOneEither(PNR));
-    BOOST_CHECK(IsSizeLessThanOneEither(PZR));
-    BOOST_CHECK(IsSizeLessThanOneEither(PPR));
-    BOOST_CHECK(IsSizeLessThanOneEither(POR));
-    BOOST_CHECK(IsSizeLessThanOneEither(PLR));
-    BOOST_CHECK(IsSizeLessThanOneEither(ONR));
-    BOOST_CHECK(IsSizeLessThanOneEither(OZR));
-    BOOST_CHECK(IsSizeLessThanOneEither(OPR));
-    BOOST_CHECK(IsSizeLessThanOneEither(OOR) == false);
-    BOOST_CHECK(IsSizeLessThanOneEither(OLR) == false);
-    BOOST_CHECK(IsSizeLessThanOneEither(LNR));
-    BOOST_CHECK(IsSizeLessThanOneEither(LZR));
-    BOOST_CHECK(IsSizeLessThanOneEither(LPR));
-    BOOST_CHECK(IsSizeLessThanOneEither(LOR) == false);
-    BOOST_CHECK(IsSizeLessThanOneEither(LLR) == false);
+    BOOST_CHECK(IsLessThanOneAny(Size(ZNR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(ZZR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(ZPR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(ZOR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(ZLR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(NNR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(NZR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(NPR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(NOR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(NLR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(PNR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(PZR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(PPR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(POR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(PLR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(ONR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(OZR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(OPR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(OOR)) == false);
+    BOOST_CHECK(IsLessThanOneAny(Size(OLR)) == false);
+    BOOST_CHECK(IsLessThanOneAny(Size(LNR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(LZR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(LPR)));
+    BOOST_CHECK(IsLessThanOneAny(Size(LOR)) == false);
+    BOOST_CHECK(IsLessThanOneAny(Size(LLR)) == false);
 
-    BOOST_CHECK(IsSizeLessThanOneBoth(ZNR));
-    BOOST_CHECK(IsSizeLessThanOneBoth(ZZR));
-    BOOST_CHECK(IsSizeLessThanOneBoth(ZPR));
-    BOOST_CHECK(IsSizeLessThanOneBoth(ZOR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(ZLR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(NNR));
-    BOOST_CHECK(IsSizeLessThanOneBoth(NZR));
-    BOOST_CHECK(IsSizeLessThanOneBoth(NPR));
-    BOOST_CHECK(IsSizeLessThanOneBoth(NOR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(NLR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(PNR));
-    BOOST_CHECK(IsSizeLessThanOneBoth(PZR));
-    BOOST_CHECK(IsSizeLessThanOneBoth(PPR));
-    BOOST_CHECK(IsSizeLessThanOneBoth(POR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(PLR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(ONR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(OZR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(OPR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(OOR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(OLR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(LNR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(LZR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(LPR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(LOR) == false);
-    BOOST_CHECK(IsSizeLessThanOneBoth(LLR) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(ZNR)));
+    BOOST_CHECK(IsLessThanOneAll(Size(ZZR)));
+    BOOST_CHECK(IsLessThanOneAll(Size(ZPR)));
+    BOOST_CHECK(IsLessThanOneAll(Size(ZOR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(ZLR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(NNR)));
+    BOOST_CHECK(IsLessThanOneAll(Size(NZR)));
+    BOOST_CHECK(IsLessThanOneAll(Size(NPR)));
+    BOOST_CHECK(IsLessThanOneAll(Size(NOR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(NLR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(PNR)));
+    BOOST_CHECK(IsLessThanOneAll(Size(PZR)));
+    BOOST_CHECK(IsLessThanOneAll(Size(PPR)));
+    BOOST_CHECK(IsLessThanOneAll(Size(POR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(PLR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(ONR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(OZR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(OPR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(OOR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(OLR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(LNR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(LZR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(LPR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(LOR)) == false);
+    BOOST_CHECK(IsLessThanOneAll(Size(LLR)) == false);
 }
 
 BOOST_AUTO_TEST_CASE(CenterOfTests)
@@ -1205,14 +1476,13 @@ BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
     const sf::Vector2f SIZE_V_F { 123.456f, 789.987f };
     const sf::Vector2i SIZE_V_I { SIZE_V_F };
 
-    BOOST_CHECK(CenterCopy(ZERO_V_I) == SCREEN_CENTER_V);
+    BOOST_CHECK(CenterCopy(ZERO_V_F) == SCREEN_CENTER_V);
     BOOST_CHECK(CenterCopy(ZERO_V_F) == SCREEN_CENTER_V);
     BOOST_CHECK(CenterCopy(SIZE_V_F) == SCREEN_CENTER_V - (SIZE_V_F * 0.5f));
-    BOOST_CHECK(CenterCopy(SIZE_V_I) == (SCREEN_CENTER_V - (sf::Vector2f(SIZE_V_I) * 0.5f)));
+    BOOST_CHECK(CenterCopy(SIZE_V_F) == (SCREEN_CENTER_V - (sf::Vector2f(SIZE_V_F) * 0.5f)));
 
     //
     BOOST_CHECK(CenterCopy(ZERO_RECT_F) == ZERO_RECT_CENTERED_F);
-    BOOST_CHECK(CenterCopy(ZERO_RECT_I) == ZERO_RECT_CENTERED_F);
     BOOST_CHECK(CenterCopy(ZERO_RECT_F, SCALE_V_F) == ZERO_RECT_CENTERED_F);
 
     // THIS SHOULD NOT COMPILE
@@ -1220,15 +1490,15 @@ BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
 
     BOOST_CHECK(
         CenterCopy(RECT_I)
-        == sf::FloatRect(
+        == sf::IntRect { sf::FloatRect(
                SCREEN_CENTER_V - (sf::Vector2f(300.0f, 400.0f) * 0.5f),
-               sf::Vector2f(300.0f, 400.0f)));
+               sf::Vector2f(300.0f, 400.0f)) });
 
     BOOST_CHECK(
         CenterCopy(RECT_I, SCALE_V_F)
-        == sf::FloatRect(
+        == sf::IntRect { sf::FloatRect(
                SCREEN_CENTER_V - ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F * 0.5f),
-               ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F)));
+               ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F)) });
 
     heroespath::gui::Display::Release();
     heroespath::misc::Log::Release();
@@ -1286,8 +1556,8 @@ BOOST_AUTO_TEST_CASE(FitTests)
     const float HALF_SCALE(0.5f);
     const float DOUBLE_SCALE(2.0f);
 
-    BOOST_CHECK((FitCopy(10.0f, 100.0f, 0.0, 0.0) == TALL_V_F));
-    BOOST_CHECK((FitCopy(10.0f, 100.0f, -1.0, -0.1) == TALL_V_F));
+    BOOST_CHECK(FitCopy(10.0f, 100.0f, 0.0, 0.0) == TALL_V_F);
+    BOOST_CHECK(FitCopy(10.0f, 100.0f, -1.0, -0.1) == TALL_V_F);
 
     BOOST_CHECK((FitCopy(10.0f, 100.0f, 10.0, 100.0) == TALL_V_F));
     BOOST_CHECK((FitCopy(10.0f, 100.0f, 10.0, 100.0, HALF_SCALE) == (TALL_V_F * HALF_SCALE)));
@@ -1487,14 +1757,14 @@ BOOST_AUTO_TEST_CASE(FitTests)
     // FIT(TALL to WIDE)=(0.0f, 0.0f, 1.0f, 10.0f)
     // CENTERED=(49.5f, 0.0f, 1.0f, 10.0f)
     const sf::Rect<float> TALL_FITANDCTO_WIDE_F(49.5f, 0.0f, 1.0f, 10.0f);
-    BOOST_CHECK(FitAndCenterCopy(TALL_RECT_F, WIDE_RECT_I) == TALL_FITANDCTO_WIDE_F);
 
     tallRectFTemp = TALL_RECT_F;
     FitAndCenterTo(tallRectFTemp, WIDE_RECT_F);
     BOOST_CHECK(tallRectFTemp == TALL_FITANDCTO_WIDE_F);
 
     /*{
-        // if FitAndCenterTo() to a rect with either width/height zero then only the other non-zero
+        // if FitAndCenterTo() to a rect with either width/height zero then only the other
+    non-zero
         // dimension is used to scale
         BOOST_CHECK(
             FitAndCenterCopy(sf::IntRect(0, 0, 20, 40), sf::IntRect(10, 10, 20, 0))
@@ -1504,9 +1774,9 @@ BOOST_AUTO_TEST_CASE(FitTests)
             FitAndCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 200))
             == sf::IntRect(-60, -220, 100, 200));
 
-        // if FitAndCenterTo() to a rect with both width/height zero then the resulting size is zero
-        BOOST_CHECK(
-            FitAndCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 0))
+        // if FitAndCenterTo() to a rect with both width/height zero then the resulting size is
+    zero BOOST_CHECK( FitAndCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0,
+    0))
             == sf::IntRect(-10, -20, 0, 0));
 
         //...even if scaled
@@ -1541,7 +1811,8 @@ BOOST_AUTO_TEST_CASE(FitTests)
     }
 
     {
-        // if FitAndReCenter() to a rect with either width/height zero then only the other non-zero
+        // if FitAndReCenter() to a rect with either width/height zero then only the other
+    non-zero
         // dimension is used to scale
         BOOST_CHECK(
             FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 100, 0))
@@ -1551,9 +1822,9 @@ BOOST_AUTO_TEST_CASE(FitTests)
             FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 200))
             == sf::IntRect(-65, -130, 100, 200));
 
-        // if FitAndReCenter() to a rect with both width/height zero then the resulting size is zero
-        BOOST_CHECK(
-            FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 0))
+        // if FitAndReCenter() to a rect with both width/height zero then the resulting size is
+    zero BOOST_CHECK( FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0,
+    0))
             == sf::IntRect(-15, -30, 0, 0));
 
         //...even if scaled
@@ -1739,6 +2010,9 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     const sf::Vector2f V1F(1.0f, 1.0f);
     const sf::Vector2i V1I(V1F);
 
+    const sf::Vector2f VN1F(-1.0f, -1.0f);
+    const sf::Vector2i VN1I(VN1F);
+
     const float HALF(0.5f);
     const float DOUBLE(2.0f);
 
@@ -1810,66 +2084,57 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(R1F >= R0F);
     BOOST_CHECK(R1F >= R0I);
 
-    const sf::Vector2f SCALEV1(0.5f, 2.0f);
+    {
+        auto rectOfAllOnes(R1F);
+        ScaleAndReCenter(rectOfAllOnes, 1.0f);
+        BOOST_CHECK(rectOfAllOnes == R1F);
+        rectOfAllOnes = R1F;
+        ScaleAndReCenter(rectOfAllOnes, 1.0f);
+        BOOST_CHECK(rectOfAllOnes == R1F);
+        //
+        rectOfAllOnes = R1F;
+        ScaleAndReCenter(rectOfAllOnes, HALF);
+        BOOST_CHECK(rectOfAllOnes == sf::FloatRect(1.25f, 1.25f, 0.5f, 0.5f));
+        ScaleAndReCenter(rectOfAllOnes, DOUBLE);
+        BOOST_CHECK(rectOfAllOnes == R1F);
+        //
+        rectOfAllOnes = R1F;
+        ScaleAndReCenter(rectOfAllOnes, sf::Vector2f(HALF, DOUBLE));
+        BOOST_CHECK(rectOfAllOnes == sf::FloatRect(1.25f, 0.5f, 0.5f, 2.0f));
+        ScaleAndReCenter(rectOfAllOnes, sf::Vector2f(DOUBLE, HALF));
+        BOOST_CHECK(rectOfAllOnes == R1F);
+    }
 
-    auto tempRect1(R1F);
-    ScaleAndReCenter(tempRect1, 1.0f);
-    BOOST_CHECK(tempRect1 == R1F);
-    tempRect1 = R1F;
-    ScaleAndReCenter(tempRect1, 1.0f);
-    BOOST_CHECK(tempRect1 == R1F);
-    //
-    tempRect1 = R1F;
-    ScaleAndReCenter(tempRect1, HALF);
-    BOOST_CHECK(tempRect1 == sf::FloatRect(1.25f, 1.25f, 0.5f, 0.5f));
-    ScaleAndReCenter(tempRect1, DOUBLE);
-    BOOST_CHECK(tempRect1 == R1F);
-    //
-    tempRect1 = R1F;
-    ScaleAndReCenter(tempRect1, sf::Vector2f(HALF, DOUBLE));
-    BOOST_CHECK(tempRect1 == sf::FloatRect(1.25f, 0.5f, 0.5f, 2.0f));
-    ScaleAndReCenter(tempRect1, sf::Vector2f(DOUBLE, HALF));
-    BOOST_CHECK(tempRect1 == R1F);
+    {
+        const sf::IntRect FULL_RECT_ORIGIN_CENTERED_I(-100, -100, 200, 200);
+        const sf::IntRect HALF_RECT_ORIGIN_CENTERED_I(-50, -50, 100, 100);
+        //
+        const sf::FloatRect FULL_RECT_ORIGIN_CENTERED_F(FULL_RECT_ORIGIN_CENTERED_I);
+        const sf::FloatRect HALF_RECT_ORIGIN_CENTERED_F(HALF_RECT_ORIGIN_CENTERED_I);
+
+        auto rI(FULL_RECT_ORIGIN_CENTERED_I);
+        ScaleAndReCenter(rI, 0.5f);
+        BOOST_CHECK(rI == HALF_RECT_ORIGIN_CENTERED_I);
+
+        auto rF(FULL_RECT_ORIGIN_CENTERED_F);
+        ScaleAndReCenter(rF, 0.5f);
+        BOOST_CHECK(rF == HALF_RECT_ORIGIN_CENTERED_F);
+
+        rI = FULL_RECT_ORIGIN_CENTERED_I;
+        ScaleAndReCenter(rI, sf::Vector2f(0.1f, 0.01f));
+        BOOST_CHECK(rI == sf::IntRect(-10, -1, 20, 2));
+
+        rI = FULL_RECT_ORIGIN_CENTERED_I;
+        ScaleAndReCenter(rI, sf::Vector2<double>(0.1, 0.01));
+        BOOST_CHECK(rI == sf::IntRect(-10, -1, 20, 2));
+    }
 
     // test of ScaleCopy(Vector, SCALE)
-    BOOST_CHECK(ScaleCopy(V0F, 0.0f) == V0F);
-    BOOST_CHECK(ScaleCopy(V0F, 1.0f) == V0F);
-    BOOST_CHECK(ScaleCopy(V0F, 0.0) == V0F);
-    BOOST_CHECK(ScaleCopy(V0F, 1.0) == V0F);
-    //
-    BOOST_CHECK(ScaleCopy(V0I, 0.0f) == V0I);
-    BOOST_CHECK(ScaleCopy(V0I, 1.0f) == V0I);
-    BOOST_CHECK(ScaleCopy(V0I, 0.0) == V0I);
-    BOOST_CHECK(ScaleCopy(V0I, 1.0) == V0I);
-    ////
-    BOOST_CHECK(ScaleCopy(V1F, 0.0f) == V0F);
-    BOOST_CHECK(ScaleCopy(V1F, 1.0f) == V1F);
-    BOOST_CHECK(ScaleCopy(V1F, 0.0) == V0F);
-    BOOST_CHECK(ScaleCopy(V1F, 1.0) == V1F);
-    //
-    BOOST_CHECK(ScaleCopy(V1I, 0.0f) == V0I);
-    BOOST_CHECK(ScaleCopy(V1I, 1.0f) == V1I);
-    BOOST_CHECK(ScaleCopy(V1I, 0.0) == V0I);
-    BOOST_CHECK(ScaleCopy(V1I, 1.0) == V1I);
-    ////
-    BOOST_CHECK(ScaleCopy(VRF, 0.0f) == V0F);
-    BOOST_CHECK(ScaleCopy(VRF, 1.0f) == VRF);
-    BOOST_CHECK(ScaleCopy(VRF, 0.0) == V0F);
-    BOOST_CHECK(ScaleCopy(VRF, 1.0) == VRF);
-    //
-    BOOST_CHECK(ScaleCopy(VRI, 0.0f) == V0I);
-    BOOST_CHECK(ScaleCopy(VRI, 1.0f) == VRI);
-    BOOST_CHECK(ScaleCopy(VRI, 0.0) == V0I);
-    BOOST_CHECK(ScaleCopy(VRI, 1.0) == VRI);
-    ////
     const auto XF { 123.789f };
     const int XI { static_cast<int>(XF) };
     const sf::Vector2f VXF(XF, XF);
     const sf::Vector2f VXXF(XF * XF, XF * XF);
     const sf::Vector2i VXI(XI, XI);
-    BOOST_CHECK(ScaleCopy(V0F, XF) == V0F);
-    BOOST_CHECK(ScaleCopy(V1F, XF) == VXF);
-    BOOST_CHECK(ScaleCopy(VXF, XF) == VXXF);
 
     // test of ScaleCopy(Vector, Vector)
     BOOST_CHECK(ScaleCopy(V0F, V0F) == V0F);
@@ -1904,27 +2169,18 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     const sf::Vector2i V_RIRFI(RIRFIx, RIRFIy);
     BOOST_CHECK(ScaleCopy(VRI, VRF) == V_RIRFI);
 
-    auto temp1VRF { VRF };
-    Scale(temp1VRF, 0.0f);
-    BOOST_CHECK(temp1VRF == V0F);
-
-    auto temp2VRF { VRF };
-    Scale(temp2VRF, 1.0f);
-    BOOST_CHECK(temp2VRF == VRF);
-
-    auto temp3VRF { VRF };
-    Scale(temp3VRF, HALF);
-    BOOST_CHECK(temp3VRF == VRHF);
-
-    auto temp4VRF { VRF };
-    Scale(temp4VRF, DOUBLE);
-    BOOST_CHECK(temp4VRF == VRDF);
-
     auto temp5VRF { VRF };
     Scale(temp5VRF, VRF);
     BOOST_CHECK(temp5VRF == VRRF);
 
+    BOOST_CHECK(ScaleCopy(sf::Vector2i(10, 1000000), sf::Vector2f(0.1f, 0.000001f)) == V1I);
+    BOOST_CHECK(ScaleCopy(sf::Vector2i(10, 1000000), sf::Vector2f(-0.1f, -0.000001f)) == VN1I);
+    BOOST_CHECK(ScaleCopy(sf::Vector2i(-10, -1000000), sf::Vector2f(0.1f, 0.000001f)) == VN1I);
+    BOOST_CHECK(ScaleCopy(sf::Vector2i(-10, -1000000), sf::Vector2f(-0.1f, -0.000001f)) == V1I);
+
     // ScaleRectLinearCopy() tests
+    const sf::Vector2f SCALEV1(0.5f, 2.0f);
+    //
     const sf::Rect<int> INT_RECT_0(0, 0, 0, 0);
     const sf::Rect<int> INT_RECT_5(5, 5, 5, 5);
     const sf::Rect<int> INT_RECT_10(10, 10, 10, 10);
@@ -1935,100 +2191,6 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     const sf::Rect<float> FLOAT_RECT_10(INT_RECT_10);
     const sf::Rect<float> FLOAT_RECT_20(INT_RECT_20);
     const sf::Rect<float> FLOAT_RECT_10_SCALEV1(INT_RECT_10_SCALEV1);
-    //
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_0, 0.0f) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_0, 1.0f) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_0, HALF) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_0, DOUBLE) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_0, 0.0f) == FLOAT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_0, 1.0f) == FLOAT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_0, HALF) == FLOAT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_0, DOUBLE) == FLOAT_RECT_0);
-    //
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_10, 0.0f) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_10, 1.0f) == INT_RECT_10);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_10, HALF) == INT_RECT_5);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_10, DOUBLE) == INT_RECT_20);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_10, 0.0f) == FLOAT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_10, 1.0f) == FLOAT_RECT_10);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_10, HALF) == FLOAT_RECT_5);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_10, DOUBLE) == FLOAT_RECT_20);
-    //
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_0, V0F) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_0, V1F) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_0, VHF) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_0, VDF) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_0, V0F) == FLOAT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_0, V1F) == FLOAT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_0, VHF) == FLOAT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_0, VDF) == FLOAT_RECT_0);
-    //
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_10, V0F) == INT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_10, V1F) == INT_RECT_10);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_10, VHF) == INT_RECT_5);
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_10, VDF) == INT_RECT_20);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_10, V0F) == FLOAT_RECT_0);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_10, V1F) == FLOAT_RECT_10);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_10, VHF) == FLOAT_RECT_5);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_10, VDF) == FLOAT_RECT_20);
-    //
-    BOOST_CHECK(ScaleRectLinearCopy(INT_RECT_10, SCALEV1) == INT_RECT_10_SCALEV1);
-    BOOST_CHECK(ScaleRectLinearCopy(FLOAT_RECT_10, SCALEV1) == FLOAT_RECT_10_SCALEV1);
-    //
-    auto tempIntRect10 { INT_RECT_10 };
-    ScaleRectLinear(tempIntRect10, SCALEV1);
-    BOOST_CHECK(tempIntRect10 == INT_RECT_10_SCALEV1);
-    //
-    auto tempFloatRect10 { FLOAT_RECT_10 };
-    ScaleRectLinear(tempFloatRect10, SCALEV1);
-    BOOST_CHECK(tempFloatRect10 == FLOAT_RECT_10_SCALEV1);
-
-    // ScaleSize() tests
-    BOOST_CHECK(ScaleSizeCopy(R0F, 0.0f) == R0F);
-    BOOST_CHECK(ScaleSizeCopy(R0F, 1.0f) == R0F);
-    BOOST_CHECK(ScaleSizeCopy(R0F, HALF) == R0F);
-    BOOST_CHECK(ScaleSizeCopy(R0F, DOUBLE) == R0F);
-    //
-    BOOST_CHECK(ScaleSizeCopy(R0I, 0.0f) == R0I);
-    BOOST_CHECK(ScaleSizeCopy(R0I, 1.0f) == R0I);
-    BOOST_CHECK(ScaleSizeCopy(R0I, HALF) == R0I);
-    BOOST_CHECK(ScaleSizeCopy(R0I, DOUBLE) == R0I);
-    //
-    BOOST_CHECK(ScaleSizeCopy(R1F, 0.0f) == sf::FloatRect(V1F, V0F));
-    BOOST_CHECK(ScaleSizeCopy(R1F, 1.0f) == R1F);
-    //
-    BOOST_CHECK(ScaleSizeCopy(R1F, V0F) == sf::FloatRect(V1F, V0F));
-    BOOST_CHECK(ScaleSizeCopy(R1F, V1F) == R1F);
-    //
-    BOOST_CHECK(ScaleSizeCopy(RRF, V0F) == sf::FloatRect(VRF, V0F));
-    BOOST_CHECK(ScaleSizeCopy(RRF, V1F) == RRF);
-    BOOST_CHECK(ScaleSizeCopy(RRF, VHF) == RRHF);
-    BOOST_CHECK(ScaleSizeCopy(RRF, VDF) == RRDF);
-
-    auto tempFloatRectRRF { RRF };
-    ScaleSize(tempFloatRectRRF, 1.0f);
-    BOOST_CHECK(tempFloatRectRRF == RRF);
-
-    auto temp2FloatRectRRF { RRF };
-    ScaleSize(temp2FloatRectRRF, VHF);
-    BOOST_CHECK(temp2FloatRectRRF == RRHF);
-
-    // ScaleSizeAndReCenterCopy() tests
-    const sf::Rect<int> SSARC_RECT_ORIG(10, 10, 10, 10);
-    const sf::Rect<int> SSARC_RECT_DOUBLE_SIZE_AND_RECENTERED(5, 5, 20, 20);
-
-    BOOST_CHECK(
-        ScaleSizeAndReCenterCopy(SSARC_RECT_ORIG, DOUBLE) == SSARC_RECT_DOUBLE_SIZE_AND_RECENTERED);
-
-    BOOST_CHECK(
-        ScaleSizeAndReCenterCopy(SSARC_RECT_ORIG, VDF) == SSARC_RECT_DOUBLE_SIZE_AND_RECENTERED);
-
-    auto ssarcRectOrig1 { SSARC_RECT_ORIG };
-    auto ssarcRectOrig2 { SSARC_RECT_ORIG };
-    ScaleSizeAndReCenter(ssarcRectOrig1, DOUBLE);
-    ScaleSizeAndReCenter(ssarcRectOrig2, VDF);
-    BOOST_CHECK(ssarcRectOrig1 == SSARC_RECT_DOUBLE_SIZE_AND_RECENTERED);
-    BOOST_CHECK(ssarcRectOrig2 == SSARC_RECT_DOUBLE_SIZE_AND_RECENTERED);
 
     {
         sf::Image image;
@@ -2174,6 +2336,17 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(MinimallyEnclosing(RECT_TEST_A, RECT_TEST_B) == sf::Rect<int>(0, 0, 1, 1));
     BOOST_CHECK(MinimallyEnclosing(RECT_TEST_A, RECT_TEST_B, true) == R0I);
 
+    BOOST_CHECK(MinimallyEnclosing(RECT1, RECT2, R0I) == RECTE);
+    BOOST_CHECK(MinimallyEnclosing(RECT1, RECT2, R0I, R1I) == RECTE);
+    BOOST_CHECK(MinimallyEnclosing(RECT1, RECT2, R0I, R1I, RECTE) == RECTE);
+
+    {
+        sf::Sprite spriteDefault1;
+        sf::Sprite spriteDefault2;
+
+        BOOST_CHECK(MinimallyEnclosing(spriteDefault1, spriteDefault2) == R0F);
+    }
+
     {
         sf::Image image;
         const sf::Vector2f SPRITE_SIZE_V { 10.0f, 10.0f };
@@ -2188,15 +2361,22 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
         sf::Sprite sprite2(texture);
         sprite2.setPosition(10.0f, 10.0f);
 
+        sf::Sprite sprite3(texture);
+        sprite3.setPosition(0.0f, 0.0f);
+
+        sf::Sprite sprite4(texture);
+        sprite4.setPosition(-5.0f, -5.0f);
+
+        sf::Sprite sprite5(texture);
+        sprite5.setPosition(5.0f, 5.0f);
+
+        BOOST_CHECK(MinimallyEnclosing(sprite1, sprite2) == sf::FloatRect(RECTE));
+        BOOST_CHECK(MinimallyEnclosing(sprite1, sprite2, sprite3) == sf::FloatRect(RECTE));
+        BOOST_CHECK(MinimallyEnclosing(sprite1, sprite2, sprite3, sprite4) == sf::FloatRect(RECTE));
+
         BOOST_CHECK(
-            MinimallyEnclosing(sprite1, sprite2) == sf::FloatRect(-10.0f, -10.0f, 30.0f, 30.0f));
-    }
-
-    {
-        sf::Sprite spriteDefault1;
-        sf::Sprite spriteDefault2;
-
-        BOOST_CHECK(MinimallyEnclosing(spriteDefault1, spriteDefault2) == R0F);
+            MinimallyEnclosing(sprite1, sprite2, sprite3, sprite4, sprite5)
+            == sf::FloatRect(RECTE));
     }
 
     const sf::IntRect GS_RECT_I(10, 20, 30, 40);
@@ -2216,7 +2396,7 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(GrowToSquareCopy(GS_RECT_I, 0.5f) == GS_RECT_GROWN_HALF_I);
 
     gsRectITemp = GS_RECT_I;
-    ::GrowToSquare(gsRectITemp, 0.5f);
+    GrowToSquare(gsRectITemp, 0.5f);
     BOOST_CHECK(gsRectITemp == GS_RECT_GROWN_HALF_I);
 
     //
@@ -2234,42 +2414,6 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     gsRectITemp = GS_RECT_I;
     ShrinkToSquare(gsRectITemp, 2.0f);
     BOOST_CHECK(gsRectITemp == GS_RECT_SHRUNK_DOUBLE_I);
-
-    // Grow/Shrink AndReCenter()
-
-    //
-    const sf::IntRect GS_RECT_GROWN_RECENTERED_I(5, 20, 40, 40);
-    BOOST_CHECK(GrowToSquareAndReCenterCopy(GS_RECT_I) == GS_RECT_GROWN_RECENTERED_I);
-
-    gsRectITemp = GS_RECT_I;
-    ::GrowToSquareAndReCenter(gsRectITemp);
-    BOOST_CHECK(gsRectITemp == GS_RECT_GROWN_RECENTERED_I);
-
-    //
-    const sf::IntRect GS_RECT_GROWN_RECENTERED_HALF_I(15, 30, 20, 20);
-    BOOST_CHECK(GrowToSquareAndReCenterCopy(GS_RECT_I, 0.5f) == GS_RECT_GROWN_RECENTERED_HALF_I);
-
-    gsRectITemp = GS_RECT_I;
-    ::GrowToSquareAndReCenter(gsRectITemp, 0.5f);
-    BOOST_CHECK(gsRectITemp == GS_RECT_GROWN_RECENTERED_HALF_I);
-
-    //
-    const sf::IntRect GS_RECT_SHRUNK_RECENTERED_I(10, 25, 30, 30);
-    BOOST_CHECK(ShrinkToSquareAndReCenterCopy(GS_RECT_I) == GS_RECT_SHRUNK_RECENTERED_I);
-
-    gsRectITemp = GS_RECT_I;
-    ShrinkToSquareAndReCenter(gsRectITemp);
-    BOOST_CHECK(gsRectITemp == GS_RECT_SHRUNK_RECENTERED_I);
-
-    //
-    const sf::IntRect GS_RECT_SHRUNK_RECENTERED_DOUBLE_I(-5, 10, 60, 60);
-
-    BOOST_CHECK(
-        ShrinkToSquareAndReCenterCopy(GS_RECT_I, 2.0f) == GS_RECT_SHRUNK_RECENTERED_DOUBLE_I);
-
-    gsRectITemp = GS_RECT_I;
-    ShrinkToSquareAndReCenter(gsRectITemp, 2.0f);
-    BOOST_CHECK(gsRectITemp == GS_RECT_SHRUNK_RECENTERED_DOUBLE_I);
 }
 
 BOOST_AUTO_TEST_CASE(ToStringTests)
@@ -2283,8 +2427,7 @@ BOOST_AUTO_TEST_CASE(ToStringTests)
 
 BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)
 {
-    srand(static_cast<unsigned>(time(nullptr)));
-    heroespath::misc::random_helpers::MersenneTwister19937::Setup();
+    heroespath::misc::helpers::MersenneTwister19937::Setup();
 
     std::vector<sf::Texture> textures;
 
@@ -2353,5 +2496,269 @@ BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)
         SetSizeAndPos(sprite, TARGET_RECT);
 
         BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(123.0f, 456.0f, 789.0f, HEIGHT_ORIG));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(minimally_enclosing_tests)
+{
+    using namespace minimally_enclosing_test_stuff;
+
+    // type checking up front
+    {
+        using Container_t = std::vector<sf::FloatRect>;
+
+        const Container_t V = { sf::FloatRect {},
+                                sf::FloatRect(1.0f, 1.0f, 1.0f, 1.0f),
+                                sf::FloatRect(2.0f, 2.0f, 2.0f, 2.0f) };
+
+        using Value_t = iterator_value_type_t<const Container_t::iterator>;
+        using Rect_t = rect_type_picker_t<Value_t>;
+        Rect_t minimalRect {};
+    }
+
+    const sf::Rect<float> R0F(0.0f, 0.0f, 0.0f, 0.0f);
+    const sf::Rect<int> R0I { R0F };
+
+    const sf::Rect<float> R1F(1.0f, 1.0f, 1.0f, 1.0f);
+    const sf::Rect<int> R1I { R1F };
+
+    const sf::Rect<float> R10F(10.0f, 10.0f, 10.0f, 10.0f);
+    const sf::Rect<int> R10I { R10F };
+
+    const sf::Rect<float> R10NPF(-10.0f, -10.0f, 10.0f, 10.0f);
+    const sf::Rect<int> R10NPI { R10NPF };
+
+    const sf::Rect<float> R10N30F(-10.0f, -10.0f, 30.0f, 30.0f);
+    const sf::Rect<int> R10N30I { R10N30F };
+
+    testWithAndWithoutIgnore(R0F, R0F, R0F, "R0F identity");
+    testWithAndWithoutIgnore(R1F, R1F, R1F, "R1F identity");
+
+    test(R0F, R1F, false, sf::FloatRect(0.0f, 0.0f, 2.0f, 2.0f), "R0F,R1F,false==(0,0,2,2)");
+
+    test(R0F, R1F, true, R1F, "R0F,R1F,true==R1F");
+
+    testWithAndWithoutIgnore(R10I, R10NPI, R10N30I, "R10I,(-10,-10,10,10)==(-10,-10,30,30)");
+
+    const sf::Rect<int> R1_0I(1, 1, 0, 0);
+    const sf::Rect<int> R0_1I(0, 0, 1, 1);
+    test(R0I, R1_0I, false, R0_1I, "R0I,(1,1,0,0),false==(0,0,1,1)");
+    test(R0I, R1_0I, true, R0I, "R0I,(1,1,0,0),true==R0I");
+
+    {
+        sf::Image image;
+        const sf::Vector2f SPRITE_SIZE_V { 10.0f, 10.0f };
+        image.create(unsigned(SPRITE_SIZE_V.x), unsigned(SPRITE_SIZE_V.y));
+
+        sf::Texture texture;
+        texture.loadFromImage(image);
+
+        sf::Sprite sprite1(texture);
+        sprite1.setPosition(-10.0f, -10.0f);
+
+        sf::Sprite sprite2(texture);
+        sprite2.setPosition(10.0f, 10.0f);
+
+        testWithAndWithoutIgnore(
+            sprite1.getGlobalBounds(),
+            sprite2.getGlobalBounds(),
+            sf::FloatRect(-10.0f, -10.0f, 30.0f, 30.0f),
+            "sprites:R10I,(-10,-10,10,10)==(-10,-10,30,30)");
+    }
+
+    {
+        sf::Sprite spriteDefault1;
+        sf::Sprite spriteDefault2;
+
+        testWithAndWithoutIgnore(
+            spriteDefault1.getGlobalBounds(),
+            spriteDefault2.getGlobalBounds(),
+            R0F,
+            "default_sprites==R0F");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(intersects_tests)
+{
+    using namespace intersects_test_stuff;
+
+    const sf::IntRect RI_0_0(0, 0, 0, 0);
+    const sf::IntRect RI_1_1(1, 1, 1, 1);
+    const sf::IntRect RI_N1_1(-1, -1, 1, 1);
+    const sf::IntRect RI_10_1(10, 10, 1, 1);
+    const sf::IntRect RI_N10_1(-10, -10, 1, 1);
+    //
+    const sf::FloatRect RF_0_0(RI_0_0);
+    const sf::FloatRect RF_1_1(RI_1_1);
+    const sf::FloatRect RF_N1_1(RI_N1_1);
+    const sf::FloatRect RF_10_1(RI_10_1);
+    const sf::FloatRect RF_N10_1(RI_N10_1);
+
+    M_TEST_EQUAL_INTERSECTS(N1_1, N1_1, true);
+    M_TEST_EQUAL_INTERSECTS(10_1, 10_1, true);
+    M_TEST_EQUAL_INTERSECTS(N10_1, N10_1, true);
+
+    M_TEST_INTERSECTION(0_0, 0_0, 0_0);
+    M_TEST_INTERSECTION(N1_1, N1_1, N1_1);
+    M_TEST_INTERSECTION(10_1, 10_1, 10_1);
+    M_TEST_INTERSECTION(N10_1, N10_1, N10_1);
+
+    M_TEST_EQUAL_INTERSECTS(1_1, 10_1, false);
+    M_TEST_EQUAL_INTERSECTS(1_1, N10_1, false);
+    M_TEST_EQUAL_INTERSECTS(1_1, N1_1, false);
+    M_TEST_EQUAL_INTERSECTS(10_1, N10_1, false);
+    M_TEST_EQUAL_INTERSECTS(10_1, N1_1, false);
+    M_TEST_EQUAL_INTERSECTS(N10_1, N1_1, false);
+    M_TEST_EQUAL_INTERSECTS(N1_1, 0_0, false);
+
+    M_TEST_INTERSECTION(1_1, 10_1, 0_0);
+    M_TEST_INTERSECTION(1_1, N10_1, 0_0);
+    M_TEST_INTERSECTION(1_1, N1_1, 0_0);
+    M_TEST_INTERSECTION(10_1, N10_1, 0_0);
+    M_TEST_INTERSECTION(10_1, N1_1, 0_0);
+    M_TEST_INTERSECTION(N10_1, N1_1, 0_0);
+    M_TEST_INTERSECTION(N1_1, 0_0, 0_0);
+
+    {
+        const sf::IntRect RI_10_L_S(10, 10, 10, 1);
+        const sf::IntRect RI_5_S_L(5, 5, 1, 10);
+        //
+        const sf::FloatRect RF_10_L_S(RI_10_L_S);
+        const sf::FloatRect RF_5_S_L(RF_10_L_S);
+        //
+        M_TEST_EQUAL_INTERSECTS(10_L_S, 5_S_L, false);
+        M_TEST_INTERSECTION(10_L_S, 5_S_L, 0_0);
+    }
+
+    {
+        const sf::IntRect RI_N10_L_S(-10, -10, 10, 1);
+        const sf::IntRect RI_N15_S_L(-15, -15, 1, 10);
+        //
+        const sf::FloatRect RF_N10_L_S(RI_N10_L_S);
+        const sf::FloatRect RF_N15_S_L(RI_N15_S_L);
+        //
+        M_TEST_EQUAL_INTERSECTS(N10_L_S, N15_S_L, false);
+        M_TEST_INTERSECTION(N10_L_S, N15_S_L, 0_0);
+    }
+
+    {
+        const sf::IntRect RI_A(0, 0, 10, 1);
+        const sf::IntRect RI_B(5, -5, 1, 10);
+        //
+        const sf::FloatRect RF_A(RI_A);
+        const sf::FloatRect RF_B(RI_B);
+        //
+        M_TEST_EQUAL_INTERSECTS(A, B, true);
+        //
+        const sf::IntRect RI_C(5, 0, 1, 1);
+        const sf::FloatRect RF_C(RI_C);
+        M_TEST_INTERSECTION(A, B, C);
+    }
+
+    {
+        const sf::IntRect RI_A(0, 0, 1, 10);
+        const sf::IntRect RI_B(-5, 5, 10, 1);
+        //
+        const sf::FloatRect RF_A(RI_A);
+        const sf::FloatRect RF_B(RI_B);
+        //
+        M_TEST_EQUAL_INTERSECTS(A, B, true);
+        //
+        const sf::IntRect RI_C(0, 5, 1, 1);
+        const sf::FloatRect RF_C(RI_C);
+        M_TEST_INTERSECTION(A, B, C);
+    }
+
+    {
+        const sf::IntRect RI_Q1(0, -1, 1, 1);
+        const sf::IntRect RI_Q2(-1, -1, 1, 1);
+        const sf::IntRect RI_Q3(-1, 0, 1, 1);
+        const sf::IntRect RI_Q4(0, 0, 1, 1);
+        //
+        const sf::FloatRect RF_Q1(RI_Q1);
+        const sf::FloatRect RF_Q2(RI_Q2);
+        const sf::FloatRect RF_Q3(RI_Q3);
+        const sf::FloatRect RF_Q4(RI_Q4);
+        //
+        M_TEST_EQUAL_INTERSECTS(Q1, Q2, false);
+        M_TEST_EQUAL_INTERSECTS(Q1, Q3, false);
+        M_TEST_EQUAL_INTERSECTS(Q1, Q4, false);
+        M_TEST_EQUAL_INTERSECTS(Q2, Q3, false);
+        M_TEST_EQUAL_INTERSECTS(Q2, Q4, false);
+        M_TEST_EQUAL_INTERSECTS(Q3, Q4, false);
+        //
+        M_TEST_INTERSECTION(Q1, Q2, 0_0);
+        M_TEST_INTERSECTION(Q1, Q3, 0_0);
+        M_TEST_INTERSECTION(Q1, Q4, 0_0);
+        M_TEST_INTERSECTION(Q2, Q3, 0_0);
+        M_TEST_INTERSECTION(Q2, Q4, 0_0);
+        M_TEST_INTERSECTION(Q3, Q4, 0_0);
+    }
+
+    {
+        const sf::IntRect RI_1_0(1, 1, 0, 0);
+        const sf::IntRect RI_N1_0(-1, -1, 0, 0);
+        //
+        const sf::FloatRect RF_1_0(RI_1_0);
+        const sf::FloatRect RF_N1_0(RI_N1_0);
+        //
+        M_TEST_EQUAL_INTERSECTS(0_0, 0_0, false);
+        M_TEST_EQUAL_INTERSECTS(1_0, 1_0, false);
+        M_TEST_EQUAL_INTERSECTS(N1_0, N1_0, false);
+        //
+        M_TEST_INTERSECTION(0_0, 0_0, 0_0);
+        M_TEST_INTERSECTION(1_0, 1_0, 0_0);
+        M_TEST_INTERSECTION(N1_0, N1_0, 0_0);
+    }
+
+    {
+        const sf::IntRect RI_A(0, 0, 1, 1);
+        const sf::IntRect RI_B(2, 2, -10, 1);
+        const sf::IntRect RI_C(2, 2, -10, -1);
+        const sf::IntRect RI_D(2, 2, -10, -10);
+        const sf::IntRect RI_E(2, 2, 1, -10);
+        const sf::IntRect RI_F(2, 2, -1, -10);
+        //
+        const sf::FloatRect RF_A(RI_A);
+        const sf::FloatRect RF_B(RI_B);
+        const sf::FloatRect RF_C(RI_C);
+        const sf::FloatRect RF_D(RI_D);
+        const sf::FloatRect RF_E(RI_E);
+        const sf::FloatRect RF_F(RI_F);
+        //
+        M_TEST_EQUAL_INTERSECTS(A, B, false);
+        M_TEST_EQUAL_INTERSECTS(A, C, false);
+
+        // my custom function does not handle negative sizes but the SFML one does
+        BOOST_CHECK_MESSAGE((RI_A.intersects(RI_D)), "SFML negative sizes test works");
+
+        BOOST_CHECK_MESSAGE(
+            !Intersects(RI_A, RI_D), "New negative sizes test fails because that is not supported");
+
+        M_TEST_EQUAL_INTERSECTS(A, E, false);
+        M_TEST_EQUAL_INTERSECTS(A, F, false);
+        //
+        M_TEST_INTERSECTION(A, B, 0_0);
+        M_TEST_INTERSECTION(A, C, 0_0);
+        M_TEST_INTERSECTION(A, D, 0_0);
+        M_TEST_INTERSECTION(A, E, 0_0);
+        M_TEST_INTERSECTION(A, F, 0_0);
+
+        const sf::IntRect R(-5, -5, 10, 10);
+        BOOST_CHECK(Contains(R, sf::Vector2i(-5, -5)));
+        BOOST_CHECK(Contains(R, sf::Vector2i(5, -5)));
+        BOOST_CHECK(Contains(R, sf::Vector2i(5, 5)));
+        BOOST_CHECK(Contains(R, sf::Vector2i(-5, 5)));
+
+        BOOST_CHECK(!Contains(R, sf::Vector2i(-6, -5)));
+        BOOST_CHECK(!Contains(R, sf::Vector2i(-5, -6)));
+
+        BOOST_CHECK(Contains(R, sf::Vector2i(-4, -4)));
+        BOOST_CHECK(Contains(R, sf::Vector2i(0, 0)));
+        BOOST_CHECK(Contains(R, sf::Vector2i(4, 4)));
+
+        BOOST_CHECK(!Contains(R, sf::Vector2i(5, 6)));
+        BOOST_CHECK(!Contains(R, sf::Vector2i(6, 5)));
+        BOOST_CHECK(!Contains(R, sf::Vector2i(6, 6)));
     }
 }

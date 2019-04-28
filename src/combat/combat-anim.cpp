@@ -29,7 +29,7 @@
 #include "misc/config-file.hpp"
 #include "sfutil/angles.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 #include "spell/spell.hpp"
 
 namespace heroespath

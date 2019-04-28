@@ -26,10 +26,20 @@
 #include "misc/not-null.hpp"
 #include "misc/real.hpp"
 
+#include <array>
+#include <deque>
+#include <forward_list>
 #include <iostream>
 #include <limits>
+#include <list>
+#include <map>
+#include <set>
 #include <type_traits>
+#include <vector>
 
+#include <SFML/Graphics.hpp>
+
+using namespace heroespath;
 using namespace heroespath::gui;
 using namespace heroespath::misc;
 
@@ -52,132 +62,690 @@ inline bool operator==(const Thing & L, const Thing & R) { return (L.get() == R.
 inline bool operator!=(const Thing & L, const Thing & R) { return !(L == R); }
 
 template <typename T>
-bool testTypeIsZero()
+constexpr bool isExact(const T A, const T B) noexcept
+{
+    return (!(A < B) && !(A > B));
+};
+
+namespace real_test_stuff
 {
 
-    bool didPassTests { IsRealZero(T(0)) && !IsRealZero(T(1)) && IsRealZero(T(1) - T(1))
-                        && IsRealZero(
-                            std::numeric_limits<T>::max() - std::numeric_limits<T>::max()) };
-
-    if constexpr (std::is_signed<T>::value)
-    {
-        if (IsRealZero(T(-1)) || !IsRealZero(T(-1) + T(1))
-            || IsRealZero(std::numeric_limits<T>::max())
-            || !IsRealZero(std::numeric_limits<T>::min() + std::numeric_limits<T>::max()))
-            ;
-        {
-            didPassTests = false;
-        }
+#define M_FUNCTION_CALL_EXPANDER_TYPES_NUMERIC(function_name)                                      \
+    {                                                                                              \
+        function_name<char>();                                                                     \
+        function_name<short>();                                                                    \
+        function_name<int>();                                                                      \
+        function_name<long>();                                                                     \
+        function_name<long long>();                                                                \
+                                                                                                   \
+        function_name<unsigned char>();                                                            \
+        function_name<unsigned short>();                                                           \
+        function_name<unsigned int>();                                                             \
+        function_name<unsigned long>();                                                            \
+        function_name<unsigned long long>();                                                       \
+                                                                                                   \
+        function_name<float>();                                                                    \
+        function_name<double>();                                                                   \
     }
 
-    return didPassTests;
+template <typename T>
+void isRealTestIdentity(const std::vector<T> & VALUES)
+{
+    for (const auto VALUE : VALUES)
+    {
+        BOOST_CHECK(IsRealClose(VALUE, VALUE));
+        BOOST_CHECK(IsRealLessOrClose(VALUE, VALUE));
+        BOOST_CHECK(IsRealGreaterOrClose(VALUE, VALUE));
+
+        BOOST_CHECK(
+            IsRealZero(VALUE)
+            == !((VALUE < -std::numeric_limits<T>::epsilon())
+                 || (VALUE > std::numeric_limits<T>::epsilon())));
+
+        BOOST_CHECK(
+            IsRealOne(VALUE)
+            == !((VALUE < (T(1) - std::numeric_limits<T>::epsilon()))
+                 || (VALUE > (T(1) + std::numeric_limits<T>::epsilon()))));
+
+        if constexpr (!std::is_floating_point_v<T>)
+        {
+            BOOST_CHECK(IsRealZero(VALUE) == (VALUE == T(0)));
+            BOOST_CHECK(IsRealOne(VALUE) == (VALUE == T(1)));
+
+            BOOST_CHECK(isExact(NextIfReal(VALUE), VALUE));
+            BOOST_CHECK(isExact(BeforeIfReal(VALUE), VALUE));
+        }
+
+        BOOST_CHECK(IsRealZeroOrLess(VALUE) == (isExact(VALUE, T(0)) || (VALUE < T(0))));
+
+        BOOST_CHECK(IsRealZeroOrMore(VALUE) == (isExact(VALUE, T(0)) || (VALUE > T(0))));
+    }
 }
 
 template <typename T>
-bool testTypeIsRealZero()
+void isRealTestDifferentValuesTransitive(const T A, const T B)
 {
-    bool didPassTests { IsRealZero(T(0)) && !IsRealZero(T(1)) && IsRealZero(T(1) - T(1))
-                        && IsRealZero(
-                            std::numeric_limits<T>::max() - std::numeric_limits<T>::max()) };
+    BOOST_CHECK(!IsRealClose(A, B));
+    BOOST_CHECK(!IsRealClose(B, A));
 
-    if constexpr (std::is_signed<T>::value)
-    {
-        if (IsRealZero(T(-1)) || !IsRealZero(T(-1) + T(1))
-            || IsRealZero(std::numeric_limits<T>::max())
-            || IsRealZero(std::numeric_limits<T>::min())
-            || !IsRealZero(T(1) + std::numeric_limits<T>::min() + std::numeric_limits<T>::max()))
-        {
-            didPassTests = false;
-        }
-    }
+    BOOST_CHECK(IsRealLessOrClose(A, B) == (A < B));
+    BOOST_CHECK(!IsRealLessOrClose(A, B) == !(A < B));
 
-    return didPassTests;
+    BOOST_CHECK(IsRealLessOrClose(B, A) == (B < A));
+    BOOST_CHECK(!IsRealLessOrClose(B, A) == !(B < A));
+
+    BOOST_CHECK(IsRealGreaterOrClose(A, B) == (A > B));
+    BOOST_CHECK(!IsRealGreaterOrClose(A, B) == !(A > B));
+
+    BOOST_CHECK(IsRealGreaterOrClose(B, A) == (B > A));
+    BOOST_CHECK(!IsRealGreaterOrClose(B, A) == !(B > A));
 }
 
 template <typename T>
-bool testTypeIsRealOne()
+void isRealTestDifferentValues(const std::vector<T> & VALUES)
 {
-    bool didPassTests {
-        IsRealOne(T(1)) && !IsRealOne(T(0)) && IsRealOne(T(0) + T(1))
-        && IsRealOne(T(1) + (std::numeric_limits<T>::max() - std::numeric_limits<T>::max()))
-    };
+    const auto VALUES_SIZE = VALUES.size();
 
-    if constexpr (std::is_signed<T>::value)
+    BOOST_CHECK(VALUES_SIZE >= 2);
+
+    for (std::size_t i(0); i < VALUES_SIZE; ++i)
     {
-        if (IsRealOne(T(-1)) || !IsRealOne(T(-1) + T(2)))
+        const auto & A = VALUES[i];
+        for (std::size_t k(i + 1); k < VALUES_SIZE; ++k)
         {
-            didPassTests = false;
+            const auto & B = VALUES[k];
+            isRealTestDifferentValuesTransitive(A, B);
         }
     }
+}
 
-    return didPassTests;
+template <typename T>
+void isRealTestsForType()
+{
+    if constexpr (std::is_floating_point_v<T>)
+    {
+
+        auto myNextBefore = [](const T X) {
+            if (X > std::numeric_limits<T>::lowest())
+            {
+                return std::nexttoward(X, std::numeric_limits<long double>::lowest());
+            }
+            else
+            {
+                return std::numeric_limits<T>::lowest();
+            }
+        };
+
+        auto myNextAfter
+            = [&](const T X) { return std::nextafter(X, std::numeric_limits<T>::max()); };
+
+        // clang-format off
+        const std::vector<T> STARTER_SET = {
+                                        T(-9999),
+                                        T(-101),
+                                        T(-100),
+                                        T(-99),
+                                        T(-11),
+                                        T(-10),
+                                        T(-9),
+                                        T(-3),
+                                        T(-2),
+                                        T(-1),
+                                        T(0),
+                                        T(1),
+                                        T(2),
+                                        T(3),
+                                        T(9),
+                                        T(10),
+                                        T(11),
+                                        T(99),
+                                        T(100),
+                                        T(101),
+                                        T(9999)};
+        // clang-format on
+
+        std::vector<T> finalSet;
+        finalSet.reserve(STARTER_SET.size() * 12);
+
+        for (const auto X : STARTER_SET)
+        {
+            finalSet.emplace_back(X - T(0.499));
+            finalSet.emplace_back(X - T(0.49));
+            finalSet.emplace_back(X - T(0.4));
+            finalSet.emplace_back(X - T(0.1));
+            finalSet.emplace_back(X - T(0.01));
+            finalSet.emplace_back(X);
+            finalSet.emplace_back(X + T(0.01));
+            finalSet.emplace_back(X + T(0.1));
+            finalSet.emplace_back(X + T(0.4));
+            finalSet.emplace_back(X + T(0.49));
+            finalSet.emplace_back(X + T(0.499));
+        }
+
+        finalSet.emplace_back(std::numeric_limits<T>::lowest());
+        finalSet.emplace_back(std::numeric_limits<T>::max());
+
+        isRealTestIdentity(finalSet);
+
+        for (const auto X : finalSet)
+        {
+            const auto BEFORE = myNextBefore(X);
+            const auto AFTER = myNextAfter(X);
+
+            BOOST_CHECK(isExact(BeforeIfReal(X), BEFORE));
+            BOOST_CHECK(isExact(NextIfReal(X), AFTER));
+
+            BOOST_CHECK(IsRealClose(X, AFTER));
+            BOOST_CHECK(IsRealClose(AFTER, X));
+
+            BOOST_CHECK(IsRealClose(X, BEFORE));
+            BOOST_CHECK(IsRealClose(BEFORE, X));
+        }
+
+        isRealTestDifferentValues(finalSet);
+
+        {
+            const std::vector<T> EXTREME_SET = { std::numeric_limits<T>::lowest(),
+                                                 (std::numeric_limits<T>::lowest() * T(0.5)),
+                                                 T(-1),
+                                                 T(-0.9),
+                                                 T(-0.5),
+                                                 T(-0.1),
+                                                 T(0),
+                                                 T(0.1),
+                                                 T(0.5),
+                                                 T(0.9),
+                                                 T(1),
+                                                 (std::numeric_limits<T>::max() * T(0.5)),
+                                                 std::numeric_limits<T>::max() };
+
+            for (const auto X : EXTREME_SET)
+            {
+                const auto BEFORE = myNextBefore(X);
+                const auto AFTER = myNextAfter(X);
+
+                BOOST_CHECK(isExact(BeforeIfReal(X), BEFORE));
+                BOOST_CHECK(isExact(NextIfReal(X), AFTER));
+
+                BOOST_CHECK(IsRealClose(X, AFTER));
+                BOOST_CHECK(IsRealClose(AFTER, X));
+
+                BOOST_CHECK(IsRealClose(X, BEFORE));
+                BOOST_CHECK(IsRealClose(BEFORE, X));
+            }
+
+            isRealTestDifferentValues(EXTREME_SET);
+        }
+    }
+    else if (std::is_signed_v<T>)
+    {
+        // clang-format off
+        const std::vector<T> VALUES = { std::numeric_limits<T>::lowest(),
+                                        (std::numeric_limits<T>::lowest() / T(2)),
+                                        T(-101),
+                                        T(-100),
+                                        T(-99),
+                                        T(-11),
+                                        T(-10),
+                                        T(-9),
+                                        T(-3),
+                                        T(-2),
+                                        T(-1),
+                                        T(0),
+                                        T(1),
+                                        T(2),
+                                        T(3),
+                                        T(9),
+                                        T(10),
+                                        T(11),
+                                        T(99),
+                                        T(100),
+                                        T(101),
+                                        (std::numeric_limits<T>::max() / T(2)),
+                                        std::numeric_limits<T>::max() };
+        // clang-format on
+
+        isRealTestIdentity(VALUES);
+        isRealTestDifferentValues(VALUES);
+    }
+    else
+    {
+        // clang-format off
+        const std::vector<T> VALUES = { T(0),
+                                        T(1),
+                                        T(2),
+                                        T(3),
+                                        T(9),
+                                        T(10),
+                                        T(11),
+                                        T(99),
+                                        T(100),
+                                        T(101),
+                                        (std::numeric_limits<T>::max() / T(2)),
+                                        std::numeric_limits<T>::max() };
+        // clang-format on
+
+        isRealTestIdentity(VALUES);
+        isRealTestDifferentValues(VALUES);
+    }
+}
+
+} // namespace real_test_stuff
+
+namespace iterator_type_test_stuff
+{
+
+#define M_ITER_TYPE_TEST(expected, which, type)                                                    \
+    {                                                                                              \
+        BOOST_CHECK_MESSAGE(                                                                       \
+            (which<type>) == (expected),                                                           \
+            "M ITER TYPE TEST, " #which "<" #type ">, expected=" << expected                       \
+                                                                 << ", actual=" << (which<type>)); \
+    }
+
+#define M_ITER_TYPE_TESTS_FOR_CONT_AND_ITER_OF(expected, which, container, iterator_type)          \
+    {                                                                                              \
+        M_ITER_TYPE_TEST(expected, which, container<int>::iterator_type);                          \
+        M_ITER_TYPE_TEST(expected, which, container<int *>::iterator_type);                        \
+        M_ITER_TYPE_TEST(expected, which, container<std::unique_ptr<int>>::iterator_type);         \
+                                                                                                   \
+        M_ITER_TYPE_TEST(expected, which, container<std::string>::iterator_type);                  \
+        M_ITER_TYPE_TEST(expected, which, container<std::string *>::iterator_type);                \
+        M_ITER_TYPE_TEST(expected, which, container<std::unique_ptr<std::string>>::iterator_type); \
+    }
+
+#define M_ITER_TYPE_TESTS_FOR_CONT(expected, which, container)                                     \
+    {                                                                                              \
+        M_ITER_TYPE_TESTS_FOR_CONT_AND_ITER_OF(expected, which, container, iterator);              \
+        M_ITER_TYPE_TESTS_FOR_CONT_AND_ITER_OF(expected, which, container, const_iterator);        \
+        M_ITER_TYPE_TESTS_FOR_CONT_AND_ITER_OF(expected, which, container, reverse_iterator);      \
+                                                                                                   \
+        M_ITER_TYPE_TESTS_FOR_CONT_AND_ITER_OF(                                                    \
+            expected, which, container, const_reverse_iterator);                                   \
+    }
+
+#define M_ITER_TYPE_TEST_ALL(which, is_input, has_random_access)                                   \
+    {                                                                                              \
+        M_ITER_TYPE_TEST(false, which, int);                                                       \
+        M_ITER_TYPE_TEST(false, which, std::string);                                               \
+        M_ITER_TYPE_TEST(false, which, sf::FloatRect);                                             \
+        M_ITER_TYPE_TEST(false, which, std::vector<sf::FloatRect>);                                \
+                                                                                                   \
+        const bool IS_INPUT { (is_input) };                                                        \
+                                                                                                   \
+        M_ITER_TYPE_TEST(IS_INPUT, which, int *);                                                  \
+        M_ITER_TYPE_TEST(IS_INPUT, which, const int *);                                            \
+        M_ITER_TYPE_TEST(false, which, int * const);                                               \
+        M_ITER_TYPE_TEST(false, which, const int * const);                                         \
+                                                                                                   \
+        M_ITER_TYPE_TEST(IS_INPUT, which, std::string::iterator);                                  \
+        M_ITER_TYPE_TEST(IS_INPUT, which, std::string::const_iterator);                            \
+        M_ITER_TYPE_TEST(IS_INPUT, which, std::string::reverse_iterator);                          \
+        M_ITER_TYPE_TEST(IS_INPUT, which, std::string::const_reverse_iterator);                    \
+                                                                                                   \
+        using Array1_t = std::array<int, 10>;                                                      \
+        using Array2_t = std::array<int *, 10>;                                                    \
+        using Array3_t = std::array<std::unique_ptr<int>, 10>;                                     \
+                                                                                                   \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array1_t::iterator);                                     \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array2_t::iterator);                                     \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array3_t::iterator);                                     \
+                                                                                                   \
+        using Array4_t = std::array<std::string, 10>;                                              \
+        using Array5_t = std::array<std::string *, 10>;                                            \
+        using Array6_t = std::array<std::unique_ptr<std::string>, 10>;                             \
+                                                                                                   \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array4_t::iterator);                                     \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array5_t::iterator);                                     \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array6_t::iterator);                                     \
+                                                                                                   \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array1_t::const_iterator);                               \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array1_t::reverse_iterator);                             \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array1_t::const_iterator);                               \
+        M_ITER_TYPE_TEST(IS_INPUT, which, Array1_t::const_reverse_iterator);                       \
+                                                                                                   \
+        const bool IS_INPUT_AND_HAS_RANDOM_ACCESS { IS_INPUT && (has_random_access) };             \
+                                                                                                   \
+        M_ITER_TYPE_TESTS_FOR_CONT(IS_INPUT, which, std::vector);                                  \
+        M_ITER_TYPE_TESTS_FOR_CONT(IS_INPUT, which, std::deque);                                   \
+        M_ITER_TYPE_TESTS_FOR_CONT(IS_INPUT_AND_HAS_RANDOM_ACCESS, which, std::list);              \
+        M_ITER_TYPE_TESTS_FOR_CONT(IS_INPUT_AND_HAS_RANDOM_ACCESS, which, std::set);               \
+        M_ITER_TYPE_TESTS_FOR_CONT(IS_INPUT_AND_HAS_RANDOM_ACCESS, which, std::multiset);          \
+    }
+
+} // namespace iterator_type_test_stuff
+
+BOOST_AUTO_TEST_CASE(Type_Helpers_Tests_CompileTime)
+{
+    static_assert((are_same_v<int, int>), "are_same_v<int, int> should be true");
+    static_assert((!are_same_v<int, char>), "are_same_v<int, char> should be false");
+
+    static_assert(
+        (are_same_v<int>),
+        "are_same_v<int> should be true because I want it that way and that is also how "
+        "std::conditional works");
+
+    // should not compile, std::conditional would, but I don't want it to, so there
+    // { auto a = are_same_v<>; }
+
+    static_assert(
+        (are_same_v<int, const int>),
+        "are_same_v<int, const int> should be true because it removes_cv");
+
+    static_assert(
+        (are_same_v<int, const volatile int>),
+        "are_same_v<int, const int> should be true because it removes_cv");
+
+    static_assert(
+        (!are_same_v<int *, const int *>),
+        "are_same_v<int, const int> should be true because it removes_cv");
+
+    static_assert(
+        (are_same_v<int, const int>),
+        "are_same_v<int, const int> should be true because it removes_cv");
+
+    static_assert((are_same_v<int, int, int>), "are_same_v<int, int, int> should be true");
+    //
+    static_assert((!are_same_v<char, int, int>), "are_same_v<char, int, int> should be false");
+
+    static_assert((!are_same_v<int, char, int>), "are_same_v<int, char, int> should be false");
+
+    static_assert((!are_same_v<int, int, char>), "are_same_v<int, int, char> should be false");
+
+    static_assert((!are_same_v<char, char, int>), "are_same_v<int, int, int> should be false");
+
+    static_assert((!are_same_v<int, char, char>), "are_same_v<int, int, int> should be false");
+
+    //
+
+    static_assert((are_any_v<int, int>), "are_any_v<int, int> should be true");
+    static_assert((!are_any_v<int, char>), "are_any_v<int, char> should be false");
+
+    // Should not compile, std::conditional would, but I don't want it to, so there.
+    // { auto a = are_any_v<>; }
+
+    static_assert(
+        (!are_any_v<int>), "are_any_v<int> should be false because that is technically !are_same");
+
+    static_assert((are_any_v<int, int, int>), "are_any_v<int, int, int> should be true");
+    //
+    static_assert((!are_any_v<char, int, int>), "are_any_v<char, int, int> should be false");
+    static_assert((are_any_v<int, char, int>), "are_any_v<int, char, int> should be true");
+    static_assert((are_any_v<int, int, char>), "are_any_v<int, int, char> should be true");
+    static_assert((are_any_v<char, char, int>), "are_any_v<int, int, int> should be true");
+    static_assert((!are_any_v<int, char, char>), "are_any_v<int, int, int> should be false");
+
+    //
+
+    static_assert((!are_none_v<int, int>), "are_none_v<int, int> should be false");
+    static_assert((are_none_v<int, char>), "are_none_v<int, char> should be true");
+
+    // should not compile, std::conditional would, but I don't want it to, so there
+    //{ auto a = are_none_v<>; }
+
+    static_assert(
+        (are_none_v<int>), "are_none_v<int> should be true because that is technically !are_any");
+
+    static_assert((!are_none_v<int, int, int>), "are_none_v<int, int, int> should be false");
+    //
+    static_assert((are_none_v<char, int, int>), "are_none_v<char, int, int> should be true");
+
+    static_assert((!are_none_v<int, char, int>), "are_none_v<int, char, int> should be false");
+
+    static_assert((!are_none_v<int, int, char>), "are_none_v<int, int, char> should be false");
+
+    static_assert((!are_none_v<char, char, int>), "are_none_v<int, int, int> should be false");
+
+    static_assert((are_none_v<int, char, char>), "are_none_v<int, int, int> should be true");
+}
+
+BOOST_AUTO_TEST_CASE(Type_Helpers_Tests_Runtime)
+{
+    BOOST_CHECK_MESSAGE((are_same_v<int, int>), "are_same_v<int, int> should be true");
+    BOOST_CHECK_MESSAGE((!are_same_v<int, char>), "are_same_v<int, char> should be false");
+
+    BOOST_CHECK_MESSAGE(
+        (are_same_v<int>),
+        "are_same_v<int> should be true because I want it that way and that is also how "
+        "std::conditional works");
+
+    // should not compile, std::conditional would, but I don't want it to, so there
+    // { auto a = are_same_v<>; }
+
+    BOOST_CHECK_MESSAGE(
+        (are_same_v<int, const int>),
+        "are_same_v<int, const int> should be true because it removes_cv");
+
+    BOOST_CHECK_MESSAGE(
+        (are_same_v<int, const volatile int>),
+        "are_same_v<int, const int> should be true because it removes_cv");
+
+    BOOST_CHECK_MESSAGE(
+        (!are_same_v<int *, const int *>),
+        "are_same_v<int, const int> should be true because it removes_cv");
+
+    BOOST_CHECK_MESSAGE(
+        (are_same_v<int, const int>),
+        "are_same_v<int, const int> should be true because it removes_cv");
+
+    BOOST_CHECK_MESSAGE((are_same_v<int, int, int>), "are_same_v<int, int, int> should be true");
+    //
+    BOOST_CHECK_MESSAGE(
+        (!are_same_v<char, int, int>), "are_same_v<char, int, int> should be false");
+
+    BOOST_CHECK_MESSAGE(
+        (!are_same_v<int, char, int>), "are_same_v<int, char, int> should be false");
+
+    BOOST_CHECK_MESSAGE(
+        (!are_same_v<int, int, char>), "are_same_v<int, int, char> should be false");
+
+    BOOST_CHECK_MESSAGE(
+        (!are_same_v<char, char, int>), "are_same_v<int, int, int> should be false");
+
+    BOOST_CHECK_MESSAGE(
+        (!are_same_v<int, char, char>), "are_same_v<int, int, int> should be false");
+
+    //
+
+    BOOST_CHECK_MESSAGE((are_any_v<int, int>), "are_any_v<int, int> should be true");
+    BOOST_CHECK_MESSAGE((!are_any_v<int, char>), "are_any_v<int, char> should be false");
+
+    // Should not compile, std::conditional would, but I don't want it to, so there.
+    // { auto a = are_any_v<>; }
+
+    BOOST_CHECK_MESSAGE(
+        (!are_any_v<int>), "are_any_v<int> should be false because that is technically !are_same");
+
+    BOOST_CHECK_MESSAGE((are_any_v<int, int, int>), "are_any_v<int, int, int> should be true");
+    //
+    BOOST_CHECK_MESSAGE((!are_any_v<char, int, int>), "are_any_v<char, int, int> should be false");
+    BOOST_CHECK_MESSAGE((are_any_v<int, char, int>), "are_any_v<int, char, int> should be true");
+    BOOST_CHECK_MESSAGE((are_any_v<int, int, char>), "are_any_v<int, int, char> should be true");
+    BOOST_CHECK_MESSAGE((are_any_v<char, char, int>), "are_any_v<int, int, int> should be true");
+    BOOST_CHECK_MESSAGE((!are_any_v<int, char, char>), "are_any_v<int, int, int> should be false");
+
+    //
+
+    BOOST_CHECK_MESSAGE((!are_none_v<int, int>), "are_none_v<int, int> should be false");
+    BOOST_CHECK_MESSAGE((are_none_v<int, char>), "are_none_v<int, char> should be true");
+
+    // should not compile, std::conditional would, but I don't want it to, so there
+    //{ auto a = are_none_v<>; }
+
+    BOOST_CHECK_MESSAGE(
+        (are_none_v<int>), "are_none_v<int> should be true because that is technically !are_any");
+
+    BOOST_CHECK_MESSAGE((!are_none_v<int, int, int>), "are_none_v<int, int, int> should be false");
+    //
+    BOOST_CHECK_MESSAGE((are_none_v<char, int, int>), "are_none_v<char, int, int> should be true");
+
+    BOOST_CHECK_MESSAGE(
+        (!are_none_v<int, char, int>), "are_none_v<int, char, int> should be false");
+
+    BOOST_CHECK_MESSAGE(
+        (!are_none_v<int, int, char>), "are_none_v<int, int, char> should be false");
+
+    BOOST_CHECK_MESSAGE(
+        (!are_none_v<char, char, int>), "are_none_v<int, int, int> should be false");
+
+    BOOST_CHECK_MESSAGE((are_none_v<int, char, char>), "are_none_v<int, int, int> should be true");
+}
+
+BOOST_AUTO_TEST_CASE(iterator_type_tests)
+{
+    using namespace iterator_type_test_stuff;
+
+    M_ITER_TYPE_TEST_ALL(are_iterator_v, true, true);
+    M_ITER_TYPE_TEST_ALL(are_input_iterator_v, true, true);
+    M_ITER_TYPE_TEST_ALL(are_output_iterator_v, false, true);
+    M_ITER_TYPE_TEST_ALL(are_forward_iterator_v, true, true);
+    M_ITER_TYPE_TEST_ALL(are_bidirectional_iterator_v, true, true);
+    M_ITER_TYPE_TEST_ALL(are_random_access_iterator_v, true, false);
+}
+
+BOOST_AUTO_TEST_CASE(Real_Abs)
+{
+    BOOST_CHECK(Abs(0) == 0);
+    BOOST_CHECK(Abs(1) == 1);
+    BOOST_CHECK(Abs(123) == 123);
+
+    BOOST_CHECK(Abs(-0) == 0);
+    BOOST_CHECK(Abs(-1) == 1);
+    BOOST_CHECK(Abs(-123) == 123);
+
+    BOOST_CHECK(isExact(Abs(0.0), 0.0));
+    BOOST_CHECK(isExact(Abs(1.0), 1.0));
+    BOOST_CHECK(isExact(Abs(123.456), 123.456));
+
+    BOOST_CHECK(isExact(Abs(-0.0), 0.0));
+    BOOST_CHECK(isExact(Abs(-1.0), 1.0));
+    BOOST_CHECK(isExact(Abs(-123.456), 123.456));
+}
+
+BOOST_AUTO_TEST_CASE(Real_MinMin)
+{
+    BOOST_CHECK(Min(0, 0) == 0);
+    BOOST_CHECK(Min(1, 1) == 1);
+    BOOST_CHECK(Min(123, 123) == 123);
+
+    BOOST_CHECK(Min(-0, 0) == -0);
+    BOOST_CHECK(Min(-1, 1) == -1);
+    BOOST_CHECK(Min(-123, 123) == -123);
+
+    BOOST_CHECK(Min(0, -0) == -0);
+    BOOST_CHECK(Min(1, -1) == -1);
+    BOOST_CHECK(Min(123, -123) == -123);
+
+    BOOST_CHECK(isExact(Min(0.0, 0.0), 0.0));
+    BOOST_CHECK(isExact(Min(1.0, 1.0), 1.0));
+    BOOST_CHECK(isExact(Min(123.456, 123.456), 123.456));
+
+    BOOST_CHECK(isExact(Min(-0.0, 0.0), -0.0));
+    BOOST_CHECK(isExact(Min(-1.0, 1.0), -1.0));
+    BOOST_CHECK(isExact(Min(-123.456, 123.456), -123.456));
+
+    BOOST_CHECK(Max(0, 0) == 0);
+    BOOST_CHECK(Max(1, 1) == 1);
+    BOOST_CHECK(Max(123, 123) == 123);
+
+    BOOST_CHECK(Max(-0, 0) == 0);
+    BOOST_CHECK(Max(-1, 1) == 1);
+    BOOST_CHECK(Max(-123, 123) == 123);
+
+    BOOST_CHECK(Max(0, -0) == 0);
+    BOOST_CHECK(Max(1, -1) == 1);
+    BOOST_CHECK(Max(123, -123) == 123);
+
+    BOOST_CHECK(isExact(Max(0.0, 0.0), 0.0));
+    BOOST_CHECK(isExact(Max(1.0, 1.0), 1.0));
+    BOOST_CHECK(isExact(Max(123.456, 123.456), 123.456));
+
+    BOOST_CHECK(isExact(Max(-0.0, 0.0), 0.0));
+    BOOST_CHECK(isExact(Max(-1.0, 1.0), 1.0));
+    BOOST_CHECK(isExact(Max(-123.456, 123.456), 123.456));
+
+    const auto INT_BE_LOW = std::numeric_limits<int>::lowest();
+    const auto INT_BE_MIN = std::numeric_limits<int>::min();
+    const auto INT_BE_MAX = std::numeric_limits<int>::max();
+
+    BOOST_CHECK(Min(INT_BE_LOW, INT_BE_MAX) == INT_BE_LOW);
+    BOOST_CHECK(Min(INT_BE_MAX, INT_BE_LOW) == INT_BE_LOW);
+    BOOST_CHECK(Min(INT_BE_LOW, INT_BE_MIN, INT_BE_MAX) == INT_BE_LOW);
+    BOOST_CHECK(Min(INT_BE_MAX, INT_BE_MIN, INT_BE_LOW) == INT_BE_LOW);
+
+    BOOST_CHECK(
+        Min(INT_BE_MAX,
+            INT_BE_MIN,
+            INT_BE_LOW,
+            INT_BE_MAX,
+            INT_BE_MIN,
+            INT_BE_LOW,
+            0,
+            -0,
+            0,
+            21534,
+            15,
+            125,
+            -16,
+            2,
+            -2,
+            11)
+        == INT_BE_LOW);
+
+    BOOST_CHECK(Max(INT_BE_LOW, INT_BE_MAX) == INT_BE_MAX);
+    BOOST_CHECK(Max(INT_BE_MAX, INT_BE_LOW) == INT_BE_MAX);
+    BOOST_CHECK(Max(INT_BE_LOW, INT_BE_MIN, INT_BE_MAX) == INT_BE_MAX);
+    BOOST_CHECK(Max(INT_BE_MAX, INT_BE_MIN, INT_BE_LOW) == INT_BE_MAX);
+
+    BOOST_CHECK(
+        Max(INT_BE_MAX,
+            INT_BE_MIN,
+            INT_BE_LOW,
+            INT_BE_MAX,
+            INT_BE_MIN,
+            INT_BE_LOW,
+            0,
+            -0,
+            0,
+            21534,
+            15,
+            125,
+            -16,
+            2,
+            -2,
+            11)
+        == INT_BE_MAX);
+
+    BOOST_CHECK(Min(1, 2, 0) == 0);
+    BOOST_CHECK(Min(1, 2, -1) == -1);
+
+    BOOST_CHECK(Max(1, 2, 0) == 2);
+    BOOST_CHECK(Max(0, 1, 2) == 2);
 }
 
 BOOST_AUTO_TEST_CASE(Real_IsRealZero)
 {
-    BOOST_CHECK(testTypeIsRealZero<char>());
-    BOOST_CHECK(testTypeIsRealZero<short>());
-    BOOST_CHECK(testTypeIsRealZero<int>());
-    BOOST_CHECK(testTypeIsRealZero<long>());
-    BOOST_CHECK(testTypeIsRealZero<long long>());
-    BOOST_CHECK(testTypeIsRealZero<unsigned char>());
-    BOOST_CHECK(testTypeIsRealZero<unsigned short>());
-    BOOST_CHECK(testTypeIsRealZero<unsigned int>());
-    BOOST_CHECK(testTypeIsRealZero<unsigned long>());
-    BOOST_CHECK(testTypeIsRealZero<unsigned long long>());
+    using namespace real_test_stuff;
 
-    BOOST_CHECK(IsRealZero(0.0));
-    BOOST_CHECK(IsRealZero(0.0f));
+    BOOST_CHECK(IsRealClose(0, 0));
+    BOOST_CHECK(IsRealClose(1, 1));
+    BOOST_CHECK(IsRealClose(-1, -1));
 
-    BOOST_CHECK(IsRealZero(1.0) == false);
-    BOOST_CHECK(IsRealZero(1.0f) == false);
-
-    BOOST_CHECK(IsRealZero(0.00001) == false);
-    BOOST_CHECK(IsRealZero(-0.00001f) == false);
-}
-
-BOOST_AUTO_TEST_CASE(Real_IsRealOne)
-{
-    BOOST_CHECK(testTypeIsRealOne<char>());
-    BOOST_CHECK(testTypeIsRealOne<short>());
-    BOOST_CHECK(testTypeIsRealOne<int>());
-    BOOST_CHECK(testTypeIsRealOne<long>());
-    BOOST_CHECK(testTypeIsRealOne<long long>());
-    BOOST_CHECK(testTypeIsRealOne<unsigned char>());
-    BOOST_CHECK(testTypeIsRealOne<unsigned short>());
-    BOOST_CHECK(testTypeIsRealOne<unsigned int>());
-    BOOST_CHECK(testTypeIsRealOne<unsigned long>());
-    BOOST_CHECK(testTypeIsRealOne<unsigned long long>());
-
-    BOOST_CHECK(IsRealOne(1.0));
-    BOOST_CHECK(IsRealOne(1.0f));
-
-    BOOST_CHECK(IsRealOne(0.0) == false);
-    BOOST_CHECK(IsRealOne(0.0f) == false);
-
-    BOOST_CHECK(IsRealOne(1.00001) == false);
-    BOOST_CHECK(IsRealOne(0.9999f) == false);
-}
-
-BOOST_AUTO_TEST_CASE(Real_IsRealClose)
-{
     BOOST_CHECK(IsRealClose(0.0, 0.0));
+    BOOST_CHECK(IsRealClose(0.0001, 0.0001));
+    BOOST_CHECK(IsRealClose(9999.0, 9999.0));
+
+    BOOST_CHECK(!IsRealClose(0.0001, 0.00001));
+    BOOST_CHECK(!IsRealClose(9999.0, 9999.1));
+
+    BOOST_CHECK(!IsRealClose(0.0001, -0.0001));
+    BOOST_CHECK(!IsRealClose(9999.0, -9999.0));
+
+    BOOST_CHECK(IsRealClose(-0.0, 0.0));
+    BOOST_CHECK(IsRealClose(-0.0, -0.0));
     BOOST_CHECK(IsRealClose(0.0, -0.0));
-    BOOST_CHECK(IsRealClose(1.0, 1.0));
-    BOOST_CHECK(IsRealClose(123.456, 123.456));
 
-    BOOST_CHECK(IsRealClose(0.0f, 0.0f));
-    BOOST_CHECK(IsRealClose(1.0f, 1.0f));
-    BOOST_CHECK(IsRealClose(123.456f, 123.456f));
-
-    BOOST_CHECK(IsRealClose(0.0, 1.0) == false);
-    BOOST_CHECK(IsRealClose(0.0, 0.00001) == false);
-
-    BOOST_CHECK(IsRealClose(0.0, 1.0) == false);
-
-    BOOST_CHECK(IsRealClose(999999999999.0f, 999999999999.0001f));
-    BOOST_CHECK(IsRealClose(999999999999.0, 999999999999.0001));
-    BOOST_CHECK(IsRealClose(999999999999999.0L, 999999999999999.0000001L));
+    M_FUNCTION_CALL_EXPANDER_TYPES_NUMERIC(isRealTestsForType);
 }
 
 BOOST_AUTO_TEST_CASE(NotNull_Tests)

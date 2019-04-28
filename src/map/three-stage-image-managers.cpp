@@ -20,7 +20,7 @@
 #include "sfutil/display.hpp"
 #include "sfutil/distance.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 namespace heroespath
 {

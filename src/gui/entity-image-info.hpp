@@ -25,6 +25,10 @@ namespace heroespath
 namespace gui
 {
 
+    using Vector2fOpt_t = boost::optional<sf::Vector2f>;
+    using FloatRectOpt_t = boost::optional<sf::FloatRect>;
+    using IntRectOpt_t = boost::optional<sf::IntRect>;
+
     // Responsible for wrapping all the information required by a Entity to store and draw an
     // image.
     struct EntityImageInfo : public sf::Drawable

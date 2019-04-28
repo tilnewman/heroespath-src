@@ -43,9 +43,9 @@
 #include "sfutil/center.hpp"
 #include "sfutil/color.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/position.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

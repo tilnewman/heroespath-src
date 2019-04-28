@@ -31,7 +31,7 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 #include <algorithm>
 #include <numeric>

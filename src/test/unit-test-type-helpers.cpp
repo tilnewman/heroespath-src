@@ -20,71 +20,71 @@ using namespace heroespath::misc;
 BOOST_AUTO_TEST_CASE(unit_tests__misc__type_helpers__are_number)
 {
     // fundamental number types
-    BOOST_CHECK((are_number_v<char>));
-    BOOST_CHECK((are_number_v<short>));
-    BOOST_CHECK((are_number_v<int>));
-    BOOST_CHECK((are_number_v<long>));
-    BOOST_CHECK((are_number_v<long long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<char>));
+    BOOST_CHECK((are_arithmetic_nobool_v<short>));
+    BOOST_CHECK((are_arithmetic_nobool_v<int>));
+    BOOST_CHECK((are_arithmetic_nobool_v<long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<long long>));
 
     // repeat above only unsigned
-    BOOST_CHECK((are_number_v<unsigned char>));
-    BOOST_CHECK((are_number_v<unsigned short>));
-    BOOST_CHECK((are_number_v<unsigned int>));
-    BOOST_CHECK((are_number_v<unsigned long>));
-    BOOST_CHECK((are_number_v<unsigned long long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned char>));
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned short>));
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned int>));
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned long long>));
 
     // repeat BOTH above only with const
-    BOOST_CHECK((are_number_v<const char>));
-    BOOST_CHECK((are_number_v<const short>));
-    BOOST_CHECK((are_number_v<const int>));
-    BOOST_CHECK((are_number_v<const long>));
-    BOOST_CHECK((are_number_v<const long long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const char>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const short>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const int>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const long long>));
     //
-    BOOST_CHECK((are_number_v<const unsigned char>));
-    BOOST_CHECK((are_number_v<const unsigned short>));
-    BOOST_CHECK((are_number_v<const unsigned int>));
-    BOOST_CHECK((are_number_v<const unsigned long>));
-    BOOST_CHECK((are_number_v<const unsigned long long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned char>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned short>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned int>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned long long>));
 
     // standard library types
-    BOOST_CHECK((are_number_v<std::int8_t>));
-    BOOST_CHECK((are_number_v<std::int16_t>));
-    BOOST_CHECK((are_number_v<std::int32_t>));
-    BOOST_CHECK((are_number_v<std::int64_t>));
-    BOOST_CHECK((are_number_v<char16_t>));
-    BOOST_CHECK((are_number_v<char32_t>));
-    BOOST_CHECK((are_number_v<wchar_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::int8_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::int16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::int32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::int64_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<char16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<char32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<wchar_t>));
 
     // repeat above only unsigned
-    BOOST_CHECK((are_number_v<std::uint8_t>));
-    BOOST_CHECK((are_number_v<std::uint16_t>));
-    BOOST_CHECK((are_number_v<std::uint32_t>));
-    BOOST_CHECK((are_number_v<std::uint64_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::uint8_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::uint16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::uint32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::uint64_t>));
 
     // repeat BOTH above only with const
-    BOOST_CHECK((are_number_v<const std::int8_t>));
-    BOOST_CHECK((are_number_v<const std::int16_t>));
-    BOOST_CHECK((are_number_v<const std::int32_t>));
-    BOOST_CHECK((are_number_v<const std::int64_t>));
-    BOOST_CHECK((are_number_v<const char16_t>));
-    BOOST_CHECK((are_number_v<const char32_t>));
-    BOOST_CHECK((are_number_v<const wchar_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::int8_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::int16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::int32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::int64_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const char16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const char32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const wchar_t>));
     //
-    BOOST_CHECK((are_number_v<const std::uint8_t>));
-    BOOST_CHECK((are_number_v<const std::uint16_t>));
-    BOOST_CHECK((are_number_v<const std::uint32_t>));
-    BOOST_CHECK((are_number_v<const std::uint64_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::uint8_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::uint16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::uint32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::uint64_t>));
 
     // floating point types
-    BOOST_CHECK((are_number_v<float>));
-    BOOST_CHECK((are_number_v<double>));
-    BOOST_CHECK((are_number_v<long double>));
+    BOOST_CHECK((are_arithmetic_nobool_v<float>));
+    BOOST_CHECK((are_arithmetic_nobool_v<double>));
+    BOOST_CHECK((are_arithmetic_nobool_v<long double>));
 
     // misc fail cases
-    BOOST_CHECK((are_number_v<bool>) == false);
-    BOOST_CHECK((are_number_v<const bool>) == false);
-    BOOST_CHECK((are_number_v<std::string>) == false);
-    BOOST_CHECK((are_number_v<const std::string>) == false);
+    BOOST_CHECK((are_arithmetic_nobool_v<bool>) == false);
+    BOOST_CHECK((are_arithmetic_nobool_v<const bool>) == false);
+    BOOST_CHECK((are_arithmetic_nobool_v<std::string>) == false);
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::string>) == false);
 }
 
 BOOST_AUTO_TEST_CASE(unit_tests__misc__type_helpers__are_integral)

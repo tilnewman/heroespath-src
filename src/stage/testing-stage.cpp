@@ -42,9 +42,9 @@
 #include "popup/popup-manager.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/position.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
 

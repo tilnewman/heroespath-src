@@ -15,9 +15,9 @@
 #include "gui/text-renderer.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
-#include "sfutil/position.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 #include "stage/i-stage.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>

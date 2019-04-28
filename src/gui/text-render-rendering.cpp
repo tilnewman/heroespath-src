@@ -13,7 +13,7 @@
 #include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 

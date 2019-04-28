@@ -35,82 +35,96 @@ namespace misc
             SortAndUnique
         };
 
-        // appends A into B, stable unless WILL_UNIQUE
+        // appends SOURCE into dest, stable unless WILL_UNIQUE
         template <typename T>
-        static void Append(
-            const std::vector<T> & A_VEC,
-            std::vector<T> & b_vec,
-            const SortOpt SORT_OPTION = SortOpt::None)
+        static void Append(const T & SOURCE, T & dest, const SortOpt SORT_OPTION = SortOpt::None)
         {
-            b_vec.insert(std::end(b_vec), std::begin(A_VEC), std::end(A_VEC));
+            dest.reserve(dest.size() + SOURCE.size());
+            dest.insert(std::end(dest), std::begin(SOURCE), std::end(SOURCE));
 
             if (SORT_OPTION == SortOpt::SortAndUnique)
             {
-                std::sort(b_vec.begin(), b_vec.end());
-                b_vec.erase(std::unique(b_vec.begin(), b_vec.end()), b_vec.end());
+                std::sort(std::begin(dest), std::end(dest));
+                dest.erase(std::unique(std::begin(dest), std::end(dest)), std::end(dest));
             }
         }
 
-        // appends A into B using move so that the source is left in an undefined but safe to
-        // destruct state, stable unless WILL_UNIQUE
+        // appends SOURCE into dest using move so that the source is left in an undefined but safe
+        // to destruct state, stable unless WILL_UNIQUE, source will stay the same size but the
+        // values inside will be changed,  I did some tests that showed this to be about 2x faster
+        // with strings
         template <typename T>
-        static void AppendMove(
-            const std::vector<T> & SOURCE,
-            std::vector<T> & dest,
-            const SortOpt SORT_OPTION = SortOpt::None)
+        static void AppendMove(T && source, T & dest, const SortOpt SORT_OPTION = SortOpt::None)
         {
+            dest.reserve(dest.size() + source.size());
+
             dest.insert(
                 std::end(dest),
-                std::make_move_iterator(std::begin(SOURCE)),
-                std::make_move_iterator(std::end(SOURCE)));
+                std::make_move_iterator(std::begin(source)),
+                std::make_move_iterator(std::end(source)));
 
             if (SORT_OPTION == SortOpt::SortAndUnique)
             {
-                std::sort(dest.begin(), dest.end());
-                dest.erase(std::unique(dest.begin(), dest.end()), dest.end());
+                std::sort(std::begin(dest), std::end(dest));
+                dest.erase(std::unique(std::begin(dest), std::end(dest)), std::end(dest));
             }
         }
 
         template <typename T>
-        static std::vector<T> AndCopy(
-            const std::vector<T> & A_VEC,
-            const std::vector<T> & B_VEC,
-            const SortOpt SORT_OPTION = SortOpt::None)
+        static T Combine(const T & A, const T & B, const SortOpt SORT_OPTION = SortOpt::None)
         {
-            std::vector<T> finalVec { A_VEC };
-            Append(B_VEC, finalVec, SORT_OPTION);
-            return finalVec;
+            T result;
+            result.reserve(A.size() + B.size());
+            result.insert(std::end(result), std::begin(A), std::end(A));
+            result.insert(std::end(result), std::begin(B), std::end(B));
+
+            if (SORT_OPTION == SortOpt::SortAndUnique)
+            {
+                std::sort(std::begin(result), std::end(result));
+                result.erase(std::unique(std::begin(result), std::end(result)), std::end(result));
+            }
+
+            return result;
         }
 
         template <typename T>
-        static const std::vector<T> Exclude(const std::vector<T> & ORIG_VEC, const T toExclude)
+        static const T Exclude(const T & ORIG, const typename T::value_type & TO_EXCLUDE)
         {
-            std::vector<T> v { toExclude };
-            return Exclude(ORIG_VEC, v);
-        }
-
-        template <typename T>
-        static const std::vector<T>
-            Exclude(const std::vector<T> & ORIG, const std::vector<T> & EXCLUDED)
-        {
-            if (EXCLUDED.empty())
+            if (ORIG.empty())
             {
                 return ORIG;
             }
 
-            std::vector<T> finalVec;
-            finalVec.reserve(ORIG.size());
+            auto result(ORIG);
+
+            result.erase(
+                std::remove(std::begin(result), std::end(result), TO_EXCLUDE), std::end(result));
+
+            return result;
+        }
+
+        template <typename T>
+        static const T Exclude(const T & ORIG, const T & TO_EXCLUDE)
+        {
+            if (ORIG.empty() || TO_EXCLUDE.empty())
+            {
+                return ORIG;
+            }
+
+            T result;
+            result.reserve(ORIG.size());
 
             std::copy_if(
-                ORIG.begin(),
-                ORIG.end(),
-                back_inserter(finalVec),
-                [&EXCLUDED](const auto & FROM_ORIG) {
+                std::begin(ORIG),
+                std::end(ORIG),
+                back_inserter(result),
+                [&TO_EXCLUDE](const auto & FROM_ORIG) {
                     return (
-                        std::find(EXCLUDED.begin(), EXCLUDED.end(), FROM_ORIG) == EXCLUDED.end());
+                        std::find(std::begin(TO_EXCLUDE), std::end(TO_EXCLUDE), FROM_ORIG)
+                        == std::end(TO_EXCLUDE));
                 });
 
-            return finalVec;
+            return result;
         }
 
         enum JoinOpt : unsigned
@@ -133,98 +147,108 @@ namespace misc
             },
             bool (*ONLY_IF_FUNC)(const T) = [](const T) -> bool { return true; })
         {
-            const std::size_t VEC_ELEMENT_COUNT { VEC.size() };
-            if (VEC_ELEMENT_COUNT == 0)
+            const auto VEC_SIZE = VEC.size();
+
+            if (VEC_SIZE == 0)
             {
-                return ""; // skip wrapping on empty case
+                return {}; // skip wrapping on empty case
             }
 
-            std::size_t toJoinCount { 0 };
             std::vector<T> toJoinVec;
-            for (const auto & NEXT_ELEMENT : VEC)
+            toJoinVec.reserve(VEC_SIZE);
+
+            for (const auto & THING : VEC)
             {
-                if (ONLY_IF_FUNC(NEXT_ELEMENT))
+                if (ONLY_IF_FUNC(THING))
                 {
-                    toJoinVec.emplace_back(NEXT_ELEMENT);
-                    if ((MAX_COUNT != 0) && (++toJoinCount == MAX_COUNT))
+                    toJoinVec.emplace_back(THING);
+                    if (toJoinVec.size() == MAX_COUNT)
                     {
                         break;
                     }
                 }
             }
 
-            const std::size_t TO_JOIN_ELEMENT_COUNT { toJoinVec.size() };
-            if (TO_JOIN_ELEMENT_COUNT == 0)
+            const auto TO_JOIN_SIZE { toJoinVec.size() };
+            if (TO_JOIN_SIZE == 0)
             {
-                return ""; // skip wrapping on empty case
+                return {}; // skip wrapping on empty case
             }
 
             std::ostringstream ss;
-            for (std::size_t i(0); i < TO_JOIN_ELEMENT_COUNT; ++i)
+
+            for (std::size_t i(0); i < TO_JOIN_SIZE; ++i)
             {
                 if (i != 0)
                 {
                     ss << ", ";
                 }
 
-                if ((OPTIONS & JoinOpt::And) && (TO_JOIN_ELEMENT_COUNT > 2) && (i >= 2)
-                    && ((TO_JOIN_ELEMENT_COUNT - 1) == i))
+                if ((OPTIONS & JoinOpt::And) && (TO_JOIN_SIZE > 2) && (i >= 2)
+                    && ((TO_JOIN_SIZE - 1) == i))
                 {
                     ss << "and ";
                 }
 
                 ss << TO_STRING_FUNC(toJoinVec[i]);
 
-                if ((OPTIONS & JoinOpt::Ellipsis) && (TO_JOIN_ELEMENT_COUNT < VEC_ELEMENT_COUNT)
-                    && ((TO_JOIN_ELEMENT_COUNT - 1) == i))
+                if ((OPTIONS & JoinOpt::Ellipsis) && (TO_JOIN_SIZE < VEC_SIZE)
+                    && ((TO_JOIN_SIZE - 1) == i))
                 {
                     ss << "...";
                 }
             }
 
-            if ((OPTIONS & JoinOpt::Wrap) && (ss.str().empty() == false))
+            const auto JOINED_STR = ss.str();
+
+            if ((OPTIONS & JoinOpt::Wrap) && (JOINED_STR.empty() == false))
             {
-                return "(" + ss.str() + ")";
+                return "(" + JOINED_STR + ")";
             }
             else
             {
-                return ss.str();
+                return JOINED_STR;
             }
         }
 
         template <typename T>
-        static T SumVec(const std::vector<T> & VALUES)
+        static typename T::value_type Sum(const T & CONTAINER)
         {
+            if (CONTAINER.empty())
+            {
+                return static_cast<typename T::value_type>(0);
+            }
+
             return std::accumulate(
-                std::begin(VALUES),
-                std::end(VALUES),
-                T(0),
+                std::begin(CONTAINER),
+                std::end(CONTAINER),
+                typename T::value_type(0),
                 [](const auto SUBTOTAL, const auto VALUE) { return SUBTOTAL + VALUE; });
         }
 
         template <typename T>
-        static T Average(const std::vector<T> & VALUES)
+        static typename T::value_type Average(const T & CONTAINER)
         {
-            if (VALUES.empty())
+            if (CONTAINER.empty())
             {
-                return static_cast<T>(0);
+                return static_cast<typename T::value_type>(0);
             }
 
-            return static_cast<T>(
-                static_cast<double>(SumVec(VALUES)) / static_cast<double>(VALUES.size()));
+            return static_cast<typename T::value_type>(
+                static_cast<double>(Sum(CONTAINER)) / static_cast<double>(CONTAINER.size()));
         }
 
         template <typename T>
-        static T StandardDeviation(const std::vector<T> & VALUES)
+        static typename T::value_type StandardDeviation(const T & CONTAINER)
         {
-            return StandardDeviation(VALUES, VALUES.size(), Average(VALUES));
+            return StandardDeviation(CONTAINER, CONTAINER.size(), Average(CONTAINER));
         }
 
         template <typename T>
-        static T StandardDeviation(
-            const std::vector<T> & VALUES, const std::size_t COUNT, const T AVERAGE_ORIG)
+        static typename T::value_type StandardDeviation(
+            const T & CONTAINER, const std::size_t COUNT, const typename T::value_type AVERAGE_ORIG)
         {
-            if ((VALUES.size() < 3) || (COUNT < 3) || ((COUNT - 1) > VALUES.size()))
+            if ((CONTAINER.size() <= 3) || (COUNT < 3) || (COUNT >= CONTAINER.size()))
             {
                 return 0;
             }
@@ -234,18 +258,19 @@ namespace misc
             const auto AVERAGE { static_cast<Math_t>(AVERAGE_ORIG) };
 
             const Math_t DEVIATION_SUM { std::accumulate(
-                std::begin(VALUES),
-                std::begin(VALUES) + static_cast<std::ptrdiff_t>(COUNT),
+                std::begin(CONTAINER),
+                std::begin(CONTAINER) + static_cast<std::ptrdiff_t>(COUNT),
                 0.0L,
-                [&](const Math_t SUM_SO_FAR, const auto VALUE) {
-                    return SUM_SO_FAR + std::pow((static_cast<Math_t>(VALUE) - AVERAGE), 2);
+                [&](const Math_t SO_FAR, const auto VALUE) {
+                    return SO_FAR + std::pow((static_cast<Math_t>(VALUE) - AVERAGE), 2);
                 }) };
 
-            return static_cast<T>(std::sqrt(DEVIATION_SUM / static_cast<Math_t>(COUNT - 1)));
+            return static_cast<typename T::value_type>(
+                std::sqrt(DEVIATION_SUM / static_cast<Math_t>(COUNT - 1)));
         }
 
         template <typename T>
-        static bool OrderlessCompareEqual(const std::vector<T> & A, const std::vector<T> & B)
+        static bool OrderlessCompareEqual(const T & A, const T & B)
         {
             if (A.size() != B.size())
             {
@@ -255,20 +280,20 @@ namespace misc
             auto a { A };
             auto b { B };
 
-            std::sort(a.begin(), a.end());
-            std::sort(b.begin(), b.end());
+            std::sort(std::begin(a), std::end(a));
+            std::sort(std::begin(b), std::end(b));
 
             return (a == b);
         }
 
         template <typename T>
-        static bool OrderlessCompareLess(const std::vector<T> & A, const std::vector<T> & B)
+        static bool OrderlessCompareLess(const T & A, const T & B)
         {
             auto a { A };
             auto b { B };
 
-            std::sort(a.begin(), a.end());
-            std::sort(b.begin(), b.end());
+            std::sort(std::begin(a), std::end(a));
+            std::sort(std::begin(b), std::end(b));
 
             return (a < b);
         }
@@ -352,7 +377,7 @@ namespace misc
                 avg = static_cast<T>(tempSum / static_cast<Math_t>(COUNT));
                 sum = static_cast<T>(tempSum);
 
-                stddev = StandardDeviation<T>(VALUES, COUNT, avg);
+                stddev = StandardDeviation(VALUES, COUNT, avg);
             }
 
             const std::string ToString(

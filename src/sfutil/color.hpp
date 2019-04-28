@@ -12,6 +12,7 @@
 #include "gui/color-set.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/to-string-prefix-enum.hpp"
+#include "sprite-texture.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 

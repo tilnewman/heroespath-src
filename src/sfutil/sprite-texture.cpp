@@ -7,6 +7,7 @@
 //
 // sprite-texture.cpp
 //
+#include "sfutil/vector-and-rect.hpp"
 #include "sprite-texture.hpp"
 
 #include <tuple>

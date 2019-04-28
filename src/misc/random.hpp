@@ -10,76 +10,46 @@
 // random.hpp
 //
 #include "misc/assertlogandthrow.hpp"
+#include "misc/nameof.hpp"
 #include "misc/real.hpp"
 
 #include <algorithm>
-#include <array>
 #include <cmath>
-#include <iterator>
 #include <limits>
 #include <random>
-#include <tuple>
-#include <typeinfo>
-
-#include "misc/nameof.hpp"
+#include <type_traits>
 
 namespace heroespath
 {
 namespace misc
 {
-    namespace random_helpers
+    namespace helpers
     {
 
         class MersenneTwister19937
         {
-        public:
             using Engine_t = std::mt19937_64;
-
-            MersenneTwister19937() = delete;
-
-            static void Setup()
-            {
-                std::random_device randomDevice;
-
-                // Seed Method #1 Complete
-                // This seed method brings out the best in mt19937, but now it is std::see_seq that
-                // is limiting your entropy.
-                //
-                // std::array<std::random_device::result_type, engine_.state_size> initialSeed;
-                // std::generate_n(initialSeed.data(), initialSeed.size(), std::ref(randomDevice));
-                // std::seed_seq seedSequence(initialSeed.begin(), initialSeed.end());
-                // engine_.seed(seedSequence);
-                // const std::string SEED_STR { "(way too big to log)" };
-
-                // Seed Method #2 Quick and Dirty
-                //  This is the quickest and simplest way to seed, and it makes recording the seed
-                //  for replay and troubleshooting easy.  The MT19937 is an amazing algorithm but
-                //  you will never see it when seeding like this.  This will make the output less
-                //  than perfectly uniform and reduce the period dramatically, but not in any way
-                //  casual users would ever see.  This is still lightyears better than
-                //  srand(time(NULL)) and rand() could ever be.
-                //
-                const auto SEED { randomDevice() };
-                std::seed_seq seedSequence { SEED };
-                engine_.seed(seedSequence);
-                const std::string SEED_STR { std::to_string(SEED) };
-
-                engine_.discard(WARM_UP_COUNT_);
-
-                M_HP_LOG(
-                    "Random Number Generator Setup:  engine=std::mt19937_64, seed="
-                    << SEED_STR
-                    << ", seed_size=" << (seedSequence.size() * sizeof(std::seed_seq::result_type))
-                    << "bytes, warm_up_count=" << std::to_string(WARM_UP_COUNT_)
-                    << ", first_random_number<" << NAMEOF_TYPE_T_STR(Engine_t::result_type)
-                    << ">=" << engine_());
-            }
-
-            static Engine_t & Engine() noexcept { return engine_; }
-
-        private:
             static Engine_t engine_;
-            static const unsigned long long WARM_UP_COUNT_ { 1 << 20 };
+            static constexpr unsigned long long WARM_UP_COUNT_ = 10000;
+
+            //  This is the quickest and simplest way to seed, and it makes recording the seed
+            //  for replay and troubleshooting possible.  The mt19937 is an amazing algorithm but
+            //  you will never see it when seeding like this.  This will make the output less
+            //  than perfectly uniform (slightly) and reduce the period (dramatically), but not in
+            //  any way typical users/uses would ever see.  This is still lightyears better than
+            //  srand(time(NULL)) and rand() could ever be, and if you needed better than this, you
+            //  would probably not be using mt19937 anyway...
+            static const std::string SeedPoorQualityButLoggable();
+
+            // This seed method brings out the best in mt19937, but now std::see_seq that is
+            // limiting your entropy, and you cannot simply log the seed and get all the benefits of
+            // replay testing.
+            static const std::string SeedHighQualityButNotLoggable();
+
+        public:
+            MersenneTwister19937() = delete;
+            static void Setup();
+            static Engine_t & Engine() noexcept { return engine_; }
         };
 
         template <typename T, typename = std::enable_if_t<are_arithmetic_nobool_v<T>>>
@@ -88,16 +58,16 @@ namespace misc
             if constexpr (are_floating_point_v<T>)
             {
                 std::uniform_real_distribution<T> realDistribution(THE_MIN, THE_MAX);
-                return realDistribution(random_helpers::MersenneTwister19937::Engine());
+                return realDistribution(helpers::MersenneTwister19937::Engine());
             }
             else
             {
                 std::uniform_int_distribution<T> intDistribution(THE_MIN, THE_MAX);
-                return intDistribution(random_helpers::MersenneTwister19937::Engine());
+                return intDistribution(helpers::MersenneTwister19937::Engine());
             }
         }
 
-    } // namespace random_helpers
+    } // namespace helpers
 
     // this is really just an error handling wrapper around RandomImpl()
     template <typename T, typename = std::enable_if_t<are_arithmetic_nobool_v<T>>>
@@ -116,8 +86,6 @@ namespace misc
                 return Random(THE_MAX_ORIG, THE_MIN);
             }
 
-            // TODO
-            // if (THE_MIN == THE_MAX_ORIG)
             if (IsRealClose(THE_MIN, THE_MAX_ORIG))
             {
                 return THE_MIN;
@@ -125,7 +93,7 @@ namespace misc
 
             // std::uniform_real_distribution is over the half-closed interval [MIN, MAX) so we need
             // to advance the MAX or else it will be impossible to return the MAX.
-            T theMaxFinal { NextAfterIfReal(THE_MAX_ORIG) };
+            T theMaxFinal { NextIfReal(THE_MAX_ORIG) };
 
             // std::uniform_whatever_distribution will crashes/undefined behavior if the difference
             // (MAX - MIN) overflows, so handle that special case here
@@ -149,7 +117,7 @@ namespace misc
                 }
             }
 
-            return random_helpers::RandomImpl(THE_MIN, theMaxFinal);
+            return helpers::RandomImpl(THE_MIN, theMaxFinal);
         }
     }
 
@@ -159,23 +127,19 @@ namespace misc
         return Random(T(0), THE_MAX);
     }
 
-    template <typename T>
-    T Random()
-    {
-        return Random(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max());
-    }
-
     inline bool RandomBool() { return (Random(1) == 1); }
 
-    template <typename Iterator_t, typename = std::enable_if_t<are_random_access_v<Iterator_t>>>
+    template <
+        typename Iterator_t,
+        typename = std::enable_if_t<are_random_access_iterator_v<Iterator_t>>>
     void RandomShuffle(const Iterator_t BEGIN, const Iterator_t END)
     {
-        std::shuffle(BEGIN, END, random_helpers::MersenneTwister19937::Engine());
+        std::shuffle(BEGIN, END, helpers::MersenneTwister19937::Engine());
     }
 
     template <
         typename Container_t,
-        typename = std::enable_if_t<are_random_access_v<typename Container_t::iterator>>>
+        typename = std::enable_if_t<are_random_access_iterator_v<typename Container_t::iterator>>>
     void RandomShuffle(Container_t & container)
     {
         RandomShuffle(std::begin(container), std::end(container));
@@ -193,7 +157,7 @@ namespace misc
 
     template <
         typename Container_t,
-        typename = std::enable_if_t<are_random_access_v<typename Container_t::iterator>>>
+        typename = std::enable_if_t<are_random_access_iterator_v<typename Container_t::iterator>>>
     typename Container_t::value_type & RandomSelect(Container_t & container)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -212,7 +176,7 @@ namespace misc
 
     template <
         typename Container_t,
-        typename = std::enable_if_t<are_random_access_v<typename Container_t::iterator>>>
+        typename = std::enable_if_t<are_random_access_iterator_v<typename Container_t::iterator>>>
     const typename Container_t::value_type & RandomSelect(const Container_t & CONTAINER)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(

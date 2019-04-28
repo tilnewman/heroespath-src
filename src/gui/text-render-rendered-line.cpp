@@ -11,8 +11,8 @@
 
 #include "gui/text-render-parsing.hpp"
 #include "misc/enum-util.hpp"
-#include "sfutil/position.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/common.hpp"
+#include "sfutil/scale.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>

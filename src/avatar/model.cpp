@@ -16,8 +16,10 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
+#include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 #include "sfutil/direction.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <algorithm>
 #include <numeric>

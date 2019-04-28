@@ -9,15 +9,12 @@
 //
 #include "vertex.hpp"
 
-#include "sfutil/position.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/sprite-texture.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include <algorithm>
-#include <iostream>
 #include <tuple>
 
 namespace sf
@@ -100,6 +97,7 @@ bool operator==(const sf::VertexArray & L, const sf::VertexArray & R)
 }
 
 bool operator!=(const sf::VertexArray & L, const sf::VertexArray & R) { return !(L == R); }
+
 } // namespace sf
 
 namespace heroespath

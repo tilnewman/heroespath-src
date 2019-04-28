@@ -26,7 +26,7 @@
 #include "gui/image-loaders.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 #include "misc/nameof.hpp"
 

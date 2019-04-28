@@ -11,6 +11,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/strings.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Window/VideoMode.hpp>
 

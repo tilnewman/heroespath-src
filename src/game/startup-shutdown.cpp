@@ -50,7 +50,6 @@
 
 #include <SFML/Window/WindowStyle.hpp>
 
-#include <cstdlib>
 #include <exception>
 #include <iostream>
 
@@ -83,8 +82,7 @@ namespace game
                 "This system/platform is not supported.  See log for details.");
         }
 
-        srand(static_cast<unsigned>(time(nullptr)));
-        misc::random_helpers::MersenneTwister19937::Setup();
+        misc::helpers::MersenneTwister19937::Setup();
 
         Setup_ParseCommandLineArguments(ARGC, argv);
 

@@ -15,7 +15,7 @@
 #include "gui/text-region.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/position.hpp"
+#include "sfutil/common.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

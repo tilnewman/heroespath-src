@@ -21,7 +21,7 @@
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/position.hpp"
+#include "sfutil/common.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

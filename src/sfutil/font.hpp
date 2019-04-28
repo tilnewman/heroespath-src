@@ -12,7 +12,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/to-string-prefix-enum.hpp"
-#include "sfutil/position.hpp"
+#include "sfutil/common.hpp"
 
 #include <SFML/Graphics/Font.hpp>
 

@@ -12,7 +12,7 @@
 #include "gui/image-option-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/vector-and-rect.hpp"
+#include "sfutil/common.hpp"
 
 #include <SFML/Config.hpp>
 

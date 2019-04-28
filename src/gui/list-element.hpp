@@ -18,8 +18,8 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

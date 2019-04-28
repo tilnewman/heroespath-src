@@ -15,6 +15,7 @@
 #include "misc/config-file.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
+#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

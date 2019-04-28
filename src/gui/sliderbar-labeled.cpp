@@ -14,7 +14,7 @@
 #include "gui/sound-manager.hpp"
 #include "gui/text-region.hpp"
 #include "misc/log-macros.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

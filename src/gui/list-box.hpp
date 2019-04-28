@@ -21,9 +21,9 @@
 #include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
-#include "sfutil/center-of.hpp"
+
+#include "sfutil/common.hpp"
 #include "sfutil/event.hpp"
-#include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
 #include "stage/i-stage.hpp"
 

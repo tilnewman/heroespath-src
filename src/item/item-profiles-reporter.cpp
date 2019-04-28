@@ -407,7 +407,7 @@ namespace item
 
             if (elementalCount > 0)
             {
-                const auto SCORES_SUM { misc::Vector::SumVec(scores_) };
+                const auto SCORES_SUM { misc::Vector::Sum(scores_) };
 
                 ss << "\nElemental Items  count=" << elementalCount
                    << PercentToString(elementalCount, scores_.size());
@@ -485,8 +485,8 @@ namespace item
         const auto SUB_REPORT_SOURCES { SourceProfiles(
             scores_.size(),
             religiousScores_.size(),
-            misc::Vector::SumVec(scores_),
-            misc::Vector::SumVec(religiousScores_)) };
+            misc::Vector::Sum(scores_),
+            misc::Vector::Sum(religiousScores_)) };
 
         for (auto & stringReportPair : reportMap_)
         {
@@ -602,8 +602,8 @@ namespace item
         const auto SUB_REPORT_SOURCES { SourceProfiles(
             scores_.size(),
             religiousScores_.size(),
-            misc::Vector::SumVec(scores_),
-            misc::Vector::SumVec(religiousScores_)) };
+            misc::Vector::Sum(scores_),
+            misc::Vector::Sum(religiousScores_)) };
 
         for (auto & stringReportPair : reportMap_)
         {

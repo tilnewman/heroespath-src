@@ -11,7 +11,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/vector-and-rect.hpp"
+#include "sfutil/common.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>

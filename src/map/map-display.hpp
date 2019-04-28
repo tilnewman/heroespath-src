@@ -19,6 +19,7 @@
 #include "map/tiles-panel.hpp"
 #include "misc/timing.hpp"
 #include "misc/vector-map.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>

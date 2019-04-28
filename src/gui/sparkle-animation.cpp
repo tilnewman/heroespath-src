@@ -12,7 +12,7 @@
 #include "sparkle-animation.hpp"
 
 #include "misc/random.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>

@@ -208,12 +208,13 @@ BOOST_AUTO_TEST_CASE(Vector_Add_AB_NoSort)
     const ts::IntVec_t A = { 1, 1, 2, 3 };
     const ts::IntVec_t B = { 4, 5, 6, 6 };
     const ts::IntVec_t AB_NOSORT_EXPECTED = { 1, 1, 2, 3, 4, 5, 6, 6 };
-    const auto AB_NOSORT_RESULT { misc::Vector::AndCopy(A, B) };
+    const auto AB_NOSORT_RESULT { misc::Vector::Combine(A, B) };
 
     BOOST_CHECK_MESSAGE(
         (AB_NOSORT_RESULT == AB_NOSORT_EXPECTED),
-        "add 1,1,2,3 + 4,5,6,6 No_SortAndUnique result=" << ts::vectorToString(
-            AB_NOSORT_RESULT) << ", expected=" << ts::vectorToString(AB_NOSORT_EXPECTED));
+        "add 1,1,2,3 + 4,5,6,6 No_SortAndUnique result=" << ts::vectorToString(AB_NOSORT_RESULT)
+                                                         << ", expected="
+                                                         << ts::vectorToString(AB_NOSORT_EXPECTED));
 }
 
 BOOST_AUTO_TEST_CASE(Vector_Add_AB_SortAndUnique)
@@ -222,7 +223,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_AB_SortAndUnique)
     const ts::IntVec_t B = { 4, 5, 6, 6 };
     const ts::IntVec_t AB_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
 
-    const auto AB_SORTANDUNIQUE_RESULT { misc::Vector::AndCopy(
+    const auto AB_SORTANDUNIQUE_RESULT { misc::Vector::Combine(
         A, B, misc::Vector::SortOpt::SortAndUnique) };
 
     BOOST_CHECK_MESSAGE(
@@ -237,12 +238,13 @@ BOOST_AUTO_TEST_CASE(Vector_Add_BA_NoSort)
     const ts::IntVec_t A = { 1, 1, 2, 3 };
     const ts::IntVec_t B = { 4, 5, 6, 6 };
     const ts::IntVec_t BA_NOSORT_EXPECTED = { 4, 5, 6, 6, 1, 1, 2, 3 };
-    const auto BA_NOSORT_RESULT { misc::Vector::AndCopy(B, A) };
+    const auto BA_NOSORT_RESULT { misc::Vector::Combine(B, A) };
 
     BOOST_CHECK_MESSAGE(
         (BA_NOSORT_RESULT == BA_NOSORT_EXPECTED),
-        "add 4,5,6,6 + 1,1,2,3 No_SortAndUnique result=" << ts::vectorToString(
-            BA_NOSORT_RESULT) << ", expected=" << ts::vectorToString(BA_NOSORT_EXPECTED));
+        "add 4,5,6,6 + 1,1,2,3 No_SortAndUnique result=" << ts::vectorToString(BA_NOSORT_RESULT)
+                                                         << ", expected="
+                                                         << ts::vectorToString(BA_NOSORT_EXPECTED));
 }
 
 BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)
@@ -251,7 +253,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)
     const ts::IntVec_t B = { 4, 5, 6, 6 };
     const ts::IntVec_t BA_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
 
-    const auto BA_SORTANDUNIQUE_RESULT { misc::Vector::AndCopy(
+    const auto BA_SORTANDUNIQUE_RESULT { misc::Vector::Combine(
         B, A, misc::Vector::SortOpt::SortAndUnique) };
 
     BOOST_CHECK_MESSAGE(

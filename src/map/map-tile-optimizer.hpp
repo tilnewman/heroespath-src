@@ -12,6 +12,7 @@
 #include "gui/cached-texture.hpp"
 #include "map/map-tile-draw.hpp"
 #include "misc/vector-map.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <string>
 #include <vector>

@@ -123,46 +123,46 @@ struct EnumStringHow
 // see misc/enum-util.hpp
 struct EnumStringHow;
 
-template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-inline constexpr T operator~(const T X)
+template <typename T>
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T> operator~(const T X) noexcept
 {
     return static_cast<T>(~static_cast<EnumUnderlying_t>(X));
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-inline constexpr T operator|(const T L, const T R)
+template <typename T>
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T> operator|(const T L, const T R) noexcept
 {
     return static_cast<T>(static_cast<EnumUnderlying_t>(L) | static_cast<EnumUnderlying_t>(R));
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-inline constexpr T operator&(const T L, const T R)
+template <typename T>
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T> operator&(const T L, const T R) noexcept
 {
     return static_cast<T>(static_cast<EnumUnderlying_t>(L) & static_cast<EnumUnderlying_t>(R));
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-inline constexpr T operator^(const T L, const T R)
+template <typename T>
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T> operator^(const T L, const T R) noexcept
 {
     return static_cast<T>(static_cast<EnumUnderlying_t>(L) ^ static_cast<EnumUnderlying_t>(R));
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-inline constexpr T & operator|=(T & l, const T R)
+template <typename T>
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T &> operator|=(T & l, const T R) noexcept
 {
     l = static_cast<T>(static_cast<EnumUnderlying_t>(l) | static_cast<EnumUnderlying_t>(R));
     return l;
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-inline constexpr T & operator&=(T & l, const T R)
+template <typename T>
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T &> operator&=(T & l, const T R) noexcept
 {
     l = static_cast<T>(static_cast<EnumUnderlying_t>(l) & static_cast<EnumUnderlying_t>(R));
     return l;
 }
 
-template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-inline constexpr T & operator^=(T & l, const T R)
+template <typename T>
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T &> operator^=(T & l, const T R) noexcept
 {
     l = static_cast<T>(static_cast<EnumUnderlying_t>(l) ^ static_cast<EnumUnderlying_t>(R));
     return l;
@@ -171,19 +171,12 @@ inline constexpr T & operator^=(T & l, const T R)
 namespace helpers
 {
     template <typename T1, typename T2>
-    struct are_bitwise_enum_types_valid
-        : std::integral_constant<
-              bool,
-              ((misc::are_same_v<
-                    T1,
-                    T2> && (misc::are_all_v<EnumUnderlying_t, T1, T2> || misc::are_all_enum_v<T1, T2>))
-               || (misc::are_same_v<T1, EnumUnderlying_t> && misc::are_all_enum_v<T2>)
-               || (misc::are_same_v<T2, EnumUnderlying_t> && misc::are_all_enum_v<T1>))>
-    {};
-
-    template <typename... T>
-    inline constexpr bool are_bitwise_enum_types_valid_v
-        = are_bitwise_enum_types_valid<T...>::value;
+    constexpr bool are_bitwise_enum_types_valid_v
+        = ((misc::are_same_v<
+                T1,
+                T2> && (misc::are_all_v<EnumUnderlying_t, T1, T2> || misc::are_enum_v<T1, T2>))
+           || (misc::are_same_v<T1, EnumUnderlying_t> && misc::are_enum_v<T2>)
+           || (misc::are_same_v<T2, EnumUnderlying_t> && misc::are_enum_v<T1>));
 
 } // namespace helpers
 
@@ -191,7 +184,7 @@ template <
     typename T1,
     typename T2,
     typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
-inline constexpr void BitSet(T1 & orig, const T2 BITS_TO_SET)
+constexpr void BitSet(T1 & orig, const T2 BITS_TO_SET) noexcept
 {
     orig |= BITS_TO_SET;
 }
@@ -200,7 +193,7 @@ template <
     typename T1,
     typename T2,
     typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
-inline constexpr T1 BitSetCopy(const T1 ORIG, const T2 BITS_TO_SET)
+constexpr T1 BitSetCopy(const T1 ORIG, const T2 BITS_TO_SET) noexcept
 {
     T1 copy { ORIG };
     BitSet(copy, BITS_TO_SET);
@@ -211,7 +204,7 @@ template <
     typename T1,
     typename T2,
     typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
-inline constexpr void BitClear(T1 & orig, const T2 BITS_TO_CLEAR)
+constexpr void BitClear(T1 & orig, const T2 BITS_TO_CLEAR) noexcept
 {
     orig &= ~BITS_TO_CLEAR;
 }
@@ -220,7 +213,7 @@ template <
     typename T1,
     typename T2,
     typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
-inline constexpr T1 BitClearCopy(const T1 ORIG, const T2 BITS_TO_CLEAR)
+constexpr T1 BitClearCopy(const T1 ORIG, const T2 BITS_TO_CLEAR) noexcept
 {
     T1 copy { ORIG };
     BitClear(copy, BITS_TO_CLEAR);
@@ -231,7 +224,7 @@ template <
     typename T1,
     typename T2,
     typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
-inline constexpr void BitToggle(T1 & orig, const T2 BITS_TO_TOGGLE)
+constexpr void BitToggle(T1 & orig, const T2 BITS_TO_TOGGLE) noexcept
 {
     orig ^= BITS_TO_TOGGLE;
 }
@@ -240,7 +233,7 @@ template <
     typename T1,
     typename T2,
     typename = std::enable_if_t<helpers::are_bitwise_enum_types_valid_v<T1, T2>>>
-inline constexpr T1 BitToggleCopy(const T1 ORIG, const T2 BITS_TO_TOGGLE)
+constexpr T1 BitToggleCopy(const T1 ORIG, const T2 BITS_TO_TOGGLE) noexcept
 {
     T1 copy { ORIG };
     BitToggle(copy, BITS_TO_TOGGLE);

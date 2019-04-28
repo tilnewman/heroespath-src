@@ -11,7 +11,7 @@
 //
 #include "gui/text-render-context.hpp"
 #include "gui/text.hpp"
-#include "sfutil/position.hpp"
+#include "sfutil/common.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
 

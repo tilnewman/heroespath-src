@@ -14,7 +14,7 @@
 #include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/position.hpp"
+#include "sfutil/common.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

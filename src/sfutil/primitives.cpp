@@ -9,8 +9,8 @@
 //
 #include "primitives.hpp"
 
-#include "sfutil/position.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/common.hpp"
+#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>

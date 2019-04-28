@@ -12,7 +12,7 @@
 #include "gui/color-set.hpp"
 #include "gui/i-entity.hpp"
 #include "gui/mouse-state-enum.hpp"
-#include "sfutil/vector-and-rect.hpp"
+#include "sfutil/common.hpp"
 
 #include <SFML/System/Clock.hpp>
 

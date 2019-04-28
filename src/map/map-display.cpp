@@ -26,7 +26,7 @@
 #include "sfutil/display.hpp"
 #include "sfutil/distance.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 #include "sfutil/vertex.hpp"
 
 #include <algorithm>
@@ -42,8 +42,7 @@ namespace map
     MapDisplay::MapDisplay(const sf::FloatRect & REGION)
         : onScreenRect_(REGION)
         , onScreenRectInner_(
-              gui::Margins(sfutil::ScaleCopy(sfutil::Size(REGION), ONSCREEN_WALK_PAD_RATIO_))
-                  .ApplyShrinkCopy(REGION))
+              gui::Margins(sfutil::Size(REGION) * ONSCREEN_WALK_PAD_RATIO_).ApplyShrinkCopy(REGION))
         , offScreenRectI_()
         , offScreenTileRectI_()
         , offScreenTextureRect_()

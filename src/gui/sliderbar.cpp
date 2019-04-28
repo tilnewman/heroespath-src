@@ -14,8 +14,8 @@
 #include "gui/gui-images.hpp"
 #include "gui/sound-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "sfutil/position.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/common.hpp"
+#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -63,12 +63,13 @@ namespace gui
     {
         SetupInitialSpritePositions(sf::Vector2f(POS_LEFT, POS_TOP));
 
-        SetEntityRegion(sfutil::MinimallyEnclosing({ topOrLeftSprite_,
-                                                     botOrRightSprite_,
-                                                     barSprite_,
-                                                     topOrLeftPadSprite_,
-                                                     middlePadSprite_,
-                                                     botOrRightPadSprite_ }));
+        SetEntityRegion(sfutil::MinimallyEnclosing(
+            topOrLeftSprite_,
+            botOrRightSprite_,
+            barSprite_,
+            topOrLeftPadSprite_,
+            middlePadSprite_,
+            botOrRightPadSprite_));
     }
 
     void SliderBar::PositionRatio(const float NEW_VAL)
@@ -240,7 +241,9 @@ namespace gui
                 middlePadSprite_.setTextureRect(padSpriteTextureRect);
 
                 const auto PAD_LENGTH { CalcPadLength(
-                    TextureCoordsBasedOnStyle_Pad(style_).width, BAR_RANGE, minMoveRatio_) };
+                    static_cast<float>(TextureCoordsBasedOnStyle_Pad(style_).width),
+                    BAR_RANGE,
+                    minMoveRatio_) };
 
                 const auto MIDDLE_PAD_SCALE_HORIZ { (
                     (PAD_LENGTH - static_cast<float>(PAD_TEXTURE_END_LENGTH_ * 2))
@@ -301,7 +304,9 @@ namespace gui
                 middlePadSprite_.setTextureRect(padSpriteTextureRect);
 
                 const auto PAD_LENGTH { CalcPadLength(
-                    TextureCoordsBasedOnStyle_Pad(style_).height, BAR_RANGE, minMoveRatio_) };
+                    static_cast<float>(TextureCoordsBasedOnStyle_Pad(style_).height),
+                    BAR_RANGE,
+                    minMoveRatio_) };
 
                 const auto MIDDLE_PAD_SCALE_VERT { (
                     (PAD_LENGTH - static_cast<float>(PAD_TEXTURE_END_LENGTH_ * 2))
@@ -804,7 +809,7 @@ namespace gui
     const sf::FloatRect SliderBar::CalcPadSpriteRegion() const
     {
         return sfutil::MinimallyEnclosing(
-            { topOrLeftPadSprite_, middlePadSprite_, botOrRightPadSprite_ });
+            topOrLeftPadSprite_, middlePadSprite_, botOrRightPadSprite_);
     }
 
     void SliderBar::SetPadPosition(const sf::Vector2f & POS_V)

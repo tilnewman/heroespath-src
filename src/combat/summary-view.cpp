@@ -21,7 +21,7 @@
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

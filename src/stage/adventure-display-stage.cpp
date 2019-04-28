@@ -17,9 +17,9 @@
 #include "map/map.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/position.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 #include "stage/adventure-stage-interact-stage.hpp"
 #include "stage/adventure-stage.hpp"
 

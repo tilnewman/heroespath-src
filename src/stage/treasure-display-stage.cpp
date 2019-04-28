@@ -29,6 +29,7 @@
 #include "item/item.hpp"
 #include "misc/config-file.hpp"
 #include "misc/vectors.hpp"
+#include "sfutil/scale.hpp"
 #include "stage/treasure-stage.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -540,8 +541,13 @@ namespace stage
 
         const auto MEASUREMENTS { CreateDisplayMeasurements() };
 
-        bgSprite_.setScale(
-            sfutil::VectorDiv(MEASUREMENTS.screenSizeV, sfutil::Size(bgSprite_.getLocalBounds())));
+        const auto NEW_SCALE_X
+            = (MEASUREMENTS.screenSizeV.x / sfutil::Size(bgSprite_.getLocalBounds()).x);
+
+        const auto NEW_SCALE_Y
+            = (MEASUREMENTS.screenSizeV.y / sfutil::Size(bgSprite_.getLocalBounds()).y);
+
+        bgSprite_.setScale(NEW_SCALE_X, NEW_SCALE_Y);
     }
 
     void TreasureDisplayStage::SetupInitial_Ouroboros()

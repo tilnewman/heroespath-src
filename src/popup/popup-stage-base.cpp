@@ -20,7 +20,7 @@
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

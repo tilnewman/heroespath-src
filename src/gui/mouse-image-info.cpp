@@ -9,7 +9,7 @@
 //
 #include "mouse-image-info.hpp"
 
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 namespace heroespath
 {

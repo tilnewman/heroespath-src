@@ -10,8 +10,8 @@
 #include "text-render-rendered-lines.hpp"
 
 #include "misc/enum-util.hpp"
-#include "sfutil/position.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/common.hpp"
+#include "sfutil/scale.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -39,7 +39,7 @@ namespace gui
 
         bool RenderedLines::IsValid() const
         {
-            return ((Empty() == false) && (sfutil::IsSizeZeroOrLessEither(region) == false));
+            return ((Empty() == false) && (sfutil::IsZeroOrLessAny(sfutil::Size(region)) == false));
         }
 
         bool RenderedLines::IsCurrentLineEmpty() const

@@ -27,7 +27,7 @@
 #include "misc/vector-map.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/overlap.hpp"
-#include "sfutil/size-and-scale.hpp"
+#include "sfutil/scale.hpp"
 
 #include <exception>
 #include <sstream>
@@ -43,7 +43,7 @@ namespace map
 
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
         : WALK_SFX_VOLUME_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-            "sound-map-walk-sfx-volume-ratio"))
+              "sound-map-walk-sfx-volume-ratio"))
         , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(REGION))
         , interactionManager_(interactionManager)
         , collisionVec_()
@@ -519,7 +519,7 @@ namespace map
         struct WalkRegion
         {
             sf::FloatRect rect;
-            std::size_t index;
+            std::size_t index = 0;
         };
 
         std::vector<WalkRegion> walkRegions;
