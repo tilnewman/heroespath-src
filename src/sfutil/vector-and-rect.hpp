@@ -9,10 +9,9 @@
 //
 // vector-and-rect.hpp
 //
-#include "misc/strings.hpp"
-
 #include <SFML/Graphics/Rect.hpp>
 
+#include <ostream>
 #include <tuple>
 
 namespace sf
@@ -21,7 +20,18 @@ namespace sf
 template <typename T1, typename T2>
 bool operator<(const sf::Vector2<T1> & L, const sf::Vector2<T2> & R)
 {
-    return std::tie(L.x, L.y) < std::tie(R.x, R.y);
+    if (L.x < R.x)
+    {
+        return true;
+    }
+    else if (L.x > R.x)
+    {
+        return false;
+    }
+    else
+    {
+        return (L.y < R.y);
+    }
 }
 
 template <typename T1, typename T2>
@@ -81,34 +91,5 @@ std::ostream & operator<<(std::ostream & os, const sf::Rect<T> & R)
 }
 
 } // namespace sf
-
-namespace heroespath
-{
-
-namespace sfutil
-{
-
-    template <typename T>
-    const std::string ToString(
-        const sf::Vector2<T> & V,
-        const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default)
-    {
-        std::ostringstream ss;
-        ss << misc::MakeToStringPrefix<T>(OPTIONS, "Vector2") << V;
-        return ss.str();
-    }
-
-    template <typename T>
-    const std::string ToString(
-        const sf::Rect<T> & R,
-        const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default)
-    {
-        std::ostringstream ss;
-        ss << misc::MakeToStringPrefix<T>(OPTIONS, "Rect") << R;
-        return ss.str();
-    }
-
-} // namespace sfutil
-} // namespace heroespath
 
 #endif // HEROESPATH_SFUTIL_VECTOR_RECT_HPP_INCLUDED

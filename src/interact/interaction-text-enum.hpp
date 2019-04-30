@@ -22,8 +22,6 @@ class Font;
 
 namespace heroespath
 {
-using FontPtr_t = misc::NotNull<sf::Font *>;
-
 namespace interact
 {
 

@@ -801,7 +801,7 @@ namespace combat
             }
             else
             {
-                ss << "for " << CREATURE_EFFECT.GetDamageTotal().As<int>() * -1 << " damage";
+                ss << "for " << -CREATURE_EFFECT.GetDamageTotal() << " damage";
             }
 
             ss << AttackConditionsSummaryList(CREATURE_EFFECT);
@@ -895,7 +895,7 @@ namespace combat
 
             if (HIT_INFO.Damage() < 0_health)
             {
-                ss << "for " << HIT_INFO.Damage().As<int>() * -1 << " damage";
+                ss << "for " << -HIT_INFO.Damage() << " damage";
             }
             else
             {
@@ -1049,7 +1049,7 @@ namespace combat
         }
         else if (DAMAGE < 0_health)
         {
-            ss << " doing " << DAMAGE.Abs() << " damage.";
+            ss << " doing " << DAMAGE.MakePositiveCopy() << " damage.";
         }
 
         return ss.str();
@@ -1163,7 +1163,7 @@ namespace combat
         }
         else if (DAMAGE < 0_health)
         {
-            ss << " doing " << DAMAGE.Abs() << " damage.";
+            ss << " doing " << DAMAGE.MakePositiveCopy() << " damage.";
         }
 
         return ss.str();
@@ -1240,7 +1240,8 @@ namespace combat
 
         std::ostringstream ss;
         ss << CREATURE_UNLOCKING_PTR->Name() << " is " << HIT_INFO.ActionVerb() << " for "
-           << HIT_INFO.Damage().Abs() << " damage" << AttackConditionsSummaryList(CREATURE_EFFECT);
+           << HIT_INFO.Damage().MakePositiveCopy() << " damage"
+           << AttackConditionsSummaryList(CREATURE_EFFECT);
 
         return ss.str();
     }
@@ -1249,26 +1250,16 @@ namespace combat
     {
         switch (misc::Random(4))
         {
-            case 0:
-            {
-                return "You face";
+            case 0: { return "You face";
             }
-            case 1:
-            {
-                return "Before you rage";
+            case 1: { return "Before you rage";
             }
-            case 2:
-            {
-                return "Before you stand";
+            case 2: { return "Before you stand";
             }
-            case 3:
-            {
-                return "Attacking you are";
+            case 3: { return "Attacking you are";
             }
             case 4:
-            default:
-            {
-                return "You encounter";
+            default: { return "You encounter";
             }
         }
     }

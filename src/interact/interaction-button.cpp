@@ -37,7 +37,7 @@ namespace interact
             }
             else
             {
-                return Name() + "(" + sfutil::ToString(KEY) + ")";
+                return Name() + "(" + std::string(sfutil::sfKeyToString(KEY)) + ")";
             }
         }() };
 

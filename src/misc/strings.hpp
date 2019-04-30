@@ -10,10 +10,9 @@
 // strings.hpp
 //
 #include "misc/log-macros.hpp"
-#include "misc/to-string-prefix-enum.hpp"
+#include "misc/nameof.hpp"
 #include "misc/type-helpers.hpp"
 
-#include "misc/nameof.hpp"
 #include <boost/lexical_cast.hpp>
 
 #include <sstream>
@@ -95,7 +94,7 @@ namespace misc
         catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_WRN(
-                "misc::ToString<" << NAMEOF_TYPE_T_STR(T) << ">() threw std::exception=\""
+                "misc::ToString<" << NAMEOF_TYPE_T(T) << ">() threw std::exception=\""
                                   << EXCEPTION.what()
                                   << "\".  Returning an empty string "
                                      "and continuing....");
@@ -105,7 +104,7 @@ namespace misc
         catch (...)
         {
             M_HP_LOG_WRN(
-                "misc::ToString<" << NAMEOF_TYPE_T_STR(T)
+                "misc::ToString<" << NAMEOF_TYPE_T(T)
                                   << ">() threw an unknown exception.  Returning an empty string "
                                      "and continuing....");
 
@@ -133,31 +132,6 @@ namespace misc
     }
 
     const std::string Quoted(const std::string & STR);
-
-    const std::string MakeToStringPrefixWithTypename(
-        const ToStringPrefix::Enum OPTIONS,
-        const std::string & CONTAINER_NAME,
-        const std::string & NAMESPACE_PREFIX_STR,
-        const std::string & TYPE_NAME);
-
-    template <typename T = void>
-    const std::string MakeToStringPrefix(
-        const ToStringPrefix::Enum OPTIONS,
-        const std::string & CONTAINER_NAME,
-        const std::string & NAMESPACE_PREFIX_STR = "")
-    {
-        std::string typeName;
-        if constexpr (are_same_v<T, void> == false)
-        {
-            if (OPTIONS & ToStringPrefix::Typename)
-            {
-                typeName = "<" + NAMEOF_TYPE_T_STR(T) + ">";
-            }
-        }
-
-        return MakeToStringPrefixWithTypename(
-            OPTIONS, CONTAINER_NAME, NAMESPACE_PREFIX_STR, typeName);
-    }
 
     template <typename T = int, typename = std::enable_if_t<are_integral_nobool_v<T>>>
     const std::string NumberToStringWithOrdinalSuffix(const T NUMBER)
@@ -306,8 +280,9 @@ namespace misc
         SplitByChars(const std::string & TO_SPLIT, const SplitHow HOW = SplitHow());
 
 } // namespace misc
-} // namespace heroespath
 
 #define M_HP_VAR_STR(var) heroespath::misc::NameEqualsValueStr(#var, var, true)
+
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_STRINGS_HPP_INCLUDED

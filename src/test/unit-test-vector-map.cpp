@@ -8,8 +8,6 @@
 // ----------------------------------------------------------------------------
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_VectorMap"
 
-#include "misc/vector-map.hpp"
-
 #include "misc/platform.hpp"
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
 #pragma warning(push)
@@ -23,6 +21,7 @@
 #endif
 
 #include "misc/nameof.hpp"
+#include "misc/vector-map.hpp"
 
 #include <algorithm>
 #include <iomanip>
@@ -110,23 +109,22 @@ template <typename T, typename U>
 void printIteratorCompareInfo(const std::string & S1, const std::string & S2)
 {
     std::cout << S1 << "\n"
-              << S2 << "\n\t" << NAMEOF_TYPE_T_STR(T) << "\n\t" << NAMEOF_TYPE_T_STR(U)
-              << "\n\t\titer_category=" << NAMEOF_TYPE_T_STR(typename T::iterator_category)
-              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T_STR(typename U::iterator_category)
-              << "\n\t\t   value_type=" << NAMEOF_TYPE_T_STR(typename T::value_type)
-              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T_STR(typename U::value_type)
-              << "\n\t\t,  pointer_type=" << NAMEOF_TYPE_T_STR(typename T::pointer_type)
-              << "\n\t\t,          \"\"=" << NAMEOF_TYPE_T_STR(typename U::pointer_type)
-              << std::endl;
+              << S2 << "\n\t" << NAMEOF_TYPE_T(T) << "\n\t" << NAMEOF_TYPE_T(U)
+              << "\n\t\titer_category=" << NAMEOF_TYPE_T(typename T::iterator_category)
+              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T(typename U::iterator_category)
+              << "\n\t\t   value_type=" << NAMEOF_TYPE_T(typename T::value_type)
+              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T(typename U::value_type)
+              << "\n\t\t,  pointer_type=" << NAMEOF_TYPE_T(typename T::pointer_type)
+              << "\n\t\t,          \"\"=" << NAMEOF_TYPE_T(typename U::pointer_type) << std::endl;
 };
 
 template <typename T>
 void printIteratorInfo(const std::string & S, T)
 {
-    std::cout << S << ", " << NAMEOF_TYPE_T_STR(T)
-              << ", \titer_category=" << NAMEOF_TYPE_T_STR(typename T::iterator_category)
-              << ", \t   value_type=" << NAMEOF_TYPE_T_STR(typename T::value_type)
-              << ", \t,  pointer_type=" << NAMEOF_TYPE_T_STR(typename T::pointer_type) << std::endl;
+    std::cout << S << ", " << NAMEOF_TYPE_T(T)
+              << ", \titer_category=" << NAMEOF_TYPE_T(typename T::iterator_category)
+              << ", \t   value_type=" << NAMEOF_TYPE_T(typename T::value_type)
+              << ", \t,  pointer_type=" << NAMEOF_TYPE_T(typename T::pointer_type) << std::endl;
 };
 
 inline void testSet1(VectorMap_t & vm, const std::string & MESSAGE, const std::size_t TEST_INDEX)
@@ -259,14 +257,14 @@ inline void relationalTestsAll(const Vector_t & A, const Vector_t & B)
 
     std::ostringstream ss;
     ss << "relationalTests[";
-    for (std::size_t i(0); i < std::min(A.size(), std::size_t(4)); ++i)
+    for (std::size_t i(0); i < misc::Min(A.size(), std::size_t(4)); ++i)
     {
         if (0 != i)
             ss << ",";
         ss << std::to_string(A[i]);
     }
     ss << "][";
-    for (std::size_t i(0); i < std::min(B.size(), std::size_t(4)); ++i)
+    for (std::size_t i(0); i < misc::Min(B.size(), std::size_t(4)); ++i)
     {
         if (0 != i)
             ss << ",";

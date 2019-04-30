@@ -26,6 +26,8 @@ namespace heroespath
 namespace gui
 {
 
+    using ColorValueOpt_t = boost::optional<sf::Uint8>;
+
     // Responsible for being an Entity that has different images for each MouseState, execept for
     // MouseState::Disabled which uses the Up image faded out with alpha. Use this class when you
     // need different images for different MouseStates.  The global bounds of each sprite could be

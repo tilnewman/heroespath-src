@@ -17,9 +17,8 @@
 //
 #include "misc/enum-common.hpp"
 #include "misc/log.hpp"
-#include "misc/vector-map.hpp"
-
 #include "misc/nameof.hpp"
+#include "misc/vector-map.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -226,7 +225,10 @@ namespace enum_helpers
 template <typename EnumWrapper_t>
 struct EnumUtil
 {
-    static const std::string TypeName() { return NAMEOF_TYPE_T_STR(EnumWrapper_t) + "::Enum"; }
+    static const std::string TypeName()
+    {
+        return std::string(NAMEOF_TYPE_T(EnumWrapper_t)).append("::Enum");
+    }
 
     // this may look redundant but callers can pass in the enum type (EnumWrapper::Enum)
     // and get the underlying type (EnumUnderlying_t) back
@@ -269,6 +271,8 @@ struct EnumUtil
     {
         if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
         {
+            // this just prevents a visual studio warning
+            const auto IGNORED(HOW);
             return EnumWrapper_t::ToString(static_cast<typename EnumWrapper_t::Enum>(ENUM_VALUE));
         }
         else

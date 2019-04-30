@@ -33,7 +33,7 @@ namespace creature
             std::ostringstream ss;
             ss << "rankclass-" << ToString(RANK_ENUM) << "-rankmax";
 
-            rankCumulative += Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(ss.str()));
+            rankCumulative += misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(ss.str());
 
             if (RANK_PARAM <= rankCumulative)
             {
@@ -51,28 +51,28 @@ namespace creature
 
         if (ENUM == GrandMaster)
         {
-            min = Rank_t(
-                misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                    "rankclass-" + ToString(Master) + "-rankmax")
-                + 1);
+            min
+                = (misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
+                       "rankclass-" + ToString(Master) + "-rankmax")
+                   + 1_rank);
         }
         else if (ENUM == Novice)
         {
             min = 1_rank;
 
-            max = Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "rankclass-" + ToString(Novice) + "-rankmax"));
+            max = misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
+                "rankclass-" + ToString(Novice) + "-rankmax");
         }
         else
         {
-            min = Rank_t(
-                misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                    "rankclass-" + ToString(static_cast<rank_class::Enum>(ENUM - 1))
-                    + "-rankmax")
-                + 1);
+            min
+                = (misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
+                       "rankclass-" + ToString(static_cast<rank_class::Enum>(ENUM - 1))
+                       + "-rankmax")
+                   + 1_rank);
 
-            max = Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "rankclass-" + ToString(ENUM) + "-rankmax"));
+            max = misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
+                "rankclass-" + ToString(ENUM) + "-rankmax");
         }
 
         return RankRange_t(min, max);
@@ -82,33 +82,19 @@ namespace creature
     {
         switch (ENUM)
         {
-            case Novice:
-            {
-                return "Novice";
+            case Novice: { return "Novice";
             }
-            case Trainee:
-            {
-                return "Trainee";
+            case Trainee: { return "Trainee";
             }
-            case Skilled:
-            {
-                return "Skilled";
+            case Skilled: { return "Skilled";
             }
-            case Expert:
-            {
-                return "Expert";
+            case Expert: { return "Expert";
             }
-            case Master:
-            {
-                return "Master";
+            case Master: { return "Master";
             }
-            case GrandMaster:
-            {
-                return "GrandMaster";
+            case GrandMaster: { return "GrandMaster";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {

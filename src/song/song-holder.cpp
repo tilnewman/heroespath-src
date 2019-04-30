@@ -131,12 +131,12 @@ namespace song
                                         << "\") resulted in an empty DescExtra().");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (SONG_PTR->ManaCost().IsNonZero()),
+                (!SONG_PTR->ManaCost().IsZero()),
                 "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
                                         << "\") resulted in a zero Mana cost.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (SONG_PTR->Rank().IsNonZero()),
+                (!SONG_PTR->Rank().IsZero()),
                 "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
                                         << "\") resulted in a zero Rank.");
 
@@ -170,8 +170,9 @@ namespace song
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < songsUVec_.size()),
-            "song::Holder::Get(" << Songs::ToString(
-                ENUM) << ") found insuff sized songsUVec_, probably from a bug in Setup().");
+            "song::Holder::Get("
+                << Songs::ToString(ENUM)
+                << ") found insuff sized songsUVec_, probably from a bug in Setup().");
 
         return SongPtr_t(songsUVec_[INDEX].get());
     }

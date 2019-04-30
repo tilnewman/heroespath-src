@@ -122,19 +122,19 @@ namespace creature
     const CreaturePtr_t CreatureFactory::MakeGoblinGrunt() const
     {
         const StatSet STATS(
-            Strength_t(13 + misc::Random(5)),
-            Accuracy_t(13 + misc::Random(5)),
-            Charm_t(5 + misc::Random(5)),
-            Luck_t(5 + misc::Random(5)),
-            Speed_t(13 + misc::Random(5)),
-            Intell_t(3 + misc::Random(5)));
+            Strength_t::Make(13 + misc::Random(5)),
+            Accuracy_t::Make(13 + misc::Random(5)),
+            Charm_t::Make(5 + misc::Random(5)),
+            Luck_t::Make(5 + misc::Random(5)),
+            Speed_t::Make(13 + misc::Random(5)),
+            Intel_t::Make(3 + misc::Random(5)));
 
         return MakeAndEquipEnemy(
             ((misc::Random(100) < 75) ? sex::Male : sex::Female),
             race::Goblin,
             role::Grunt,
             STATS,
-            Health_t(misc::Random(10, 20)));
+            Health_t::Make(misc::Random(10, 20)));
     }
 
 } // namespace creature

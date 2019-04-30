@@ -139,8 +139,8 @@ namespace gui
         sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Gem)]
             = SfxSet(SfxEnumVec_t { sound_effect::Gems });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MeteorShard)]
-            = SfxSet(SfxEnumVec_t { sound_effect::MeteorShards });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Shard)]
+            = SfxSet(SfxEnumVec_t { sound_effect::Shards });
 
         sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ItemGive)]
             = SfxSet(SfxEnumVec_t { sound_effect::ItemGive });

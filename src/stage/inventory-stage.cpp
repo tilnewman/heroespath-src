@@ -104,12 +104,12 @@ namespace stage
         const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
         const game::Phase::Enum PREVIOUS_PHASE)
         : StageBase(
-            "Inventory",
-            { gui::GuiFont::Default,
-              gui::GuiFont::System,
-              gui::GuiFont::SystemCondensed,
-              gui::GuiFont::Number,
-              gui::GuiFont::Handwriting })
+              "Inventory",
+              { gui::GuiFont::Default,
+                gui::GuiFont::System,
+                gui::GuiFont::SystemCondensed,
+                gui::GuiFont::Number,
+                gui::GuiFont::Handwriting })
         , SCREEN_WIDTH_(gui::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(gui::Display::Instance()->GetWinHeight())
         , INNER_PAD_(sfutil::MapByRes(10.0f, 40.0f))
@@ -524,9 +524,9 @@ namespace stage
                     PACKET_DESCRIPTION,
                     "closed give popup by selecting gems and the next popup spawned");
             }
-            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
+            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Shards())
             {
-                HandleGiveRequestMeteorShards();
+                HandleGiveRequestShards();
 
                 return MakeCallbackHandlerMessage(
                     PACKET_DESCRIPTION,
@@ -582,18 +582,16 @@ namespace stage
                         PACKET_DESCRIPTION,
                         "closed who-to-give-gems-to popup and attempted to give");
                 }
-                case ContentType::MeteorShards:
+                case ContentType::Shards:
                 {
-                    HandleGiveActualMeteorShards(CREATURE_TO_GIVE_TO_PTR);
+                    HandleGiveActualShards(CREATURE_TO_GIVE_TO_PTR);
 
                     return MakeCallbackHandlerMessage(
                         PACKET_DESCRIPTION,
                         "closed who-to-give-meteor-shards-to popup and attempted to give");
                 }
                 case ContentType::Count:
-                default:
-                {
-                    break;
+                default: { break;
                 }
             }
 
@@ -609,9 +607,9 @@ namespace stage
 
             switch (contentType_)
             {
-                case ContentType::MeteorShards:
+                case ContentType::Shards:
                 {
-                    HandleMeteorShardsGive(PACKET.selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
+                    HandleShardsGive(PACKET.selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
 
                     return MakeCallbackHandlerMessage(
                         PACKET_DESCRIPTION,
@@ -690,11 +688,11 @@ namespace stage
                 return MakeCallbackHandlerMessage(
                     PACKET_DESCRIPTION, "closed content-selection-gems popup NOT HANDLED");
             }
-            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
+            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Shards())
             {
                 if (ActionType::Gather == actionType_)
                 {
-                    HandleMeteorShardsGather(true);
+                    HandleShardsGather(true);
 
                     return MakeCallbackHandlerMessage(
                         PACKET_DESCRIPTION,
@@ -702,7 +700,7 @@ namespace stage
                 }
                 else if (ActionType::Share == actionType_)
                 {
-                    HandleMeteorShardsShare();
+                    HandleShardsShare();
 
                     return MakeCallbackHandlerMessage(
                         PACKET_DESCRIPTION,
@@ -1245,7 +1243,7 @@ namespace stage
         std::ostringstream ss;
         ss << "Coins:  " << INVENTORY.Coins() << "\n"
            << "Gems:  " << INVENTORY.Gems() << "\n"
-           << "Meteor Shards:  " << INVENTORY.MeteorShards() << "\n"
+           << "Meteor Shards:  " << INVENTORY.Shards() << "\n"
            << "Mana:  " << creaturePtr_->Mana() << "/" << creaturePtr_->ManaNormal() << "\n"
            << "Weight: " << INVENTORY.Weight() << "/" << creaturePtr_->WeightCanCarry() << "\n"
            << "\n \n ";
@@ -2794,9 +2792,9 @@ namespace stage
         return false;
     }
 
-    bool InventoryStage::HandleGiveRequestMeteorShards()
+    bool InventoryStage::HandleGiveRequestShards()
     {
-        if (creaturePtr_->Inventory().MeteorShards().IsZero())
+        if (creaturePtr_->Inventory().Shards().IsZero())
         {
             std::ostringstream ss;
             ss << creaturePtr_->Name() << " has no Meteor Shards to give!";
@@ -2804,9 +2802,9 @@ namespace stage
         }
         else
         {
-            contentType_ = ContentType::MeteorShards;
+            contentType_ = ContentType::Shards;
 
-            if (creaturePtr_->Inventory().MeteorShards() == 1_mshard)
+            if (creaturePtr_->Inventory().Shards() == 1_shard)
             {
                 PopupCharacterSelectWindow("Give the Meteor Shard to who?");
             }
@@ -2881,7 +2879,8 @@ namespace stage
             std::ostringstream ss;
             ss << "\nGive " << CREATURE_TO_GIVE_TO_PTR->Name() << " how many coins?";
 
-            PopupNumberSelectWindow(ss.str(), creaturePtr_->Inventory().Coins().As<std::size_t>());
+            PopupNumberSelectWindow(
+                ss.str(), creaturePtr_->Inventory().Coins().GetAs<std::size_t>());
         }
 
         return false;
@@ -2898,18 +2897,19 @@ namespace stage
             std::ostringstream ss;
             ss << "\nGive " << CREATURE_TO_GIVE_TO_PTR->Name() << " how many gems?";
 
-            PopupNumberSelectWindow(ss.str(), creaturePtr_->Inventory().Gems().As<std::size_t>());
+            PopupNumberSelectWindow(
+                ss.str(), creaturePtr_->Inventory().Gems().GetAs<std::size_t>());
         }
 
         return false;
     }
 
-    bool InventoryStage::HandleGiveActualMeteorShards(
+    bool InventoryStage::HandleGiveActualShards(
         const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR)
     {
-        if (creaturePtr_->Inventory().MeteorShards() == 1_mshard)
+        if (creaturePtr_->Inventory().Shards() == 1_shard)
         {
-            HandleMeteorShardsGive(1, CREATURE_TO_GIVE_TO_PTR);
+            HandleShardsGive(1, CREATURE_TO_GIVE_TO_PTR);
         }
         else
         {
@@ -2917,7 +2917,7 @@ namespace stage
             ss << "\nGive " << CREATURE_TO_GIVE_TO_PTR->Name() << " how many Meteor Shards?";
 
             PopupNumberSelectWindow(
-                ss.str(), creaturePtr_->Inventory().MeteorShards().As<std::size_t>());
+                ss.str(), creaturePtr_->Inventory().Shards().GetAs<std::size_t>());
         }
 
         return false;
@@ -3234,7 +3234,7 @@ namespace stage
     {
         gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Coin).PlayRandom();
 
-        creaturePtr_->CoinsAdj(Coin_t(static_cast<int>(COUNT) * -1));
+        creaturePtr_->CoinsAdj(-Coin_t::Make(COUNT));
         creatureToGiveToPtr->CoinsAdj(Coin_t::Make(COUNT));
 
         std::ostringstream ss;
@@ -3249,8 +3249,8 @@ namespace stage
     {
         gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Gem).PlayRandom();
 
-        creaturePtr_->GemsAdj(Gem_t(static_cast<int>(COUNT) * -1));
-        creatureToGiveToPtr->GemsAdj(Gem_t(static_cast<int>(COUNT)));
+        creaturePtr_->GemsAdj(-Gem_t::Make(COUNT));
+        creatureToGiveToPtr->GemsAdj(Gem_t::Make(COUNT));
 
         std::ostringstream ss;
         ss << COUNT << " gems taken from " << creaturePtr_->Name() << " and given to "
@@ -3259,15 +3259,13 @@ namespace stage
         PopupDoneWindow(ss.str(), false);
     }
 
-    void InventoryStage::HandleMeteorShardsGive(
+    void InventoryStage::HandleShardsGive(
         const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        gui::SoundManager::Instance()
-            ->GetSoundEffectSet(gui::sound_effect_set::MeteorShard)
-            .PlayRandom();
+        gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Shard).PlayRandom();
 
-        creaturePtr_->MeteorShardsAdj(MeteorShard_t(static_cast<int>(COUNT) * -1));
-        creatureToGiveToPtr->MeteorShardsAdj(MeteorShard_t(static_cast<int>(COUNT)));
+        creaturePtr_->ShardsAdj(-Shard_t::Make(COUNT));
+        creatureToGiveToPtr->ShardsAdj(Shard_t::Make(COUNT));
 
         std::ostringstream ss;
         ss << COUNT << " Meteor Shards taken from " << creaturePtr_->Name() << " and given to "
@@ -3287,12 +3285,12 @@ namespace stage
                 if (NEXT_CREATURE_COINS_OWNED > 0_coin)
                 {
                     coinsOwnedByOtherPartyMembers += NEXT_CREATURE_COINS_OWNED;
-                    nextCreaturePtr->CoinsAdj(NEXT_CREATURE_COINS_OWNED * Coin_t(-1));
+                    nextCreaturePtr->CoinsAdj(-NEXT_CREATURE_COINS_OWNED);
                 }
             }
         }
 
-        if ((0 == coinsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
+        if ((0_coin == coinsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             PopupRejectionWindow("No other party members had any coins to gather.");
             return;
@@ -3327,12 +3325,12 @@ namespace stage
                 if (NEXT_CREATURE_GEMS_OWNED > 0_gem)
                 {
                     gemsOwnedByOtherPartyMembers += NEXT_CREATURE_GEMS_OWNED;
-                    nextCreaturePtr->GemsAdj(NEXT_CREATURE_GEMS_OWNED * Gem_t(-1));
+                    nextCreaturePtr->GemsAdj(-NEXT_CREATURE_GEMS_OWNED);
                 }
             }
         }
 
-        if ((0 == gemsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
+        if ((0_gem == gemsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             PopupRejectionWindow("No other party members had any gems to gather.");
             return;
@@ -3356,41 +3354,41 @@ namespace stage
         }
     }
 
-    void InventoryStage::HandleMeteorShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
+    void InventoryStage::HandleShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
     {
-        auto shardsOwnedByOtherPartyMembers { 0_mshard };
+        auto shardsOwnedByOtherPartyMembers { 0_shard };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                const auto NEXT_CREATURE_SHARDS { nextCreaturePtr->Inventory().MeteorShards() };
-                if (NEXT_CREATURE_SHARDS > 0_mshard)
+                const auto NEXT_CREATURE_SHARDS { nextCreaturePtr->Inventory().Shards() };
+                if (NEXT_CREATURE_SHARDS > 0_shard)
                 {
                     shardsOwnedByOtherPartyMembers += NEXT_CREATURE_SHARDS;
-                    nextCreaturePtr->MeteorShardsAdj(NEXT_CREATURE_SHARDS * MeteorShard_t(-1));
+                    nextCreaturePtr->ShardsAdj(-NEXT_CREATURE_SHARDS);
                 }
             }
         }
 
-        if ((0 == shardsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
+        if ((0_shard == shardsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             PopupRejectionWindow("No other party members had any Meteor Shards to gather.");
             return;
         }
 
-        creaturePtr_->MeteorShardsAdj(shardsOwnedByOtherPartyMembers);
+        creaturePtr_->ShardsAdj(shardsOwnedByOtherPartyMembers);
 
         if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             gui::SoundManager::Instance()
-                ->GetSoundEffectSet(gui::sound_effect_set::MeteorShard)
+                ->GetSoundEffectSet(gui::sound_effect_set::Shard)
                 .PlayRandom();
 
             std::ostringstream ss;
             ss << "\n\n"
                << creaturePtr_->Name() << " gathered " << shardsOwnedByOtherPartyMembers
                << " Meteor Shards from the rest of the party, and now has "
-               << creaturePtr_->Inventory().MeteorShards() << ".";
+               << creaturePtr_->Inventory().Shards() << ".";
 
             PopupDoneWindow(ss.str(), false);
         }
@@ -3400,13 +3398,13 @@ namespace stage
     {
         // ensure there are any coins to share
         {
-            Coin_t totalCoins { 0 };
+            auto totalCoins { 0_coin };
             for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalCoins += CREATURE_PTR->Inventory().Coins();
             }
 
-            if (0 == totalCoins)
+            if (0_coin == totalCoins)
             {
                 PopupRejectionWindow("The party has no coins to share.");
                 return;
@@ -3417,41 +3415,41 @@ namespace stage
 
         HandleCoinsGather(false);
 
-        const auto COINS_TOTAL { creaturePtr_->Inventory().Coins().As<int>() };
+        const auto COINS_TOTAL { creaturePtr_->Inventory().Coins() };
 
-        const auto HUMANOID_COUNT { static_cast<int>(
+        const auto HUMANOID_COUNT_IN_COINS { Coin_t::Make(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        const auto COINS_TO_SHARE { COINS_TOTAL / HUMANOID_COUNT };
-        const auto COINS_LEFT_OVER { COINS_TOTAL % HUMANOID_COUNT };
+        const auto COINS_TO_SHARE { COINS_TOTAL / HUMANOID_COUNT_IN_COINS };
+        const auto COINS_LEFT_OVER { COINS_TOTAL % HUMANOID_COUNT_IN_COINS };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * Coin_t(-1));
-                nextCreaturePtr->CoinsAdj(Coin_t(COINS_TO_SHARE));
+                nextCreaturePtr->CoinsAdj(-nextCreaturePtr->Inventory().Coins());
+                nextCreaturePtr->CoinsAdj(COINS_TO_SHARE);
             }
         }
 
         auto toHandOut { COINS_LEFT_OVER };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
-            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0_coin))
             {
                 nextCreaturePtr->CoinsAdj(1_coin);
             }
         }
 
         std::ostringstream ss;
-        if (COINS_TO_SHARE > 0)
+        if (COINS_TO_SHARE > 0_coin)
         {
-            ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share "
+            ss << "\n\nAll " << HUMANOID_COUNT_IN_COINS << " humanoid party members share "
                << COINS_TO_SHARE;
 
-            if (COINS_LEFT_OVER > 0)
+            if (COINS_LEFT_OVER > 0_coin)
             {
-                ss << " or " << COINS_TO_SHARE + 1;
+                ss << " or " << COINS_TO_SHARE + 1_coin;
             }
         }
         else
@@ -3467,13 +3465,13 @@ namespace stage
     {
         // ensure there are any gems to share
         {
-            Gem_t totalGems { 0 };
+            auto totalGems { 0_gem };
             for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalGems += CREATURE_PTR->Inventory().Gems();
             }
 
-            if (0 == totalGems)
+            if (0_gem == totalGems)
             {
                 PopupRejectionWindow("The party has no gems to share.");
                 return;
@@ -3484,40 +3482,41 @@ namespace stage
 
         HandleGemsGather(false);
 
-        const auto GEMS_TOTAL { creaturePtr_->Inventory().Gems().As<int>() };
+        const auto GEMS_TOTAL { creaturePtr_->Inventory().Gems() };
 
-        const auto HUMANOID_COUNT { static_cast<int>(
+        const auto HUMANOID_COUNT_IN_GEMS { Gem_t::Make(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        const auto GEMS_TO_SHARE { GEMS_TOTAL / HUMANOID_COUNT };
-        const auto GEMS_LEFT_OVER { GEMS_TOTAL % HUMANOID_COUNT };
+        const auto GEMS_TO_SHARE { GEMS_TOTAL / HUMANOID_COUNT_IN_GEMS };
+        const auto GEMS_LEFT_OVER { GEMS_TOTAL % HUMANOID_COUNT_IN_GEMS };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * Gem_t(-1));
-                nextCreaturePtr->GemsAdj(Gem_t(GEMS_TO_SHARE));
+                nextCreaturePtr->GemsAdj(-nextCreaturePtr->Inventory().Gems());
+                nextCreaturePtr->GemsAdj(GEMS_TO_SHARE);
             }
         }
 
         auto toHandOut { GEMS_LEFT_OVER };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
-            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0_gem))
             {
                 nextCreaturePtr->GemsAdj(1_gem);
             }
         }
 
         std::ostringstream ss;
-        if (GEMS_TO_SHARE > 0)
+        if (GEMS_TO_SHARE > 0_gem)
         {
-            ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << GEMS_TO_SHARE;
+            ss << "\n\nAll " << HUMANOID_COUNT_IN_GEMS << " humanoid party members share "
+               << GEMS_TO_SHARE;
 
-            if (GEMS_LEFT_OVER > 0)
+            if (GEMS_LEFT_OVER > 0_gem)
             {
-                ss << " or " << GEMS_TO_SHARE + 1;
+                ss << " or " << GEMS_TO_SHARE + 1_gem;
             }
         }
         else
@@ -3529,66 +3528,62 @@ namespace stage
         PopupDoneWindow(ss.str(), false);
     }
 
-    void InventoryStage::HandleMeteorShardsShare()
+    void InventoryStage::HandleShardsShare()
     {
         // ensure there are any shards to share
         {
-            MeteorShard_t totalShards { 0 };
+            auto totalShards { 0_shard };
             for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
-                totalShards += CREATURE_PTR->Inventory().MeteorShards();
+                totalShards += CREATURE_PTR->Inventory().Shards();
             }
 
-            if (0 == totalShards)
+            if (0_shard == totalShards)
             {
                 PopupRejectionWindow("The party has no Meteor Shards to share.");
                 return;
             }
         }
 
-        gui::SoundManager::Instance()
-            ->GetSoundEffectSet(gui::sound_effect_set::MeteorShard)
-            .PlayRandom();
+        gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Shard).PlayRandom();
 
-        HandleMeteorShardsGather(false);
+        HandleShardsGather(false);
 
-        const int METEORSHARDS_TOTAL { creaturePtr_->Inventory().MeteorShards().As<int>() };
+        const auto METEORSHARDS_TOTAL { creaturePtr_->Inventory().Shards() };
 
-        const int HUMANOID_COUNT { static_cast<int>(
+        const auto HUMANOID_COUNT_IN_SHARDS { Shard_t::Make(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        const auto METEORSHARDS_TO_SHARE { METEORSHARDS_TOTAL / HUMANOID_COUNT };
-        const auto METEORSHARDS_LEFT_OVER { METEORSHARDS_TOTAL % HUMANOID_COUNT };
+        const auto METEORSHARDS_TO_SHARE { METEORSHARDS_TOTAL / HUMANOID_COUNT_IN_SHARDS };
+        const auto METEORSHARDS_LEFT_OVER { METEORSHARDS_TOTAL % HUMANOID_COUNT_IN_SHARDS };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreaturePtr->MeteorShardsAdj(
-                    nextCreaturePtr->Inventory().MeteorShards() * MeteorShard_t(-1));
-
-                nextCreaturePtr->MeteorShardsAdj(MeteorShard_t(METEORSHARDS_TO_SHARE));
+                nextCreaturePtr->ShardsAdj(-nextCreaturePtr->Inventory().Shards());
+                nextCreaturePtr->ShardsAdj(METEORSHARDS_TO_SHARE);
             }
         }
 
         auto toHandOut { METEORSHARDS_LEFT_OVER };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
-            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0_shard))
             {
-                nextCreaturePtr->MeteorShardsAdj(1_mshard);
+                nextCreaturePtr->ShardsAdj(1_shard);
             }
         }
 
         std::ostringstream ss;
-        if (METEORSHARDS_TO_SHARE > 0)
+        if (METEORSHARDS_TO_SHARE > 0_shard)
         {
-            ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share "
+            ss << "\n\nAll " << HUMANOID_COUNT_IN_SHARDS << " humanoid party members share "
                << METEORSHARDS_TO_SHARE;
 
-            if (METEORSHARDS_LEFT_OVER > 0)
+            if (METEORSHARDS_LEFT_OVER > 0_shard)
             {
-                ss << " or " << METEORSHARDS_TO_SHARE + 1;
+                ss << " or " << METEORSHARDS_TO_SHARE + 1_shard;
             }
         }
         else
@@ -3861,87 +3856,47 @@ namespace stage
     {
         switch (WHICH_ACHV)
         {
-            case creature::AchievementType::EnemiesFaced:
-            {
-                return ":               ";
+            case creature::AchievementType::EnemiesFaced: { return ":               ";
             }
-            case creature::AchievementType::MeleeHits:
-            {
-                return ":                    ";
+            case creature::AchievementType::MeleeHits: { return ":                    ";
             }
-            case creature::AchievementType::BattlesSurvived:
-            {
-                return ":             ";
+            case creature::AchievementType::BattlesSurvived: { return ":             ";
             }
-            case creature::AchievementType::ProjectileHits:
-            {
-                return ":               ";
+            case creature::AchievementType::ProjectileHits: { return ":               ";
             }
-            case creature::AchievementType::BeastMindLinks:
-            {
-                return ":          ";
+            case creature::AchievementType::BeastMindLinks: { return ":          ";
             }
-            case creature::AchievementType::DodgedStanding:
-            {
-                return ":  ";
+            case creature::AchievementType::DodgedStanding: { return ":  ";
             }
-            case creature::AchievementType::DodgedFlying:
-            {
-                return ":      ";
+            case creature::AchievementType::DodgedFlying: { return ":      ";
             }
-            case creature::AchievementType::LocksPicked:
-            {
-                return ":                  ";
+            case creature::AchievementType::LocksPicked: { return ":                  ";
             }
-            case creature::AchievementType::BackstabsHits:
-            {
-                return ":                ";
+            case creature::AchievementType::BackstabsHits: { return ":                ";
             }
-            case creature::AchievementType::SongsPlayed:
-            {
-                return ":                 ";
+            case creature::AchievementType::SongsPlayed: { return ":                 ";
             }
-            case creature::AchievementType::SpiritsLifted:
-            {
-                return ":                 ";
+            case creature::AchievementType::SpiritsLifted: { return ":                 ";
             }
-            case creature::AchievementType::BeastRoars:
-            {
-                return ":                   ";
+            case creature::AchievementType::BeastRoars: { return ":                   ";
             }
-            case creature::AchievementType::MoonHowls:
-            {
-                return ":                  ";
+            case creature::AchievementType::MoonHowls: { return ":                  ";
             }
-            case creature::AchievementType::PackActions:
-            {
-                return ":                  ";
+            case creature::AchievementType::PackActions: { return ":                  ";
             }
-            case creature::AchievementType::FlyingAttackHits:
-            {
-                return ":         ";
+            case creature::AchievementType::FlyingAttackHits: { return ":         ";
             }
-            case creature::AchievementType::TurnsInFlight:
-            {
-                return ":              ";
+            case creature::AchievementType::TurnsInFlight: { return ":              ";
             }
-            case creature::AchievementType::SpellsCast:
-            {
-                return ":                    ";
+            case creature::AchievementType::SpellsCast: { return ":                    ";
             }
-            case creature::AchievementType::HealthGiven:
-            {
-                return ":                 ";
+            case creature::AchievementType::HealthGiven: { return ":                 ";
             }
-            case creature::AchievementType::HealthTraded:
-            {
-                return ":                ";
+            case creature::AchievementType::HealthTraded: { return ":                ";
             }
             case creature::AchievementType::None:
             case creature::AchievementType::Count:
-            default:
-            {
-                return "";
+            default: { return "";
             }
         }
     }

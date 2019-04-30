@@ -30,37 +30,21 @@ namespace combat
     {
         switch (ENUM)
         {
-            case Weapon:
-            {
-                return "Weapon";
+            case Weapon: { return "Weapon";
             }
-            case Spell:
-            {
-                return "Spell";
+            case Spell: { return "Spell";
             }
-            case Song:
-            {
-                return "Song";
+            case Song: { return "Song";
             }
-            case Pounce:
-            {
-                return "Pounce";
+            case Pounce: { return "Pounce";
             }
-            case Roar:
-            {
-                return "Roar";
+            case Roar: { return "Roar";
             }
-            case Condition:
-            {
-                return "Condition";
+            case Condition: { return "Condition";
             }
-            case Trap:
-            {
-                return "Trap";
+            case Trap: { return "Trap";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -212,7 +196,7 @@ namespace combat
         : wasHit_(false)
         , hitType_(HIT_TYPE)
         , weaponPtrOpt_()
-        , damage_(0)
+        , damage_(0_health)
         , isCritical_(false)
         , isPower_(false)
         , condsAddedVec_()
@@ -321,9 +305,7 @@ namespace combat
     {
         switch (hitType_)
         {
-            case HitType::Weapon:
-            {
-                return !!weaponPtrOpt_;
+            case HitType::Weapon: { return !!weaponPtrOpt_;
             }
             case HitType::Spell:
             {
@@ -334,22 +316,16 @@ namespace combat
                 return (songPtrOpt_ && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
             case HitType::Pounce:
-            case HitType::Roar:
-            {
-                return (actionPhraseCNP_.NamePos() != NamePosition::Count);
+            case HitType::Roar: { return (actionPhraseCNP_.NamePos() != NamePosition::Count);
             }
             case HitType::Condition:
             {
                 return (conditionPtrOpt_ && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
-            case HitType::Trap:
-            {
-                return ((actionVerb_.empty() == false) && damage_.IsNonZero());
+            case HitType::Trap: { return ((actionVerb_.empty() == false) && !damage_.IsZero());
             }
             case HitType::Count:
-            default:
-            {
-                return false;
+            default: { return false;
             }
         }
     }
@@ -368,16 +344,16 @@ namespace combat
                 didArmorAbsorb_,
                 conditionPtrOpt_)
             != std::tie(
-                HI.hitType_,
-                HI.wasHit_,
-                HI.weaponPtrOpt_,
-                HI.damage_,
-                HI.isCritical_,
-                HI.isPower_,
-                HI.spellPtrOpt_,
-                HI.songPtrOpt_,
-                HI.didArmorAbsorb_,
-                HI.conditionPtrOpt_))
+                   HI.hitType_,
+                   HI.wasHit_,
+                   HI.weaponPtrOpt_,
+                   HI.damage_,
+                   HI.isCritical_,
+                   HI.isPower_,
+                   HI.spellPtrOpt_,
+                   HI.songPtrOpt_,
+                   HI.didArmorAbsorb_,
+                   HI.conditionPtrOpt_))
         {
             return false;
         }
@@ -432,9 +408,7 @@ namespace combat
             case HitType::Roar:
             case HitType::Trap:
             case HitType::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 

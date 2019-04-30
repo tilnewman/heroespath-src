@@ -131,7 +131,7 @@ namespace stage
             Item = 0,
             Coins,
             Gems,
-            MeteorShards,
+            Shards,
             Count
         };
 
@@ -245,11 +245,11 @@ namespace stage
         bool HandleGiveRequestItems();
         bool HandleGiveRequestCoins();
         bool HandleGiveRequestGems();
-        bool HandleGiveRequestMeteorShards();
+        bool HandleGiveRequestShards();
         bool HandleGiveActualItems(const creature::CreaturePtr_t);
         bool HandleGiveActualCoins(const creature::CreaturePtr_t);
         bool HandleGiveActualGems(const creature::CreaturePtr_t);
-        bool HandleGiveActualMeteorShards(const creature::CreaturePtr_t);
+        bool HandleGiveActualShards(const creature::CreaturePtr_t);
         bool HandleShare();
         bool HandleGather();
         bool HandleDropRequest();
@@ -279,15 +279,15 @@ namespace stage
         void HandleGemsGive(
             const std::size_t COUNT, const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR);
 
-        void HandleMeteorShardsGive(
+        void HandleShardsGive(
             const std::size_t COUNT, const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR);
 
         void HandleCoinsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
         void HandleGemsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
-        void HandleMeteorShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
+        void HandleShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
         void HandleCoinsShare();
         void HandleGemsShare();
-        void HandleMeteorShardsShare();
+        void HandleShardsShare();
         void EndOfGiveShareGatherTasks();
         void UpdateImageDetailsPosition(); // returns the sprite width
 

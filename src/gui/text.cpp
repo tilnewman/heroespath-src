@@ -251,7 +251,7 @@ namespace gui
 
         ss << SEPARATOR << GuiFont::ToString(font_);
         ss << SEPARATOR << size();
-        ss << SEPARATOR << sfutil::ToString(getFillColor(), misc::ToStringPrefix::SimpleName);
+        ss << SEPARATOR << getFillColor();
 
         ss << SEPARATOR;
         const auto STYLE { getStyle() };

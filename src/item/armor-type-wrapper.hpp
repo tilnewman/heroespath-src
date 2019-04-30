@@ -208,7 +208,7 @@ namespace item
                         variant_ = SPECIFIC_TYPE_ENUM;
 
                         std::ostringstream ss;
-                        ss << "after SetupWithSpecificTypeName<" << NAMEOF_TYPE_T_STR(T)
+                        ss << "after SetupWithSpecificTypeName<" << NAMEOF_TYPE_T(T)
                            << "::Enum>(system_name_lowercase=" << SYSTEM_NAME_LOWERCASE
                            << ", armor_type_tostring_lowercase=" << SPECIFIC_TYPE_STR_LOWERCASE
                            << ")";

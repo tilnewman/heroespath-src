@@ -27,7 +27,7 @@ namespace item
 
     Inventory::Inventory(
         const Coin_t & COINS,
-        const MeteorShard_t & METEOR_SHARDS,
+        const Shard_t & METEOR_SHARDS,
         const Gem_t & GEMS,
         const ItemPVec_t & ITEMS_SVEC,
         const ItemPVec_t & EQUIPPED_ITEMS_SVEC)
@@ -59,13 +59,13 @@ namespace item
         }
     }
 
-    bool Inventory::MeteorShardsAdj(const MeteorShard_t & METEOR_SHARDS)
+    bool Inventory::ShardsAdj(const Shard_t & METEOR_SHARDS)
     {
         meteorShards_ += METEOR_SHARDS;
 
-        if (meteorShards_ < 0_mshard)
+        if (meteorShards_ < 0_shard)
         {
-            meteorShards_ = 0_mshard;
+            meteorShards_ = 0_shard;
             return false;
         }
         else

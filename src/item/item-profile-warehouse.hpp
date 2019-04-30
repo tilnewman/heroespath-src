@@ -10,12 +10,12 @@
 // item-profile-warehouse.hpp
 //
 #include "creature/traits-set.hpp"
+#include "game/strong-types.hpp"
 #include "item/item-profile-thin-factory.hpp"
 #include "item/item-profile-thin.hpp"
 #include "item/item-profile.hpp"
 #include "item/materials-factory.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <memory>
 #include <utility>

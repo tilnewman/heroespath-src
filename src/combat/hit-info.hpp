@@ -11,10 +11,10 @@
 //
 #include "creature/condition-enum.hpp"
 #include "creature/trait.hpp"
+#include "game/strong-types.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/enum-common.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 #include "name-position-enum.hpp"
 
 #include <memory>

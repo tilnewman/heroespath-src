@@ -327,7 +327,7 @@ namespace map
 
         std::vector<sf::Vertex> copyQuadvertexes;
 
-        const auto NEW_TEXTURE_TILE_COUNT { std::min(
+        const auto NEW_TEXTURE_TILE_COUNT { misc::Min(
             TILE_DRAW_INDEXES_COUNT_BEFORE, MAX_TILES_PER_NEW_TEXTURE) };
 
         const sf::Vector2<std::size_t> TILE_SIZE_T_V { TILE_SIZE_V };

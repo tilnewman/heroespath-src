@@ -23,6 +23,7 @@ namespace creature
     {
         static const StatSet ConvertStringToStatSet(const std::string & DATA_FILE_VALUE_STR);
     };
+
 } // namespace creature
 } // namespace heroespath
 

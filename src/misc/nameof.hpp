@@ -330,5 +330,3 @@ template <typename T>
 
 // NAMEOF_RAW used to obtain the raw string name of variable, function, enum, macro.
 #define NAMEOF_RAW(...) ::nameof::detail::nameof_raw_impl(#__VA_ARGS__)
-
-#define NAMEOF_TYPE_T_STR(...) std::string(NAMEOF_TYPE_T(__VA_ARGS__))

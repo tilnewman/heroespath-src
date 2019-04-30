@@ -17,10 +17,10 @@
 #include "creature/trait.hpp"
 #include "creature/traits-set.hpp"
 #include "game/phase-enum.hpp"
+#include "game/strong-types.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 #include "spell/spell-enum.hpp"
 
 #include <memory>

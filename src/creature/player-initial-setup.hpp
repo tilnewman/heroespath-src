@@ -9,9 +9,9 @@
 //
 // player-initial-setup.hpp
 //
+#include "game/strong-types.hpp"
 #include "item/item-factory.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 namespace heroespath
 {

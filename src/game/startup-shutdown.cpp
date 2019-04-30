@@ -60,7 +60,6 @@ namespace game
 
     StartupShutdown::StartupShutdown(
         const std::string & APPLICATION_NAME, const int ARGC, char * argv[])
-        : platform_()
     {
         Setup(APPLICATION_NAME, ARGC, argv);
     }
@@ -75,11 +74,16 @@ namespace game
         // heroespath::LogMacroHelper::LogTimingStart();
         M_HP_LOG("game setup starting");
 
-        platform_.Log();
-        if (platform_.IsSupported() == false)
+        M_HP_LOG("Detected Platform \"" << misc::platform_name << "\"");
+        if (!misc::platform_is_supported)
         {
-            throw std::runtime_error(
-                "This system/platform is not supported.  See log for details.");
+            const auto ERROR_MESSAGE(
+                std::string("This enviornment/operating_system/platform/whatever, called \"")
+                    .append(misc::platform_name)
+                    .append("\" is not supported."));
+
+            M_HP_LOG_ERR(ERROR_MESSAGE);
+            throw std::runtime_error(ERROR_MESSAGE);
         }
 
         misc::helpers::MersenneTwister19937::Setup();

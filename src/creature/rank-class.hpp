@@ -10,9 +10,9 @@
 // rank-class.hpp
 //
 #include "creature/trait.hpp"
+#include "game/strong-types.hpp"
 #include "misc/enum-common.hpp"
 #include "misc/range.hpp"
-#include "misc/types.hpp"
 
 #include <string>
 #include <utility>

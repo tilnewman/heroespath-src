@@ -12,11 +12,10 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/math-constants.hpp"
+#include "misc/nameof.hpp"
 #include "misc/random.hpp"
 #include "misc/strings.hpp"
 #include "misc/type-helpers.hpp"
-
-#include "misc/nameof.hpp"
 
 #include <string>
 #include <tuple>
@@ -61,10 +60,10 @@ namespace gui
             if (SPEED < 0.0f)
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given SPEED<" + NAMEOF_TYPE_T_STR(T)
-                    + ">=" + misc::ToString(SPEED)
-                    + " is less than zero which is invalid.  This slider will be "
-                      "stopped.");
+                    "(" + FILE_FUNC_LINE_STR << ")  The given SPEED<" << NAMEOF_TYPE_T(T)
+                                             << ">=" + misc::ToString(SPEED)
+                        + " is less than zero which is invalid.  This slider will be "
+                          "stopped.");
 
                 isStopped = true;
             }
@@ -79,21 +78,22 @@ namespace gui
             if (START_AT_ORIG < FROM)
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<" + NAMEOF_TYPE_T_STR(T)
-                    + ">=" + misc::ToString(START_AT_ORIG) + " is invalid (<FROM)(<"
-                    + misc::ToString(FROM)
-                    + ").  The actual starting ratio will be set to that FROM("
-                    + misc::ToString(FROM) + ").");
+                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<"
+                    << NAMEOF_TYPE_T(T)
+                    << ">=" + misc::ToString(START_AT_ORIG) + " is invalid (<FROM)(<"
+                        + misc::ToString(FROM)
+                        + ").  The actual starting ratio will be set to that FROM("
+                        + misc::ToString(FROM) + ").");
 
                 startAtFinal = FROM;
             }
             else if (START_AT_ORIG > TO)
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<" + NAMEOF_TYPE_T_STR(T)
-                    + ">=" + misc::ToString(START_AT_ORIG) + " is invalid (>TO)(>"
-                    + misc::ToString(TO) + ").  The actual start value will be set to "
-                    + misc::ToString(TO) + ".");
+                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<" << NAMEOF_TYPE_T(T)
+                                                                             << ">="
+                        + misc::ToString(START_AT_ORIG) + " is invalid (>TO)(>" + misc::ToString(TO)
+                        + ").  The actual start value will be set to " + misc::ToString(TO) + ".");
 
                 startAtFinal = TO;
             }
@@ -108,9 +108,10 @@ namespace gui
             if (misc::IsRealClose(FROM, TO))
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given FROM<" + NAMEOF_TYPE_T_STR(T) + ">="
-                    + misc::ToString(FROM) + " is the same as the given TO=" + misc::ToString(TO)
-                    + ", which is invalid.  This slider will be stopped.");
+                    "(" + FILE_FUNC_LINE_STR + ")  The given FROM<" << NAMEOF_TYPE_T(T)
+                                                                    << ">=" + misc::ToString(FROM)
+                        + " is the same as the given TO=" + misc::ToString(TO)
+                        + ", which is invalid.  This slider will be stopped.");
 
                 isStopped = true;
             }
@@ -126,16 +127,17 @@ namespace gui
             const T VALUE_OF_FIRST_TARGET_ORIG,
             const std::string & FILE_FUNC_LINE_STR)
         {
-            const T VALUE_MIN_FINAL { std::min(VALUE_MIN_ORIG, VALUE_MAX_ORIG) };
-            const T VALUE_MAX_FINAL { std::max(VALUE_MIN_ORIG, VALUE_MAX_ORIG) };
+            const T VALUE_MIN_FINAL { misc::Min(VALUE_MIN_ORIG, VALUE_MAX_ORIG) };
+            const T VALUE_MAX_FINAL { misc::Max(VALUE_MIN_ORIG, VALUE_MAX_ORIG) };
 
             if (misc::IsRealClose(VALUE_MIN_FINAL, VALUE_MAX_FINAL))
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The VALUE_MIN_FINAL<" + NAMEOF_TYPE_T_STR(T)
-                    + ">(" + misc::ToString(VALUE_MIN_FINAL) + ") is equal to the VALUE_MAX_FINAL("
-                    + misc::ToString(VALUE_MAX_FINAL)
-                    + ", which is invalid.  This slider will be stopped.");
+                    "(" + FILE_FUNC_LINE_STR + ")  The VALUE_MIN_FINAL<"
+                    << NAMEOF_TYPE_T(T)
+                    << ">(" + misc::ToString(VALUE_MIN_FINAL) + ") is equal to the VALUE_MAX_FINAL("
+                        + misc::ToString(VALUE_MAX_FINAL)
+                        + ", which is invalid.  This slider will be stopped.");
 
                 isStopped = true;
             }
@@ -150,11 +152,13 @@ namespace gui
 
                 M_HP_LOG_ERR(
                     "(" + FILE_FUNC_LINE_STR + ")  The VALUE_TO_START_AT_ORIG<"
-                    + NAMEOF_TYPE_T_STR(T) + ">(" + misc::ToString(VALUE_TO_START_AT_ORIG)
-                    + ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] or ["
-                    + misc::ToString(VALUE_MIN_FINAL) + ", " + misc::ToString(VALUE_MAX_FINAL)
-                    + "].  VALUE_TO_START_AT_ORIG will be changed/clamped to "
-                    + misc::ToString(valueToStartAtFinal) + ".");
+                    << NAMEOF_TYPE_T(T)
+                    << ">(" + misc::ToString(VALUE_TO_START_AT_ORIG)
+                        + ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] "
+                          "or ["
+                        + misc::ToString(VALUE_MIN_FINAL) + ", " + misc::ToString(VALUE_MAX_FINAL)
+                        + "].  VALUE_TO_START_AT_ORIG will be changed/clamped to "
+                        + misc::ToString(valueToStartAtFinal) + ".");
             }
 
             auto valueOfFirstTargetFinal { VALUE_OF_FIRST_TARGET_ORIG };
@@ -167,11 +171,13 @@ namespace gui
 
                 M_HP_LOG_ERR(
                     "(" + FILE_FUNC_LINE_STR + ")  The VALUE_OF_FIRST_TARGET_ORIG<"
-                    + NAMEOF_TYPE_T_STR(T) + ">(" + misc::ToString(VALUE_OF_FIRST_TARGET_ORIG)
-                    + ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] or ["
-                    + misc::ToString(VALUE_MIN_FINAL) + ", " + misc::ToString(VALUE_MAX_FINAL)
-                    + "].  VALUE_OF_FIRST_TARGET_ORIG will be changed/clamped to "
-                    + misc::ToString(valueOfFirstTargetFinal) + ".");
+                    << NAMEOF_TYPE_T(T)
+                    << ">(" + misc::ToString(VALUE_OF_FIRST_TARGET_ORIG)
+                        + ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] "
+                          "or ["
+                        + misc::ToString(VALUE_MIN_FINAL) + ", " + misc::ToString(VALUE_MAX_FINAL)
+                        + "].  VALUE_OF_FIRST_TARGET_ORIG will be changed/clamped to "
+                        + misc::ToString(valueOfFirstTargetFinal) + ".");
             }
 
             if (misc::IsRealClose(valueToStartAtFinal, valueOfFirstTargetFinal))
@@ -188,11 +194,12 @@ namespace gui
                 }
 
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The valueToStartAtFinal<" + NAMEOF_TYPE_T_STR(T)
-                    + ">(" + misc::ToString(valueToStartAtFinal) + ")=valueOfFirstTargetFinal("
-                    + misc::ToString(VALUE_OF_FIRST_TARGET_FINAL_BEFORE)
-                    + "), which is invalid.  So valueOfFirstTargetFinal has been changed to  "
-                    + misc::ToString(valueOfFirstTargetFinal) + ".");
+                    "(" + FILE_FUNC_LINE_STR + ")  The valueToStartAtFinal<"
+                    << NAMEOF_TYPE_T(T)
+                    << ">(" + misc::ToString(valueToStartAtFinal) + ")=valueOfFirstTargetFinal("
+                        + misc::ToString(VALUE_OF_FIRST_TARGET_FINAL_BEFORE)
+                        + "), which is invalid.  So valueOfFirstTargetFinal has been changed to  "
+                        + misc::ToString(valueOfFirstTargetFinal) + ".");
             }
 
             return std::make_tuple(valueToStartAtFinal, valueOfFirstTargetFinal);
@@ -317,8 +324,8 @@ namespace gui
             : isStopped_(false)
             , from_(FROM)
             , to_(TO)
-            , max_(std::max(FROM, TO))
-            , min_(std::min(FROM, TO))
+            , max_(misc::Max(FROM, TO))
+            , min_(misc::Min(FROM, TO))
             , diff_(static_cast<float>(TO - FROM))
             , speed_(SPEED)
             , value_(FROM)
@@ -474,7 +481,7 @@ namespace gui
             SliderValidators::SpeedShouldNotBeNegative(isStopped_, SPEED, FILE_FUNC_LINE_STR);
 
             value_ = SliderValidators::StartAtClamp(
-                std::min(FROM, TO), std::max(FROM, TO), START_AT_ORIG, FILE_FUNC_LINE_STR);
+                misc::Min(FROM, TO), misc::Max(FROM, TO), START_AT_ORIG, FILE_FUNC_LINE_STR);
 
             if (false == isStopped_)
             {
@@ -606,7 +613,8 @@ namespace gui
             }
             else
             {
-                return misc::Random(std::min(speedMin_, speedMax_), std::max(speedMin_, speedMax_));
+                return misc::Random(
+                    misc::Min(speedMin_, speedMax_), misc::Max(speedMin_, speedMax_));
             }
         }
 
@@ -614,8 +622,8 @@ namespace gui
             const T MIN_ORIG, const T MAX_ORIG, const T VALUE_TO_AVOID_ORIG) const
         {
             // convert to doubles because there is no misc::random<T> yet...
-            const double MIN_DOUBLE { static_cast<double>(std::min(MIN_ORIG, MAX_ORIG)) };
-            const double MAX_DOUBLE { static_cast<double>(std::max(MIN_ORIG, MAX_ORIG)) };
+            const double MIN_DOUBLE { static_cast<double>(misc::Min(MIN_ORIG, MAX_ORIG)) };
+            const double MAX_DOUBLE { static_cast<double>(misc::Max(MIN_ORIG, MAX_ORIG)) };
             const T RANDOM_VALUE { static_cast<T>(misc::Random(MIN_DOUBLE, MAX_DOUBLE)) };
 
             if (misc::IsRealClose(RANDOM_VALUE, VALUE_TO_AVOID_ORIG))
@@ -639,8 +647,8 @@ namespace gui
         // returns (RANDOM_VALUE_TO_START_AT, RANDOM_VALUE_OF_TARGET)
         const std::tuple<T, T> RandomStartAndTargetValue(const T MIN_ORIG, const T MAX_ORIG)
         {
-            const T MIN_FINAL { std::min(MIN_ORIG, MAX_ORIG) };
-            const T MAX_FINAL { std::max(MIN_ORIG, MAX_ORIG) };
+            const T MIN_FINAL { misc::Min(MIN_ORIG, MAX_ORIG) };
+            const T MAX_FINAL { misc::Max(MIN_ORIG, MAX_ORIG) };
 
             const auto RANDOM_VALUE_TO_START_AT { RandomValueWithinIntervalThatIsNot(
                 MIN_FINAL, MAX_FINAL, MIN_FINAL) };

@@ -30,7 +30,6 @@ namespace heroespath
 {
 
 using FontPtr_t = misc::NotNull<sf::Font *>;
-using FontPtrOpt_t = boost::optional<FontPtr_t>;
 using FontUPtr_t = std::unique_ptr<sf::Font>;
 using FontUVec_t = std::vector<FontUPtr_t>;
 

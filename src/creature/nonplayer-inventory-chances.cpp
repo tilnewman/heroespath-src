@@ -45,8 +45,8 @@ namespace creature
         std::unique_ptr<ChanceFactory> ChanceFactory::instanceUPtr_;
 
         ChanceFactory::ChanceFactory()
-            : masterRankMax_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "rankclass-Master-rankmax"))
+            : masterRankMax_(
+                  misc::ConfigFile::Instance()->ValueOrDefault<float>("rankclass-Master-rankmax"))
             , clothingChanceMin_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "inventory-clothing-chance-min"))
             , clothingChanceMax_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
@@ -172,11 +172,12 @@ namespace creature
 
             try
             {
-                coinsMin_OutParam = Coin_t(boost::lexical_cast<Coin_t::type>(STR_VEC[0]));
+                coinsMin_OutParam
+                    = Coin_t::Make(boost::lexical_cast<Coin_t::value_type>(STR_VEC[0]));
             }
             catch (...)
             {
-                coinsMin_OutParam = Coin_t(-1);
+                coinsMin_OutParam = -1_coin;
             }
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -189,11 +190,12 @@ namespace creature
 
             try
             {
-                coinsMax_OutParam = Coin_t(boost::lexical_cast<Coin_t::type>(STR_VEC[1]));
+                coinsMax_OutParam
+                    = Coin_t::Make(boost::lexical_cast<Coin_t::value_type>(STR_VEC[1]));
             }
             catch (...)
             {
-                coinsMax_OutParam = Coin_t(-1);
+                coinsMax_OutParam = -1_coin;
             }
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -618,7 +620,7 @@ namespace creature
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                           item::weapon::axe_type::Count) };
+                                                             item::weapon::axe_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
                              item::weapon::WeaponTypeWrapper::MakeSpecificSet<
@@ -655,9 +657,10 @@ namespace creature
                     else if (
                         NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & item::weapon_type::BladedStaff)
                     {
-                        const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
-                                                       / static_cast<float>(
-                                                           item::weapon::bladedstaff_type::Count) };
+                        const auto CHANCE_PER_WEAPON {
+                            NEXT_WEAPONINFO_CHANCE_PAIR.second
+                            / static_cast<float>(item::weapon::bladedstaff_type::Count)
+                        };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
                              item::weapon::WeaponTypeWrapper::MakeSpecificSet<
@@ -695,7 +698,7 @@ namespace creature
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                           item::weapon::club_type::Count) };
+                                                             item::weapon::club_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
                              item::weapon::WeaponTypeWrapper::MakeSpecificSet<
@@ -732,9 +735,10 @@ namespace creature
                     else if (
                         NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & item::weapon_type::Projectile)
                     {
-                        const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
-                                                       / static_cast<float>(
-                                                           item::weapon::projectile_type::Count) };
+                        const auto CHANCE_PER_WEAPON {
+                            NEXT_WEAPONINFO_CHANCE_PAIR.second
+                            / static_cast<float>(item::weapon::projectile_type::Count)
+                        };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
                              item::weapon::WeaponTypeWrapper::MakeSpecificSet<
@@ -772,7 +776,7 @@ namespace creature
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                           item::weapon::sword_type::Count) };
+                                                             item::weapon::sword_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
                              item::weapon::WeaponTypeWrapper::MakeSpecificSet<
@@ -825,7 +829,7 @@ namespace creature
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                           item::weapon::whip_type::Count) };
+                                                             item::weapon::whip_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
                              item::weapon::WeaponTypeWrapper::MakeSpecificSet<
@@ -948,9 +952,7 @@ namespace creature
                     case item::armor_type::Skin:
                     case item::armor_type::Not:
                     case item::armor_type::Count:
-                    default:
-                    {
-                        break;
+                    default: { break;
                     }
                 }
             }
@@ -1024,8 +1026,7 @@ namespace creature
             float & silkChance) const
         {
             std::ostringstream ss;
-            ss << "inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType)
-               << "-chances";
+            ss << "inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType) << "-chances";
 
             const auto WEARABLE_STR_BASE { ss.str() };
 
@@ -1091,7 +1092,7 @@ namespace creature
 
             // adjust chances by rank, where higher rank means a higher
             // chance of more valuable materials
-            const auto RANK_RATIO { CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
+            const auto RANK_RATIO { CHARACTER_PTR->Rank().GetAs<float>() / masterRankMax_ };
 
             silkChance += RANK_RATIO;
             leatherChance += RANK_RATIO * 0.5f;
@@ -1147,7 +1148,8 @@ namespace creature
             auto chanceMapPrecious { Make_MaterialChanceMapPrecious() };
 
             // adjustments that make higher ranks more likely to have special materials
-            const auto RANK_CHANCE_INCREASE { CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
+            const auto RANK_CHANCE_INCREASE { CHARACTER_PTR->Rank().GetAs<float>()
+                                              / masterRankMax_ };
 
             chanceCool += RANK_CHANCE_INCREASE;
             chanceMetal += RANK_CHANCE_INCREASE;
@@ -1222,7 +1224,7 @@ namespace creature
             }
 
             // adjust for item weight that can make special materials less likely
-            const auto WEIGHT_CHANCE_ADJUSTMENT { ITEM_WEIGHT.As<float>() / 2500.0f };
+            const auto WEIGHT_CHANCE_ADJUSTMENT { ITEM_WEIGHT.GetAs<float>() / 2500.0f };
             chanceCool -= WEIGHT_CHANCE_ADJUSTMENT;
             chanceMetal -= WEIGHT_CHANCE_ADJUSTMENT;
             chancePrecious -= WEIGHT_CHANCE_ADJUSTMENT;
@@ -1244,7 +1246,7 @@ namespace creature
 
             // final determination of which material will be primary
             const auto SUBTOTAL { chanceCool + chanceMetal + chancePrecious };
-            const auto RAND { misc::Random(0.0f, std::max(1.0f, SUBTOTAL)) };
+            const auto RAND { misc::Random(0.0f, misc::Max(1.0f, SUBTOTAL)) };
 
             if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
             {
@@ -1298,7 +1300,8 @@ namespace creature
             auto chanceMapPrecious { Make_MaterialChanceMapPrecious() };
 
             // adjustments that make higher ranks more likely to have special materials
-            const auto RANK_CHANCE_INCREASE { CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
+            const auto RANK_CHANCE_INCREASE { CHARACTER_PTR->Rank().GetAs<float>()
+                                              / masterRankMax_ };
 
             chanceCool += RANK_CHANCE_INCREASE;
             chanceMetal += RANK_CHANCE_INCREASE;
@@ -1381,7 +1384,7 @@ namespace creature
 
             // final determination of which material will be secondary
             const auto SUBTOTAL { chanceCool + chanceMetal + chancePrecious };
-            const auto RAND { misc::Random(0.0f, std::max(1.0f, SUBTOTAL)) };
+            const auto RAND { misc::Random(0.0f, misc::Max(1.0f, SUBTOTAL)) };
 
             if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
             {
@@ -1467,8 +1470,7 @@ namespace creature
                     item::material::Obsidian, item::material::Scales, item::material::Lazuli,
                     item::material::Gold,     item::material::Pearl };
 
-            return Make_MaterialChanceMap(
-                "material-chance-base-cool-", "-onein", MATERIAL_VEC);
+            return Make_MaterialChanceMap("material-chance-base-cool-", "-onein", MATERIAL_VEC);
         }
 
         const MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapPrecious() const
@@ -1479,8 +1481,7 @@ namespace creature
                     item::material::Platinum, item::material::Ruby,     item::material::Pearl,
                     item::material::Sapphire, item::material::Diamond };
 
-            return Make_MaterialChanceMap(
-                "material-chance-base-precious-", "-onein", MATERIAL_VEC);
+            return Make_MaterialChanceMap("material-chance-base-precious-", "-onein", MATERIAL_VEC);
         }
 
         const MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapMetal() const
@@ -1490,8 +1491,7 @@ namespace creature
                     item::material::Steel,   item::material::Silver, item::material::Gold,
                     item::material::Platinum };
 
-            return Make_MaterialChanceMap(
-                "material-chance-base-metal-", "-onein", MATERIAL_VEC);
+            return Make_MaterialChanceMap("material-chance-base-metal-", "-onein", MATERIAL_VEC);
         }
 
         const ClothingChances ChanceFactory::Make_ClothingMaterialChances(

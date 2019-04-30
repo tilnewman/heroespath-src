@@ -10,10 +10,11 @@
 // creature-interaction.hpp
 //
 #include "combat/fight-results.hpp"
+#include "creature/trait.hpp"
 #include "game/phase-enum.hpp"
+#include "game/strong-types.hpp"
 #include "item/armor-ratings.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <memory>
 #include <string>

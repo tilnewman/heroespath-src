@@ -79,9 +79,12 @@ namespace item
             armorDetails.complexity = EnumUtil<creature::nonplayer::complexity_type>::FromString(
                 CleanStringField(FIELDS_VEC[1], false));
 
-            armorDetails.price = Coin_t(StringFieldToInt("Price", FIELDS_VEC[2]));
-            armorDetails.weight = Weight_t(StringFieldToInt("Weight", FIELDS_VEC[3]));
-            armorDetails.armor_rating = Armor_t(StringFieldToInt("ArmorRating", FIELDS_VEC[4]));
+            armorDetails.price = Coin_t::Make(StringFieldToInt("Price", FIELDS_VEC[2]));
+            armorDetails.weight = Weight_t::Make(StringFieldToInt("Weight", FIELDS_VEC[3]));
+
+            armorDetails.armor_rating
+                = Armor_t::Make(StringFieldToInt("ArmorRating", FIELDS_VEC[4]));
+
             armorDetails.description = CleanStringField(FIELDS_VEC[5], false);
 
             // store details in the map

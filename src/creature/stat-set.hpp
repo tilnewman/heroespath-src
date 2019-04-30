@@ -10,7 +10,7 @@
 // stat-set.hpp
 //
 #include "creature/trait.hpp"
-#include "misc/types.hpp"
+#include "game/strong-types.hpp"
 
 #include <string>
 #include <tuple>
@@ -31,14 +31,14 @@ namespace creature
             const Charm_t & CHA = 0_cha,
             const Luck_t & LCK = 0_lck,
             const Speed_t & SPD = 0_spd,
-            const Intell_t & INT = 0_int);
+            const Intel_t & INT = 0_int);
 
         Strength_t Str() const { return str_; }
         Accuracy_t Acc() const { return acc_; }
         Charm_t Cha() const { return cha_; }
         Luck_t Lck() const { return lck_; }
         Speed_t Spd() const { return spd_; }
-        Intell_t Int() const { return int_; }
+        Intel_t Int() const { return int_; }
 
         Trait_t Get(const Traits::Enum) const;
         void Set(const Traits::Enum, const Trait_t);
@@ -54,7 +54,7 @@ namespace creature
         Charm_t cha_;
         Luck_t lck_;
         Speed_t spd_;
-        Intell_t int_;
+        Intel_t int_;
     };
 
     inline bool operator==(const StatSet & L, const StatSet & R)

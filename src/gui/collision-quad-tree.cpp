@@ -11,6 +11,7 @@
 //
 #include "collision-quad-tree.hpp"
 
+#include "misc/log-macros.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 namespace heroespath

@@ -35,6 +35,8 @@ namespace creature
 namespace combat
 {
 
+    using IDVec_t = std::vector<ID_t>;
+
     class CombatNode;
     using CombatNodePtr_t = misc::NotNull<CombatNode *>;
     using CombatNodePtrOpt_t = boost::optional<CombatNodePtr_t>;

@@ -12,9 +12,9 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/nameof.hpp"
 #include "misc/strings.hpp"
 
-#include "misc/nameof.hpp"
 #include <boost/variant.hpp>
 
 #include <sstream>
@@ -284,7 +284,7 @@ namespace item
                         variant_ = SPECIFIC_WEAPON_ENUM;
 
                         std::ostringstream ss;
-                        ss << "after SetupWithSpecificTypeName<" << NAMEOF_TYPE_T_STR(T)
+                        ss << "after SetupWithSpecificTypeName<" << NAMEOF_TYPE_T(T)
                            << "::Enum>(system_name_lowercase=" << SYSTEM_NAME_LOWERCASE
                            << ", weapon_type_tostring_lowercase=" << SPECIFIC_WEAPON_STR_LOWERCASE
                            << ")";

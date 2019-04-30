@@ -12,16 +12,16 @@
 //  owned/carried/worn by non-player characters.
 //
 #include "creature/trait.hpp"
+#include "game/strong-types.hpp"
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
-#include "misc/random.hpp"
-#include "misc/types.hpp"
-#include "misc/vector-map.hpp"
-
 #include "misc/nameof.hpp"
+#include "misc/not-null.hpp"
+#include "misc/random.hpp"
+#include "misc/vector-map.hpp"
 
 #include <cstddef> //for std::size_t
 #include <string>
@@ -51,7 +51,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (MAP.Empty() == false),
                 "creature::nonplayer::MappedRandomFloatChance(T=\""
-                    << NAMEOF_TYPE_T_STR(T) << "\") called when the map was empty.");
+                    << NAMEOF_TYPE_T(T) << "\") called when the map was empty.");
 
             auto chanceSubTotal { 0.0f };
             for (const auto & NEXT_MAP_PAIR : MAP)
@@ -62,7 +62,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((misc::IsRealZero(chanceSubTotal) == false) && (chanceSubTotal > 0.0f)),
                 "creature::nonplayer::MappedRandomFloatChance(T=\""
-                    << NAMEOF_TYPE_T_STR(T) << "\", size=" << MAP.Size()
+                    << NAMEOF_TYPE_T(T) << "\", size=" << MAP.Size()
                     << ") called when the map's chance total is zero or less.");
 
             const auto RAND { misc::Random(0.0f, chanceSubTotal) };
@@ -93,7 +93,7 @@ namespace creature
             // if we get here something is wrong, so log everything
 
             std::ostringstream ss;
-            ss << "creature::nonplayer::MappedRandomFloatChance(T=\"" << NAMEOF_TYPE_T_STR(T)
+            ss << "creature::nonplayer::MappedRandomFloatChance(T=\"" << NAMEOF_TYPE_T(T)
                << "\") failed to random select.  chanceSubTotal=" << chanceSubTotal
                << ", RAND=" << RAND << ", MAP={";
 
@@ -276,7 +276,7 @@ namespace creature
 
             M_HP_LOG(
                 "WARNING:  creature::nonplayer::MappedRandomItemChance(T=\""
-                << NAMEOF_TYPE_T_STR(T)
+                << NAMEOF_TYPE_T(T)
                 << "\") failed random selection.  Choosing first with a count of one by "
                    "default.");
 
@@ -461,10 +461,7 @@ namespace creature
 
             Coin_t RandomCoins() const
             {
-                return (
-                    (coins_min < coins_max)
-                        ? Coin_t(misc::Random(coins_min.As<int>(), coins_max.As<int>()))
-                        : coins_min);
+                return ((coins_min < coins_max) ? misc::Random(coins_min, coins_max) : coins_min);
             }
 
             Coin_t coins_min;

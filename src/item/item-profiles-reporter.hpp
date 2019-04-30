@@ -9,8 +9,8 @@
 //
 // item-profiles-reporter.hpp
 //
+#include "game/strong-types.hpp"
 #include "item/item-profile.hpp"
-#include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 #include "misc/vectors.hpp"
 

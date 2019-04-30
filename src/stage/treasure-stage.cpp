@@ -84,13 +84,13 @@ namespace stage
 
     TreasureStage::TreasureStage()
         : StageBase(
-            "Treasure",
-            { gui::GuiFont::Default,
-              gui::GuiFont::System,
-              gui::GuiFont::SystemCondensed,
-              gui::GuiFont::Number,
-              gui::GuiFont::DefaultBoldFlavor,
-              gui::GuiFont::Handwriting })
+              "Treasure",
+              { gui::GuiFont::Default,
+                gui::GuiFont::System,
+                gui::GuiFont::SystemCondensed,
+                gui::GuiFont::Number,
+                gui::GuiFont::DefaultBoldFlavor,
+                gui::GuiFont::Handwriting })
         , displayStagePtrOpt_()
         , treasureImageType_(item::TreasureImage::Count)
         , itemCacheHeld_()
@@ -867,8 +867,8 @@ namespace stage
     {
         const int TOTAL { (
             (WHAT_IS_SHARED == ShareType::Coins)
-                ? (itemCacheHeld_.coins.As<int>() + itemCacheLockbox_.coins.As<int>())
-                : (itemCacheHeld_.gems.As<int>() + itemCacheLockbox_.gems.As<int>())) };
+                ? (itemCacheHeld_.coins + itemCacheLockbox_.coins).GetAs<int>()
+                : (itemCacheHeld_.gems + itemCacheLockbox_.gems).GetAs<int>()) };
 
         if (TOTAL <= 0)
         {
@@ -887,13 +887,13 @@ namespace stage
             {
                 if (WHAT_IS_SHARED == ShareType::Coins)
                 {
-                    nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * Coin_t(-1));
-                    nextCreaturePtr->CoinsAdj(Coin_t(SHARED_AMOUNT));
+                    nextCreaturePtr->CoinsAdj(-nextCreaturePtr->Inventory().Coins());
+                    nextCreaturePtr->CoinsAdj(Coin_t::Make(SHARED_AMOUNT));
                 }
                 else
                 {
-                    nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * Gem_t(-1));
-                    nextCreaturePtr->GemsAdj(Gem_t(SHARED_AMOUNT));
+                    nextCreaturePtr->GemsAdj(-nextCreaturePtr->Inventory().Gems());
+                    nextCreaturePtr->GemsAdj(Gem_t::Make(SHARED_AMOUNT));
                 }
             }
         }

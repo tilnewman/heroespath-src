@@ -156,10 +156,10 @@ namespace creature
 
         if (OPTIONS & With::RankBonus)
         {
-            const auto RANK_BONUS { static_cast<int>(
-                CREATURE_PTR->Rank().As<float>()
+            const auto RANK_BONUS { static_cast<Trait_t>(
+                CREATURE_PTR->Rank().GetAs<float>()
                 * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "fight-stats-rank-bonus-ratio")) };
+                      "fight-stats-rank-bonus-ratio")) };
 
             rollChance += RANK_BONUS;
         }
@@ -237,7 +237,7 @@ namespace creature
         }
 
         const auto CHALLENGER_ROLL {
-            chaRandSum + ((OPTIONS & With::RankBonus) ? CHALLENGER_PTR->Rank().As<int>() : 0)
+            chaRandSum + ((OPTIONS & With::RankBonus) ? CHALLENGER_PTR->Rank().GetAsTrait() : 0)
         };
 
         const auto DEFENDER_TRAIT_VEC { (
@@ -278,14 +278,14 @@ namespace creature
         }
 
         const auto DEFENDER_ROLL {
-            defRandSum + ((OPTIONS & With::RankBonus) ? DEFENDER_PTR->Rank().As<int>() : 0)
+            defRandSum + ((OPTIONS & With::RankBonus) ? DEFENDER_PTR->Rank().GetAsTrait() : 0)
         };
 
         // handle roll tie
         if (CHALLENGER_ROLL == DEFENDER_ROLL)
         {
-            const auto CHA_NORMAL_PLUS_RANK { chaNormalSum + CHALLENGER_PTR->Rank().As<int>() };
-            const auto DEF_NORMAL_PLUS_RANK { defNormalSum + DEFENDER_PTR->Rank().As<int>() };
+            const auto CHA_NORMAL_PLUS_RANK { chaNormalSum + CHALLENGER_PTR->Rank().GetAsTrait() };
+            const auto DEF_NORMAL_PLUS_RANK { defNormalSum + DEFENDER_PTR->Rank().GetAsTrait() };
 
             // handle normal+rank tie
             if (CHA_NORMAL_PLUS_RANK == DEF_NORMAL_PLUS_RANK)
@@ -328,8 +328,7 @@ namespace creature
     {
         return misc::Random(static_cast<int>(
             static_cast<float>(CREATURE_PTR->TraitWorking(Traits::Luck))
-            / misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "fight-stats-luck-adj-ratio")));
+            / misc::ConfigFile::Instance()->ValueOrDefault<float>("fight-stats-luck-adj-ratio")));
     }
 
     Trait_t Stats::RollBonusByRace(
@@ -338,12 +337,12 @@ namespace creature
         const auto BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "stats-race-bonus-base-adj-ratio")) };
+                  "stats-race-bonus-base-adj-ratio")) };
 
         const auto MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "stats-race-bonus-minor-adj-ratio")) };
+                  "stats-race-bonus-minor-adj-ratio")) };
 
         if (TRAIT_ENUM == Traits::Strength)
         {
@@ -451,12 +450,12 @@ namespace creature
         const auto BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "stats-role-bonus-base-adj-ratio")) };
+                  "stats-role-bonus-base-adj-ratio")) };
 
         const auto MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "stats-role-bonus-minor-adj-ratio")) };
+                  "stats-role-bonus-minor-adj-ratio")) };
 
         if (TRAIT_ENUM == Traits::Strength)
         {
@@ -537,7 +536,7 @@ namespace creature
         auto x { static_cast<int>(
             static_cast<float>(RAND_SPREAD) * (RAND_RATIO + TRAIT_BONUS_RATIO)) };
 
-        x += static_cast<int>(CREATURE_PTR->Rank().As<float>() * RANK_BONUS_MULT);
+        x += static_cast<int>(CREATURE_PTR->Rank().GetAs<float>() * RANK_BONUS_MULT);
 
         return x;
     }

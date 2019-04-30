@@ -9,11 +9,9 @@
 //
 // video-mode.hpp
 //
-#include "misc/boost-optional-that-throws.hpp"
-#include "misc/strings.hpp"
-#include "sfutil/vector-and-rect.hpp"
-
 #include <SFML/Window/VideoMode.hpp>
+
+#include <ostream>
 
 namespace sf
 {
@@ -27,25 +25,5 @@ inline std::ostream & operator<<(std::ostream & os, const sf::VideoMode & VM)
 // operator== and operator!= provided by sfml
 
 } // namespace sf
-
-namespace heroespath
-{
-
-using VideoModeOpt_t = boost::optional<sf::VideoMode>;
-
-namespace sfutil
-{
-
-    inline const std::string ToString(
-        const sf::VideoMode & VM,
-        const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default)
-    {
-        std::ostringstream ss;
-        ss << misc::MakeToStringPrefix(OPTIONS, "VideoMode") << VM;
-        return ss.str();
-    }
-
-} // namespace sfutil
-} // namespace heroespath
 
 #endif // HEROESPATH_SFUTIL_VIDEO_MODE_HPP_INCLUDED

@@ -9,6 +9,7 @@
 //
 // status.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/color.hpp"

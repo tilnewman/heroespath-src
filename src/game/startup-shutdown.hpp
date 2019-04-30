@@ -9,8 +9,6 @@
 //
 // startup-shutdown.hpp
 //
-#include "misc/platform.hpp"
-
 #include <string>
 
 namespace heroespath
@@ -50,8 +48,6 @@ namespace game
         void Setup_HoldersFill() const;
         void Setup_SubsystemsAcquire() const;
         void Setup_SubsystemsInitialize() const;
-
-        misc::Platform platform_;
     };
 
 } // namespace game

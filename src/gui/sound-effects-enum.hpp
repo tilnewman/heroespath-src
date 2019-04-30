@@ -75,7 +75,7 @@ namespace gui
             Coins15,
             Coins16,
             Gems,
-            MeteorShards,
+            Shards,
             ItemGive,
             ItemDrop,
             BlowpipeShoot1,

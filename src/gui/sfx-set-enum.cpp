@@ -22,129 +22,67 @@ namespace gui
     {
         switch (ENUM)
         {
-            case Prompt:
-            {
-                return "Prompt";
+            case Prompt: { return "Prompt";
             }
-            case Switch:
-            {
-                return "Switch";
+            case Switch: { return "Switch";
             }
-            case TickOn:
-            {
-                return "TickOn";
+            case TickOn: { return "TickOn";
             }
-            case TickOff:
-            {
-                return "TickOff";
+            case TickOff: { return "TickOff";
             }
-            case Thock:
-            {
-                return "Thock";
+            case Thock: { return "Thock";
             }
-            case Coin:
-            {
-                return "Coin";
+            case Coin: { return "Coin";
             }
-            case Gem:
-            {
-                return "Gem";
+            case Gem: { return "Gem";
             }
-            case MeteorShard:
-            {
-                return "MeteorShard";
+            case Shard: { return "Shard";
             }
-            case ItemGive:
-            {
-                return "ItemGive";
+            case ItemGive: { return "ItemGive";
             }
-            case ItemDrop:
-            {
-                return "ItemDrop";
+            case ItemDrop: { return "ItemDrop";
             }
-            case BlowpipeShoot:
-            {
-                return "BlowpipeShoot";
+            case BlowpipeShoot: { return "BlowpipeShoot";
             }
-            case BlowpipeHit:
-            {
-                return "BlowpipeHit";
+            case BlowpipeHit: { return "BlowpipeHit";
             }
-            case ArrowShoot:
-            {
-                return "ArrowShoot";
+            case ArrowShoot: { return "ArrowShoot";
             }
-            case ArrowHit:
-            {
-                return "ArrowHit";
+            case ArrowHit: { return "ArrowHit";
             }
-            case ProjectileMiss:
-            {
-                return "ProjectileMiss";
+            case ProjectileMiss: { return "ProjectileMiss";
             }
-            case MeleeMiss:
-            {
-                return "MeleeMiss";
+            case MeleeMiss: { return "MeleeMiss";
             }
-            case FistHit:
-            {
-                return "FistHit";
+            case FistHit: { return "FistHit";
             }
-            case TentacleHit:
-            {
-                return "TentacleHit";
+            case TentacleHit: { return "TentacleHit";
             }
-            case WhipHit:
-            {
-                return "WhipHit";
+            case WhipHit: { return "WhipHit";
             }
-            case WhipMiss:
-            {
-                return "WhipMiss";
+            case WhipMiss: { return "WhipMiss";
             }
-            case MaterialHitMetal:
-            {
-                return "MaterialHitMetal";
+            case MaterialHitMetal: { return "MaterialHitMetal";
             }
-            case MaterialHitMisc:
-            {
-                return "MaterialHitMisc";
+            case MaterialHitMisc: { return "MaterialHitMisc";
             }
-            case ClawHit:
-            {
-                return "ClawHit";
+            case ClawHit: { return "ClawHit";
             }
-            case Wind:
-            {
-                return "Wind";
+            case Wind: { return "Wind";
             }
-            case SpellSelect:
-            {
-                return "SpellSelect";
+            case SpellSelect: { return "SpellSelect";
             }
-            case SpellBandage:
-            {
-                return "SpellBandage";
+            case SpellBandage: { return "SpellBandage";
             }
-            case DrumBlip:
-            {
-                return "DrumBlip";
+            case DrumBlip: { return "DrumBlip";
             }
-            case GuitarStrum:
-            {
-                return "GuitarStrum";
+            case GuitarStrum: { return "GuitarStrum";
             }
-            case CombatWin:
-            {
-                return "CombatWin";
+            case CombatWin: { return "CombatWin";
             }
-            case CombatLose:
-            {
-                return "CombatLose";
+            case CombatLose: { return "CombatLose";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {

@@ -632,7 +632,7 @@ namespace stage
                                      / imagePair.second.getLocalBounds().height)
                                     * RESIZE_RATIO };
 
-            const auto FINAL_SCALE { std::min(SCALE_HORIZ, SCALE_VERT) };
+            const auto FINAL_SCALE { misc::Min(SCALE_HORIZ, SCALE_VERT) };
 
             imagePair.second.setScale(FINAL_SCALE, FINAL_SCALE);
 

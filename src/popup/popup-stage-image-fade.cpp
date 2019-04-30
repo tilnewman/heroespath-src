@@ -13,9 +13,9 @@
 
 #include "gui/font-manager.hpp"
 #include "gui/text-region.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/common.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -87,8 +87,8 @@ namespace popup
 
             const auto IMAGE_MAX_DIMM { sfutil::ScreenRatioToPixelsHoriz(0.086f) };
 
-            const auto IMAGE_WIDTH { std::min(IMAGE_MAX_DIMM, ContentRegion().width) };
-            const auto IMAGE_HEIGHT { std::min(IMAGE_MAX_DIMM, MAX_HEIGHT) };
+            const auto IMAGE_WIDTH { misc::Min(IMAGE_MAX_DIMM, ContentRegion().width) };
+            const auto IMAGE_HEIGHT { misc::Min(IMAGE_MAX_DIMM, MAX_HEIGHT) };
 
             return sf::FloatRect(ContentRegion().left, IMAGE_TOP, IMAGE_WIDTH, IMAGE_HEIGHT);
         }();

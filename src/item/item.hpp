@@ -15,6 +15,7 @@
 #include "creature/enchantment.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/summon-info.hpp"
+#include "game/strong-types.hpp"
 #include "item/armor-type-wrapper.hpp"
 #include "item/item-profile.hpp"
 #include "item/item-type-enum.hpp"
@@ -22,7 +23,6 @@
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <memory>
 #include <string>

@@ -296,7 +296,7 @@ namespace stage
 
         const auto MAX_DIFF { 3.0f };
         const auto DIFF_VECTOR { mousePos_ - NEW_MOUSE_POS };
-        if ((std::abs(DIFF_VECTOR.x) > MAX_DIFF) || (std::abs(DIFF_VECTOR.y) > MAX_DIFF))
+        if ((misc::Abs(DIFF_VECTOR.x) > MAX_DIFF) || (misc::Abs(DIFF_VECTOR.y) > MAX_DIFF))
         {
             ItemViewerInterruption();
         }
@@ -1221,8 +1221,8 @@ namespace stage
             ss << CREATURE_PTR->Inventory().Weight() << "/" << CREATURE_PTR->WeightCanCarry()
                << "  ("
                << static_cast<int>(
-                      (CREATURE_PTR->Inventory().Weight().As<float>()
-                       / CREATURE_PTR->WeightCanCarry().As<float>())
+                      (CREATURE_PTR->Inventory().Weight().GetAs<float>()
+                       / CREATURE_PTR->WeightCanCarry().GetAs<float>())
                       * 100.0f)
                << "%)";
         }

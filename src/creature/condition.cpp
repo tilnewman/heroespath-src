@@ -110,7 +110,7 @@ namespace creature
                     }
                 }
 
-                if (misc::Random(100) < (10 + CREATURE_PTR->Rank().As<int>()))
+                if (misc::Random(100) < (10 + CREATURE_PTR->Rank().Get()))
                 {
                     CREATURE_PTR->ConditionRemove(Conditions::Dazed);
 
@@ -171,7 +171,7 @@ namespace creature
                     }
                 }
 
-                if (misc::Random(100) < (15 + CREATURE_PTR->Rank().As<int>()))
+                if (misc::Random(100) < (15 + CREATURE_PTR->Rank().GetAs<int>()))
                 {
                     CREATURE_PTR->ConditionRemove(Conditions::AsleepNatural);
 
@@ -214,16 +214,16 @@ namespace creature
                 }
                 else
                 {
-                    const auto DAMAGE_BASE { (
+                    const auto DAMAGE_BASE { Health_t::Make(
                         (CREATURE_PTR->IsPixie()) ? 0 : misc::Random(1, 5)) };
 
-                    const auto DAMAGE_RAND_MAX { std::max(
-                        1, static_cast<int>(CREATURE_PTR->HealthNormal().As<float>() * 0.1f)) };
+                    const auto DAMAGE_RAND_MAX { Health_t::Make(
+                        misc::Max(1.0f, (CREATURE_PTR->HealthNormal().GetAs<float>() * 0.1f))) };
 
-                    const auto DAMAGE_FROM_HEALTH_NORMAL { misc::Random(1, DAMAGE_RAND_MAX) };
+                    const auto DAMAGE_FROM_HEALTH_NORMAL { misc::Random(
+                        1_health, DAMAGE_RAND_MAX) };
 
-                    const Health_t DAMAGE_FINAL { Health_t(
-                        -1 * (DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL)) };
+                    const Health_t DAMAGE_FINAL { -(DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL) };
 
                     CondEnumVec_t condsAddedVec;
                     CondEnumVec_t condsRemovedVec;
@@ -238,7 +238,7 @@ namespace creature
 
                     std::ostringstream ss;
                     ss << " hurts " << creature::sex::HimHerIt(CREATURE_PTR->Sex(), false)
-                       << " for " << DAMAGE_FINAL.Abs() << " damage.";
+                       << " for " << DAMAGE_FINAL.MakePositiveCopy() << " damage.";
 
                     const combat::ContentAndNamePos CNP(
                         "The poison in ", ss.str(), "", combat::NamePosition::TargetBefore);
@@ -302,7 +302,7 @@ namespace creature
                     }
                 }
 
-                if (misc::Random(100) < (8 + CREATURE_PTR->Rank().As<int>()))
+                if (misc::Random(100) < (8 + CREATURE_PTR->Rank().Get()))
                 {
                     CREATURE_PTR->ConditionRemove(Conditions::AsleepMagical);
 

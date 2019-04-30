@@ -20,9 +20,9 @@
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/common.hpp"
 #include "sfutil/primitives.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -38,19 +38,19 @@ namespace stage
 
     CreditsStage::CreditsStage()
         : StageBase(
-            "Credits",
-            {
-                gui::GuiFont::Default,
-                gui::GuiFont::DefaultBoldFlavor,
-                gui::GuiFont::Number,
-                gui::GuiFont::System,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::SignThinTallNarrow,
-                gui::GuiFont::SignBoldShortWide,
-                gui::GuiFont::Handwriting,
-                gui::GuiFont::DialogModern,
-                gui::GuiFont::DialogMedieval,
-            })
+              "Credits",
+              {
+                  gui::GuiFont::Default,
+                  gui::GuiFont::DefaultBoldFlavor,
+                  gui::GuiFont::Number,
+                  gui::GuiFont::System,
+                  gui::GuiFont::SystemCondensed,
+                  gui::GuiFont::SignThinTallNarrow,
+                  gui::GuiFont::SignBoldShortWide,
+                  gui::GuiFont::Handwriting,
+                  gui::GuiFont::DialogModern,
+                  gui::GuiFont::DialogMedieval,
+              })
         , stageTitle_(gui::MenuImage::Title)
         , boxUPtr_()
         , boxBorderUPtr_()
@@ -372,7 +372,7 @@ namespace stage
 
         // accelerate/decelerate when pressing/releasing the down arrow key
         if ((isKeyHeldArrowUp_ == false) && (isKeyHeldArrowDown_ == false)
-            && (std::abs(scrollSpeed_ - DEFAULT_SCROLL_SPEED_) > 5.0f))
+            && (misc::Abs(scrollSpeed_ - DEFAULT_SCROLL_SPEED_) > 5.0f))
         {
             if (scrollSpeed_ < DEFAULT_SCROLL_SPEED_)
             {

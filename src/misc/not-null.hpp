@@ -11,16 +11,30 @@
 //
 #include "misc/nameof.hpp"
 
-#include <algorithm>
+#include <exception>
 #include <iosfwd>
 #include <memory>
-#include <string>
-#include <type_traits>
+#include <string_view>
 
 namespace heroespath
 {
 namespace misc
 {
+
+    namespace helpers
+    {
+        const std::runtime_error makeException(
+            const std::string_view TYPE_T_NAME,
+            const std::string_view MESSAGE,
+            const std::string_view TYPE_U_NAME = "");
+
+        const std::runtime_error makeException(
+            const std::string_view TYPE_T_NAME,
+            const std::string_view MESSAGE_1,
+            const std::string_view TYPE_U_NAME,
+            const std::string_view MESSAGE_2);
+
+    } // namespace helpers
 
     // wraps a pointer that can never be null
     template <typename T>
@@ -37,20 +51,18 @@ namespace misc
         {
             if (nullptr == ptr_)
             {
-                throw std::runtime_error(
-                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ", U=" + NAMEOF_TYPE_T_STR(U)
-                    + ">(U && u) but u==nullptr.");
+                throw helpers::makeException(
+                    NAMEOF_TYPE_T(T), "(U && u) but u==nullptr.", NAMEOF_TYPE_T(U));
             }
         }
 
         template <typename = std::enable_if_t<!std::is_same<std::nullptr_t, T>::value>>
-        constexpr explicit NotNull(T thing)
-            : ptr_(thing)
+        constexpr explicit NotNull(T p)
+            : ptr_(p)
         {
             if (nullptr == ptr_)
             {
-                throw std::runtime_error(
-                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ">(T u) but u==nullptr.");
+                throw helpers::makeException(NAMEOF_TYPE_T(T), "(T p) but p is nullptr.");
             }
         }
 
@@ -65,9 +77,11 @@ namespace misc
         {
             if (UNIQUE_PTR.get() == nullptr)
             {
-                throw std::runtime_error(
-                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ">(const std::unique_ptr<"
-                    + NAMEOF_TYPE_T_STR(U) + "> & uptr) but uptr.get()==nullptr.");
+                throw helpers::makeException(
+                    NAMEOF_TYPE_T(T),
+                    ">(const std::unique_ptr<",
+                    NAMEOF_TYPE_T(U),
+                    "> & uptr) but uptr.get()==nullptr.");
             }
         }
 
@@ -77,9 +91,11 @@ namespace misc
         {
             if (SHARED_PTR.get() == nullptr)
             {
-                throw std::runtime_error(
-                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ">(const std::shared_ptr<"
-                    + NAMEOF_TYPE_T_STR(U) + "> & sptr) but sptr.get()==nullptr.");
+                throw helpers::makeException(
+                    NAMEOF_TYPE_T(T),
+                    ">(const std::shared_ptr<",
+                    NAMEOF_TYPE_T(U),
+                    "> & sptr) but sptr.get()==nullptr.");
             }
         }
 
@@ -91,8 +107,8 @@ namespace misc
         {
             if (nullptr == ptr_)
             {
-                throw std::runtime_error(
-                    "NotNull<T=" + NAMEOF_TYPE_T_STR(T) + ">::get() called when ptr_==nullptr.");
+                throw helpers::makeException(
+                    NAMEOF_TYPE_T(T), "::get() called when ptr_==nullptr.");
             }
 
             return ptr_;
@@ -133,37 +149,37 @@ namespace misc
     template <typename T, class U>
     bool operator==(const NotNull<T> & LHS, const NotNull<U> & RHS)
     {
-        return LHS.get() == RHS.get();
+        return (LHS.get() == RHS.get());
     }
 
     template <typename T, class U>
     bool operator!=(const NotNull<T> & LHS, const NotNull<U> & RHS)
     {
-        return LHS.get() != RHS.get();
+        return (LHS.get() != RHS.get());
     }
 
     template <typename T, class U>
     bool operator<(const NotNull<T> & LHS, const NotNull<U> & RHS)
     {
-        return LHS.get() < RHS.get();
+        return (LHS.get() < RHS.get());
     }
 
     template <typename T, class U>
     bool operator<=(const NotNull<T> & LHS, const NotNull<U> & RHS)
     {
-        return LHS.get() <= RHS.get();
+        return (LHS.get() <= RHS.get());
     }
 
     template <typename T, class U>
     bool operator>(const NotNull<T> & LHS, const NotNull<U> & RHS)
     {
-        return LHS.get() > RHS.get();
+        return (LHS.get() > RHS.get());
     }
 
     template <typename T, class U>
     bool operator>=(const NotNull<T> & LHS, const NotNull<U> & RHS)
     {
-        return LHS.get() >= RHS.get();
+        return (LHS.get() >= RHS.get());
     }
 
     template <typename T, class U>

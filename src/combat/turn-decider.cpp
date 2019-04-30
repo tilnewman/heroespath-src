@@ -148,7 +148,7 @@ namespace combat
             == Encounter::Instance()->GetTurnInfoCopy(MOST_DESIRED_TARGET_PTR).GetIsFlying()) };
 
         const auto CAN_ATTACK_ON_RANGE { (
-            (std::abs(MOST_DESIRED_TARGET_DISTANCE) <= 1)
+            (misc::Abs(MOST_DESIRED_TARGET_DISTANCE) <= 1)
             || CREATURE_DECIDING_PTR->IsHoldingProjectileWeapon() || IS_FLYING) };
 
         const auto CAN_ATTACK_ON_FLIGHT { (

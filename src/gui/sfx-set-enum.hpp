@@ -29,7 +29,7 @@ namespace gui
             Thock,
             Coin,
             Gem,
-            MeteorShard,
+            Shard,
             ItemGive,
             ItemDrop,
             BlowpipeShoot,

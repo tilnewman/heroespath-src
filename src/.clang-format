@@ -1,6 +1,7 @@
 AlignAfterOpenBracket: AlwaysBreak
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortCaseLabelsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
 AlwaysBreakTemplateDeclarations: true
 BasedOnStyle: WebKit
 BinPackArguments: false
@@ -34,3 +35,10 @@ NamespaceIndentation: Inner
 PenaltyBreakBeforeFirstCallParameter: 0
 PointerAlignment: Middle
 SortIncludes: true
+
+
+
+# As of 2019-4-28, Visual Studio 2019 does not support these yet...lame.
+#AllowShortFunctionsOnASingleLine: SFS_All
+#AllowShortLambdasOnASingleLine: SLS_All
+

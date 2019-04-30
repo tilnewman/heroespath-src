@@ -56,7 +56,7 @@ namespace stage
         statsBoxInfo.SetupImage(gui::CachedTexture(
             "media-image-background-tile-wood", gui::ImageOpt::Default | gui::ImageOpt::Repeated));
         statsBoxInfo.SetupBorder(true);
-        statsBoxInfo.focus_colors = sfutil::color::GuiFocusColors;
+        statsBoxInfo.focus_colors = gui::GuiFocusColors;
 
         boxUPtr_
             = std::make_unique<gui::BoxEntity>("CharacterStageStatBox", REGION_ORIG, statsBoxInfo);

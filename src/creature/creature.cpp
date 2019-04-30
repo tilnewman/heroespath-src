@@ -78,13 +78,13 @@ namespace creature
         , bonusSet_()
         , enchantmentsPVec_()
     {
-        actualSet_.Get(Traits::Mana).CurrAndNormSet(MANA.As<int>());
-        actualSet_.Get(Traits::Strength).CurrAndNormSet(STATS.Str().As<int>());
-        actualSet_.Get(Traits::Accuracy).CurrAndNormSet(STATS.Acc().As<int>());
-        actualSet_.Get(Traits::Charm).CurrAndNormSet(STATS.Cha().As<int>());
-        actualSet_.Get(Traits::Luck).CurrAndNormSet(STATS.Lck().As<int>());
-        actualSet_.Get(Traits::Speed).CurrAndNormSet(STATS.Spd().As<int>());
-        actualSet_.Get(Traits::Intelligence).CurrAndNormSet(STATS.Int().As<int>());
+        actualSet_.Get(Traits::Mana).CurrAndNormSet(MANA.GetAsTrait());
+        actualSet_.Get(Traits::Strength).CurrAndNormSet(STATS.Str().GetAsTrait());
+        actualSet_.Get(Traits::Accuracy).CurrAndNormSet(STATS.Acc().GetAsTrait());
+        actualSet_.Get(Traits::Charm).CurrAndNormSet(STATS.Cha().GetAsTrait());
+        actualSet_.Get(Traits::Luck).CurrAndNormSet(STATS.Lck().GetAsTrait());
+        actualSet_.Get(Traits::Speed).CurrAndNormSet(STATS.Spd().GetAsTrait());
+        actualSet_.Get(Traits::Intelligence).CurrAndNormSet(STATS.Int().GetAsTrait());
 
         ReCalculateTraitBonuses();
 
@@ -175,11 +175,11 @@ namespace creature
 
     float Creature::RankRatio() const
     {
-        const float GRANDMASTER_RANK_F { misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                                             "rankclass-Master-rankmax")
-                                         + 1.0f };
+        const float GRANDMASTER_RANK_F {
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("rankclass-Master-rankmax") + 1.0f
+        };
 
-        auto rankRatio { rank_.As<float>() / GRANDMASTER_RANK_F };
+        auto rankRatio { rank_.GetAs<float>() / GRANDMASTER_RANK_F };
         if (rankRatio > 1.0f)
         {
             rankRatio = 1.0f;
@@ -1520,7 +1520,7 @@ namespace creature
 
     Weight_t Creature::WeightCanCarry() const
     {
-        int base { 5000 };
+        auto base { Weight_t::value_type(5000) };
         if (race::Gnome == race_)
         {
             base = 2500;
@@ -1534,7 +1534,7 @@ namespace creature
             base = 3000;
         }
 
-        int multiplier { 1000 };
+        auto multiplier { Weight_t::value_type(1000) };
         if (race::Gnome == race_)
         {
             multiplier = 500;
@@ -1548,7 +1548,7 @@ namespace creature
             multiplier = 750;
         }
 
-        int divisor { 2 };
+        auto divisor { Weight_t::value_type(2) };
         if (race::Gnome == race_)
         {
             divisor = 4;
@@ -1562,7 +1562,8 @@ namespace creature
             divisor = 3;
         }
 
-        return Weight_t(base + ((Strength().As<int>() * multiplier) / divisor));
+        return Weight_t::Make(
+            base + ((Strength().GetAs<Weight_t::value_type>() * multiplier) / divisor));
     }
 
     void Creature::ReCalculateTraitBonuses()
@@ -1663,12 +1664,12 @@ namespace creature
 
     void Creature::StatTraitsModify(const StatSet & STAT_SET)
     {
-        TraitNormalAdj(Traits::Strength, STAT_SET.Str().As<int>());
-        TraitNormalAdj(Traits::Accuracy, STAT_SET.Acc().As<int>());
-        TraitNormalAdj(Traits::Charm, STAT_SET.Cha().As<int>());
-        TraitNormalAdj(Traits::Luck, STAT_SET.Lck().As<int>());
-        TraitNormalAdj(Traits::Speed, STAT_SET.Spd().As<int>());
-        TraitNormalAdj(Traits::Intelligence, STAT_SET.Int().As<int>());
+        TraitNormalAdj(Traits::Strength, STAT_SET.Str().GetAsTrait());
+        TraitNormalAdj(Traits::Accuracy, STAT_SET.Acc().GetAsTrait());
+        TraitNormalAdj(Traits::Charm, STAT_SET.Cha().GetAsTrait());
+        TraitNormalAdj(Traits::Luck, STAT_SET.Lck().GetAsTrait());
+        TraitNormalAdj(Traits::Speed, STAT_SET.Spd().GetAsTrait());
+        TraitNormalAdj(Traits::Intelligence, STAT_SET.Int().GetAsTrait());
     }
 
     void Creature::BeforeSerialize() { inventory_.BeforeSerialize(); }
@@ -1780,20 +1781,20 @@ namespace creature
                 L.actualSet_,
                 L.bonusSet_)
             != std::tie(
-                R.name_,
-                R.sex_,
-                R.bodyType_,
-                R.race_,
-                R.role_,
-                R.achievements_,
-                R.lastSpellCastNum_,
-                R.lastSongPlayedNum_,
-                R.healthCurrent_,
-                R.healthNormal_,
-                R.rank_,
-                R.experience_,
-                R.actualSet_,
-                R.bonusSet_))
+                   R.name_,
+                   R.sex_,
+                   R.bodyType_,
+                   R.race_,
+                   R.role_,
+                   R.achievements_,
+                   R.lastSpellCastNum_,
+                   R.lastSongPlayedNum_,
+                   R.healthCurrent_,
+                   R.healthNormal_,
+                   R.rank_,
+                   R.experience_,
+                   R.actualSet_,
+                   R.bonusSet_))
         {
             return false;
         }
@@ -1851,20 +1852,20 @@ namespace creature
                 L.bodyType_,
                 L.dateTimeCreated_)
             < std::tie(
-                R.sex_,
-                R.race_,
-                R.role_,
-                R.rank_,
-                R.experience_,
-                R.achievements_,
-                R.lastSpellCastNum_,
-                R.lastSongPlayedNum_,
-                R.healthCurrent_,
-                R.healthNormal_,
-                R.actualSet_,
-                R.bonusSet_,
-                R.bodyType_,
-                R.dateTimeCreated_))
+                  R.sex_,
+                  R.race_,
+                  R.role_,
+                  R.rank_,
+                  R.experience_,
+                  R.achievements_,
+                  R.lastSpellCastNum_,
+                  R.lastSongPlayedNum_,
+                  R.healthCurrent_,
+                  R.healthNormal_,
+                  R.actualSet_,
+                  R.bonusSet_,
+                  R.bodyType_,
+                  R.dateTimeCreated_))
         {
             return true;
         }

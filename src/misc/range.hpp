@@ -21,7 +21,7 @@ namespace misc
     class Range
     {
     public:
-        explicit Range(const T A = 0, const T B = 0)
+        explicit Range(const T A = T(0), const T B = T(0))
             : a_(A)
             , b_(B)
         {}
@@ -32,8 +32,8 @@ namespace misc
         constexpr T From() const { return a_; }
         constexpr T To() const { return b_; }
 
-        constexpr T Min() const { return std::min(a_, b_); }
-        constexpr T Max() const { return std::max(a_, b_); }
+        constexpr T Min() const { return misc::Min(a_, b_); }
+        constexpr T Max() const { return misc::Max(a_, b_); }
 
         constexpr T Diff() const { return Max() - Min(); }
 
@@ -49,6 +49,7 @@ namespace misc
         T a_;
         T b_;
     };
+
 } // namespace misc
 } // namespace heroespath
 

@@ -32,9 +32,9 @@ namespace item
             ArmorDetails()
                 : name()
                 , description()
-                , price(0)
-                , weight(0)
-                , armor_rating(0)
+                , price(0_coin)
+                , weight(0_weight)
+                , armor_rating(0_armor)
                 , complexity(creature::nonplayer::complexity_type::Count)
             {}
 

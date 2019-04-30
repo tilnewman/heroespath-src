@@ -148,13 +148,13 @@ namespace stage
         const combat::CombatDisplayPtr_t COMBAT_DISPLAY_STAGE_PTR,
         const bool WILL_ADVANCE_TURN)
         : StageBase(
-            "Combat",
-            { gui::GuiFont::Default,
-              gui::GuiFont::System,
-              gui::GuiFont::SystemCondensed,
-              gui::GuiFont::Number,
-              gui::GuiFont::DefaultBoldFlavor,
-              gui::GuiFont::Handwriting })
+              "Combat",
+              { gui::GuiFont::Default,
+                gui::GuiFont::System,
+                gui::GuiFont::SystemCondensed,
+                gui::GuiFont::Number,
+                gui::GuiFont::DefaultBoldFlavor,
+                gui::GuiFont::Handwriting })
         , WILL_ADVANCE_TURN_(WILL_ADVANCE_TURN)
         , COMBAT_REGION_MARGIN_(25.0f)
         , STATUS_REGION_SLIDERBAR_WIDTH_(35.0f)
@@ -3679,9 +3679,7 @@ namespace stage
             case TurnActionPhase::Pounce:
             case TurnActionPhase::None:
             case TurnActionPhase::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
     }
@@ -3690,78 +3688,42 @@ namespace stage
     {
         switch (ENUM)
         {
-            case TurnPhase::NotATurn:
-            {
-                return "NotATurn";
+            case TurnPhase::NotATurn: { return "NotATurn";
             }
-            case TurnPhase::CenterAndZoomIn:
-            {
-                return "CenterAndZoomIn";
+            case TurnPhase::CenterAndZoomIn: { return "CenterAndZoomIn";
             }
-            case TurnPhase::PostCenterAndZoomInPause:
-            {
-                return "PostZInPause";
+            case TurnPhase::PostCenterAndZoomInPause: { return "PostZInPause";
             }
-            case TurnPhase::Determine:
-            {
-                return "Determine";
+            case TurnPhase::Determine: { return "Determine";
             }
-            case TurnPhase::TargetSelect:
-            {
-                return "TargetSelect";
+            case TurnPhase::TargetSelect: { return "TargetSelect";
             }
-            case TurnPhase::ConditionEffectPause:
-            {
-                return "ConditionEffectPause";
+            case TurnPhase::ConditionEffectPause: { return "ConditionEffectPause";
             }
-            case TurnPhase::CenterAndZoomOut:
-            {
-                return "CenterAndZoomOut";
+            case TurnPhase::CenterAndZoomOut: { return "CenterAndZoomOut";
             }
-            case TurnPhase::PostCenterAndZoomOutPause:
-            {
-                return "PostZOutPause";
+            case TurnPhase::PostCenterAndZoomOutPause: { return "PostZOutPause";
             }
-            case TurnPhase::PerformAnim:
-            {
-                return "PerformAnim";
+            case TurnPhase::PerformAnim: { return "PerformAnim";
             }
-            case TurnPhase::PerformReport:
-            {
-                return "PerformReport";
+            case TurnPhase::PerformReport: { return "PerformReport";
             }
-            case TurnPhase::PostPerformPause:
-            {
-                return "PostPerformPause";
+            case TurnPhase::PostPerformPause: { return "PostPerformPause";
             }
-            case TurnPhase::StatusAnim:
-            {
-                return "StatusAnim";
+            case TurnPhase::StatusAnim: { return "StatusAnim";
             }
-            case TurnPhase::DeathAnim:
-            {
-                return "DeathAnim";
+            case TurnPhase::DeathAnim: { return "DeathAnim";
             }
-            case TurnPhase::RepositionAnim:
-            {
-                return "RepositionAnim";
+            case TurnPhase::RepositionAnim: { return "RepositionAnim";
             }
-            case TurnPhase::PostTurnPause:
-            {
-                return "PostTurnPause";
+            case TurnPhase::PostTurnPause: { return "PostTurnPause";
             }
-            case TurnPhase::Achievements:
-            {
-                return "Achievements";
+            case TurnPhase::Achievements: { return "Achievements";
             }
-            case TurnPhase::End:
-            {
-                return "End";
+            case TurnPhase::End: { return "End";
             }
             case TurnPhase::Count:
-            default:
-            {
-                return "turn_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
+            default: { return "turn_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
@@ -3770,62 +3732,34 @@ namespace stage
     {
         switch (ENUM)
         {
-            case TurnActionPhase::None:
-            {
-                return "None";
+            case TurnActionPhase::None: { return "None";
             }
-            case TurnActionPhase::PauseAndReport:
-            {
-                return "PauseAndReport";
+            case TurnActionPhase::PauseAndReport: { return "PauseAndReport";
             }
-            case TurnActionPhase::MeleeWeapon:
-            {
-                return "MeleeWeapon";
+            case TurnActionPhase::MeleeWeapon: { return "MeleeWeapon";
             }
-            case TurnActionPhase::ShootSling:
-            {
-                return "ShootSling";
+            case TurnActionPhase::ShootSling: { return "ShootSling";
             }
-            case TurnActionPhase::ShootArrow:
-            {
-                return "ShootArrow";
+            case TurnActionPhase::ShootArrow: { return "ShootArrow";
             }
-            case TurnActionPhase::ShootBlowpipe:
-            {
-                return "ShootBlowpipe";
+            case TurnActionPhase::ShootBlowpipe: { return "ShootBlowpipe";
             }
-            case TurnActionPhase::Advance:
-            {
-                return "Advance";
+            case TurnActionPhase::Advance: { return "Advance";
             }
-            case TurnActionPhase::Retreat:
-            {
-                return "Retreat";
+            case TurnActionPhase::Retreat: { return "Retreat";
             }
-            case TurnActionPhase::Cast:
-            {
-                return "Cast";
+            case TurnActionPhase::Cast: { return "Cast";
             }
-            case TurnActionPhase::PlaySong:
-            {
-                return "PlaySong";
+            case TurnActionPhase::PlaySong: { return "PlaySong";
             }
-            case TurnActionPhase::Roar:
-            {
-                return "Roar";
+            case TurnActionPhase::Roar: { return "Roar";
             }
-            case TurnActionPhase::Pounce:
-            {
-                return "Pounce";
+            case TurnActionPhase::Pounce: { return "Pounce";
             }
-            case TurnActionPhase::Run:
-            {
-                return "Run";
+            case TurnActionPhase::Run: { return "Run";
             }
             case TurnActionPhase::Count:
-            default:
-            {
-                return "turn_action_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
+            default: { return "turn_action_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
@@ -3834,29 +3768,17 @@ namespace stage
     {
         switch (ENUM)
         {
-            case PreTurnPhase::Start:
-            {
-                return "Start";
+            case PreTurnPhase::Start: { return "Start";
             }
-            case PreTurnPhase::PanToCenter:
-            {
-                return "PanToCenter";
+            case PreTurnPhase::PanToCenter: { return "PanToCenter";
             }
-            case PreTurnPhase::PostPanPause:
-            {
-                return "PostPanPause";
+            case PreTurnPhase::PostPanPause: { return "PostPanPause";
             }
-            case PreTurnPhase::ZoomOut:
-            {
-                return "ZOut";
+            case PreTurnPhase::ZoomOut: { return "ZOut";
             }
-            case PreTurnPhase::PostZoomOutPause:
-            {
-                return "PostZOutPause";
+            case PreTurnPhase::PostZoomOutPause: { return "PostZOutPause";
             }
-            case PreTurnPhase::End:
-            {
-                return "End";
+            case PreTurnPhase::End: { return "End";
             }
             case PreTurnPhase::Count:
             default:
@@ -3870,74 +3792,40 @@ namespace stage
     {
         switch (ENUM)
         {
-            case AnimPhase::NotAnimating:
-            {
-                return "NotAnimating";
+            case AnimPhase::NotAnimating: { return "NotAnimating";
             }
-            case AnimPhase::AdvanceOrRetreat:
-            {
-                return "AdvanceOrRetreat";
+            case AnimPhase::AdvanceOrRetreat: { return "AdvanceOrRetreat";
             }
-            case AnimPhase::ProjectileShoot:
-            {
-                return "ProjShoot";
+            case AnimPhase::ProjectileShoot: { return "ProjShoot";
             }
-            case AnimPhase::MoveToward:
-            {
-                return "MoveToward";
+            case AnimPhase::MoveToward: { return "MoveToward";
             }
-            case AnimPhase::PostMoveTowardPause:
-            {
-                return "PostTowardPause";
+            case AnimPhase::PostMoveTowardPause: { return "PostTowardPause";
             }
-            case AnimPhase::Impact:
-            {
-                return "Impact";
+            case AnimPhase::Impact: { return "Impact";
             }
-            case AnimPhase::PostImpactPause:
-            {
-                return "PostImpactPause";
+            case AnimPhase::PostImpactPause: { return "PostImpactPause";
             }
-            case AnimPhase::Spell:
-            {
-                return "Spell";
+            case AnimPhase::Spell: { return "Spell";
             }
-            case AnimPhase::PostSpellPause:
-            {
-                return "PostSpellPause";
+            case AnimPhase::PostSpellPause: { return "PostSpellPause";
             }
-            case AnimPhase::Song:
-            {
-                return "Song";
+            case AnimPhase::Song: { return "Song";
             }
-            case AnimPhase::PostSongPause:
-            {
-                return "PostSongPause";
+            case AnimPhase::PostSongPause: { return "PostSongPause";
             }
-            case AnimPhase::MoveBack:
-            {
-                return "MoveBack";
+            case AnimPhase::MoveBack: { return "MoveBack";
             }
-            case AnimPhase::Roar:
-            {
-                return "Roar";
+            case AnimPhase::Roar: { return "Roar";
             }
-            case AnimPhase::PostRoarPause:
-            {
-                return "PostRoarPause";
+            case AnimPhase::PostRoarPause: { return "PostRoarPause";
             }
-            case AnimPhase::Run:
-            {
-                return "Run";
+            case AnimPhase::Run: { return "Run";
             }
-            case AnimPhase::FinalPause:
-            {
-                return "FinalPause";
+            case AnimPhase::FinalPause: { return "FinalPause";
             }
             case AnimPhase::Count:
-            default:
-            {
-                return "anim_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
+            default: { return "anim_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
@@ -4064,7 +3952,7 @@ namespace stage
             }
 
             const auto DAMAGE { NEXT_CREATURE_EFFECT.GetDamageTotal() };
-            if (DAMAGE.IsNonZero())
+            if (!DAMAGE.IsZero())
             {
                 damageVec.emplace_back(DAMAGE);
 

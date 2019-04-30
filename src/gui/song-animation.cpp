@@ -47,7 +47,7 @@ namespace gui
             ,
 
             // start half way so everything moves fast at first and then slows down
-            slider_(std::max(1.0f, BASE_SPEED), 0.5f)
+            slider_(misc::Max(1.0f, BASE_SPEED), 0.5f)
         {
             // set initial sprite values (initial rotation is random)
             sprite_.setPosition(0.0f, 0.0f);
@@ -172,20 +172,18 @@ namespace gui
                     (HORIZ_START_POS < HORIZ_CENTER)
                         ? (HORIZ_START_POS - misc::Random(HORIZ_START_POS - REGION_.left))
                         : (HORIZ_START_POS
-                           + misc::Random(
-                               (REGION_.left + REGION_.width) - HORIZ_START_POS))) };
+                           + misc::Random((REGION_.left + REGION_.width) - HORIZ_START_POS))) };
 
                 const auto VERT_CENTER { REGION_.top + (REGION_.height * 0.5f) };
                 const auto VERT_RAND_SPAN { (REGION_.height * 0.5f) * CENTER_VAR_RATIO_ };
                 const auto VERT_BASE { VERT_CENTER - (VERT_RAND_SPAN * 0.5f) };
                 const auto VERT_START_POS { VERT_BASE + misc::Random(VERT_RAND_SPAN) };
 
-                const auto VERT_END_POS {
-                    ((VERT_START_POS < VERT_CENTER)
-                         ? (VERT_START_POS - misc::Random(VERT_START_POS - REGION_.top))
-                         : (VERT_START_POS
-                            + misc::Random((REGION_.top + REGION_.height) - VERT_START_POS)))
-                };
+                const auto VERT_END_POS { (
+                    (VERT_START_POS < VERT_CENTER)
+                        ? (VERT_START_POS - misc::Random(VERT_START_POS - REGION_.top))
+                        : (VERT_START_POS
+                           + misc::Random((REGION_.top + REGION_.height) - VERT_START_POS))) };
 
                 const sf::Texture & RANDOM_TEXTURE_REF = [&]() {
                     const auto WHICH_TEXTURE_NUM { misc::Random(1, 100) };

@@ -23,8 +23,8 @@
 #include "misc/real.hpp"
 #include "popup/popup-response.hpp"
 #include "sfutil/center.hpp"
-#include "sfutil/display.hpp"
 #include "sfutil/common.hpp"
+#include "sfutil/display.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -39,12 +39,12 @@ namespace stage
 
     SettingsStage::SettingsStage()
         : StageBase(
-            "Settings",
-            { gui::GuiFont::Default,
-              gui::GuiFont::System,
-              gui::GuiFont::SystemCondensed,
-              gui::GuiFont::Number,
-              gui::GuiFont::Handwriting })
+              "Settings",
+              { gui::GuiFont::Default,
+                gui::GuiFont::System,
+                gui::GuiFont::SystemCondensed,
+                gui::GuiFont::Number,
+                gui::GuiFont::Handwriting })
         , SLIDER_LENGTH_VERT_(160.0f)
         , hasStageAlreadyBeenSetup_(false)
         , prevAALevel_(gui::Display::Instance()->AntialiasLevel())
@@ -256,8 +256,8 @@ namespace stage
 
     const sf::FloatRect SettingsStage::Setup_WoodBackgroundBoxAndReturnInnerRect()
     {
-        const auto BG_BOX_WIDTH { std::max(StageRegion().width * 0.45f, 1000.0f) };
-        const auto BG_BOX_HEIGHT { std::max(StageRegion().height * 0.5f, 500.0f) };
+        const auto BG_BOX_WIDTH { misc::Max(StageRegion().width * 0.45f, 1000.0f) };
+        const auto BG_BOX_HEIGHT { misc::Max(StageRegion().height * 0.5f, 500.0f) };
 
         const auto BG_BOX_LEFT { (StageRegion().width * 0.5f) - (BG_BOX_WIDTH * 0.5f) };
 

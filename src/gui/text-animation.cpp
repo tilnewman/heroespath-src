@@ -47,7 +47,7 @@ namespace gui
             , endPosV_(0.0f, 0.0f)
             , isFinished_(false)
             , textRegionUPtr_()
-            , slider_(std::max(1.0f, SPEED), 0.5f)
+            , slider_(misc::Max(1.0f, SPEED), 0.5f)
         {
             const auto START_POS_LEFT { REGION.left + (REGION.width * 0.5f) };
             const auto START_POS_TOP { REGION.top + (REGION.height * 0.85f) };
@@ -88,8 +88,8 @@ namespace gui
 
             const auto FONT_SIZE { START_FONT_SIZE_
                                    + static_cast<unsigned int>(
-                                       static_cast<float>(END_FONT_SIZE_ - START_FONT_SIZE_)
-                                       * SLIDER_POS) };
+                                         static_cast<float>(END_FONT_SIZE_ - START_FONT_SIZE_)
+                                         * SLIDER_POS) };
 
             const TextInfo TEXT_INFO(
                 TEXT_,

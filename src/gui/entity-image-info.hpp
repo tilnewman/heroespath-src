@@ -12,11 +12,12 @@
 #include "gui/cached-texture.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/sprite-texture.hpp"
+#include "sfutil/sprite.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <tuple>
 

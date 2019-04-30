@@ -9,11 +9,11 @@
 //
 // treasure.hpp
 //
+#include "game/strong-types.hpp"
 #include "item/item-profile.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "item/treasure-scores.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <vector>
 
@@ -121,7 +121,7 @@ namespace item
 
         double TreasureScoreToWeight(const Score_t & SCORE) const
         {
-            return 1.0 / (SCORE.As<double>() * 0.1);
+            return 1.0 / (SCORE.GetAs<double>() * 0.1);
         }
 
         const SetTypeProfileVec_t SetItemsAlreadyOwned() const;

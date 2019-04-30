@@ -12,10 +12,10 @@
 //
 #include "creature/creature.hpp"
 #include "creature/nonplayer-inventory-types.hpp"
+#include "game/strong-types.hpp"
 #include "item/armor-type-wrapper.hpp"
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 
 #include <cstddef> //for std::size_t
@@ -227,10 +227,8 @@ namespace creature
                 const auto ENUM_RATIO_INVERSE { (WEAPON_COUNT_FLOAT + 1.0f)
                                                 / (WEAPON_NUM_FLOAT + 1.0f) };
 
-                const auto RANK_F { CHARACTER_PTR->Rank().As<float>() };
-
+                const auto RANK_F { CHARACTER_PTR->Rank().GetAs<float>() };
                 const auto RANK_GRANDMASTER_F { masterRankMax_ + 1.0f };
-
                 const auto RANK_RATIO { RANK_F / RANK_GRANDMASTER_F };
 
                 chance

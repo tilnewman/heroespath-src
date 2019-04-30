@@ -477,26 +477,26 @@ namespace map
         const sf::Vector2i & MAP_SIZE_IN_TILES_V) const
     {
         sf::IntRect tileRect;
-        tileRect.width = std::min((OFFSCREEN_RECT.width / tileSizeVI_.x), MAP_SIZE_IN_TILES_V.x);
-        tileRect.height = std::min((OFFSCREEN_RECT.height / tileSizeVI_.y), MAP_SIZE_IN_TILES_V.y);
+        tileRect.width = misc::Min((OFFSCREEN_RECT.width / tileSizeVI_.x), MAP_SIZE_IN_TILES_V.x);
+        tileRect.height = misc::Min((OFFSCREEN_RECT.height / tileSizeVI_.y), MAP_SIZE_IN_TILES_V.y);
 
         {
             const auto PLAYER_MAP_TILE_POS_X { static_cast<int>(MAP_POS_V.x) / tileSizeVI_.x };
-            tileRect.left = std::max(0, (PLAYER_MAP_TILE_POS_X - (tileRect.width / 2)));
+            tileRect.left = misc::Max(0, (PLAYER_MAP_TILE_POS_X - (tileRect.width / 2)));
 
             if (sfutil::Right(tileRect) > MAP_SIZE_IN_TILES_V.x)
             {
-                tileRect.left = std::max(0, (MAP_SIZE_IN_TILES_V.x - tileRect.width));
+                tileRect.left = misc::Max(0, (MAP_SIZE_IN_TILES_V.x - tileRect.width));
             }
         }
 
         {
             const auto PLAYER_MAP_TILE_POS_Y { static_cast<int>(MAP_POS_V.y) / tileSizeVI_.y };
-            tileRect.top = std::max(0, (PLAYER_MAP_TILE_POS_Y - (tileRect.height / 2)));
+            tileRect.top = misc::Max(0, (PLAYER_MAP_TILE_POS_Y - (tileRect.height / 2)));
 
             if (sfutil::Bottom(tileRect) > MAP_SIZE_IN_TILES_V.y)
             {
-                tileRect.top = std::max(0, (MAP_SIZE_IN_TILES_V.y - tileRect.height));
+                tileRect.top = misc::Max(0, (MAP_SIZE_IN_TILES_V.y - tileRect.height));
             }
         }
 

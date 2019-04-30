@@ -75,7 +75,6 @@ namespace gui
 
     private:
         void OnColorChange() override;
-        char KeyToCharacter(const sf::Keyboard::Key KEY_CODE, const bool IS_SHIFT_DOWN) const;
 
         static const float INNER_PAD_;
         static const float CURSOR_WIDTH_;

@@ -9,17 +9,17 @@
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Game_Combat"
 
-#include "misc/platform.hpp"
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
-#pragma warning(push)
-#pragma warning(disable : 4266)
-#endif
+//#include "misc/platform.hpp"
+//#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+//#pragma warning(push)
+//#pragma warning(disable : 4266)
+//#endif
 
 #include <boost/test/unit_test.hpp>
 
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
-#pragma warning(pop)
-#endif
+//#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+//#pragma warning(pop)
+//#endif
 
 #include "unit-test-test-stuff.hpp"
 
@@ -95,13 +95,13 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
                 std::invalid_argument);
 
             {
-                IDVec_t ids;
+                heroespath::combat::IDVec_t ids;
                 combatTree.FindAdjacentByEdgeType(0_id, ids);
                 BOOST_CHECK(ids.empty());
             }
 
             {
-                IDVec_t ids;
+                heroespath::combat::IDVec_t ids;
                 combatTree.FindAdjacent(0_id, ids);
                 BOOST_CHECK(ids.empty());
             }

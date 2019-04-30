@@ -30,6 +30,8 @@ namespace heroespath
 namespace gui
 {
 
+    using ColorOpt_t = boost::optional<sf::Color>;
+
     // Responsible for wrapping all information needed to modify an image.
     struct ImageOptions
     {

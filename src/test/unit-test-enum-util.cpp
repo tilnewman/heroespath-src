@@ -82,7 +82,6 @@
 #include "map/layer-type-enum.hpp"
 #include "map/level-enum.hpp"
 #include "misc/log-pri-enum.hpp"
-#include "misc/to-string-prefix-enum.hpp"
 #include "popup/popup-enums.hpp"
 #include "song/song-enum.hpp"
 #include "song/song-type-enum.hpp"
@@ -100,7 +99,7 @@ void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STR
 {
     std::ostringstream msgSS;
     msgSS << "EnumTest<" << EnumUtil<EnumWrapper_t>::TypeName() << ", "
-          << NAMEOF_TYPE_T_STR(EnumUnderlying_t) << ">(last_valid_value=" << LAST_VALID_VALUE
+          << NAMEOF_TYPE_T(EnumUnderlying_t) << ">(last_valid_value=" << LAST_VALID_VALUE
           << ", must_first_be_empty=" << std::boolalpha << MUST_FIRST_STRING_TO_BE_EMPTY << ") ";
 
     M_HP_LOG(msgSS.str() + "Starting...");
@@ -185,8 +184,8 @@ void TestBitFieldEnum()
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (misc::are_same_v<EnumUnderlying_t, UnderlyingTypeActual_t>),
         EnumUtil<EnumWrapper_t>::TypeName()
-            << "Underlying type was: " << NAMEOF_TYPE_T_STR(UnderlyingTypeActual_t)
-            << " instead of what it should be: " << NAMEOF_TYPE_T_STR(EnumUnderlying_t) << ".");
+            << "Underlying type was: " << NAMEOF_TYPE_T(UnderlyingTypeActual_t)
+            << " instead of what it should be: " << NAMEOF_TYPE_T(EnumUnderlying_t) << ".");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::None == 0), EnumUtil<EnumWrapper_t>::TypeName() << "::None was not zero.");
@@ -216,8 +215,8 @@ void TestCountingEnum()
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (misc::are_same_v<EnumUnderlying_t, UnderlyingTypeActual_t>),
         EnumUtil<EnumWrapper_t>::TypeName()
-            << "Underlying type was: " << NAMEOF_TYPE_T_STR(UnderlyingTypeActual_t)
-            << " instead of what it should be: " << NAMEOF_TYPE_T_STR(EnumUnderlying_t) << ".");
+            << "Underlying type was: " << NAMEOF_TYPE_T(UnderlyingTypeActual_t)
+            << " instead of what it should be: " << NAMEOF_TYPE_T(EnumUnderlying_t) << ".");
 
     if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::Not)
     {
@@ -827,7 +826,6 @@ BOOST_AUTO_TEST_CASE(Case_4_MiscEnumUtil_ActualEnums_Bitfield_Tests)
     TestBitFieldEnum<item::category>();
     TestBitFieldEnum<item::element_type>();
     TestBitFieldEnum<item::weapon_type>();
-    TestBitFieldEnum<misc::ToStringPrefix>();
     TestBitFieldEnum<popup::PopupButtons>();
 
     M_HP_LOG_WRN("The big long bitfield enum test: combat::strategy::SelectType:  START");

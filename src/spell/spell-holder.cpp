@@ -189,12 +189,12 @@ namespace spell
                                          << "\") resulted in an empty DescExtra().");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (SPELL_PTR->ManaCost().IsNonZero()),
+                (!SPELL_PTR->ManaCost().IsZero()),
                 "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
                                          << "\") resulted in a zero Mana cost.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (SPELL_PTR->Rank().IsNonZero()),
+                (!SPELL_PTR->Rank().IsZero()),
                 "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
                                          << "\") resulted in a zero Rank.");
 

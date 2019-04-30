@@ -38,7 +38,7 @@ namespace gui
             ,
 
             // start half way so everything moves fast at first and then slows down
-            slider_(std::max(1.0f, SPEED))
+            slider_(misc::Max(1.0f, SPEED))
         {
             sprite_.setPosition(0.0f, 0.0f);
             sprite_.setScale(1.0f, 1.0f);

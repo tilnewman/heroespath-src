@@ -91,11 +91,11 @@ namespace item
             weaponDetails.complexity = EnumUtil<creature::nonplayer::complexity_type>::FromString(
                 CleanStringField(FIELDS_VEC[1], false));
 
-            weaponDetails.price = Coin_t(StringFieldToInt("Price", FIELDS_VEC[2]));
-            weaponDetails.weight = Weight_t(StringFieldToInt("Weight", FIELDS_VEC[3]));
+            weaponDetails.price = Coin_t::Make(StringFieldToInt("Price", FIELDS_VEC[2]));
+            weaponDetails.weight = Weight_t::Make(StringFieldToInt("Weight", FIELDS_VEC[3]));
 
-            weaponDetails.damage_min = Health_t(StringFieldToInt("DamageMin", FIELDS_VEC[4]));
-            weaponDetails.damage_max = Health_t(StringFieldToInt("DamageMax", FIELDS_VEC[5]));
+            weaponDetails.damage_min = Health_t::Make(StringFieldToInt("DamageMin", FIELDS_VEC[4]));
+            weaponDetails.damage_max = Health_t::Make(StringFieldToInt("DamageMax", FIELDS_VEC[5]));
 
             weaponDetails.handedness
                 = ((CleanStringField(FIELDS_VEC[6], true) == "two-handed")

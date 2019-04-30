@@ -14,7 +14,7 @@
 #include "gui/colored-rect.hpp"
 #include "gui/image-entity.hpp"
 #include "misc/boost-optional-that-throws.hpp"
-#include "sfutil/sprite-texture.hpp"
+#include "sfutil/sprite.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>

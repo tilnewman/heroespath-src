@@ -19,6 +19,8 @@
 #include "sfutil/vertex.hpp"
 #include "stage/stage-base.hpp"
 
+#include <SFML/Graphics/Sprite.hpp>
+
 #include <memory>
 #include <sstream>
 #include <string>

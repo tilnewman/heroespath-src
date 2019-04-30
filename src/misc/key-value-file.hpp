@@ -10,10 +10,11 @@
 // key-value-file.hpp
 //
 #include "misc/log-macros.hpp"
+#include "misc/nameof.hpp"
 #include "misc/strings.hpp"
+#include "misc/strong-numeric-type.hpp"
 #include "misc/type-helpers.hpp"
 
-#include "misc/nameof.hpp"
 #include <boost/lexical_cast.hpp>
 
 #include <string>
@@ -164,7 +165,7 @@ namespace misc
                 {
                     M_HP_LOG_ERR(
                         "For key=\""
-                        << KEY << "\" boost::lexical_cast<" << NAMEOF_TYPE_T_STR(T) << ">(value=\""
+                        << KEY << "\" boost::lexical_cast<" << NAMEOF_TYPE_T(T) << ">(value=\""
                         << VALUE_STR
                         << "\") fails because the desired type is a one-byte type with a range "
                            "limited to ["
@@ -188,7 +189,7 @@ namespace misc
             catch (const std::exception & EXCEPTION)
             {
                 M_HP_LOG_ERR(
-                    "For key=\"" << KEY << "\" boost::lexical_cast<" << NAMEOF_TYPE_T_STR(T)
+                    "For key=\"" << KEY << "\" boost::lexical_cast<" << NAMEOF_TYPE_T(T)
                                  << ">(value=\"" << VALUE_STR << "\") threw exception \""
                                  << EXCEPTION.what() << "\".  Returning return_on_conversion_error="
                                  << RETURN_IF_CONVERSION_ERROR << ".  "
@@ -206,10 +207,42 @@ namespace misc
             return ValueAs(KEY, RETURN_IF_NOT_FOUND, RETURN_IF_NOT_FOUND);
         }
 
+        // returns RETURN_IF_NOT_FOUND if KEY is empty
+        template <typename V, typename P>
+        const StrongType<V, P>
+            ValueAs(const std::string & KEY, const StrongType<V, P> & RETURN_IF_NOT_FOUND) const
+        {
+            return StrongType<V, P>::Make(
+                ValueAs(KEY, RETURN_IF_NOT_FOUND.Get(), RETURN_IF_NOT_FOUND.Get()));
+        }
+
+        // returns RETURN_IF_NOT_FOUND if KEY is empty
+        template <typename V, typename P>
+        const StrongNumericType<V, P> ValueAs(
+            const std::string & KEY, const StrongNumericType<V, P> & RETURN_IF_NOT_FOUND) const
+        {
+            return StrongNumericType<V, P>::Make(
+                ValueAs(KEY, RETURN_IF_NOT_FOUND.Get(), RETURN_IF_NOT_FOUND.Get()));
+        }
+
         template <typename T>
         T ValueOrDefault(const std::string & KEY) const
         {
             return ValueAs(KEY, T());
+        }
+
+        template <typename S, typename V, typename P>
+        std::enable_if_t<are_same_v<S, StrongType<V, P>>, const StrongType<V, P>>
+            ValueAs(const std::string & KEY) const
+        {
+            return ValueAs(KEY, S());
+        }
+
+        template <typename S, typename V, typename P>
+        std::enable_if_t<are_same_v<S, StrongNumericType<V, P>>, const StrongNumericType<V, P>>
+            ValueAs(const std::string & KEY) const
+        {
+            return ValueAs(KEY, S());
         }
 
         // returns true if the KEY was found and it's value set, returns false if KEY or VALUE is

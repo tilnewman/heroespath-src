@@ -10,10 +10,10 @@
 // item-score-helper.hpp
 //
 #include "creature/traits-set.hpp"
+#include "game/strong-types.hpp"
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
-#include "misc/types.hpp"
 
 namespace heroespath
 {

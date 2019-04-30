@@ -10,7 +10,7 @@
 // rectangle-shape.hpp
 //
 #include "sfutil/color.hpp"
-#include "sfutil/sprite-texture.hpp"
+#include "sfutil/sprite.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -40,20 +40,11 @@ inline bool operator<(const sf::RectangleShape & L, const sf::RectangleShape & R
 
 inline bool operator==(const sf::RectangleShape & L, const sf::RectangleShape & R)
 {
-    return std::make_tuple(
-               L.getFillColor(),
-               L.getGlobalBounds(),
-               L.getLocalBounds(),
-               L.getOutlineColor(),
-               L.getTexture(),
-               L.getTextureRect())
-        == std::make_tuple(
-               R.getFillColor(),
-               R.getGlobalBounds(),
-               R.getLocalBounds(),
-               R.getOutlineColor(),
-               R.getTexture(),
-               R.getTextureRect());
+    return (
+        (L.getFillColor() == R.getFillColor()) && (L.getGlobalBounds() == R.getGlobalBounds())
+        && (L.getLocalBounds() == R.getLocalBounds())
+        && (L.getOutlineColor() == R.getOutlineColor()) && (L.getTexture() == R.getTexture())
+        && (L.getTextureRect() == R.getTextureRect()));
 }
 
 inline bool operator!=(const sf::RectangleShape & L, const sf::RectangleShape & R)

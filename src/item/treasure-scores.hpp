@@ -9,7 +9,7 @@
 //
 // treasure-scores.hpp
 //
-#include "misc/types.hpp"
+#include "game/strong-types.hpp"
 
 #include <string>
 #include <tuple>

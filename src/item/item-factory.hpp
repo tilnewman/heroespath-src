@@ -9,11 +9,11 @@
 //
 // item-factory.hpp
 //
+#include "game/strong-types.hpp"
 #include "item/item-name-factory.hpp"
 #include "item/item-type-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <memory>
 #include <string>

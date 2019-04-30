@@ -15,8 +15,8 @@
 #include "gui/font-manager.hpp"
 #include "gui/text-region.hpp"
 #include "misc/config-file.hpp"
-#include "sfutil/display.hpp"
 #include "sfutil/common.hpp"
+#include "sfutil/display.hpp"
 #include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -210,7 +210,7 @@ namespace stage
             const int NEWLINE_COUNT_LIMIT { 10 };
 
             const auto NEWLINE_RATIO { static_cast<float>(
-                                           std::min(NEWLINE_COUNT_LIMIT, NUM_NEWLINES))
+                                           misc::Min(NEWLINE_COUNT_LIMIT, NUM_NEWLINES))
                                        / static_cast<float>(NEWLINE_COUNT_LIMIT) };
 
             const auto FONT_SIZE_CURRENT_F { static_cast<float>(textInfoContent.size) };

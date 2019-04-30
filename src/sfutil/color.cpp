@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -9,24 +11,8 @@
 //
 #include "color.hpp"
 
-#include "misc/strings.hpp"
-#include "sfutil/vector-and-rect.hpp"
-
-#include <tuple>
-
 namespace sf
 {
-
-bool operator<(const sf::Color & L, const sf::Color & R)
-{
-    return std::tie(L.r, L.g, L.b, L.a) < std::tie(R.r, R.g, R.b, R.a);
-}
-
-bool operator>(const sf::Color & L, const sf::Color & R) { return (R < L); }
-
-bool operator<=(const sf::Color & L, const sf::Color & R) { return !(L > R); }
-
-bool operator>=(const sf::Color & L, const sf::Color & R) { return !(L < R); }
 
 std::ostream & operator<<(std::ostream & os, const sf::Color & C)
 {
@@ -79,59 +65,5 @@ std::ostream & operator<<(std::ostream & os, const sf::Color & C)
 
     return os;
 }
+
 } // namespace sf
-
-namespace heroespath
-{
-namespace sfutil
-{
-
-    const sf::Color MakeHighlight(const sf::Uint8 COLOR_VALUE)
-    {
-        return sf::Color(COLOR_VALUE, COLOR_VALUE, COLOR_VALUE, 0);
-    }
-
-    const std::string ToString(const sf::Color & C, const misc::ToStringPrefix::Enum OPTIONS)
-    {
-        std::ostringstream ss;
-        ss << misc::MakeToStringPrefix(OPTIONS, "Color") << C;
-        return ss.str();
-    }
-
-    const sf::Color Transition(const sf::Color & FROM, const sf::Color & TO, const float RATIO)
-    {
-        const auto RED { static_cast<sf::Uint8>(
-            FROM.r
-            + static_cast<sf::Uint8>(
-                  (static_cast<float>(TO.r) - static_cast<float>(FROM.r)) * RATIO)) };
-
-        const auto GREEN { static_cast<sf::Uint8>(
-            FROM.g
-            + static_cast<sf::Uint8>(
-                  (static_cast<float>(TO.g) - static_cast<float>(FROM.g)) * RATIO)) };
-
-        const auto BLUE { static_cast<sf::Uint8>(
-            FROM.b
-            + static_cast<sf::Uint8>(
-                  (static_cast<float>(TO.b) - static_cast<float>(FROM.b)) * RATIO)) };
-
-        const auto ALPHA { static_cast<sf::Uint8>(
-            FROM.a
-            + static_cast<sf::Uint8>(
-                  (static_cast<float>(TO.a) - static_cast<float>(FROM.a)) * RATIO)) };
-
-        return sf::Color(RED, GREEN, BLUE, ALPHA);
-    }
-
-    bool IsEqualWithoutAlpha(const sf::Color & L, const sf::Color & R)
-    {
-        return std::tie(L.r, L.g, L.b) == std::tie(R.r, R.g, R.b);
-    }
-
-    bool IsLessWithoutAlpha(const sf::Color & L, const sf::Color & R)
-    {
-        return std::tie(L.r, L.g, L.b) < std::tie(R.r, R.g, R.b);
-    }
-
-} // namespace sfutil
-} // namespace heroespath

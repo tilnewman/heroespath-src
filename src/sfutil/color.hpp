@@ -9,24 +9,22 @@
 //
 // color.hpp
 //
-#include "gui/color-set.hpp"
-#include "misc/boost-optional-that-throws.hpp"
-#include "misc/to-string-prefix-enum.hpp"
-#include "sprite-texture.hpp"
-
 #include <SFML/Graphics/Color.hpp>
 
-#include <string>
+#include <ostream>
+#include <tuple>
 
 namespace sf
 {
 
-class Text;
+inline bool operator<(const sf::Color & L, const sf::Color & R)
+{
+    return std::tie(L.r, L.g, L.b, L.a) < std::tie(R.r, R.g, R.b, R.a);
+}
 
-bool operator<(const sf::Color & L, const sf::Color & R);
-bool operator>(const sf::Color & L, const sf::Color & R);
-bool operator<=(const sf::Color & L, const sf::Color & R);
-bool operator>=(const sf::Color & L, const sf::Color & R);
+inline bool operator>(const sf::Color & L, const sf::Color & R) { return (R < L); }
+inline bool operator<=(const sf::Color & L, const sf::Color & R) { return !(L > R); }
+inline bool operator>=(const sf::Color & L, const sf::Color & R) { return !(L < R); }
 
 // operator== already provided by sfml
 
@@ -36,17 +34,11 @@ std::ostream & operator<<(std::ostream & os, const sf::Color & C);
 
 namespace heroespath
 {
-
-using ColorOpt_t = boost::optional<sf::Color>;
-using ColorValueOpt_t = boost::optional<sf::Uint8>;
-
 namespace sfutil
 {
 
     namespace color
     {
-        // sf::Color::Transparent == { 0, 0, 0, 0 }
-
         const sf::Color GrayLight { 200, 200, 200 };
         const sf::Color GrayLighter { 232, 232, 232 };
         const sf::Color GrayDark { 100, 100, 100 };
@@ -56,24 +48,42 @@ namespace sfutil
         const sf::Color GoldLight { 255, 248, 220 };
         const sf::Color FocusIn { 220, 220, 220 };
         const sf::Color FocusOut { 180, 180, 180 };
-
-        const gui::FocusColors GuiFocusColors { FocusIn, FocusIn, FocusOut, FocusOut };
-
     } // namespace color
 
-    const sf::Color MakeHighlight(const sf::Uint8 COLOR_VALUE);
-
-    const std::string ToString(
-        const sf::Color & C,
-        const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default);
-
     // return a color between FROM and TO at the given RATIO
-    const sf::Color Transition(const sf::Color & FROM, const sf::Color & TO, const float RATIO);
+    inline const sf::Color
+        Transition(const sf::Color & FROM, const sf::Color & TO, const float RATIO)
+    {
+        auto calcRGBAdjustment = [&](const sf::Uint8 A, const sf::Uint8 B) {
+            return static_cast<int>((static_cast<float>(B) - static_cast<float>(A)) * RATIO);
+        };
 
-    bool IsEqualWithoutAlpha(const sf::Color & L, const sf::Color & R);
-    bool IsLessWithoutAlpha(const sf::Color & L, const sf::Color & R);
+        auto adjustRGBValue = [&](sf::Uint8 & f, const sf::Uint8 T) {
+            f = static_cast<sf::Uint8>(static_cast<int>(f) + calcRGBAdjustment(f, T));
+        };
+
+        sf::Color result = FROM;
+
+        adjustRGBValue(result.r, TO.r);
+        adjustRGBValue(result.g, TO.g);
+        adjustRGBValue(result.b, TO.b);
+        adjustRGBValue(result.a, TO.a);
+
+        return result;
+    }
+
+    inline bool IsEqualWithoutAlpha(const sf::Color & L, const sf::Color & R)
+    {
+        return std::tie(L.r, L.g, L.b) == std::tie(R.r, R.g, R.b);
+    }
+
+    inline bool IsLessWithoutAlpha(const sf::Color & L, const sf::Color & R)
+    {
+        return std::tie(L.r, L.g, L.b) < std::tie(R.r, R.g, R.b);
+    }
 
 } // namespace sfutil
+
 } // namespace heroespath
 
 #endif // HEROESPATH_SFUTIL_COLOR_HPP_INCLUDED

@@ -17,13 +17,12 @@
 #include "gui/text-region.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/nameof.hpp"
 #include "misc/not-null.hpp"
 #include "sfutil/common.hpp"
 #include "sfutil/fitting.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
-
-#include "misc/nameof.hpp"
 
 #include <memory>
 #include <sstream>
@@ -67,8 +66,8 @@ namespace gui
             {
                 std::ostringstream ss;
                 ss << LE.textRegionUPtr_->GetEntityName() << "CopyMadeBy_ListElement<"
-                   << NAMEOF_TYPE_T_STR(Element_t)
-                   << ">::CopyConstructor(MakingCopyOf_" + LE.ToString() << ")_";
+                   << NAMEOF_TYPE_T(Element_t) << ">::CopyConstructor(MakingCopyOf_" + LE.ToString()
+                   << ")_";
 
                 textRegionUPtr_
                     = std::make_unique<TextRegion>(ss.str(), LE.textRegionUPtr_->GetTextInfo());
@@ -306,7 +305,7 @@ namespace gui
         const std::string ToString() const
         {
             std::ostringstream ss;
-            ss << "ListElement<" << NAMEOF_TYPE_T_STR(Element_t) << ">("
+            ss << "ListElement<" << NAMEOF_TYPE_T(Element_t) << ">("
                << ((HasElement()) ? "HasElement" : "NoElement") << ")("
                << ((cachedTextureOpt_) ? cachedTextureOpt_->Path() : "NoImage") << ")("
                << ((textRegionUPtr_) ? "\"" + textRegionUPtr_->GetText() + "\"" : "NoText") << ")";

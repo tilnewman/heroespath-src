@@ -9,8 +9,8 @@
 //
 // dragon-class-enum.hpp
 //
+#include "game/strong-types.hpp"
 #include "misc/enum-common.hpp"
-#include "misc/types.hpp"
 
 #include <string>
 

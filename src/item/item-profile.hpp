@@ -11,6 +11,7 @@
 //
 #include "creature/race-enum.hpp"
 #include "creature/summon-info.hpp"
+#include "game/strong-types.hpp"
 #include "item/armor-details.hpp"
 #include "item/item-profile-thin.hpp"
 #include "item/item-score-helper.hpp"
@@ -18,7 +19,6 @@
 #include "item/weapon-details.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/log-macros.hpp"
-#include "misc/types.hpp"
 
 #include <string>
 #include <tuple>
@@ -70,7 +70,7 @@ namespace item
 
         Score_t ReligiousScore() const
         {
-            return Score_t::Make(score_.As<float>() * religiousRatio_);
+            return Score_t::Make(score_.GetAs<float>() * religiousRatio_);
         }
 
         bool IsReligious() const { return (0.0f < religiousRatio_); }

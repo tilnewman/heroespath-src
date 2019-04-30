@@ -103,10 +103,10 @@ namespace gui
             const auto TARGET_LINE_SPACING { (LARGEST_LINE_SPACING - TOP_GAP) };
             const auto DOWN_SHIFT_FULL { (TARGET_LINE_SPACING - region.height) };
 
-            const auto FONT_SIZE_F { std::max(
+            const auto FONT_SIZE_F { misc::Max(
                 20.0f, static_cast<float>(texts.front().getCharacterSize())) };
 
-            const auto FONT_SIZE_MULT { 1.0f - (FONT_SIZE_F / std::max(40.0f, FONT_SIZE_F)) };
+            const auto FONT_SIZE_MULT { 1.0f - (FONT_SIZE_F / misc::Max(40.0f, FONT_SIZE_F)) };
 
             const auto DOWN_SHIFT_FINAL { (DOWN_SHIFT_FULL * 2.0f) * FONT_SIZE_MULT };
 

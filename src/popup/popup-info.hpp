@@ -117,7 +117,7 @@ namespace popup
         static std::size_t ContentNum_Item() { return 0; }
         static std::size_t ContentNum_Coins() { return 1; }
         static std::size_t ContentNum_Gems() { return 2; }
-        static std::size_t ContentNum_MeteorShards() { return 3; }
+        static std::size_t ContentNum_Shards() { return 3; }
 
         bool IsNumberValid(const std::size_t) const;
 
@@ -148,18 +148,18 @@ namespace popup
                     howCombatEnded_,
                     creaturePtrOpt_)
                 == std::tie(
-                    OTHER.stage_,
-                    OTHER.name_,
-                    OTHER.textInfo_,
-                    OTHER.titleText_,
-                    OTHER.descText_,
-                    OTHER.buttons_,
-                    OTHER.image_,
-                    OTHER.buttonColor_,
-                    OTHER.numberMin_,
-                    OTHER.numberMax_,
-                    OTHER.howCombatEnded_,
-                    OTHER.creaturePtrOpt_));
+                       OTHER.stage_,
+                       OTHER.name_,
+                       OTHER.textInfo_,
+                       OTHER.titleText_,
+                       OTHER.descText_,
+                       OTHER.buttons_,
+                       OTHER.image_,
+                       OTHER.buttonColor_,
+                       OTHER.numberMin_,
+                       OTHER.numberMax_,
+                       OTHER.howCombatEnded_,
+                       OTHER.creaturePtrOpt_));
         }
 
     public:

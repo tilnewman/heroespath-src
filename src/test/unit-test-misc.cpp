@@ -21,6 +21,7 @@
 #pragma warning(pop)
 #endif
 
+#include "game/strong-types.hpp"
 #include "gui/list-no-element.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
@@ -862,10 +863,10 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
 
 BOOST_AUTO_TEST_CASE(BoostOptionalThrowOnUninitTests)
 {
-    // In this codebase <boost/optional.hpp> is not included directly, instead a wrapper include is
-    // used "misc/boost-optional-that-throws.hpp". This forces any attempted access of an
-    // uninitialized boost::optional to throw a std::runtime_error. So these tests make sure that
-    // boost::optional behaves in the way required by the codebase.
+    // In this codebase <boost/optional.hpp> is not included directly, instead a wrapper include
+    // is used "misc/boost-optional-that-throws.hpp". This forces any attempted access of an
+    // uninitialized boost::optional to throw a std::runtime_error. So these tests make sure
+    // that boost::optional behaves in the way required by the codebase.
 
     boost::optional<Thing> optional { boost::none };
 
@@ -975,4 +976,397 @@ BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
 
     ThingPtrOpt_t optExtra { thingPtr1 };
     BOOST_CHECK(optExtra == thingPtr1);
+}
+
+BOOST_AUTO_TEST_CASE(strong_type_tests)
+{
+    Name_t a;
+    BOOST_CHECK_EQUAL(a.Get(), std::string(""));
+
+    Name_t b(a);
+    BOOST_CHECK_EQUAL(a.Get(), b.Get());
+
+    Name_t c = a;
+    BOOST_CHECK_EQUAL(a.Get(), c.Get());
+
+    const auto ABC_STR = "abc";
+    Name_t d = Name_t::Make(std::string(ABC_STR));
+    BOOST_CHECK_EQUAL(d.Get(), ABC_STR);
+
+    const auto XYZ_STR = "xyz";
+    Name_t e = Name_t::Make(Name_t::value_type(XYZ_STR));
+    BOOST_CHECK_EQUAL(e.Get(), XYZ_STR);
+
+    std::ostringstream ss;
+    ss << e;
+    BOOST_CHECK_EQUAL(ss.str(), XYZ_STR);
+
+    BOOST_CHECK(a == b);
+    BOOST_CHECK(!(a != b));
+    BOOST_CHECK(!(a < b));
+    BOOST_CHECK(a <= b);
+    BOOST_CHECK(!(a > b));
+    BOOST_CHECK(a >= b);
+
+    BOOST_CHECK(!(d == e));
+    BOOST_CHECK(d != e);
+    BOOST_CHECK(d < e);
+    BOOST_CHECK(d <= e);
+    BOOST_CHECK(!(d > e));
+    BOOST_CHECK(!(d >= e));
+
+    //
+    // none of these should compile
+    //
+    // Health_t h;
+    // auto m1 = (a + a);
+    // auto m2 = (a - a);
+    // auto m3 = (a / a);
+    // auto m4 = (a * a);
+    //++a;
+    // a++;
+    //--a;
+    // a--;
+    // a += b;
+    // a -= b;
+    // a *= b;
+    // a /= b;
+    // Name_t d1(std::string("asdf"));
+    // Name_t d2(Name_t::value_type("1234"));
+    // Name_t e1 = std::string("asdf");
+    // Name_t e2 = Name_t::value_type();
+    // Name_t g(h);
+    // a = h;
+    // a += h;
+    // auto cc1 = (a + a);
+    // auto cc2 = (a + h);
+    // auto b3 = (a == h);
+    // auto b4 = (a != h);
+    // auto b5 = (a == std::string("asdf"));
+    // auto b6 = (a == std::string());
+    // auto b7 = (a == Name_t::value_type());
+    // auto b8 = (a == Name_t::value_type("1234"));
+}
+
+BOOST_AUTO_TEST_CASE(strong_numeric_type_tests)
+{
+    // using Health_t as a test because it's value_type is int...less typing
+    Health_t a;
+    BOOST_CHECK_EQUAL(a.Get(), 0);
+    BOOST_CHECK(a.IsZero());
+    BOOST_CHECK(a.IsPositive());
+    BOOST_CHECK(!a.IsNegative());
+    BOOST_CHECK_EQUAL(a.MakePositiveCopy(), 0_health);
+    BOOST_CHECK_EQUAL(a.MakeNegativeCopy(), 0_health);
+    a.MakePositive();
+    BOOST_CHECK_EQUAL(a.Get(), 0);
+    a.MakeNegative();
+    BOOST_CHECK_EQUAL(a.Get(), 0);
+    BOOST_CHECK_EQUAL(a, Health_t::Make(0.0f));
+
+    Health_t b(a);
+    BOOST_CHECK_EQUAL(b.Get(), 0);
+
+    Health_t c = a;
+    BOOST_CHECK_EQUAL(c.Get(), 0);
+
+    Health_t d = Health_t::Make(123);
+    BOOST_CHECK_EQUAL(d.Get(), 123);
+    BOOST_CHECK(!d.IsZero());
+    BOOST_CHECK(d.IsPositive());
+    BOOST_CHECK(!d.IsNegative());
+    BOOST_CHECK_EQUAL(d.MakePositiveCopy(), 123_health);
+    BOOST_CHECK_EQUAL(d.MakeNegativeCopy(), -123_health);
+    d.MakePositive();
+    BOOST_CHECK_EQUAL(d, 123_health);
+    d.MakeNegative();
+    BOOST_CHECK_EQUAL(d, -123_health);
+    d = -d;
+    BOOST_CHECK_EQUAL(d, 123_health);
+    BOOST_CHECK_EQUAL(d.GetAs<float>(), float(123));
+    BOOST_CHECK_EQUAL(d.GetAs<unsigned>(), unsigned(123));
+    BOOST_CHECK_EQUAL(d, Health_t::Make(123.0f));
+
+    Health_t e = Health_t::Make(-123);
+    BOOST_CHECK_EQUAL(e.Get(), -123);
+    BOOST_CHECK(!e.IsZero());
+    BOOST_CHECK(!e.IsPositive());
+    BOOST_CHECK(e.IsNegative());
+    BOOST_CHECK_EQUAL(e.MakePositiveCopy(), 123_health);
+    BOOST_CHECK_EQUAL(e.MakeNegativeCopy(), -123_health);
+    e.MakePositive();
+    BOOST_CHECK_EQUAL(e, 123_health);
+    e.MakeNegative();
+    BOOST_CHECK_EQUAL(e, -123_health);
+    e = -e;
+    BOOST_CHECK_EQUAL(e, 123_health);
+    e = -e;
+    BOOST_CHECK_EQUAL(e.Get(), -123);
+    BOOST_CHECK_EQUAL(e.GetAs<float>(), float(-123));
+    BOOST_CHECK_EQUAL(e.GetAs<unsigned>(), unsigned(-123));
+    BOOST_CHECK_EQUAL(e, Health_t::Make(-123.0f));
+
+    Health_t f = Health_t::Make(Health_t::value_type(-123));
+    BOOST_CHECK_EQUAL(f.Get(), -123);
+
+    std::ostringstream ss;
+    ss << a;
+    ss.str("");
+    ss << f;
+    BOOST_CHECK_EQUAL(f.Get(), -123);
+
+    BOOST_CHECK(a == b);
+    BOOST_CHECK(!(a != b));
+    BOOST_CHECK(!(a < b));
+    BOOST_CHECK(a <= b);
+    BOOST_CHECK(!(a > b));
+    BOOST_CHECK(a >= b);
+
+    BOOST_CHECK(a == 0_health);
+    BOOST_CHECK(!(a != 0_health));
+    BOOST_CHECK(!(a < 0_health));
+    BOOST_CHECK(a <= 0_health);
+    BOOST_CHECK(!(a > 0_health));
+    BOOST_CHECK(a >= 0_health);
+
+    BOOST_CHECK(!(d == e));
+    BOOST_CHECK(d != e);
+    BOOST_CHECK(!(d < e));
+    BOOST_CHECK(e < d);
+    BOOST_CHECK(!(d <= e));
+    BOOST_CHECK(d > e);
+    BOOST_CHECK(d >= e);
+
+    BOOST_CHECK(!(d == -123_health));
+    BOOST_CHECK(d != -123_health);
+    BOOST_CHECK(!(d < -123_health));
+    BOOST_CHECK(-123_health < d);
+    BOOST_CHECK(!(d <= -123_health));
+    BOOST_CHECK(d > -123_health);
+    BOOST_CHECK(d >= -123_health);
+
+    BOOST_CHECK_EQUAL((a + a), 0_health);
+    BOOST_CHECK_EQUAL((a - a), 0_health);
+    BOOST_CHECK_EQUAL((a * a), 0_health);
+
+    // divide or mod by zero equals zero
+    {
+        BOOST_CHECK_EQUAL((a / a), 0_health);
+        BOOST_CHECK_EQUAL((a / 0_health), 0_health);
+        BOOST_CHECK_EQUAL((d / a), 0_health);
+        BOOST_CHECK_EQUAL((d / 0_health), 0_health);
+        //
+        BOOST_CHECK_EQUAL((a % a), 0_health);
+        BOOST_CHECK_EQUAL((a % 0_health), 0_health);
+        BOOST_CHECK_EQUAL((d % a), 0_health);
+        BOOST_CHECK_EQUAL((d % 0_health), 0_health);
+
+        auto temp = 0_health;
+        temp %= 0_health;
+        BOOST_CHECK_EQUAL(temp, 0_health);
+
+        temp = 0_health;
+        temp /= 0_health;
+        BOOST_CHECK_EQUAL(temp, 0_health);
+
+        temp = 100_health;
+        temp %= 0_health;
+        BOOST_CHECK_EQUAL(temp, 0_health);
+
+        temp = 100_health;
+        temp /= 0_health;
+        BOOST_CHECK_EQUAL(temp, 0_health);
+
+        temp = 100_health;
+        temp %= 10_health;
+        BOOST_CHECK_EQUAL(temp, 0_health);
+
+        temp = 100_health;
+        temp /= 10_health;
+        BOOST_CHECK_EQUAL(temp, 10_health);
+    }
+
+    BOOST_CHECK_EQUAL((d + e).Get(), 0);
+    BOOST_CHECK_EQUAL((e + d).Get(), 0);
+    BOOST_CHECK_EQUAL((d / e).Get(), -1);
+    BOOST_CHECK_EQUAL((d * e).Get(), (123 * -123));
+
+    BOOST_CHECK_EQUAL((d + -123_health).Get(), 0);
+    BOOST_CHECK_EQUAL((-123_health + d).Get(), 0);
+    BOOST_CHECK_EQUAL((d / -123_health).Get(), -1);
+    BOOST_CHECK_EQUAL((d * -123_health).Get(), (123 * -123));
+
+    BOOST_CHECK_EQUAL(Abs(a), 0_health);
+    BOOST_CHECK_EQUAL(Abs(123_health), 123_health);
+    BOOST_CHECK_EQUAL(Abs(-123_health), 123_health);
+
+    BOOST_CHECK_EQUAL(Min(d, e), -123_health);
+    BOOST_CHECK_EQUAL(Min(d, e, a), -123_health);
+    BOOST_CHECK_EQUAL(Min(d, e, c, a), -123_health);
+
+    BOOST_CHECK_EQUAL(Max(d, e), 123_health);
+    BOOST_CHECK_EQUAL(Max(d, e, c), 123_health);
+    BOOST_CHECK_EQUAL(Max(d, e, c, a), 123_health);
+
+    BOOST_CHECK_EQUAL(Max(-321_health, -123_health, 0_health, 123_health, 321_health), 321_health);
+    BOOST_CHECK_EQUAL(Min(-321_health, -123_health, 0_health, 123_health, 321_health), -321_health);
+
+    BOOST_CHECK_EQUAL(++a.Get(), 1);
+    BOOST_CHECK_EQUAL(a.Get(), 1);
+
+    BOOST_CHECK_EQUAL((a++).Get(), 1);
+    BOOST_CHECK_EQUAL(a.Get(), 2);
+
+    BOOST_CHECK_EQUAL(--a.Get(), 1);
+    BOOST_CHECK_EQUAL(a.Get(), 1);
+
+    BOOST_CHECK_EQUAL((a--).Get(), 1);
+    BOOST_CHECK_EQUAL(a.Get(), 0);
+
+    BOOST_CHECK_EQUAL((d + e).Get(), 0);
+    BOOST_CHECK_EQUAL(d, 123_health);
+    BOOST_CHECK_EQUAL(e, -123_health);
+
+    BOOST_CHECK_EQUAL((d - e), 246_health);
+    BOOST_CHECK_EQUAL(d, 123_health);
+    BOOST_CHECK_EQUAL(e, -123_health);
+
+    BOOST_CHECK_EQUAL((d * e).Get(), (d.Get() * e.Get()));
+    BOOST_CHECK_EQUAL(d, 123_health);
+    BOOST_CHECK_EQUAL(e, -123_health);
+
+    BOOST_CHECK_EQUAL((d / e).Get(), (d.Get() / e.Get()));
+    BOOST_CHECK_EQUAL(d, 123_health);
+    BOOST_CHECK_EQUAL(e, -123_health);
+
+    d += e;
+    BOOST_CHECK_EQUAL(d, 0_health);
+
+    d -= e;
+    BOOST_CHECK_EQUAL(d, 123_health);
+
+    d *= e;
+    BOOST_CHECK_EQUAL(d, -15129_health);
+
+    d /= e;
+    BOOST_CHECK_EQUAL(d, 123_health);
+
+    Health_t g(-978_health);
+    BOOST_CHECK_EQUAL(g, -978_health);
+
+    Health_t h(+978_health);
+    BOOST_CHECK_EQUAL(h, +978_health);
+
+    // test that signed literals obey same rules as int
+    //  +-X  == -X
+    //  -+X  == -X
+    // +-+1  == -X
+    // -+-1  == +X
+    BOOST_CHECK_EQUAL((10_health + (+-1_health)).Get(), (10 + (+-1)));
+    BOOST_CHECK_EQUAL((10_health + (-+1_health)).Get(), (10 + (-+1)));
+    BOOST_CHECK_EQUAL((10_health + (+-+1_health)).Get(), (10 + (+-+1)));
+    BOOST_CHECK_EQUAL((10_health + (-+-1_health)).Get(), (10 + (-+-1)));
+
+    //
+    // none of these should compile
+    //
+    // Coin_t coin;
+    //++123_health;
+    // 123_health ++;
+    //--123_health;
+    // 321_health --;
+    // 321_health += 123_health;
+    // 321_health -= 123_health;
+    // 321_health *= 123_health;
+    // 321_health /= 123_health;
+    // Health_t d1(int(123));
+    // Health_t d2(Health_t::value_type(123));
+    // Health_t e1 = int(123);
+    // Health_t e2 = Health_t::value_type();
+    // Health_t f = Health_t::Make(a);
+    // Health_t g(coin);
+    // auto b5 = (a == int(123));
+    // auto b6 = (a == int());
+    // auto b7 = (a == Health_t::value_type("1234"));
+    // auto b8 = (a == Health_t::value_type());
+    //{
+    //    auto bb1 = (a == coin);
+    //    auto bb2 = (a != coin);
+    //    auto bb3 = (a < coin);
+    //    auto bb4 = (a <= coin);
+    //    auto bb5 = (a > coin);
+    //    auto bb6 = (a >= coin);
+    //    auto mm1 = (a + coin);
+    //    auto mm2 = (a - coin);
+    //    auto mm3 = (a / coin);
+    //    auto mm4 = (a * coin);
+    //    a += coin;
+    //    a -= coin;
+    //    a *= coin;
+    //    a /= coin;
+    //}
+    //{
+    //    auto bb1 = (a == int(123));
+    //    auto bb2 = (a != int(123));
+    //    auto bb3 = (a < int(123));
+    //    auto bb4 = (a <= int(123));
+    //    auto bb5 = (a > int(123));
+    //    auto bb6 = (a >= int(123));
+    //    auto mm1 = (a + int(123));
+    //    auto mm2 = (a - int(123));
+    //    auto mm3 = (a / int(123));
+    //    auto mm4 = (a * int(123));
+    //    a += int(123);
+    //    a -= int(123);
+    //    a *= int(123);
+    //    a /= int(123);
+    //}
+    //{
+    //    auto bb1 = (a == int());
+    //    auto bb2 = (a != int());
+    //    auto bb3 = (a < int());
+    //    auto bb4 = (a <= int());
+    //    auto bb5 = (a > int());
+    //    auto bb6 = (a >= int());
+    //    auto mm1 = (a + int());
+    //    auto mm2 = (a - int());
+    //    auto mm3 = (a / int());
+    //    auto mm4 = (a * int());
+    //    a += int();
+    //    a -= int();
+    //    a *= int();
+    //    a /= int();
+    //}
+    //{
+    //    auto bb1 = (a == Health_t::value_type(123));
+    //    auto bb2 = (a != Health_t::value_type(123));
+    //    auto bb3 = (a < Health_t::value_type(123));
+    //    auto bb4 = (a <= Health_t::value_type(123));
+    //    auto bb5 = (a > Health_t::value_type(123));
+    //    auto bb6 = (a >= Health_t::value_type(123));
+    //    auto mm1 = (a + Health_t::value_type(123));
+    //    auto mm2 = (a - Health_t::value_type(123));
+    //    auto mm3 = (a / Health_t::value_type(123));
+    //    auto mm4 = (a * Health_t::value_type(123));
+    //    a += Health_t::value_type(123);
+    //    a -= Health_t::value_type(123);
+    //    a *= Health_t::value_type(123);
+    //    a /= Health_t::value_type(123);
+    //}
+    //{
+    //    auto bb1 = (a == Health_t::value_type());
+    //    auto bb2 = (a != Health_t::value_type());
+    //    auto bb3 = (a < Health_t::value_type());
+    //    auto bb4 = (a <= Health_t::value_type());
+    //    auto bb5 = (a > Health_t::value_type());
+    //    auto bb6 = (a >= Health_t::value_type());
+    //    auto mm1 = (a + Health_t::value_type());
+    //    auto mm2 = (a - Health_t::value_type());
+    //    auto mm3 = (a / Health_t::value_type());
+    //    auto mm4 = (a * Health_t::value_type());
+    //    a += Health_t::value_type();
+    //    a -= Health_t::value_type();
+    //    a *= Health_t::value_type();
+    //    a /= Health_t::value_type();
+    //}
 }

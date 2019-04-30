@@ -9,13 +9,11 @@
 //
 // strong-type.hpp
 //
-#include "misc/boost-serialize-includes.hpp"
+#include "misc/type-helpers.hpp"
 
-#include "misc/nameof.hpp"
+#include <boost/serialization/serialization.hpp>
 
 #include <ostream>
-#include <sstream>
-#include <string>
 
 namespace heroespath
 {
@@ -23,61 +21,48 @@ namespace misc
 {
 
     // Responsible for wrapping types with a phantom tag Parameter_t to make them stronger.
-    template <typename T, typename Parameter_t>
-    struct StrongType
+    template <typename Value_t, typename Parameter_t>
+    class StrongType
     {
-        explicit StrongType(const T & VALUE = T())
-            : m_value(VALUE)
+    protected:
+        explicit StrongType(const Value_t & X)
+            : m_value(X)
         {}
+
+    public:
+        using value_type = Value_t;
+
+        StrongType()
+            : m_value()
+        {
+            if constexpr (are_arithmetic_v<Value_t>)
+            {
+                m_value = Value_t(0);
+            }
+        }
 
         virtual ~StrongType() = default;
 
-        using type = T;
+        Value_t & Get() { return m_value; }
+        const Value_t & Get() const { return m_value; }
 
-        T & Get() { return m_value; }
-        const T & Get() const { return m_value; }
+        void Set(const Value_t & X) { m_value = X; }
 
-        const std::string ToString() const
+        template <typename Prop_t>
+        static std::enable_if_t<are_same_v<Value_t, Prop_t>, const StrongType<Value_t, Parameter_t>>
+            Make(const Prop_t & X)
         {
-            std::ostringstream ss;
-            ss << m_value;
-            return ss.str();
+            return StrongType<Value_t, Parameter_t>(X);
         }
 
-        const std::string TypeName() const { return NAMEOF_TYPE_T_STR(T); }
+        template <typename V, typename P>
+        friend bool operator==(const StrongType<V, P> & L, const StrongType<V, P> & R);
 
-        inline bool operator==(const StrongType & RHS) const
-        {
-            return this->m_value == RHS.m_value;
-        }
-
-        inline bool operator!=(const StrongType & RHS) const
-        {
-            return this->m_value != RHS.m_value;
-        }
-
-        inline bool operator<(const StrongType & RHS) const { return this->m_value < RHS.m_value; }
-
-        inline bool operator<=(const StrongType & RHS) const
-        {
-            return this->m_value <= RHS.m_value;
-        }
-
-        inline bool operator>(const StrongType & RHS) const { return this->m_value > RHS.m_value; }
-
-        inline bool operator>=(const StrongType & RHS) const
-        {
-            return this->m_value >= RHS.m_value;
-        }
-
-        template <typename FromType_t>
-        static StrongType<T, Parameter_t> Make(const FromType_t FROM_VALUE)
-        {
-            return StrongType<T, Parameter_t>(static_cast<T>(FROM_VALUE));
-        }
+        template <typename V, typename P>
+        friend bool operator<(const StrongType<V, P> & L, const StrongType<V, P> & R);
 
     protected:
-        T m_value;
+        Value_t m_value;
 
     private:
         friend class boost::serialization::access;
@@ -88,12 +73,49 @@ namespace misc
         }
     };
 
-    template <typename T, typename Parameter_t>
-    std::ostream & operator<<(std::ostream & os, const StrongType<T, Parameter_t> & RHS)
+    template <typename V, typename P>
+    std::ostream & operator<<(std::ostream & os, const StrongType<V, P> & RHS)
     {
         os << RHS.Get();
         return os;
     }
+
+    template <typename V, typename P>
+    bool operator==(const StrongType<V, P> & L, const StrongType<V, P> & R)
+    {
+        return (L.m_value == R.m_value);
+    }
+
+    template <typename V, typename P>
+    bool operator!=(const StrongType<V, P> & L, const StrongType<V, P> & R)
+    {
+        return !(L == R);
+    }
+
+    template <typename V, typename P>
+    bool operator<(const StrongType<V, P> & L, const StrongType<V, P> & R)
+    {
+        return (L.m_value < R.m_value);
+    }
+
+    template <typename V, typename P>
+    bool operator>(const StrongType<V, P> & L, const StrongType<V, P> & R)
+    {
+        return (R < L);
+    }
+
+    template <typename V, typename P>
+    bool operator<=(const StrongType<V, P> & L, const StrongType<V, P> & R)
+    {
+        return !(L > R);
+    }
+
+    template <typename V, typename P>
+    bool operator>=(const StrongType<V, P> & L, const StrongType<V, P> & R)
+    {
+        return !(L < R);
+    }
+
 } // namespace misc
 } // namespace heroespath
 

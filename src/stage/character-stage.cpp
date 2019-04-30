@@ -42,8 +42,8 @@
 #include "popup/popup-stage-image-select.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/display.hpp"
 #include "sfutil/common.hpp"
+#include "sfutil/display.hpp"
 #include "sfutil/primitives.hpp"
 #include "sfutil/scale.hpp"
 
@@ -59,12 +59,12 @@ namespace stage
 
     CharacterStage::CharacterStage()
         : StageBase(
-            "CharacterCreation",
-            { gui::GuiFont::Default,
-              gui::GuiFont::System,
-              gui::GuiFont::SystemCondensed,
-              gui::GuiFont::Number,
-              gui::GuiFont::Handwriting })
+              "CharacterCreation",
+              { gui::GuiFont::Default,
+                gui::GuiFont::System,
+                gui::GuiFont::SystemCondensed,
+                gui::GuiFont::Number,
+                gui::GuiFont::Handwriting })
         //, STAT_INVALID_(-1)
         //, STAT_INITIAL_MAX_(20)
         , LIGHT_TEXT_COLOR_(sfutil::color::Light)
@@ -2463,7 +2463,7 @@ namespace stage
         gui::BoxEntityInfo boxInfo;
         boxInfo.SetupImage(woodCachedTexture_);
         boxInfo.SetupBorder(true);
-        boxInfo.focus_colors = sfutil::color::GuiFocusColors;
+        boxInfo.focus_colors = gui::GuiFocusColors;
         return boxInfo;
     }
 

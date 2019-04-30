@@ -9,10 +9,10 @@
 //
 // armor-ratings.hpp
 //
+#include "game/strong-types.hpp"
 #include "item/item-factory.hpp"
 #include "item/item-type-enum.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <memory>
 #include <vector>

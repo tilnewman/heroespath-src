@@ -10,6 +10,7 @@
 // item-name-factory.hpp
 //
 #include "item/item-type-enum.hpp"
+#include "misc/not-null.hpp"
 
 #include <sstream>
 #include <string>

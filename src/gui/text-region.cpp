@@ -15,6 +15,7 @@
 #include "gui/text-renderer.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 #include "sfutil/common.hpp"
 #include "sfutil/primitives.hpp"
 #include "sfutil/scale.hpp"
@@ -37,8 +38,8 @@ namespace gui
         const BoxEntityInfo & BOX_INFO,
         const stage::IStagePtrOpt_t & ISTAGE_PTR_OPT)
         : Entity(
-            NAME + "_TextRegion(\"" + misc::MakeLoggableString(TEXT_INFO.text, 10, false) + "\")",
-            REGION)
+              NAME + "_TextRegion(\"" + misc::MakeLoggableString(TEXT_INFO.text, 10, false) + "\")",
+              REGION)
         , textInfo_()
         , boxEntityUPtr_()
         , sliderBarUPtr_()

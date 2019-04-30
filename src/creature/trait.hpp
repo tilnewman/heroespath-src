@@ -16,7 +16,7 @@
 //  and the current will return to 'normal'.
 //
 #include "creature/trait-enum.hpp"
-
+#include "creature/trait-type.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/real.hpp"
 

@@ -21,10 +21,11 @@ namespace sf
 
 bool operator<(const sf::Vertex & L, const sf::Vertex & R);
 bool operator==(const sf::Vertex & L, const sf::Vertex & R);
-bool operator!=(const sf::Vertex & L, const sf::Vertex & R);
+inline bool operator!=(const sf::Vertex & L, const sf::Vertex & R) { return !(L == R); }
+
 bool operator<(const sf::VertexArray & L, const sf::VertexArray & R);
 bool operator==(const sf::VertexArray & L, const sf::VertexArray & R);
-bool operator!=(const sf::VertexArray & L, const sf::VertexArray & R);
+inline bool operator!=(const sf::VertexArray & L, const sf::VertexArray & R) { return !(L == R); }
 
 } // namespace sf
 
@@ -90,11 +91,8 @@ namespace sfutil
         const sf::Color & COLOR = sf::Color::White);
 
     void MoveVertexPositions(std::vector<sf::Vertex> & vertexes, const sf::Vector2f & MOVE_V);
-
     void MoveVertexPositionsForQuad(sf::Vertex vertexes[], const sf::Vector2f & MOVE_V);
-
     void MoveVertexTextures(std::vector<sf::Vertex> & vertexes, const sf::Vector2f & MOVE_V);
-
     void MoveVertexTexturesForQuad(sf::Vertex vertexes[], const sf::Vector2f & MOVE_V);
 
 } // namespace sfutil

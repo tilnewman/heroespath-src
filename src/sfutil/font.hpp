@@ -9,12 +9,10 @@
 //
 // font.hpp
 //
-#include "misc/boost-optional-that-throws.hpp"
-#include "misc/not-null.hpp"
-#include "misc/to-string-prefix-enum.hpp"
-#include "sfutil/common.hpp"
-
 #include <SFML/Graphics/Font.hpp>
+
+#include <ostream>
+#include <string>
 
 namespace sf
 {
@@ -31,27 +29,23 @@ inline bool operator==(const sf::Font & L, const sf::Font & R)
 
 inline bool operator!=(const sf::Font & L, const sf::Font & R) { return !(L == R); }
 
-std::ostream & operator<<(std::ostream & os, const sf::Font & F);
+inline std::ostream & operator<<(std::ostream & os, const sf::Font & F)
+{
+    os << "(\"" << F.getInfo().family << "\")";
+    return os;
+}
 
 } // namespace sf
 
 namespace heroespath
 {
-using FontPtr_t = misc::NotNull<sf::Font *>;
-using FontPtrOpt_t = boost::optional<FontPtr_t>;
-using FontUPtr_t = std::unique_ptr<sf::Font>;
-using FontUVec_t = std::vector<FontUPtr_t>;
-
 namespace sfutil
 {
-
-    const std::string ToString(
-        const sf::Font & F,
-        const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default);
 
     const std::string TextStyleToString(const sf::Uint32 TEXT_STYLE);
 
 } // namespace sfutil
+
 } // namespace heroespath
 
 #endif // HEROESPATH_SFUTIL_FONT_HPP_INCLUDED

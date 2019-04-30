@@ -192,38 +192,6 @@ namespace misc
 
     const std::string Quoted(const std::string & STR) { return ToString(std::quoted(STR)); }
 
-    const std::string MakeToStringPrefixWithTypename(
-        const ToStringPrefix::Enum OPTIONS,
-        const std::string & CONTAINER_NAME,
-        const std::string & NAMESPACE_PREFIX_STR,
-        const std::string & TYPE_NAME)
-    {
-        std::ostringstream ss;
-
-        if (OPTIONS & ToStringPrefix::Namespace)
-        {
-            std::string namespacePrefixToUse { NAMESPACE_PREFIX_STR };
-
-            if ((NAMESPACE_PREFIX_STR.size() > 2)
-                && (NAMESPACE_PREFIX_STR[NAMESPACE_PREFIX_STR.size() - 1] != ':')
-                && (NAMESPACE_PREFIX_STR[NAMESPACE_PREFIX_STR.size() - 2] != ':'))
-            {
-                namespacePrefixToUse += "::";
-            }
-
-            ss << namespacePrefixToUse;
-        }
-
-        if (OPTIONS & ToStringPrefix::SimpleName)
-        {
-            ss << CONTAINER_NAME;
-        }
-
-        ss << TYPE_NAME;
-
-        return ss.str();
-    }
-
     const std::vector<std::string> MakeNumberStrings(const std::string & STR)
     {
         if (STR.empty())

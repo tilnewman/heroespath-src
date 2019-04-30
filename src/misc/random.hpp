@@ -97,7 +97,7 @@ namespace misc
 
             // std::uniform_whatever_distribution will crashes/undefined behavior if the difference
             // (MAX - MIN) overflows, so handle that special case here
-            if constexpr (std::is_signed_v<T>)
+            if constexpr (are_signed_v<T>)
             {
                 const T THE_MAX_FINAL_LIMIT { (THE_MIN + std::numeric_limits<T>::max()) };
 
@@ -150,7 +150,7 @@ namespace misc
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (CONTAINER.empty() == false),
-            "Given an empty " << NAMEOF_TYPE_T_STR(Container_t) << " container.");
+            "Given an empty " << NAMEOF_TYPE_T(Container_t) << " container.");
 
         return Random(CONTAINER.size() - static_cast<std::size_t>(1));
     }
@@ -162,8 +162,7 @@ namespace misc
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (container.empty() == false),
-            "Given an empty " << NAMEOF_TYPE_T_STR(Container_t)
-                              << " container. (non-const version)");
+            "Given an empty " << NAMEOF_TYPE_T(Container_t) << " container. (non-const version)");
 
         const auto RANDOM_INDEX { RandomIndex(container) };
 
@@ -181,7 +180,7 @@ namespace misc
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (CONTAINER.empty() == false),
-            "Given an empty " << NAMEOF_TYPE_T_STR(Container_t) << " container. (const version)");
+            "Given an empty " << NAMEOF_TYPE_T(Container_t) << " container. (const version)");
 
         const auto RANDOM_INDEX { RandomIndex(CONTAINER) };
 

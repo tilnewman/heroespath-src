@@ -27,17 +27,11 @@ namespace combat
     {
         switch (ENUM)
         {
-            case EdgeType::Blocking:
-            {
-                return "Blocking";
+            case EdgeType::Blocking: { return "Blocking";
             }
-            case EdgeType::ShoulderToShoulder:
-            {
-                return "Shoulder-To-Shoulder";
+            case EdgeType::ShoulderToShoulder: { return "Shoulder-To-Shoulder";
             }
-            case EdgeType::All:
-            {
-                return "All";
+            case EdgeType::All: { return "All";
             }
             default:
             {
@@ -56,16 +50,16 @@ namespace combat
 
     ID_t CombatTree::NextAvailableId() const
     {
-        const auto NUM_VERTEXES { vertexes_.size() };
-        for (std::size_t i(0); i < NUM_VERTEXES; ++i)
+        const auto NUM_VERTEXES { ID_t::Make(vertexes_.size()) };
+        for (auto id(0_id); id < NUM_VERTEXES; ++id)
         {
-            if (false == DoesVertexExist(ID_t(i)))
+            if (false == DoesVertexExist(id))
             {
-                return ID_t(i);
+                return id;
             }
         }
 
-        return ID_t(NUM_VERTEXES);
+        return NUM_VERTEXES;
     }
 
     CombatNodePtr_t CombatTree::GetNodePtr(const ID_t & ID) const
@@ -257,7 +251,7 @@ namespace combat
         }
         else
         {
-            ID_t::type count { 0 };
+            std::size_t count { 0 };
             for (const auto & EDGE : edges_)
             {
                 if (EDGE.type == TYPE)
@@ -482,7 +476,7 @@ namespace combat
     bool CombatTree::FindAdjacentByEdgeType(
         const ID_t & ID, IDVec_t & idVec_OutParam, const EdgeType::Enum TYPE) const
     {
-        const ID_t ORIG_SIZE { idVec_OutParam.size() };
+        const auto ORIG_SIZE = ID_t::Make(idVec_OutParam.size());
 
         for (const auto & EDGE : edges_)
         {
@@ -516,7 +510,7 @@ namespace combat
             }
         }
 
-        const ID_t FINAL_SIZE { idVec_OutParam.size() };
+        const auto FINAL_SIZE = ID_t::Make(idVec_OutParam.size());
         return (ORIG_SIZE != FINAL_SIZE);
     }
 
@@ -605,9 +599,9 @@ namespace combat
         const auto NUM_VERTS_AT_POS { vertIDsAtPosVec.size() };
         if (NUM_VERTS_AT_POS > 0)
         {
-            for (ID_t::type i(0); i < NUM_VERTS_AT_POS - 1; ++i)
+            for (std::size_t i(0); i < NUM_VERTS_AT_POS - 1; ++i)
             {
-                for (ID_t::type j(i + 1); j < NUM_VERTS_AT_POS - 1; ++j)
+                for (std::size_t j(i + 1); j < NUM_VERTS_AT_POS - 1; ++j)
                 {
                     edges_.emplace_back(
                         Edge(vertIDsAtPosVec[i], vertIDsAtPosVec[j], CONNECTION_TYPE));
@@ -658,7 +652,7 @@ namespace combat
 
     int CombatTree::GetBlockingDistanceMax() const
     {
-        return std::abs(GetBlockingPosMin()) - std::abs(GetBlockingPosMax());
+        return misc::Abs(GetBlockingPosMin()) - misc::Abs(GetBlockingPosMax());
     }
 
     const IDVec_t CombatTree::GetNodeIDsAtBlockingPos(const int BLOCKING_POS) const
@@ -810,7 +804,7 @@ namespace combat
             if ((VERTEX.node_sptr->Creature() != CREATURE_PTR)
                 && (VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
-                const auto ABS_DISTANCE { std::abs(
+                const auto ABS_DISTANCE { misc::Abs(
                     GetBlockingDistanceBetween(CREATURE_PTR, VERTEX.node_sptr->Creature())) };
 
                 if (ABS_DISTANCE < closestBlockingDistanceABS)
@@ -839,7 +833,7 @@ namespace combat
         // find closest distance
         for (const auto & VERTEX : vertexes_)
         {
-            const auto NEXT_BLOCKING_DISTANCE_ABS { std::abs(
+            const auto NEXT_BLOCKING_DISTANCE_ABS { misc::Abs(
                 VERTEX.node_sptr->GetBlockingPos() - ORIGIN_BLOCKING_POS) };
 
             if ((VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -855,7 +849,7 @@ namespace combat
         // find all nodes with that closest distance
         for (const auto & VERTEX : vertexes_)
         {
-            const auto NEXT_BLOCKING_DISTANCE_ABS { std::abs(
+            const auto NEXT_BLOCKING_DISTANCE_ABS { misc::Abs(
                 VERTEX.node_sptr->GetBlockingPos() - ORIGIN_BLOCKING_POS) };
 
             if ((VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS)

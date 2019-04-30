@@ -14,9 +14,9 @@
 #include "combat/target-enum.hpp"
 #include "creature/condition-enum.hpp"
 #include "game/phase-enum.hpp"
+#include "game/strong-types.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 #include "song/song-enum.hpp"
 #include "song/song-type-enum.hpp"
 

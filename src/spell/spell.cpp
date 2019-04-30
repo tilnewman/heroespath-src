@@ -59,7 +59,7 @@ namespace spell
     const std::string Spell::DescDetails() const
     {
         std::ostringstream ss;
-        ss << "A " << misc::NumberToStringWithOrdinalSuffix(rank_.As<int>()) << " rank"
+        ss << "A " << misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>()) << " rank"
            << " " << combat::EffectType::Name(effectType_) << " spell"
            << " that can be cast during " << game::Phase::ToString(validPhases_) << ", targeting "
            << combat::TargetType::Name(targetType_) << ", and costing " << manaCost_ << " mana.";
@@ -215,7 +215,7 @@ namespace spell
         {
             case Spells::Sparks:
             {
-                const auto DAMAGE_ABS_ORIG { Health_t(creature::Stats::RandomRatio(
+                const auto DAMAGE_ABS_ORIG { Health_t::Make(creature::Stats::RandomRatio(
                     CREATURE_CASTING_PTR,
                     creature::Traits::Intelligence,
                     8,
@@ -229,14 +229,14 @@ namespace spell
                 const auto DAMAGE_ABS_FINAL { (
                     (DAMAGE_ABS_ORIG > DAMAGE_ABS_MAX) ? DAMAGE_ABS_MAX : DAMAGE_ABS_ORIG) };
 
-                healthAdj = Health_t(-1) * DAMAGE_ABS_FINAL;
+                healthAdj = -DAMAGE_ABS_FINAL;
 
                 actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                 return true;
             }
             case Spells::Bandage:
             {
-                const auto HEALTH_GAIN_ORIG { Health_t(creature::Stats::RandomRatio(
+                const auto HEALTH_GAIN_ORIG { Health_t::Make(creature::Stats::RandomRatio(
                     CREATURE_CASTING_PTR,
                     creature::Traits::Charm,
                     8,

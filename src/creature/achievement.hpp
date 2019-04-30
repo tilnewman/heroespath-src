@@ -13,8 +13,8 @@
 #include "creature/achievement-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/title.hpp"
+#include "game/strong-types.hpp"
 #include "misc/boost-serialize-includes.hpp"
-#include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 
 #include <memory>

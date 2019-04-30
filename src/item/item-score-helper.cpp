@@ -32,7 +32,7 @@ namespace item
 
             auto traitScore { [NEXT_TRAIT_VALUE]() {
                 const auto MULTIPLIER { ((NEXT_TRAIT_VALUE >= 0) ? 10 : 5) };
-                const auto NEXT_TRAIT_VALUE_ABS { std::abs(NEXT_TRAIT_VALUE) };
+                const auto NEXT_TRAIT_VALUE_ABS { misc::Abs(NEXT_TRAIT_VALUE) };
 
                 const auto MAX_VALUE_BEFORE_REDUCTION { 100 };
                 if (NEXT_TRAIT_VALUE_ABS < MAX_VALUE_BEFORE_REDUCTION)
@@ -89,26 +89,16 @@ namespace item
     {
         switch (AXE_TYPE)
         {
-            case weapon::axe_type::Handaxe:
-            {
-                return 50_score;
+            case weapon::axe_type::Handaxe: { return 50_score;
             }
-            case weapon::axe_type::Sickle:
-            {
-                return 80_score;
+            case weapon::axe_type::Sickle: { return 80_score;
             }
-            case weapon::axe_type::Battleaxe:
-            {
-                return 100_score;
+            case weapon::axe_type::Battleaxe: { return 100_score;
             }
-            case weapon::axe_type::Waraxe:
-            {
-                return 200_score;
+            case weapon::axe_type::Waraxe: { return 200_score;
             }
             case weapon::axe_type::Count:
-            default:
-            {
-                return 0_score;
+            default: { return 0_score;
             }
         }
     }
@@ -117,34 +107,20 @@ namespace item
     {
         switch (BSTAFF_TYPE)
         {
-            case weapon::bladedstaff_type::Spear:
-            {
-                return 70_score;
+            case weapon::bladedstaff_type::Spear: { return 70_score;
             }
-            case weapon::bladedstaff_type::ShortSpear:
-            {
-                return 50_score;
+            case weapon::bladedstaff_type::ShortSpear: { return 50_score;
             }
-            case weapon::bladedstaff_type::Scythe:
-            {
-                return 80_score;
+            case weapon::bladedstaff_type::Scythe: { return 80_score;
             }
-            case weapon::bladedstaff_type::Pike:
-            {
-                return 100_score;
+            case weapon::bladedstaff_type::Pike: { return 100_score;
             }
-            case weapon::bladedstaff_type::Partisan:
-            {
-                return 150_score;
+            case weapon::bladedstaff_type::Partisan: { return 150_score;
             }
-            case weapon::bladedstaff_type::Halberd:
-            {
-                return 200_score;
+            case weapon::bladedstaff_type::Halberd: { return 200_score;
             }
             case weapon::bladedstaff_type::Count:
-            default:
-            {
-                return 0_score;
+            default: { return 0_score;
             }
         }
     }
@@ -153,26 +129,16 @@ namespace item
     {
         switch (CLUB_TYPE)
         {
-            case weapon::club_type::Spiked:
-            {
-                return 50_score;
+            case weapon::club_type::Spiked: { return 50_score;
             }
-            case weapon::club_type::Maul:
-            {
-                return 60_score;
+            case weapon::club_type::Maul: { return 60_score;
             }
-            case weapon::club_type::Mace:
-            {
-                return 80_score;
+            case weapon::club_type::Mace: { return 80_score;
             }
-            case weapon::club_type::Warhammer:
-            {
-                return 120_score;
+            case weapon::club_type::Warhammer: { return 120_score;
             }
             case weapon::club_type::Count:
-            default:
-            {
-                return 0_score;
+            default: { return 0_score;
             }
         }
     }
@@ -181,34 +147,20 @@ namespace item
     {
         switch (PROJ_TYPE)
         {
-            case weapon::projectile_type::Blowpipe:
-            {
-                return 50_score;
+            case weapon::projectile_type::Blowpipe: { return 50_score;
             }
-            case weapon::projectile_type::Sling:
-            {
-                return 60_score;
+            case weapon::projectile_type::Sling: { return 60_score;
             }
-            case weapon::projectile_type::Shortbow:
-            {
-                return 100_score;
+            case weapon::projectile_type::Shortbow: { return 100_score;
             }
-            case weapon::projectile_type::Longbow:
-            {
-                return 200_score;
+            case weapon::projectile_type::Longbow: { return 200_score;
             }
-            case weapon::projectile_type::CompositeBow:
-            {
-                return 300_score;
+            case weapon::projectile_type::CompositeBow: { return 300_score;
             }
-            case weapon::projectile_type::Crossbow:
-            {
-                return 300_score;
+            case weapon::projectile_type::Crossbow: { return 300_score;
             }
             case weapon::projectile_type::Count:
-            default:
-            {
-                return 0_score;
+            default: { return 0_score;
             }
         }
     }
@@ -217,54 +169,30 @@ namespace item
     {
         switch (SWORD_TYPE)
         {
-            case weapon::sword_type::Claymore:
-            {
-                return 200_score;
+            case weapon::sword_type::Claymore: { return 200_score;
             }
-            case weapon::sword_type::Longsword:
-            {
-                return 120_score;
+            case weapon::sword_type::Longsword: { return 120_score;
             }
-            case weapon::sword_type::Flamberg:
-            {
-                return 190_score;
+            case weapon::sword_type::Flamberg: { return 190_score;
             }
-            case weapon::sword_type::Knightlysword:
-            {
-                return 110_score;
+            case weapon::sword_type::Knightlysword: { return 110_score;
             }
-            case weapon::sword_type::Broadsword:
-            {
-                return 100_score;
+            case weapon::sword_type::Broadsword: { return 100_score;
             }
-            case weapon::sword_type::Falcata:
-            {
-                return 50_score;
+            case weapon::sword_type::Falcata: { return 50_score;
             }
-            case weapon::sword_type::Saber:
-            {
-                return 70_score;
+            case weapon::sword_type::Saber: { return 70_score;
             }
-            case weapon::sword_type::Cutlass:
-            {
-                return 40_score;
+            case weapon::sword_type::Cutlass: { return 40_score;
             }
-            case weapon::sword_type::Rapier:
-            {
-                return 70_score;
+            case weapon::sword_type::Rapier: { return 70_score;
             }
-            case weapon::sword_type::Gladius:
-            {
-                return 55_score;
+            case weapon::sword_type::Gladius: { return 55_score;
             }
-            case weapon::sword_type::Shortsword:
-            {
-                return 50_score;
+            case weapon::sword_type::Shortsword: { return 50_score;
             }
             case weapon::sword_type::Count:
-            default:
-            {
-                return 0_score;
+            default: { return 0_score;
             }
         }
     }
@@ -273,22 +201,14 @@ namespace item
     {
         switch (WHIP_TYPE)
         {
-            case weapon::whip_type::Bullwhip:
-            {
-                return 30_score;
+            case weapon::whip_type::Bullwhip: { return 30_score;
             }
-            case weapon::whip_type::Flail:
-            {
-                return 60_score;
+            case weapon::whip_type::Flail: { return 60_score;
             }
-            case weapon::whip_type::MaceAndChain:
-            {
-                return 90_score;
+            case weapon::whip_type::MaceAndChain: { return 90_score;
             }
             case weapon::whip_type::Count:
-            default:
-            {
-                return 0_score;
+            default: { return 0_score;
             }
         }
     }
@@ -305,26 +225,16 @@ namespace item
     {
         switch (COVER_TYPE)
         {
-            case armor::cover_type::Cape:
-            {
-                return 25_score;
+            case armor::cover_type::Cape: { return 25_score;
             }
-            case armor::cover_type::Vest:
-            {
-                return 50_score;
+            case armor::cover_type::Vest: { return 50_score;
             }
-            case armor::cover_type::Robe:
-            {
-                return 75_score;
+            case armor::cover_type::Robe: { return 75_score;
             }
-            case armor::cover_type::Cloak:
-            {
-                return 100_score;
+            case armor::cover_type::Cloak: { return 100_score;
             }
             case armor::cover_type::Count:
-            default:
-            {
-                return 0_score;
+            default: { return 0_score;
             }
         }
     }
@@ -333,34 +243,20 @@ namespace item
     {
         switch (HELM_TYPE)
         {
-            case armor::helm_type::Leather:
-            {
-                return 25_score;
+            case armor::helm_type::Leather: { return 25_score;
             }
-            case armor::helm_type::MailCoif:
-            {
-                return 50_score;
+            case armor::helm_type::MailCoif: { return 50_score;
             }
-            case armor::helm_type::Kettle:
-            {
-                return 75_score;
+            case armor::helm_type::Kettle: { return 75_score;
             }
-            case armor::helm_type::Archers:
-            {
-                return 100_score;
+            case armor::helm_type::Archers: { return 100_score;
             }
-            case armor::helm_type::Bascinet:
-            {
-                return 125_score;
+            case armor::helm_type::Bascinet: { return 125_score;
             }
-            case armor::helm_type::Great:
-            {
-                return 150_score;
+            case armor::helm_type::Great: { return 150_score;
             }
             case armor::helm_type::Count:
-            default:
-            {
-                return 0_score;
+            default: { return 0_score;
             }
         }
     }
@@ -369,26 +265,16 @@ namespace item
     {
         switch (SHIELD_TYPE)
         {
-            case armor::shield_type::Buckler:
-            {
-                return 50_score;
+            case armor::shield_type::Buckler: { return 50_score;
             }
-            case armor::shield_type::Kite:
-            {
-                return 100_score;
+            case armor::shield_type::Kite: { return 100_score;
             }
-            case armor::shield_type::Heater:
-            {
-                return 150_score;
+            case armor::shield_type::Heater: { return 150_score;
             }
-            case armor::shield_type::Pavis:
-            {
-                return 200_score;
+            case armor::shield_type::Pavis: { return 200_score;
             }
             case armor::shield_type::Count:
-            default:
-            {
-                return 0_score;
+            default: { return 0_score;
             }
         }
     }
@@ -430,23 +316,15 @@ namespace item
     {
         switch (ARMOR_BASE_TYPE)
         {
-            case armor::base_type::Mail:
-            {
-                return 75_score;
+            case armor::base_type::Mail: { return 75_score;
             }
-            case armor::base_type::Scale:
-            {
-                return 125_score;
+            case armor::base_type::Scale: { return 125_score;
             }
-            case armor::base_type::Plate:
-            {
-                return 175_score;
+            case armor::base_type::Plate: { return 175_score;
             }
             case armor::base_type::Plain:
             case armor::base_type::Count:
-            default:
-            {
-                return 25_score;
+            default: { return 25_score;
             }
         }
     }

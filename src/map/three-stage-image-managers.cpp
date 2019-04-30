@@ -218,8 +218,8 @@ namespace map
             const auto SHADOW_SIZE_V { sfutil::Size(npcShadowSprite_) };
 
             const sf::Vector2f COMBINED_SIZE_V(
-                std::max(SHADOW_SIZE_V.x, AVATAR_SIZE_V.x),
-                std::max(SHADOW_SIZE_V.y, AVATAR_SIZE_V.y));
+                misc::Max(SHADOW_SIZE_V.x, AVATAR_SIZE_V.x),
+                misc::Max(SHADOW_SIZE_V.y, AVATAR_SIZE_V.y));
 
             const sf::FloatRect COMBINED_OFFSCREEN_RECT(AVATAR_OFFSCREEN_POS_V, COMBINED_SIZE_V);
 

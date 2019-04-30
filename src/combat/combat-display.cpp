@@ -259,12 +259,12 @@ namespace combat
 
             if ((battlefieldRect_.contains(NEXT_VERT_RECT.left, NEXT_VERT_RECT.top))
                 && (battlefieldRect_.contains(
-                    NEXT_VERT_RECT.left + NEXT_VERT_RECT.width, NEXT_VERT_RECT.top))
+                       NEXT_VERT_RECT.left + NEXT_VERT_RECT.width, NEXT_VERT_RECT.top))
                 && (battlefieldRect_.contains(
-                    NEXT_VERT_RECT.left, NEXT_VERT_RECT.top + NEXT_VERT_RECT.height))
+                       NEXT_VERT_RECT.left, NEXT_VERT_RECT.top + NEXT_VERT_RECT.height))
                 && (battlefieldRect_.contains(
-                    NEXT_VERT_RECT.left + NEXT_VERT_RECT.width,
-                    NEXT_VERT_RECT.top + NEXT_VERT_RECT.height)))
+                       NEXT_VERT_RECT.left + NEXT_VERT_RECT.width,
+                       NEXT_VERT_RECT.top + NEXT_VERT_RECT.height)))
             {
                 isAnyNodeDrawn = true;
                 COMBAT_NODE_PTR->WillDraw(true);
@@ -509,17 +509,17 @@ namespace combat
                 livingCreaturesPVec.end(),
                 [this, CREATURE_PTR](const auto & A_PTR, const auto & B_PTR) {
                     return (combatTree_.GetBlockingDistanceBetween(A_PTR, CREATURE_PTR))
-                        < std::abs(combatTree_.GetBlockingDistanceBetween(B_PTR, CREATURE_PTR));
+                        < misc::Abs(combatTree_.GetBlockingDistanceBetween(B_PTR, CREATURE_PTR));
                 });
 
-            const auto MIN_BLOCKING_DISTANCE { std::abs(combatTree_.GetBlockingDistanceBetween(
+            const auto MIN_BLOCKING_DISTANCE { misc::Abs(combatTree_.GetBlockingDistanceBetween(
                 *livingCreaturesPVec.begin(), CREATURE_PTR)) };
 
             creature::CreaturePVec_t closestCreaturesPVec;
 
             for (const auto & NEXT_CREATURE_PTR : livingCreaturesPVec)
             {
-                if (std::abs(
+                if (misc::Abs(
                         combatTree_.GetBlockingDistanceBetween(NEXT_CREATURE_PTR, CREATURE_PTR))
                     == MIN_BLOCKING_DISTANCE)
                 {
@@ -649,7 +649,7 @@ namespace combat
         auto closestBlockingDistanceABS { combatTree_.GetBlockingDistanceMax() + 1 };
         for (const auto & NEXT_CREATURE_PTR : CREATURES_TO_FIND_AMONG_PVEC)
         {
-            const auto NEXT_BLOCKING_DISTANCE_ABS { std::abs(
+            const auto NEXT_BLOCKING_DISTANCE_ABS { misc::Abs(
                 FindBlockingPos(NEXT_CREATURE_PTR) - BLOCKING_POS_ORIGIN) };
 
             if ((NEXT_CREATURE_PTR->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -663,7 +663,7 @@ namespace combat
 
         for (const auto & NEXT_CREATURE_PTR : CREATURES_TO_FIND_AMONG_PVEC)
         {
-            const auto NEXT_BLOCKING_DISTANCE_ABS { std::abs(
+            const auto NEXT_BLOCKING_DISTANCE_ABS { misc::Abs(
                 FindBlockingPos(NEXT_CREATURE_PTR) - BLOCKING_POS_ORIGIN) };
 
             if ((NEXT_CREATURE_PTR->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -901,7 +901,7 @@ namespace combat
             {
                 if (OUTER_COMBAT_NODE_PTR != INNER_COMBAT_NODE_PTR)
                 {
-                    auto HORIZ_DIFF { std::abs(
+                    auto HORIZ_DIFF { misc::Abs(
                         OUTER_COMBAT_NODE_PTR->GetEntityPos().x
                         - INNER_COMBAT_NODE_PTR->GetEntityPos().x) };
 
@@ -910,7 +910,7 @@ namespace combat
                         horizPosDiffMax = HORIZ_DIFF;
                     }
 
-                    auto VERT_DIFF { std::abs(
+                    auto VERT_DIFF { misc::Abs(
                         OUTER_COMBAT_NODE_PTR->GetEntityPos().y
                         - INNER_COMBAT_NODE_PTR->GetEntityPos().y) };
 
@@ -1073,7 +1073,7 @@ namespace combat
 
         for (const auto & NEXT_OPPONENT_CREATURE_PTR : OPPONENT_CREATURES_PVEC)
         {
-            if (std::abs(combatTree_.GetBlockingDistanceBetween(
+            if (misc::Abs(combatTree_.GetBlockingDistanceBetween(
                     CREATURE_ROARING_PTR, NEXT_OPPONENT_CREATURE_PTR))
                 <= 2)
             {
@@ -1242,7 +1242,7 @@ namespace combat
             (256.0f * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_),
             (256.0f * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_)));
 
-        const float CELL_WIDTH_ORIG(std::max(maxNameWidth, CELL_WIDTH_MIN));
+        const float CELL_WIDTH_ORIG(misc::Max(maxNameWidth, CELL_WIDTH_MIN));
 
         // adjust vars for zoomLevel_
         const float CELL_WIDTH_ZOOM_ADJ(CELL_WIDTH_ORIG); // already adjust for by nameCharSize_
@@ -1264,8 +1264,8 @@ namespace combat
             CELL_WIDTH_ZOOM_ADJ + POSITIONING_BETWEEN_SPACER_HORIZ_ZOOM_ADJ);
 
         battlefieldWidth_
-            = std::abs(static_cast<float>(lowestBlockingPos) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER)
-            + std::abs(static_cast<float>(highestBlockingPos) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER)
+            = misc::Abs(static_cast<float>(lowestBlockingPos) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER)
+            + misc::Abs(static_cast<float>(highestBlockingPos) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER)
             + (POSITIONING_MARGIN_HORIZ_ZOOM_ADJ * 2.0f);
 
         battlefieldHeight_

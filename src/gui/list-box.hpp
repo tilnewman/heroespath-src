@@ -19,9 +19,9 @@
 #include "gui/sound-manager.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/callback.hpp"
+#include "misc/nameof.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
-
 #include "sfutil/common.hpp"
 #include "sfutil/event.hpp"
 #include "sfutil/primitives.hpp"
@@ -30,8 +30,6 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
-
-#include "misc/nameof.hpp"
 
 #include <algorithm>
 #include <array>
@@ -1056,7 +1054,7 @@ namespace gui
         {
             std::ostringstream ss;
 
-            ss << "ListBox<" << NAMEOF_TYPE_T_STR(Stage_t) << ", " << NAMEOF_TYPE_T_STR(Element_t)
+            ss << "ListBox<" << NAMEOF_TYPE_T(Stage_t) << ", " << NAMEOF_TYPE_T(Element_t)
                << ">(entity_name=\"";
 
             if (ENTITY_NAME.empty())
@@ -1172,7 +1170,7 @@ namespace gui
             }
             else
             {
-                return std::min((displayIndex_ + maxVisibleCount_) - 1, elements_.size() - 1);
+                return misc::Min((displayIndex_ + maxVisibleCount_) - 1, elements_.size() - 1);
             }
         }
 
@@ -1184,7 +1182,7 @@ namespace gui
             }
             else
             {
-                return std::min(
+                return misc::Min(
                     (selectionDisplayIndex_ + maxVisibleCount_) - 1, elements_.size() - 1);
             }
         }

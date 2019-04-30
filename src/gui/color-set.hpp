@@ -9,6 +9,8 @@
 //
 // color-set.hpp
 //
+#include "sfutil/color.hpp"
+
 #include <SFML/Graphics/Color.hpp>
 
 #include <string>
@@ -60,6 +62,11 @@ namespace gui
     bool operator==(const FocusColors & L, const FocusColors & R);
 
     inline bool operator!=(const FocusColors & L, const FocusColors & R) { return !(L == R); }
+
+    const FocusColors GuiFocusColors { sfutil::color::FocusIn,
+                                       sfutil::color::FocusIn,
+                                       sfutil::color::FocusOut,
+                                       sfutil::color::FocusOut };
 
 } // namespace gui
 } // namespace heroespath

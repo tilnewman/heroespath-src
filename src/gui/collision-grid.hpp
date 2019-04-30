@@ -133,7 +133,7 @@ namespace gui
         {
             M_HP_LOG_WRN("TestingMaddnessPoints");
 
-            auto prevIndex = Index_t(9999999);
+            auto prevIndex = std::numeric_limits<Index_t>::max();
             auto posRect = PosRect_t(0, 0, 0, 0);
             for (Pos_t i(0); i <= gridSizeV_.x; ++i)
             {
@@ -157,7 +157,7 @@ namespace gui
             }
 
             M_HP_LOG_WRN("spacer")
-            prevIndex = Index_t(9999999);
+            prevIndex = std::numeric_limits<Index_t>::max();
             posRect = PosRect_t(0, gridSizeV_.y, 0, 0);
             for (Pos_t i(0); i <= gridSizeV_.x; ++i)
             {
@@ -181,7 +181,7 @@ namespace gui
             }
 
             M_HP_LOG_WRN("spacer")
-            prevIndex = Index_t(9999999);
+            prevIndex = std::numeric_limits<Index_t>::max();
             posRect = PosRect_t(0, 0, 0, 0);
             for (Pos_t i(0); i <= gridSizeV_.y; ++i)
             {
@@ -205,7 +205,7 @@ namespace gui
             }
 
             M_HP_LOG_WRN("spacer")
-            prevIndex = Index_t(9999999);
+            prevIndex = std::numeric_limits<Index_t>::max();
             posRect = PosRect_t(gridSizeV_.x, 0, 0, 0);
             for (Pos_t i(0); i <= gridSizeV_.y; ++i)
             {
@@ -229,12 +229,12 @@ namespace gui
             }
 
             M_HP_LOG_WRN("spacer")
-            prevIndex = Index_t(9999999);
+            prevIndex = std::numeric_limits<Index_t>::max();
             posRect = PosRect_t(0, 0, 0, 0);
-            for (Pos_t i(0); i <= std::max(gridSizeV_.x, gridSizeV_.y); ++i)
+            for (Pos_t i(0); i <= misc::Max(gridSizeV_.x, gridSizeV_.y); ++i)
             {
-                posRect.left = std::min(i, gridSizeV_.x);
-                posRect.top = std::min(i, gridSizeV_.y);
+                posRect.left = misc::Min(i, gridSizeV_.x);
+                posRect.top = misc::Min(i, gridSizeV_.y);
 
                 SetupCollRectVecIndexesForRect(posRect);
 
@@ -259,7 +259,6 @@ namespace gui
         {
             M_HP_LOG_WRN("TestingMaddnessRects");
 
-            auto prevIndex = Index_t(9999999);
             auto posRect = PosRect_t(0, 0, 90, 90);
             for (Pos_t i(0); i <= gridSizeV_.x; ++i)
             {
@@ -268,7 +267,6 @@ namespace gui
             }
 
             M_HP_LOG_WRN("spacer")
-            prevIndex = Index_t(9999999);
             posRect = PosRect_t(0, gridSizeV_.y, 90, 90);
             for (Pos_t i(0); i <= gridSizeV_.x; ++i)
             {
@@ -277,7 +275,6 @@ namespace gui
             }
 
             M_HP_LOG_WRN("spacer")
-            prevIndex = Index_t(9999999);
             posRect = PosRect_t(0, 0, 90, 90);
             for (Pos_t i(0); i <= gridSizeV_.y; ++i)
             {
@@ -286,7 +283,6 @@ namespace gui
             }
 
             M_HP_LOG_WRN("spacer")
-            prevIndex = Index_t(9999999);
             posRect = PosRect_t(gridSizeV_.x, 0, 90, 90);
             for (Pos_t i(0); i <= gridSizeV_.y; ++i)
             {
@@ -295,12 +291,11 @@ namespace gui
             }
 
             M_HP_LOG_WRN("spacer")
-            prevIndex = Index_t(9999999);
             posRect = PosRect_t(0, 0, 90, 90);
-            for (Pos_t i(0); i <= std::max(gridSizeV_.x, gridSizeV_.y); ++i)
+            for (Pos_t i(0); i <= misc::Max(gridSizeV_.x, gridSizeV_.y); ++i)
             {
-                posRect.left = std::min(i, gridSizeV_.x);
-                posRect.top = std::min(i, gridSizeV_.y);
+                posRect.left = misc::Min(i, gridSizeV_.x);
+                posRect.top = misc::Min(i, gridSizeV_.y);
                 SetupCollRectVecIndexesForRect(posRect);
             }
         }

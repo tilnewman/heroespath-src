@@ -10,9 +10,9 @@
 // trap.hpp
 //
 #include "creature/trait.hpp"
+#include "game/strong-types.hpp"
 #include "gui/sound-effects-enum.hpp"
 #include "misc/range.hpp"
-#include "misc/types.hpp"
 
 #include <string>
 #include <vector>
@@ -21,9 +21,6 @@ namespace heroespath
 {
 namespace combat
 {
-
-    using SizeRange_t = misc::Range<std::size_t>;
-    using HealthRange_t = misc::Range<Health_t>;
 
     // Responsible for wrapping common state and operations of traps.
     class Trap
@@ -66,8 +63,8 @@ namespace combat
         Rank_t FindAveragePlayerRank() const;
 
     private:
-        SizeRange_t playerCountRange_;
-        HealthRange_t damageRange_;
+        misc::Range<std::size_t> playerCountRange_;
+        misc::Range<double> damageRange_;
         gui::sound_effect::Enum soundEffect_;
         std::string descPrefix_;
         std::string descPostfix_;

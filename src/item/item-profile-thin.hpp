@@ -13,7 +13,6 @@
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-type-wrapper.hpp"
-
 #include "misc/nameof.hpp"
 
 #include <exception>

@@ -23,30 +23,12 @@ namespace misc
     {
         switch (PRIORITY)
         {
-            case Debug:
-            {
-                return "Debug";
-            }
-            case Default:
-            {
-                return "Default";
-            }
-            case Warn:
-            {
-                return "Warn";
-            }
-            case Error:
-            {
-                return "Error";
-            }
-            case Fatal:
-            {
-                return "Fatal";
-            }
-            case Count:
-            {
-                return "(Count)";
-            }
+            case Debug: return "Debug";
+            case Default: return "Default";
+            case Warn: return "Warn";
+            case Error: return "Error";
+            case Fatal: return "Fatal";
+            case Count: return "(Count)";
             default:
             {
                 // can't use log or assert macros inside the logging code
@@ -67,30 +49,12 @@ namespace misc
     {
         switch (PRIORITY)
         {
-            case Debug:
-            {
-                return "DBG";
-            }
-            case Default:
-            {
-                return "DEF";
-            }
-            case Warn:
-            {
-                return "WRN";
-            }
-            case Error:
-            {
-                return "ERR";
-            }
-            case Fatal:
-            {
-                return "FAT";
-            }
-            case Count:
-            {
-                return "(Count)";
-            }
+            case Debug: return "DBG";
+            case Default: return "DEF";
+            case Warn: return "WRN";
+            case Error: return "ERR";
+            case Fatal: return "FAT";
+            case Count: return "(Count)";
             default:
             {
                 // can't use log or assert macros inside the logging code
@@ -109,50 +73,52 @@ namespace misc
 
     const std::string LogPriority::ConsoleColorStringBegin(const Enum PRIORITY)
     {
-
-        // this just prevents a Visual Studio warning that PRIORITY is not used
-#if defined(HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS)
-        const auto IGNORED { PRIORITY };
-        return "";
-#else
-        switch (PRIORITY)
+        if constexpr (misc::platform_is_any_windows)
         {
-            case Debug:
+            // this just prevents a Visual Studio warning that PRIORITY is not used
+            const auto IGNORED { PRIORITY };
+
+            return "";
+        }
+        else
+        {
+            switch (PRIORITY)
             {
-                // cyan on black
-                return "\033[36;40m";
-            }
-            case Warn:
-            {
-                // yellow on black
-                return "\033[33;40m";
-            }
-            case Error:
-            case Fatal:
-            {
-                // red on black
-                return "\033[31;40m";
-            }
-            case Default:
-            case Count:
-            {
-                return "(Count)";
-            }
-            default:
-            {
-                return "";
+                case Debug:
+                {
+                    // cyan on black
+                    return "\033[36;40m";
+                }
+                case Warn:
+                {
+                    // yellow on black
+                    return "\033[33;40m";
+                }
+                case Error:
+                case Fatal:
+                {
+                    // red on black
+                    return "\033[31;40m";
+                }
+                case Default:
+                case Count: { return "(Count)";
+                }
+                default: { return "";
+                }
             }
         }
-#endif
     }
 
     const std::string LogPriority::ConsoleColorStringEnd()
     {
-#if defined(HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS)
-        return "";
-#else
-        return "\033[0;0m";
-#endif
+        if constexpr (misc::platform_is_any_windows)
+        {
+            return "";
+        }
+        else
+        {
+            return "\033[0;0m";
+        }
     }
 
 } // namespace misc

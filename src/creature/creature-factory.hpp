@@ -16,8 +16,8 @@
 #include "creature/stat-set.hpp"
 #include "creature/trait.hpp"
 #include "creature/wolfen-class-enum.hpp"
+#include "game/strong-types.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <memory>
 #include <string>

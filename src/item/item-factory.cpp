@@ -544,7 +544,7 @@ namespace item
                     << ((ITEM_PTR->ArmorInfo().NameMaterialType() == name_material_type::Count)
                             ? "Count"
                             : name_material_type::ToString(
-                                ITEM_PTR->ArmorInfo().NameMaterialType()))
+                                  ITEM_PTR->ArmorInfo().NameMaterialType()))
                     << ".");
 
             if (ITEM_PTR->ArmorType() == armor_type::Gauntlets)
@@ -787,7 +787,7 @@ namespace item
                     << ((ITEM_PTR->WeaponInfo().NameMaterialType() == name_material_type::Count)
                             ? "Count"
                             : name_material_type::ToString(
-                                ITEM_PTR->WeaponInfo().NameMaterialType()))
+                                  ITEM_PTR->WeaponInfo().NameMaterialType()))
                     << ".");
         }
 
@@ -923,8 +923,8 @@ namespace item
         const armor::ArmorTypeWrapper ARMOR_TYPE_WRAPPER { BODY_PART };
 
         const auto ARMOR_RATING { Armor_t::Make(
-            material::ArmorRatingBonusPri(MATERIALS_PAIR.first).As<int>()
-            + CREATURE_PTR->Rank().As<int>()) };
+            (material::ArmorRatingBonusPri(MATERIALS_PAIR.first)).GetAsTrait()
+            + (CREATURE_PTR->Rank()).GetAsTrait()) };
 
         const auto WEIGHT { Weight_t::Make(
             10.0f * material::WeightMult(MATERIALS_PAIR.first, MATERIALS_PAIR.second)) };
@@ -988,10 +988,9 @@ namespace item
         }
 
         const auto WEAPON_DETAILS_NAME { (
-            (body_part::Breath == BODY_PART)
-                ? (WEAPON_TYPE_WRAPPER.DetailsKeyName()
-                   + creature::role::ToString(CREATURE_PTR->Role()))
-                : WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
+            (body_part::Breath == BODY_PART) ? (WEAPON_TYPE_WRAPPER.DetailsKeyName()
+                                                + creature::role::ToString(CREATURE_PTR->Role()))
+                                             : WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
 
         const weapon::WeaponDetails WEAPON_DETAILS {
             weapon::WeaponDetailLoader::LookupWeaponDetails(WEAPON_DETAILS_NAME)
@@ -1069,11 +1068,11 @@ namespace item
 
         Coin_t price { BASE_PRICE_FINAL
                        + material::PriceAdj(
-                           PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()) };
+                             PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()) };
 
         if (PROFILE.IsPixie())
         {
-            price = Coin_t::Make(price.As<float>() * 1.5f);
+            price = Coin_t::Make(price.GetAs<float>() * 1.5f);
         }
 
         return price;
@@ -1087,7 +1086,7 @@ namespace item
                                            : misc_type::Weight(PROFILE.MiscType())) };
 
         weight = Weight_t::Make(
-            weight.As<float>()
+            weight.GetAs<float>()
             * material::WeightMult(PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()));
 
         if (PROFILE.IsPixie())
@@ -1121,7 +1120,7 @@ namespace item
     Coin_t ItemFactory::TreasureScoreToCoins(const Score_t & TREASURE_SCORE) const
     {
         // For now Treasure Score equals the price in coins
-        return Coin_t::Make(TREASURE_SCORE);
+        return Coin_t::Make(TREASURE_SCORE.Get());
     }
 
 } // namespace item

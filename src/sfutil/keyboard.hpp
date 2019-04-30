@@ -9,553 +9,179 @@
 //
 // keyboard.hpp
 //
-#include "misc/strings.hpp"
-
 #include <SFML/Window/Keyboard.hpp>
 
-#include <string>
-
-namespace sf
-{
-
-inline std::ostream & operator<<(std::ostream & os, const sf::Keyboard::Key KEY)
-{
-    switch (KEY)
-    {
-        case sf::Keyboard::A:
-        {
-            os << "A";
-            break;
-        }
-        case sf::Keyboard::B:
-        {
-            os << "B";
-            break;
-        }
-        case sf::Keyboard::C:
-        {
-            os << "C";
-            break;
-        }
-        case sf::Keyboard::D:
-        {
-            os << "D";
-            break;
-        }
-        case sf::Keyboard::E:
-        {
-            os << "E";
-            break;
-        }
-        case sf::Keyboard::F:
-        {
-            os << "F";
-            break;
-        }
-        case sf::Keyboard::G:
-        {
-            os << "G";
-            break;
-        }
-        case sf::Keyboard::H:
-        {
-            os << "H";
-            break;
-        }
-        case sf::Keyboard::I:
-        {
-            os << "I";
-            break;
-        }
-        case sf::Keyboard::J:
-        {
-            os << "J";
-            break;
-        }
-        case sf::Keyboard::K:
-        {
-            os << "K";
-            break;
-        }
-        case sf::Keyboard::L:
-        {
-            os << "L";
-            break;
-        }
-        case sf::Keyboard::M:
-        {
-            os << "M";
-            break;
-        }
-        case sf::Keyboard::N:
-        {
-            os << "N";
-            break;
-        }
-        case sf::Keyboard::O:
-        {
-            os << "O";
-            break;
-        }
-        case sf::Keyboard::P:
-        {
-            os << "P";
-            break;
-        }
-        case sf::Keyboard::Q:
-        {
-            os << "Q";
-            break;
-        }
-        case sf::Keyboard::R:
-        {
-            os << "R";
-            break;
-        }
-        case sf::Keyboard::S:
-        {
-            os << "S";
-            break;
-        }
-        case sf::Keyboard::T:
-        {
-            os << "T";
-            break;
-        }
-        case sf::Keyboard::U:
-        {
-            os << "U";
-            break;
-        }
-        case sf::Keyboard::V:
-        {
-            os << "V";
-            break;
-        }
-        case sf::Keyboard::W:
-        {
-            os << "W";
-            break;
-        }
-        case sf::Keyboard::X:
-        {
-            os << "X";
-            break;
-        }
-        case sf::Keyboard::Y:
-        {
-            os << "Y";
-            break;
-        }
-        case sf::Keyboard::Z:
-        {
-            os << "Z";
-            break;
-        }
-        case sf::Keyboard::Num0:
-        {
-            os << "Num0";
-            break;
-        }
-        case sf::Keyboard::Num1:
-        {
-            os << "Num1";
-            break;
-        }
-        case sf::Keyboard::Num2:
-        {
-            os << "Num2";
-            break;
-        }
-        case sf::Keyboard::Num3:
-        {
-            os << "Num3";
-            break;
-        }
-        case sf::Keyboard::Num4:
-        {
-            os << "Num4";
-            break;
-        }
-        case sf::Keyboard::Num5:
-        {
-            os << "Num5";
-            break;
-        }
-        case sf::Keyboard::Num6:
-        {
-            os << "Num6";
-            break;
-        }
-        case sf::Keyboard::Num7:
-        {
-            os << "Num7";
-            break;
-        }
-        case sf::Keyboard::Num8:
-        {
-            os << "Num8";
-            break;
-        }
-        case sf::Keyboard::Num9:
-        {
-            os << "Num9";
-            break;
-        }
-        case sf::Keyboard::Escape:
-        {
-            os << "Escape";
-            break;
-        }
-        case sf::Keyboard::LControl:
-        {
-            os << "LControl";
-            break;
-        }
-        case sf::Keyboard::LShift:
-        {
-            os << "LShift";
-            break;
-        }
-        case sf::Keyboard::LAlt:
-        {
-            os << "LAlt";
-            break;
-        }
-        case sf::Keyboard::LSystem:
-        {
-            os << "LSystem:";
-            break;
-        }
-        case sf::Keyboard::RControl:
-        {
-            os << "RControl";
-            break;
-        }
-        case sf::Keyboard::RShift:
-        {
-            os << "RShift";
-            break;
-        }
-        case sf::Keyboard::RAlt:
-        {
-            os << "RAlt";
-            break;
-        }
-        case sf::Keyboard::RSystem:
-        {
-            os << "RSystem";
-            break;
-        }
-        case sf::Keyboard::Menu:
-        {
-            os << "Menu";
-            break;
-        }
-        case sf::Keyboard::LBracket:
-        {
-            os << "LBracket";
-            break;
-        }
-        case sf::Keyboard::RBracket:
-        {
-            os << "RBracket";
-            break;
-        }
-        case sf::Keyboard::SemiColon:
-        {
-            os << "SemiColon";
-            break;
-        }
-        case sf::Keyboard::Comma:
-        {
-            os << "Comma";
-            break;
-        }
-        case sf::Keyboard::Period:
-        {
-            os << "Period";
-            break;
-        }
-        case sf::Keyboard::Quote:
-        {
-            os << "Quote";
-            break;
-        }
-        case sf::Keyboard::Slash:
-        {
-            os << "Slash";
-            break;
-        }
-        case sf::Keyboard::BackSlash:
-        {
-            os << "BackSlash";
-            break;
-        }
-        case sf::Keyboard::Tilde:
-        {
-            os << "Tilde";
-            break;
-        }
-        case sf::Keyboard::Equal:
-        {
-            os << "Equal";
-            break;
-        }
-        case sf::Keyboard::Dash:
-        {
-            os << "Dash";
-            break;
-        }
-        case sf::Keyboard::Space:
-        {
-            os << "Space";
-            break;
-        }
-        case sf::Keyboard::Return:
-        {
-            os << "Return";
-            break;
-        }
-        case sf::Keyboard::BackSpace:
-        {
-            os << "BackSpace";
-            break;
-        }
-        case sf::Keyboard::Tab:
-        {
-            os << "Tab";
-            break;
-        }
-        case sf::Keyboard::PageUp:
-        {
-            os << "PageUp";
-            break;
-        }
-        case sf::Keyboard::PageDown:
-        {
-            os << "PageDown";
-            break;
-        }
-        case sf::Keyboard::End:
-        {
-            os << "End";
-            break;
-        }
-        case sf::Keyboard::Home:
-        {
-            os << "Home";
-            break;
-        }
-        case sf::Keyboard::Insert:
-        {
-            os << "Insert";
-            break;
-        }
-        case sf::Keyboard::Delete:
-        {
-            os << "Delete";
-            break;
-        }
-        case sf::Keyboard::Add:
-        {
-            os << "Add";
-            break;
-        }
-        case sf::Keyboard::Subtract:
-        {
-            os << "Subtract";
-            break;
-        }
-        case sf::Keyboard::Multiply:
-        {
-            os << "Multiply";
-            break;
-        }
-        case sf::Keyboard::Divide:
-        {
-            os << "Divide";
-            break;
-        }
-        case sf::Keyboard::Left:
-        {
-            os << "Left";
-            break;
-        }
-        case sf::Keyboard::Right:
-        {
-            os << "Right";
-            break;
-        }
-        case sf::Keyboard::Up:
-        {
-            os << "Up";
-            break;
-        }
-        case sf::Keyboard::Down:
-        {
-            os << "Down";
-            break;
-        }
-        case sf::Keyboard::Numpad0:
-        {
-            os << "Numpad0";
-            break;
-        }
-        case sf::Keyboard::Numpad1:
-        {
-            os << "Numpad1";
-            break;
-        }
-        case sf::Keyboard::Numpad2:
-        {
-            os << "Numpad2";
-            break;
-        }
-        case sf::Keyboard::Numpad3:
-        {
-            os << "Numpad3";
-            break;
-        }
-        case sf::Keyboard::Numpad4:
-        {
-            os << "Numpad4";
-            break;
-        }
-        case sf::Keyboard::Numpad5:
-        {
-            os << "Numpad5";
-            break;
-        }
-        case sf::Keyboard::Numpad6:
-        {
-            os << "Numpad6";
-            break;
-        }
-        case sf::Keyboard::Numpad7:
-        {
-            os << "Numpad7";
-            break;
-        }
-        case sf::Keyboard::Numpad8:
-        {
-            os << "Numpad8";
-            break;
-        }
-        case sf::Keyboard::Numpad9:
-        {
-            os << "Numpad9";
-            break;
-        }
-        case sf::Keyboard::F1:
-        {
-            os << "F1";
-            break;
-        }
-        case sf::Keyboard::F2:
-        {
-            os << "F2";
-            break;
-        }
-        case sf::Keyboard::F3:
-        {
-            os << "F3";
-            break;
-        }
-        case sf::Keyboard::F4:
-        {
-            os << "F4";
-            break;
-        }
-        case sf::Keyboard::F5:
-        {
-            os << "F5";
-            break;
-        }
-        case sf::Keyboard::F6:
-        {
-            os << "F6";
-            break;
-        }
-        case sf::Keyboard::F7:
-        {
-            os << "F7";
-            break;
-        }
-        case sf::Keyboard::F8:
-        {
-            os << "F8";
-            break;
-        }
-        case sf::Keyboard::F9:
-        {
-            os << "F9";
-            break;
-        }
-        case sf::Keyboard::F10:
-        {
-            os << "F10";
-            break;
-        }
-        case sf::Keyboard::F11:
-        {
-            os << "F11";
-            break;
-        }
-        case sf::Keyboard::F12:
-        {
-            os << "F12";
-            break;
-        }
-        case sf::Keyboard::F13:
-        {
-            os << "F13";
-            break;
-        }
-        case sf::Keyboard::F14:
-        {
-            os << "F14";
-            break;
-        }
-        case sf::Keyboard::F15:
-        {
-            os << "F15";
-            break;
-        }
-        case sf::Keyboard::Pause:
-        {
-            os << "Pause";
-            break;
-        }
-        case sf::Keyboard::Unknown:
-        case sf::Keyboard::KeyCount:
-        default:
-        {
-            os << "UnknownKeyCodeError";
-            break;
-        }
-    }
-
-    return os;
-}
-
-} // namespace sf
+#include <ostream>
 
 namespace heroespath
 {
 namespace sfutil
 {
 
-    inline const std::string ToString(
-        const sf::Keyboard::Key KEY,
-        const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default)
+    inline const char * sfKeyToString(const sf::Keyboard::Key KEY)
     {
-        std::ostringstream ss;
-        ss << misc::MakeToStringPrefix(OPTIONS, "Key") << KEY;
-        return ss.str();
+        switch (KEY)
+        {
+            case sf::Keyboard::A: return "A";
+            case sf::Keyboard::B: return "B";
+            case sf::Keyboard::C: return "C";
+            case sf::Keyboard::D: return "D";
+            case sf::Keyboard::E: return "E";
+            case sf::Keyboard::F: return "F";
+            case sf::Keyboard::G: return "G";
+            case sf::Keyboard::H: return "H";
+            case sf::Keyboard::I: return "I";
+            case sf::Keyboard::J: return "J";
+            case sf::Keyboard::K: return "K";
+            case sf::Keyboard::L: return "L";
+            case sf::Keyboard::M: return "M";
+            case sf::Keyboard::N: return "N";
+            case sf::Keyboard::O: return "O";
+            case sf::Keyboard::P: return "P";
+            case sf::Keyboard::Q: return "Q";
+            case sf::Keyboard::R: return "R";
+            case sf::Keyboard::S: return "S";
+            case sf::Keyboard::T: return "T";
+            case sf::Keyboard::U: return "U";
+            case sf::Keyboard::V: return "V";
+            case sf::Keyboard::W: return "W";
+            case sf::Keyboard::X: return "X";
+            case sf::Keyboard::Y: return "Y";
+            case sf::Keyboard::Z: return "Z";
+            case sf::Keyboard::Num0: return "0";
+            case sf::Keyboard::Num1: return "1";
+            case sf::Keyboard::Num2: return "2";
+            case sf::Keyboard::Num3: return "3";
+            case sf::Keyboard::Num4: return "4";
+            case sf::Keyboard::Num5: return "5";
+            case sf::Keyboard::Num6: return "6";
+            case sf::Keyboard::Num7: return "7";
+            case sf::Keyboard::Num8: return "8";
+            case sf::Keyboard::Num9: return "9";
+            case sf::Keyboard::Escape: return "Escape";
+            case sf::Keyboard::LControl: return "LControl";
+            case sf::Keyboard::LShift: return "LShift";
+            case sf::Keyboard::LAlt: return "LAlt";
+            case sf::Keyboard::LSystem: return "LSystem:";
+            case sf::Keyboard::RControl: return "RControl";
+            case sf::Keyboard::RShift: return "RShift";
+            case sf::Keyboard::RAlt: return "RAlt";
+            case sf::Keyboard::RSystem: return "RSystem";
+            case sf::Keyboard::Menu: return "Menu";
+            case sf::Keyboard::LBracket: return "LBracket";
+            case sf::Keyboard::RBracket: return "RBracket";
+            case sf::Keyboard::SemiColon: return "SemiColon";
+            case sf::Keyboard::Comma: return "Comma";
+            case sf::Keyboard::Period: return "Period";
+            case sf::Keyboard::Quote: return "Quote";
+            case sf::Keyboard::Slash: return "Slash";
+            case sf::Keyboard::BackSlash: return "BackSlash";
+            case sf::Keyboard::Tilde: return "Tilde";
+            case sf::Keyboard::Equal: return "Equal";
+            case sf::Keyboard::Dash: return "Dash";
+            case sf::Keyboard::Space: return "Space";
+            case sf::Keyboard::Return: return "Return";
+            case sf::Keyboard::BackSpace: return "BackSpace";
+            case sf::Keyboard::Tab: return "Tab";
+            case sf::Keyboard::PageUp: return "PageUp";
+            case sf::Keyboard::PageDown: return "PageDown";
+            case sf::Keyboard::End: return "End";
+            case sf::Keyboard::Home: return "Home";
+            case sf::Keyboard::Insert: return "Insert";
+            case sf::Keyboard::Delete: return "Delete";
+            case sf::Keyboard::Add: return "Add";
+            case sf::Keyboard::Subtract: return "Subtract";
+            case sf::Keyboard::Multiply: return "Multiply";
+            case sf::Keyboard::Divide: return "Divide";
+            case sf::Keyboard::Left: return "Left";
+            case sf::Keyboard::Right: return "Right";
+            case sf::Keyboard::Up: return "Up";
+            case sf::Keyboard::Down: return "Down";
+            case sf::Keyboard::Numpad0: return "0";
+            case sf::Keyboard::Numpad1: return "1";
+            case sf::Keyboard::Numpad2: return "2";
+            case sf::Keyboard::Numpad3: return "3";
+            case sf::Keyboard::Numpad4: return "4";
+            case sf::Keyboard::Numpad5: return "5";
+            case sf::Keyboard::Numpad6: return "6";
+            case sf::Keyboard::Numpad7: return "7";
+            case sf::Keyboard::Numpad8: return "8";
+            case sf::Keyboard::Numpad9: return "9";
+            case sf::Keyboard::F1: return "F1";
+            case sf::Keyboard::F2: return "F2";
+            case sf::Keyboard::F3: return "F3";
+            case sf::Keyboard::F4: return "F4";
+            case sf::Keyboard::F5: return "F5";
+            case sf::Keyboard::F6: return "F6";
+            case sf::Keyboard::F7: return "F7";
+            case sf::Keyboard::F8: return "F8";
+            case sf::Keyboard::F9: return "F9";
+            case sf::Keyboard::F10: return "F10";
+            case sf::Keyboard::F11: return "F11";
+            case sf::Keyboard::F12: return "F12";
+            case sf::Keyboard::F13: return "F13";
+            case sf::Keyboard::F14: return "F14";
+            case sf::Keyboard::F15: return "F15";
+            case sf::Keyboard::Pause: return "Pause";
+            case sf::Keyboard::Unknown: return "(Unknown)";
+            case sf::Keyboard::KeyCount:
+            default: return "(out_of_range)";
+        }
+    }
+
+    inline char
+        sfKeyToNameValidCharacterNameChar(const sf::Keyboard::Key & KEY, const bool IS_UPPER_CASE)
+    {
+        if ((KEY >= sf::Keyboard::A) && (KEY <= sf::Keyboard::Z))
+        {
+            if (IS_UPPER_CASE)
+            {
+                return ('A' + static_cast<char>(int(KEY) - int(sf::Keyboard::A)));
+            }
+            else
+            {
+                return ('a' + static_cast<char>(int(KEY) - int(sf::Keyboard::A)));
+            }
+        }
+        else if ((KEY >= sf::Keyboard::Num0) && (KEY <= sf::Keyboard::Num9))
+        {
+            return ('0' + static_cast<char>(int(KEY) - int(sf::Keyboard::Num0)));
+        }
+        else if ((KEY >= sf::Keyboard::Numpad0) && (KEY <= sf::Keyboard::Numpad9))
+        {
+            return ('0' + static_cast<char>(int(KEY) - int(sf::Keyboard::Numpad0)));
+        }
+        else if (KEY == sf::Keyboard::Dash)
+        {
+            return ('-');
+        }
+        else if (KEY == sf::Keyboard::Period)
+        {
+            return ('.');
+        }
+        else if ((KEY >= sf::Keyboard::Right) || (KEY <= sf::Keyboard::Space))
+        {
+            return (' ');
+        }
+        else
+        {
+            return 0;
+        }
     }
 
 } // namespace sfutil
+
 } // namespace heroespath
+
+namespace sf
+{
+
+inline std::ostream & operator<<(std::ostream & os, const sf::Keyboard::Key KEY)
+{
+    os << heroespath::sfutil::sfKeyToString(KEY);
+    return os;
+}
+
+} // namespace sf
 
 #endif // HEROESPATH_SFUTIL_KEYBOARD_HPP_INCLUDED

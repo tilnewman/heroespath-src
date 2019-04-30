@@ -225,7 +225,7 @@ namespace gui
                 const auto FINAL_WIDTH_UINT { (
                     (WIDTH_LIMIT_UINT == 0)
                         ? RENDERED_TEXT_SIZE_V_UINT.x
-                        : std::min(WIDTH_LIMIT_UINT, RENDERED_TEXT_SIZE_V_UINT.x)) };
+                        : misc::Min(WIDTH_LIMIT_UINT, RENDERED_TEXT_SIZE_V_UINT.x)) };
 
                 const auto FINAL_HEIGHT_UINT { RENDERED_TEXT_SIZE_V_UINT.y };
 

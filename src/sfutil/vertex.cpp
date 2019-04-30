@@ -9,8 +9,9 @@
 //
 #include "vertex.hpp"
 
+#include "sfutil/color.hpp"
 #include "sfutil/common.hpp"
-#include "sfutil/sprite-texture.hpp"
+#include "sfutil/sprite.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/VertexArray.hpp>
@@ -29,8 +30,6 @@ bool operator==(const sf::Vertex & L, const sf::Vertex & R)
 {
     return std::tie(L.position, L.color, L.texCoords) == std::tie(R.position, R.color, R.texCoords);
 }
-
-bool operator!=(const sf::Vertex & L, const sf::Vertex & R) { return !(L == R); }
 
 bool operator<(const sf::VertexArray & L, const sf::VertexArray & R)
 {
@@ -96,8 +95,6 @@ bool operator==(const sf::VertexArray & L, const sf::VertexArray & R)
     }
 }
 
-bool operator!=(const sf::VertexArray & L, const sf::VertexArray & R) { return !(L == R); }
-
 } // namespace sf
 
 namespace heroespath
@@ -122,8 +119,8 @@ namespace sfutil
         positions.resize(VERTS_PER_QUAD);
 
         const auto SIZE_ACTUAL_V { sf::Vector2f(
-            ((SIZE_LIMIT_V.x > 0.0f) ? std::min(SIZE_LIMIT_V.x, SIZE_FULL_V.x) : SIZE_FULL_V.x),
-            ((SIZE_LIMIT_V.y > 0.0f) ? std::min(SIZE_LIMIT_V.y, SIZE_FULL_V.y) : SIZE_FULL_V.y)) };
+            ((SIZE_LIMIT_V.x > 0.0f) ? misc::Min(SIZE_LIMIT_V.x, SIZE_FULL_V.x) : SIZE_FULL_V.x),
+            ((SIZE_LIMIT_V.y > 0.0f) ? misc::Min(SIZE_LIMIT_V.y, SIZE_FULL_V.y) : SIZE_FULL_V.y)) };
 
         if (ORIENTATIONS_TO_DRAW_FROM_END == gui::Orientation::Count)
         {

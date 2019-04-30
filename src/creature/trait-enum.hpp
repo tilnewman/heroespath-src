@@ -19,7 +19,6 @@ namespace heroespath
 {
 namespace creature
 {
-    using Trait_t = int;
 
     // Defines one effect an Enchantment can have.
     struct Traits : public EnumBaseCounting<EnumFirstValue::Valid>

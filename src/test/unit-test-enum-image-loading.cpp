@@ -25,10 +25,9 @@
 #include "gui/display.hpp"
 #include "gui/image-loaders.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/nameof.hpp"
 #include "sfutil/fitting.hpp"
 #include "sfutil/scale.hpp"
-
-#include "misc/nameof.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -51,7 +50,7 @@ void TestEnumImageLoading()
         const sf::Texture & TEXTURE { CACHED_TEXTURE.Get() };
 
         std::ostringstream ss;
-        ss << "TestImageLoading<" << NAMEOF_TYPE_T_STR(EnumWrapper_t)
+        ss << "TestImageLoading<" << NAMEOF_TYPE_T(EnumWrapper_t)
            << "> on image with index/value=" << index
            << ", enum=" << EnumWrapper_t::ToString(ENUM_VALUE);
 

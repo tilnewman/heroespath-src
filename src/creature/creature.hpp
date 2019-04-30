@@ -25,11 +25,11 @@
 #include "creature/trait.hpp"
 #include "creature/traits-set.hpp"
 #include "creature/wolfen-class-enum.hpp"
+#include "game/strong-types.hpp"
 #include "gui/date-time.hpp"
 #include "item/inventory.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
 
@@ -163,46 +163,46 @@ namespace creature
 
         float HealthRatio() const
         {
-            return (healthCurrent_.As<float>() / healthNormal_.As<float>());
+            return (healthCurrent_.GetAs<float>() / healthNormal_.GetAs<float>());
         }
 
         Health_t HealthMissing() const { return healthNormal_ - healthCurrent_; }
 
         Mana_t ManaMissing() const
         {
-            return Mana_t(TraitNormal(Traits::Mana) - TraitWorking(Traits::Mana));
+            return Mana_t::Make(TraitNormal(Traits::Mana) - TraitWorking(Traits::Mana));
         }
 
-        Mana_t Mana() const { return Mana_t(TraitWorking(Traits::Mana)); }
+        Mana_t Mana() const { return Mana_t::Make(TraitWorking(Traits::Mana)); }
 
         Mana_t ManaAdj(const Mana_t & ADJ)
         {
-            return Mana_t(TraitCurrentAdj(Traits::Mana, ADJ.As<int>()));
+            return Mana_t::Make(TraitCurrentAdj(Traits::Mana, ADJ.GetAsTrait()));
         }
 
-        Mana_t ManaNormal() const { return Mana_t(TraitNormal(Traits::Mana)); }
+        Mana_t ManaNormal() const { return Mana_t::Make(TraitNormal(Traits::Mana)); }
 
         Mana_t ManaNormalAdj(const Mana_t & ADJ)
         {
-            return Mana_t(TraitNormalAdj(Traits::Mana, ADJ.As<int>()));
+            return Mana_t::Make(TraitNormalAdj(Traits::Mana, ADJ.GetAsTrait()));
         }
 
-        float ManaRatio() const { return (Mana().As<float>() / ManaNormal().As<float>()); }
+        float ManaRatio() const { return (Mana().GetAs<float>() / ManaNormal().GetAs<float>()); }
 
         bool IsDead() const { return HasCondition(Conditions::Dead); }
         bool IsAlive() const { return !IsDead(); }
 
-        Strength_t Strength() const { return Strength_t(TraitWorking(Traits::Strength)); }
+        Strength_t Strength() const { return Strength_t::Make(TraitWorking(Traits::Strength)); }
 
-        Accuracy_t Accuracy() const { return Accuracy_t(TraitWorking(Traits::Accuracy)); }
+        Accuracy_t Accuracy() const { return Accuracy_t::Make(TraitWorking(Traits::Accuracy)); }
 
-        Charm_t Charm() const { return Charm_t(TraitWorking(Traits::Charm)); }
+        Charm_t Charm() const { return Charm_t::Make(TraitWorking(Traits::Charm)); }
 
-        Luck_t Luck() const { return Luck_t(TraitWorking(Traits::Luck)); }
+        Luck_t Luck() const { return Luck_t::Make(TraitWorking(Traits::Luck)); }
 
-        Speed_t Speed() const { return Speed_t(TraitWorking(Traits::Speed)); }
+        Speed_t Speed() const { return Speed_t::Make(TraitWorking(Traits::Speed)); }
 
-        Intell_t Intelligence() const { return Intell_t(TraitWorking(Traits::Intelligence)); }
+        Intel_t Intelligence() const { return Intel_t::Make(TraitWorking(Traits::Intelligence)); }
 
         const gui::DateTime DateTimeCreated() const { return dateTimeCreated_; }
 
@@ -247,7 +247,7 @@ namespace creature
 
         // these functions return false if attempt to reduce beyond zero
         bool CoinsAdj(const Coin_t & C) { return inventory_.CoinsAdj(C); }
-        bool MeteorShardsAdj(const MeteorShard_t & M) { return inventory_.MeteorShardsAdj(M); }
+        bool ShardsAdj(const Shard_t & M) { return inventory_.ShardsAdj(M); }
         bool GemsAdj(const Gem_t & G) { return inventory_.GemsAdj(G); }
 
         // These functions return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
@@ -329,7 +329,10 @@ namespace creature
 
         void ReCalculateTraitBonuses();
 
-        int TraitNormal(const Traits::Enum ENUM) const { return actualSet_.GetCopy(ENUM).Normal(); }
+        Trait_t TraitNormal(const Traits::Enum ENUM) const
+        {
+            return actualSet_.GetCopy(ENUM).Normal();
+        }
 
         Trait_t TraitNormalAdj(const Traits::Enum ENUM, const Trait_t ADJ)
         {

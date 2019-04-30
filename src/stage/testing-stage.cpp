@@ -17,6 +17,7 @@
 #include "creature/name-info.hpp"
 #include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/title-holder.hpp"
+#include "game/strong-types.hpp"
 #include "gui/animation-factory.hpp"
 #include "gui/creature-image-paths.hpp"
 #include "gui/display.hpp"
@@ -38,11 +39,10 @@
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
-#include "misc/types.hpp"
 #include "popup/popup-manager.hpp"
+#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/common.hpp"
 #include "sfutil/primitives.hpp"
 #include "sfutil/scale.hpp"
 #include "song/song-holder.hpp"
@@ -104,19 +104,19 @@ namespace stage
 
     TestingStage::TestingStage()
         : StageBase(
-            "Testing",
-            {
-                gui::GuiFont::Default,
-                gui::GuiFont::DefaultBoldFlavor,
-                gui::GuiFont::System,
-                gui::GuiFont::Number,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::SignThinTallNarrow,
-                gui::GuiFont::SignBoldShortWide,
-                gui::GuiFont::Handwriting,
-                gui::GuiFont::DialogModern,
-                gui::GuiFont::DialogMedieval,
-            })
+              "Testing",
+              {
+                  gui::GuiFont::Default,
+                  gui::GuiFont::DefaultBoldFlavor,
+                  gui::GuiFont::System,
+                  gui::GuiFont::Number,
+                  gui::GuiFont::SystemCondensed,
+                  gui::GuiFont::SignThinTallNarrow,
+                  gui::GuiFont::SignBoldShortWide,
+                  gui::GuiFont::Handwriting,
+                  gui::GuiFont::DialogModern,
+                  gui::GuiFont::DialogMedieval,
+              })
         , textures_()
         , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("TestingStage's"))
         , testingBlurbsVec_()
@@ -987,19 +987,19 @@ namespace stage
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                "creature-dragon-class-rank-min-Elder");
+                                  "creature-dragon-class-rank-min-Elder");
                     }
                     else if (RACE_ENUM == creature::race::Wolfen)
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                "creature-wolfen-class-rank-min-Elder");
+                                  "creature-wolfen-class-rank-min-Elder");
                     }
                     else
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                "rankclass-Master-rankmax");
+                                  "rankclass-Master-rankmax");
                     }
                 }() };
 
@@ -1026,8 +1026,8 @@ namespace stage
                         creature::StatSet(10_str, 10_acc, 10_cha, 10_lck, 10_spd, 10_int),
                         "",
                         10_health,
-                        Rank_t(rankIndex),
-                        Experience_t(rankIndex * 10000));
+                        Rank_t::Make(rankIndex),
+                        Experience_t::Make(rankIndex * 10000));
 
                     inventoryFactory.SetupCreatureInventory(misc::MakeNotNull(&character));
                 }
@@ -1090,25 +1090,17 @@ namespace stage
             const auto FIRST_COLOR { [&]() {
                 switch (ENUM)
                 {
-                    case TopLeftTop:
-                    {
-                        return image.getPixel(OFFSET, 0);
+                    case TopLeftTop: { return image.getPixel(OFFSET, 0);
                     }
-                    case TopLeftLeft:
-                    {
-                        return image.getPixel(0, OFFSET);
+                    case TopLeftLeft: { return image.getPixel(0, OFFSET);
                     }
                     case TopRightTop:
                     {
                         return image.getPixel(((WIDTH - 1) - OFFSET) - RUN_LENGTH, 0);
                     }
-                    case TopRightRight:
-                    {
-                        return image.getPixel((WIDTH - 1), 0);
+                    case TopRightRight: { return image.getPixel((WIDTH - 1), 0);
                     }
-                    case BotLeftBot:
-                    {
-                        return image.getPixel(OFFSET, (HEIGHT - 1));
+                    case BotLeftBot: { return image.getPixel(OFFSET, (HEIGHT - 1));
                     }
                     case BotLeftLeft:
                     {
@@ -1118,14 +1110,10 @@ namespace stage
                     {
                         return image.getPixel(((WIDTH - 1) - OFFSET) - RUN_LENGTH, (HEIGHT - 1));
                     }
-                    case BotRightRight:
-                    {
-                        return image.getPixel((WIDTH - 1), (HEIGHT - 1) - OFFSET);
+                    case BotRightRight: { return image.getPixel((WIDTH - 1), (HEIGHT - 1) - OFFSET);
                     }
                     case Count:
-                    default:
-                    {
-                        return image.getPixel(0, 0);
+                    default: { return image.getPixel(0, 0);
                     }
                 }
             }() };
@@ -1135,25 +1123,17 @@ namespace stage
                 const auto NEXT_COLOR { [&]() {
                     switch (ENUM)
                     {
-                        case TopLeftTop:
-                        {
-                            return image.getPixel(OFFSET + rl, 0);
+                        case TopLeftTop: { return image.getPixel(OFFSET + rl, 0);
                         }
-                        case TopLeftLeft:
-                        {
-                            return image.getPixel(0, OFFSET + rl);
+                        case TopLeftLeft: { return image.getPixel(0, OFFSET + rl);
                         }
                         case TopRightTop:
                         {
                             return image.getPixel((((WIDTH - 1) - OFFSET) - RUN_LENGTH) + rl, 0);
                         }
-                        case TopRightRight:
-                        {
-                            return image.getPixel((WIDTH - 1), 0 + rl);
+                        case TopRightRight: { return image.getPixel((WIDTH - 1), 0 + rl);
                         }
-                        case BotLeftBot:
-                        {
-                            return image.getPixel(OFFSET + rl, (HEIGHT - 1));
+                        case BotLeftBot: { return image.getPixel(OFFSET + rl, (HEIGHT - 1));
                         }
                         case BotLeftLeft:
                         {
@@ -1170,9 +1150,7 @@ namespace stage
                                 (WIDTH - 1), (((HEIGHT - 1) - OFFSET) - RUN_LENGTH) + rl);
                         }
                         case Count:
-                        default:
-                        {
-                            return image.getPixel(0, 0);
+                        default: { return image.getPixel(0, 0);
                         }
                     }
                 }() };
@@ -1527,14 +1505,14 @@ namespace stage
                 if (WILL_MAKE_SMALL)
                 {
                     const auto GROWTH_HORIZ { misc::Random(
-                        GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - horizGrowthPrev))) };
+                        GROWTH_MIN, misc::Max(GROWTH_MIN, (1.0f - horizGrowthPrev))) };
 
                     horizGrowthPrev = GROWTH_HORIZ;
 
                     width += GROWTH_HORIZ;
 
                     const auto GROWTH_VERT { misc::Random(
-                        GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - vertGrowthPrev))) };
+                        GROWTH_MIN, misc::Max(GROWTH_MIN, (1.0f - vertGrowthPrev))) };
 
                     vertGrowthPrev = GROWTH_VERT;
 
@@ -1626,14 +1604,14 @@ namespace stage
                 if (WILL_MAKE_SMALL)
                 {
                     const auto GROWTH_HORIZ { misc::Random(
-                        GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - horizGrowthPrev))) };
+                        GROWTH_MIN, misc::Max(GROWTH_MIN, (1.0f - horizGrowthPrev))) };
 
                     horizGrowthPrev = GROWTH_HORIZ;
 
                     width += GROWTH_HORIZ;
 
                     const auto GROWTH_VERT { misc::Random(
-                        GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - vertGrowthPrev))) };
+                        GROWTH_MIN, misc::Max(GROWTH_MIN, (1.0f - vertGrowthPrev))) };
 
                     vertGrowthPrev = GROWTH_VERT;
 

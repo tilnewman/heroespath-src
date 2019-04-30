@@ -14,9 +14,9 @@
 #include "creature/role-enum.hpp"
 #include "creature/stat-set.hpp"
 #include "creature/title-enum.hpp"
+#include "game/strong-types.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <algorithm>
 #include <memory>

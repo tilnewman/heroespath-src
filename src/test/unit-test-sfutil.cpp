@@ -43,7 +43,7 @@
 #include "sfutil/primitives.hpp"
 #include "sfutil/rectangle-shape.hpp"
 #include "sfutil/scale.hpp"
-#include "sfutil/sprite-texture.hpp"
+#include "sfutil/sprite.hpp"
 #include "sfutil/vector-and-rect.hpp"
 #include "sfutil/vector-math.hpp"
 #include "sfutil/vertex.hpp"
@@ -2418,11 +2418,19 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
 
 BOOST_AUTO_TEST_CASE(ToStringTests)
 {
-    BOOST_CHECK(ToString(sf::Vector2i(0, 0)) == "(0,0)");
-    BOOST_CHECK(ToString(sf::Vector2i(123, 456)) == "(123,456)");
-    BOOST_CHECK(ToString(sf::Rect<int>(0, 0, 0, 0)) == "(0,0/0x0)");
-    BOOST_CHECK(ToString(sf::Rect<int>(1, 2, 3, 4)) == "(1,2/3x4)");
-    BOOST_CHECK(ToString(sf::VideoMode(1, 2, 8)) == "(1x2:8)");
+    std::ostringstream ss;
+
+    auto stringStreamTest = [&](const auto & V, const std::string & EXPECTED) {
+        ss.str("");
+        ss << V;
+        BOOST_CHECK_EQUAL(ss.str(), EXPECTED);
+    };
+
+    stringStreamTest(sf::Vector2i(0, 0), "(0,0)");
+    stringStreamTest(sf::Vector2i(123, 456), "(123,456)");
+    stringStreamTest(sf::Rect<int>(0, 0, 0, 0), "(0,0/0x0)");
+    stringStreamTest(sf::Rect<int>(1, 2, 3, 4), "(1,2/3x4)");
+    stringStreamTest(sf::VideoMode(1, 2, 8), "(1x2:8)");
 }
 
 BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)

@@ -25,7 +25,7 @@ namespace item
 {
 
     ItemProfile::ItemProfile()
-        : score_(0)
+        : score_(0_score)
         , religiousRatio_(0.0f)
         , category_(category::None)
         , thinProfile_()
@@ -92,9 +92,9 @@ namespace item
 
         const auto SUMMON_COUNT_D { static_cast<double>(SUMMON_INFO.Count()) };
 
-        const auto CREATURE_RANK_AVG {
-            (CREATURE_RANK_RANGE.A().As<double>() + CREATURE_RANK_RANGE.B().As<double>()) * 0.5
-        };
+        const auto CREATURE_RANK_AVG { (CREATURE_RANK_RANGE.A().GetAs<double>()
+                                        + CREATURE_RANK_RANGE.B().GetAs<double>())
+                                       * 0.5 };
 
         score_ += Score_t::Make(std::sqrt((CREATURE_RANK_AVG * SUMMON_COUNT_D) * 150.0));
     }
@@ -818,10 +818,10 @@ namespace item
             return (
                 scoreHelper.Score(MATERIAL_PRI, MATERIAL_SEC)
                 + enchantmentFactory.TreasureScore(
-                    NAMED_TYPE, MATERIAL_PRI, MATERIAL_SEC, IS_WEAPON, !IS_WEAPON)
+                      NAMED_TYPE, MATERIAL_PRI, MATERIAL_SEC, IS_WEAPON, !IS_WEAPON)
                 + enchantmentFactory.TreasureScore(SET_TYPE)
                 + enchantmentFactory.TreasureScore(
-                    ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRI, MATERIAL_SEC));
+                      ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRI, MATERIAL_SEC));
         }
     }
 

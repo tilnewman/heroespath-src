@@ -11,11 +11,11 @@
 //  A class that encapsulates a collection of Items.
 //
 #include "creature/trait.hpp"
+#include "game/strong-types.hpp"
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <memory>
 #include <sstream>
@@ -38,7 +38,7 @@ namespace item
     public:
         explicit Inventory(
             const Coin_t & COINS = 0_coin,
-            const MeteorShard_t & METEOR_SHARDS = 0_mshard,
+            const Shard_t & METEOR_SHARDS = 0_shard,
             const Gem_t & GEMS = 0_gem,
             const ItemPVec_t & ITEMS_PVEC = ItemPVec_t(),
             const ItemPVec_t & EQUIPPED_ITEMS_PVEC = ItemPVec_t());
@@ -46,12 +46,12 @@ namespace item
         ~Inventory();
 
         Coin_t Coins() const { return coins_; }
-        MeteorShard_t MeteorShards() const { return meteorShards_; }
+        Shard_t Shards() const { return meteorShards_; }
         Gem_t Gems() const { return gems_; }
 
         // these functions return false if attempt to reduce below zero
         bool CoinsAdj(const Coin_t &);
-        bool MeteorShardsAdj(const MeteorShard_t &);
+        bool ShardsAdj(const Shard_t &);
         bool GemsAdj(const Gem_t &);
 
         const ItemPVec_t Items() const { return itemsPVec_; }
@@ -111,7 +111,7 @@ namespace item
 
     private:
         Coin_t coins_;
-        MeteorShard_t meteorShards_;
+        Shard_t meteorShards_;
         Gem_t gems_;
 
         // the observer pointers in these two vectors need to be tracked and eventually free'd by

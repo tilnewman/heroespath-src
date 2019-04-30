@@ -58,19 +58,19 @@ namespace item
 
         ss << "total_count=" << ALL_PROFILES_COUNT << ", total_score_sum=" << ALL_PROFILES_SCORE_SUM
            << ", total_score_avg="
-           << DivideAsDouble(ALL_PROFILES_SCORE_SUM.As<std::size_t>(), ALL_PROFILES_COUNT)
+           << DivideAsDouble(ALL_PROFILES_SCORE_SUM.GetAs<std::size_t>(), ALL_PROFILES_COUNT)
            << ", rel_count=" << RELIGIOUS_PROFILES_COUNT << "("
            << DivideAsDouble(RELIGIOUS_PROFILES_COUNT, ALL_PROFILES_COUNT) << "%)"
            << ", rel_score_sum=" << RELIGIOUS_PROFILES_SCORE_SUM << ", rel_score_avg="
            << DivideAsDouble(
-                  RELIGIOUS_PROFILES_SCORE_SUM.As<std::size_t>(), RELIGIOUS_PROFILES_COUNT)
+                  RELIGIOUS_PROFILES_SCORE_SUM.GetAs<std::size_t>(), RELIGIOUS_PROFILES_COUNT)
            << "\n";
 
         const auto SOURCE_PROFILES { SourceProfiles(
             ALL_PROFILES_COUNT,
             RELIGIOUS_PROFILES_COUNT,
-            ALL_PROFILES_SCORE_SUM.As<std::size_t>(),
-            RELIGIOUS_PROFILES_SCORE_SUM.As<std::size_t>()) };
+            ALL_PROFILES_SCORE_SUM.GetAs<std::size_t>(),
+            RELIGIOUS_PROFILES_SCORE_SUM.GetAs<std::size_t>()) };
 
         Report allReport("all");
 
@@ -243,8 +243,8 @@ namespace item
     {
         if (WILL_ADD)
         {
-            const auto NORMAL_SCORE { PROFILE.TreasureScore().As<std::size_t>() };
-            const auto RELIGIOIUS_SCORE { PROFILE.ReligiousScore().As<std::size_t>() };
+            const auto NORMAL_SCORE { PROFILE.TreasureScore().GetAs<std::size_t>() };
+            const auto RELIGIOIUS_SCORE { PROFILE.ReligiousScore().GetAs<std::size_t>() };
 
             scores_.emplace_back(NORMAL_SCORE);
 
@@ -333,7 +333,7 @@ namespace item
             ss << "\n---(" << CHUNK_SIZE << ")---";
             for (std::size_t chunkIndex(0); chunkIndex < CHUNK_COUNT; ++chunkIndex)
             {
-                const std::size_t MIN_DEFAULT { 99999999 }; // yeah...i know...
+                const std::size_t MIN_DEFAULT { std::numeric_limits<std::size_t>::max() };
                 std::size_t min { MIN_DEFAULT };
                 std::size_t max { 0 };
                 std::size_t sum { 0 };
@@ -454,7 +454,7 @@ namespace item
 
                 auto & specificItemInfo { specificMap_[PROFILE.WeaponInfo().SpecificName()] };
 
-                specificItemInfo.scores.emplace_back(PROFILE.TreasureScore().As<std::size_t>());
+                specificItemInfo.scores.emplace_back(PROFILE.TreasureScore().GetAs<std::size_t>());
 
                 specificItemInfo.material_pairs.emplace_back(
                     PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary());
@@ -466,7 +466,7 @@ namespace item
 
                 auto & specificItemInfo { specificMap_[PROFILE.ArmorInfo().SpecificName()] };
 
-                specificItemInfo.scores.emplace_back(PROFILE.TreasureScore().As<std::size_t>());
+                specificItemInfo.scores.emplace_back(PROFILE.TreasureScore().GetAs<std::size_t>());
 
                 specificItemInfo.material_pairs.emplace_back(
                     PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary());
