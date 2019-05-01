@@ -15,8 +15,8 @@
 #include "gui/text-entity.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
-#include "sfutil/display.hpp"
 #include "sfutil/common.hpp"
+#include "sfutil/display.hpp"
 #include "sfutil/scale.hpp"
 
 namespace heroespath
@@ -29,21 +29,13 @@ namespace gui
     {
         switch (FOLLOW_TYPE)
         {
-            case None:
-            {
-                return "None";
+            case None: { return "None";
             }
-            case Image:
-            {
-                return "Image";
+            case Image: { return "Image";
             }
-            case Text:
-            {
-                return "Text";
+            case Text: { return "Text";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -83,14 +75,14 @@ namespace gui
         const MouseStateSync::Enum MOUSE_STATE_SYNC,
         const bool WILL_SYNC_MOUSESTATES)
         : ImageTextEntity(
-            NAME + "_Constructor2_",
-            std::make_unique<gui::ImageEntity>(
-                NAME + "'s_ImageTextEntity_FromConstructor2_'s_", MOUSE_IMAGE_INFO),
-            std::make_unique<gui::TextEntity>(
-                NAME + "'s_ImageTextEntity_FromConstructor2_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
-            CALLBACK_HANDLER_PTR_OPT,
-            MOUSE_STATE_SYNC,
-            WILL_SYNC_MOUSESTATES)
+              NAME + "_Constructor2_",
+              std::make_unique<gui::ImageEntity>(
+                  NAME + "'s_ImageTextEntity_FromConstructor2_'s_", MOUSE_IMAGE_INFO),
+              std::make_unique<gui::TextEntity>(
+                  NAME + "'s_ImageTextEntity_FromConstructor2_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
+              CALLBACK_HANDLER_PTR_OPT,
+              MOUSE_STATE_SYNC,
+              WILL_SYNC_MOUSESTATES)
     {}
 
     ImageTextEntity::ImageTextEntity(
@@ -101,17 +93,17 @@ namespace gui
         const MouseStateSync::Enum MOUSE_STATE_SYNC,
         const bool WILL_SYNC_MOUSESTATES)
         : ImageTextEntity(
-            NAME + "_Constructor3_",
-            std::make_unique<gui::ImageEntity>(
-                NAME + "'s_ImageTextEntity_FromConstructor3_'s_", MOUSE_IMAGE_INFO),
-            std::make_unique<gui::TextEntity>(
-                NAME + "'s_ImageTextEntity_FromConstructor3_'s_",
-                0.0f,
-                0.0f,
-                MouseTextInfo(TEXT_INFO)),
-            CALLBACK_HANDLER_PTR_OPT,
-            MOUSE_STATE_SYNC,
-            WILL_SYNC_MOUSESTATES)
+              NAME + "_Constructor3_",
+              std::make_unique<gui::ImageEntity>(
+                  NAME + "'s_ImageTextEntity_FromConstructor3_'s_", MOUSE_IMAGE_INFO),
+              std::make_unique<gui::TextEntity>(
+                  NAME + "'s_ImageTextEntity_FromConstructor3_'s_",
+                  0.0f,
+                  0.0f,
+                  MouseTextInfo(TEXT_INFO)),
+              CALLBACK_HANDLER_PTR_OPT,
+              MOUSE_STATE_SYNC,
+              WILL_SYNC_MOUSESTATES)
     {}
 
     ImageTextEntity::ImageTextEntity(
@@ -122,15 +114,15 @@ namespace gui
         const MouseStateSync::Enum MOUSE_STATE_SYNC,
         const bool WILL_SYNC_MOUSESTATES)
         : ImageTextEntity(
-            NAME + "_Constructor4_",
-            std::make_unique<gui::ImageEntity>(
-                NAME + "'s_ImageTextEntity_FromConstructor4_'s_",
-                gui::MouseImageInfo(true, ENTITY_IMAGE_INFO)),
-            std::make_unique<gui::TextEntity>(
-                NAME + "'s_ImageTextEntity_FromConstructor4_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
-            CALLBACK_HANDLER_PTR_OPT,
-            MOUSE_STATE_SYNC,
-            WILL_SYNC_MOUSESTATES)
+              NAME + "_Constructor4_",
+              std::make_unique<gui::ImageEntity>(
+                  NAME + "'s_ImageTextEntity_FromConstructor4_'s_",
+                  gui::MouseImageInfo(true, ENTITY_IMAGE_INFO)),
+              std::make_unique<gui::TextEntity>(
+                  NAME + "'s_ImageTextEntity_FromConstructor4_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
+              CALLBACK_HANDLER_PTR_OPT,
+              MOUSE_STATE_SYNC,
+              WILL_SYNC_MOUSESTATES)
     {}
 
     ImageTextEntity::~ImageTextEntity() = default;
@@ -233,13 +225,13 @@ namespace gui
 
         if (imageEntityUPtr_ && imageEntityUPtr_->MouseUp(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_);
+            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(imageEntityUPtr_.get()));
             didSomethingHappend = true;
         }
 
         if (textEntityUPtr_ && textEntityUPtr_->MouseUp(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_);
+            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(textEntityUPtr_.get()));
             didSomethingHappend = true;
         }
 
@@ -288,13 +280,13 @@ namespace gui
 
         if (imageEntityUPtr_ && imageEntityUPtr_->MouseDown(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_);
+            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(imageEntityUPtr_.get()));
             isMouseDown_ = true;
         }
 
         if (textEntityUPtr_ && textEntityUPtr_->MouseDown(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_);
+            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(textEntityUPtr_.get()));
             isMouseDown_ = true;
         }
 
@@ -307,13 +299,13 @@ namespace gui
 
         if (imageEntityUPtr_ && imageEntityUPtr_->UpdateMousePos(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_);
+            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(imageEntityUPtr_.get()));
             didSomethingHappend = true;
         }
 
         if (textEntityUPtr_ && textEntityUPtr_->UpdateMousePos(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_);
+            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(textEntityUPtr_.get()));
             didSomethingHappend = true;
         }
 

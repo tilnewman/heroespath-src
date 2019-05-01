@@ -12,8 +12,8 @@
 #include "game/startup-shutdown.hpp"
 
 #include <cstdlib>
-#include <exception>
 #include <iostream>
+#include <stdexcept>
 
 int main(int argc, char * argv[])
 {
@@ -25,11 +25,11 @@ int main(int argc, char * argv[])
     }
     catch (const std::exception & EXCEPTION)
     {
-        std::cerr << "exception: " << EXCEPTION.what() << std::endl;
+        std::cout << "exception: " << EXCEPTION.what() << std::endl;
     }
     catch (...)
     {
-        std::cerr << "unknown exception" << std::endl;
+        std::cout << "unknown exception" << std::endl;
     }
 
     return EXIT_FAILURE;

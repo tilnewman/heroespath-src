@@ -18,7 +18,6 @@
 #include "misc/strings.hpp"
 
 #include <algorithm>
-#include <sstream>
 
 namespace heroespath
 {
@@ -62,39 +61,33 @@ namespace song
                 << "QuestSpecific.");
     }
 
-    const std::string Song::ToString() const
-    {
-        std::ostringstream ss;
-        ss << Name() << "  -" << DescDetails();
-        return ss.str();
-    }
+    const std::string Song::ToString() const { return Name() + "  -" + DescDetails(); }
 
     const std::string Song::DescDetails() const
     {
-        std::ostringstream ss;
-        ss << "A " << misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>()) << " rank"
-           << combat::EffectType::Name(effectType_) << " magical ";
+        std::string result(
+            "A " + misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>()) + " rank"
+            + combat::EffectType::Name(effectType_) + " magical ");
 
         if (SongType::Guitar == type_)
         {
-            ss << "guitar tune";
+            result += "guitar tune";
         }
         else
         {
-            ss << "drum beat";
+            result += "drum beat";
         }
 
-        ss << " that can be played during " << game::Phase::ToString(validPhases_) << ", targeting "
-           << combat::TargetType::Name(targetType_) << ", and costing " << manaCost_ << " mana.";
+        result += " that can be played during " + game::Phase::ToString(validPhases_)
+            + ", targeting " + combat::TargetType::Name(targetType_) + ", and costing "
+            + manaCost_.ToString() + " mana.";
 
-        return ss.str();
+        return result;
     }
 
     const std::string Song::DescComplete() const
     {
-        std::ostringstream ss;
-        ss << Desc() << "  " << DescExtra() << " " << DescDetails();
-        return ss.str();
+        return Desc() + "  " + DescExtra() + " " + DescDetails();
     }
 
     bool Song::EffectCreature(
@@ -184,13 +177,10 @@ namespace song
                 {
                     CREATURE_LISTENING_PTR->ManaAdj(MANA_GAIN_FINAL);
 
-                    std::ostringstream ss;
-                    ss << "'s mana for " << MANA_GAIN_FINAL << ".";
-
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + " recharges ",
-                        ss.str(),
+                        ("'s mana for " + MANA_GAIN_FINAL.ToString() + "."),
                         combat::NamePosition::SourceThenTarget);
 
                     return true;
@@ -456,72 +446,70 @@ namespace song
 
     const std::string Song::ActionPhrasePreamble() const
     {
-        std::ostringstream ss;
-
-        ss << "'s ";
+        std::string result("'s ");
 
         if (SongType::Guitar == type_)
         {
-            ss << "fingers ";
+            result += "fingers ";
 
             switch (misc::Random(3))
             {
                 case 1:
                 {
-                    ss << "tickle";
+                    result += "tickle";
                     break;
                 }
                 case 2:
                 {
-                    ss << "pluck";
+                    result += "pluck";
                     break;
                 }
                 case 3:
                 {
-                    ss << "strum";
+                    result += "strum";
                     break;
                 }
                 default:
                 {
-                    ss << "dance along";
+                    result += "dance along";
                     break;
                 }
             }
 
-            ss << " the strings";
+            result += " the strings";
         }
         else
         {
-            ss << "hands ";
+            result += "hands ";
 
             switch (misc::Random(3))
             {
                 case 1:
                 {
-                    ss << "tap";
+                    result += "tap";
                     break;
                 }
                 case 2:
                 {
-                    ss << "rap";
+                    result += "rap";
                     break;
                 }
                 case 3:
                 {
-                    ss << "drum";
+                    result += "drum";
                     break;
                 }
                 default:
                 {
-                    ss << "pound";
+                    result += "pound";
                     break;
                 }
             }
 
-            ss << " the back of the lute";
+            result += " the back of the lute";
         }
 
-        return ss.str();
+        return result;
     }
 
     const std::string Song::TypeToVerb() const

@@ -25,6 +25,7 @@
 #include <boost/serialization/unique_ptr.hpp>
 #include <boost/serialization/variant.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/utility.hpp>
 
 //#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 //#pragma GCC diagnostic warning "-Wundef"

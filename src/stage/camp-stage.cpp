@@ -49,12 +49,12 @@ namespace stage
 
     CampStage::CampStage()
         : StageBase(
-            "Camp",
-            { gui::GuiFont::Default,
-              gui::GuiFont::System,
-              gui::GuiFont::SystemCondensed,
-              gui::GuiFont::Number,
-              gui::GuiFont::Handwriting })
+              "Camp",
+              { gui::GuiFont::Default,
+                gui::GuiFont::System,
+                gui::GuiFont::SystemCondensed,
+                gui::GuiFont::Number,
+                gui::GuiFont::Handwriting })
         , stageTitle_(gui::MenuImage::Count)
         , campfireCachedTexture_("media-image-campfire")
         , campfireSprite_(campfireCachedTexture_.Get())
@@ -223,15 +223,12 @@ namespace stage
 
     const std::string CampStage::ComposeNewGamePopupText1()
     {
-        std::ostringstream ss;
-        ss << misc::ConfigFile::Instance()->Value("intro-text1");
-        return ss.str();
+        return misc::ConfigFile::Instance()->Value("intro-text1");
     }
 
     const std::string CampStage::ComposeNewGamePopupText2()
     {
-        std::ostringstream ss;
-        ss << misc::ConfigFile::Instance()->Value("intro-text2");
+        std::string result(misc::ConfigFile::Instance()->Value("intro-text2"));
 
         const auto PLAYERS_PVEC(creature::Algorithms::Players());
 
@@ -245,10 +242,10 @@ namespace stage
 
         if (humansAndGnomesPVec.empty() == false)
         {
-            ss << " where " << creature::Algorithms::Names(humansAndGnomesPVec) << " call home";
+            result += " where " + creature::Algorithms::Names(humansAndGnomesPVec) + " call home";
         }
 
-        ss << ".\n\n" << misc::ConfigFile::Instance()->Value("intro-text3");
+        result += ".\n\n" + misc::ConfigFile::Instance()->Value("intro-text3");
 
         auto pixiesAndBeastmastersPVec(
             creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Pixie));
@@ -261,11 +258,11 @@ namespace stage
 
         if (pixiesAndBeastmastersPVec.empty() == false)
         {
-            ss << " such as " << creature::Algorithms::Names(pixiesAndBeastmastersPVec) << ",";
+            result += " such as " + creature::Algorithms::Names(pixiesAndBeastmastersPVec) + ",";
         }
 
-        ss << " " << misc::ConfigFile::Instance()->Value("intro-text4");
-        return ss.str();
+        result += " " + misc::ConfigFile::Instance()->Value("intro-text4");
+        return result;
     }
 
     const std::string CampStage::ComposeNewGamePopupText3()
@@ -450,9 +447,7 @@ namespace stage
 
     const std::string CampStage::ComposeNewGamePopupText4()
     {
-        std::ostringstream ss;
-        ss << misc::ConfigFile::Instance()->Value("intro-text9");
-        return ss.str();
+        return misc::ConfigFile::Instance()->Value("intro-text9");
     }
 
 } // namespace stage

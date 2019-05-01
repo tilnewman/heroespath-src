@@ -135,10 +135,13 @@ namespace stage
                     std::make_unique<combat::CombatAnimation>()
                 };
 
-                auto viewStageUPtr { std::make_unique<combat::CombatDisplay>(combatAnimUPtr) };
+                auto viewStageUPtr { std::make_unique<combat::CombatDisplay>(
+                    combat::CombatAnimationPtr_t(combatAnimUPtr.get())) };
 
                 auto modelStageUPtr { std::make_unique<stage::CombatStage>(
-                    std::move(combatAnimUPtr), viewStageUPtr, SETUP_PACKET.will_advance_turn) };
+                    std::move(combatAnimUPtr),
+                    combat::CombatDisplayPtr_t(viewStageUPtr.get()),
+                    SETUP_PACKET.will_advance_turn) };
 
                 modelStageUPtr->PreSetup();
                 viewStageUPtr->StageRegion(modelStageUPtr->CombatRegion());
@@ -159,8 +162,8 @@ namespace stage
                 auto viewStageUPtr { std::make_unique<stage::TreasureDisplayStage>() };
                 auto modelStageUPtr { std::make_unique<stage::TreasureStage>() };
 
-                viewStageUPtr->SetModelStage(modelStageUPtr);
-                modelStageUPtr->SetViewStage(viewStageUPtr);
+                viewStageUPtr->SetModelStage(TreasureStagePtr_t(modelStageUPtr.get()));
+                modelStageUPtr->SetViewStage(TreasureDisplayStagePtr_t(viewStageUPtr.get()));
 
                 // view must be first to be Setup() and processes by Loop::Execute()
                 stageVec.emplace_back(std::move(viewStageUPtr));

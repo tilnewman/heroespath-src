@@ -75,7 +75,7 @@ namespace gui
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "gui::Display::Instance() found instanceUPtr that was null.");
 
-        return instanceUPtr_;
+        return misc::NotNull<Display *>(instanceUPtr_.get());
     }
 
     void Display::Acquire(

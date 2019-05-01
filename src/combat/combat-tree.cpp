@@ -16,7 +16,6 @@
 #include "misc/log-macros.hpp"
 
 #include <algorithm>
-#include <set>
 
 namespace heroespath
 {
@@ -27,12 +26,9 @@ namespace combat
     {
         switch (ENUM)
         {
-            case EdgeType::Blocking: { return "Blocking";
-            }
-            case EdgeType::ShoulderToShoulder: { return "Shoulder-To-Shoulder";
-            }
-            case EdgeType::All: { return "All";
-            }
+            case EdgeType::Blocking: return "Blocking";
+            case EdgeType::ShoulderToShoulder: return "Shoulder-To-Shoulder";
+            case EdgeType::All: return "All";
             default:
             {
                 M_HP_LOG_ERR(
@@ -68,7 +64,7 @@ namespace combat
         {
             if (VERTEX.id == ID)
             {
-                return VERTEX.node_sptr;
+                return CombatNodePtr_t(VERTEX.node_sptr.get());
             }
         }
 
@@ -83,7 +79,7 @@ namespace combat
         {
             if (VERTEX.node_sptr->Creature() == CREATURE_PTR)
             {
-                return VERTEX.node_sptr;
+                return CombatNodePtr_t(VERTEX.node_sptr.get());
             }
         }
 
@@ -180,7 +176,7 @@ namespace combat
     {
         const auto COMBAT_NODE_SPTR { std::make_shared<combat::CombatNode>(CREATURE_PTR) };
         vertexes_.emplace_back(Vertex(NextAvailableId(), COMBAT_NODE_SPTR));
-        return COMBAT_NODE_SPTR;
+        return CombatNodePtr_t(COMBAT_NODE_SPTR.get());
     }
 
     void CombatTree::RemoveVertex(const ID_t & ID, const bool WILL_REMOVE_DANGLING_EDGES)
@@ -221,7 +217,9 @@ namespace combat
 
         // remove all edges connected to the removed vert,
         // while keeping track of a list (set) of blocking IDs with orphaned verts
-        std::set<int> orphanedBlockingIdSet;
+        std::vector<int> orphanedBlockingIds;
+        orphanedBlockingIds.reserve(edgesToBeRemoved.size() * 4);
+
         for (const auto & EDGE_TO_BE_REMOVED : edgesToBeRemoved)
         {
             const auto ORPHANED_VERT_ID_VEC { RemoveEdge(
@@ -231,13 +229,14 @@ namespace combat
             {
                 if (ORPHANED_VERT_ID != ID)
                 {
-                    orphanedBlockingIdSet.insert(GetNodePtr(ORPHANED_VERT_ID)->GetBlockingPos());
+                    orphanedBlockingIds.emplace_back(
+                        GetNodePtr(ORPHANED_VERT_ID)->GetBlockingPos());
                 }
             }
         }
 
         // reconnect orphaned verts
-        for (const auto NEXT_ORPHANED_BLOCKING_POS : orphanedBlockingIdSet)
+        for (const auto NEXT_ORPHANED_BLOCKING_POS : orphanedBlockingIds)
         {
             ConnectAllAtPosition(NEXT_ORPHANED_BLOCKING_POS, EdgeType::ShoulderToShoulder);
         }
@@ -546,9 +545,7 @@ namespace combat
 
     const std::string CombatTree::ToString() const
     {
-        std::ostringstream ss;
-        ss << "Vertexes: " << VertexesString() << "  Edges: " << EdgesString();
-        return ss.str();
+        return "Vertexes: " + VertexesString() + "  Edges: " + EdgesString();
     }
 
     void CombatTree::ConnectAllAtPosition(const int POS, const EdgeType::Enum CONNECTION_TYPE)
@@ -810,7 +807,7 @@ namespace combat
                 if (ABS_DISTANCE < closestBlockingDistanceABS)
                 {
                     closestBlockingDistanceABS = ABS_DISTANCE;
-                    closestNodePtrOpt = VERTEX.node_sptr;
+                    closestNodePtrOpt = CombatNodePtr_t(VERTEX.node_sptr.get());
                 }
             }
         }

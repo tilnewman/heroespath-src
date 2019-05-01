@@ -60,7 +60,7 @@ namespace popup
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<PopupManager *>(instanceUPtr_.get());
     }
 
     void PopupManager::Acquire()

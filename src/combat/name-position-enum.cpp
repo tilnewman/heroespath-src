@@ -13,6 +13,8 @@
 
 #include "misc/log-macros.hpp"
 
+#include <sstream>
+
 namespace heroespath
 {
 namespace combat
@@ -22,37 +24,21 @@ namespace combat
     {
         switch (ENUM)
         {
-            case NoName:
-            {
-                return "NoName";
+            case NoName: { return "NoName";
             }
-            case SourceBefore:
-            {
-                return "SourceBefore";
+            case SourceBefore: { return "SourceBefore";
             }
-            case SourceAfter:
-            {
-                return "SourceAfter";
+            case SourceAfter: { return "SourceAfter";
             }
-            case SourceThenTarget:
-            {
-                return "SourceThenTarget";
+            case SourceThenTarget: { return "SourceThenTarget";
             }
-            case TargetBefore:
-            {
-                return "TargetBefore";
+            case TargetBefore: { return "TargetBefore";
             }
-            case TargetAfter:
-            {
-                return "TargetAfter";
+            case TargetAfter: { return "TargetAfter";
             }
-            case TargetThenSource:
-            {
-                return "TargetThenSource";
+            case TargetThenSource: { return "TargetThenSource";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {

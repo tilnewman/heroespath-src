@@ -69,7 +69,7 @@ namespace gui
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<FontManager *>(instanceUPtr_.get());
     }
 
     void FontManager::Acquire()
@@ -109,7 +109,7 @@ namespace gui
             Load(FONT);
         }
 
-        return GetFontRef(FONT);
+        return FontPtr_t(fontUVec_.at(static_cast<std::size_t>(FONT)).get());
     }
 
     void FontManager::Load(const GuiFont::Enum FONT)
@@ -124,7 +124,8 @@ namespace gui
             return;
         }
 
-        auto & fontUPtr { GetFontRef(FONT) };
+        auto & fontUPtr = fontUVec_.at(static_cast<std::size_t>(FONT));
+
         fontUPtr = std::make_unique<sf::Font>();
 
         const auto PATH_STR_COMPLETE { misc::filesystem::CombinePaths(
@@ -159,7 +160,7 @@ namespace gui
             "gui::FontManager::Unload(font_enum=" << static_cast<EnumUnderlying_t>(FONT)
                                                   << ") given an invalid font enum.");
 
-        GetFontRef(FONT).reset();
+        fontUVec_.at(static_cast<std::size_t>(FONT)).reset();
     }
 
     void FontManager::Unload(const FontEnumVec_t & FONT_ENUM_VEC)
@@ -272,11 +273,6 @@ namespace gui
     }
 
     unsigned int FontManager::Size_CombatCreatureLabels() const { return Size_Smallish(); }
-
-    FontUPtr_t & FontManager::GetFontRef(const GuiFont::Enum FONT)
-    {
-        return fontUVec_.at(static_cast<std::size_t>(FONT));
-    }
 
 } // namespace gui
 } // namespace heroespath

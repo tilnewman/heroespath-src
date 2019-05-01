@@ -20,7 +20,6 @@
 #include "misc/strings.hpp"
 
 #include <algorithm>
-#include <sstream>
 
 namespace heroespath
 {
@@ -49,29 +48,20 @@ namespace spell
         , verbPastTense_(VERB_PAST_TENSE)
     {}
 
-    const std::string Spell::ToString() const
-    {
-        std::ostringstream ss;
-        ss << Name() << "  -" << DescDetails();
-        return ss.str();
-    }
+    const std::string Spell::ToString() const { return Name() + "  -" + DescDetails(); }
 
     const std::string Spell::DescDetails() const
     {
-        std::ostringstream ss;
-        ss << "A " << misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>()) << " rank"
-           << " " << combat::EffectType::Name(effectType_) << " spell"
-           << " that can be cast during " << game::Phase::ToString(validPhases_) << ", targeting "
-           << combat::TargetType::Name(targetType_) << ", and costing " << manaCost_ << " mana.";
-
-        return ss.str();
+        return std::string("A ") + misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>())
+            + " rank" + " " + combat::EffectType::Name(effectType_)
+            + " spell that can be cast during " + game::Phase::ToString(validPhases_)
+            + ", targeting " + combat::TargetType::Name(targetType_) + ", and costing "
+            + manaCost_.ToString() + " mana.";
     }
 
     const std::string Spell::DescComplete() const
     {
-        std::ostringstream ss;
-        ss << Desc() << "  " << DescExtra() << " " << DescDetails();
-        return ss.str();
+        return Desc() + "  " + DescExtra() + " " + DescDetails();
     }
 
     const combat::ContentAndNamePos

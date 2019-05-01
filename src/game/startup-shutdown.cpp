@@ -68,6 +68,7 @@ namespace game
         const std::string & APPLICATION_NAME, const int ARGC, char * argv[]) const
     {
         // this order is critical
+        misc::stringStreamHolder::init();
 
         // initialize the log first so that all Setup() actions can be logged
         misc::Log::Acquire();

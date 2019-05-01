@@ -18,7 +18,6 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 
-#include <list>
 #include <memory>
 #include <string>
 #include <tuple>

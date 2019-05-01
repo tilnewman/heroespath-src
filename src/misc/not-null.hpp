@@ -9,32 +9,13 @@
 //
 // not-null.hpp
 //
-#include "misc/nameof.hpp"
-
-#include <exception>
-#include <iosfwd>
 #include <memory>
-#include <string_view>
+#include <stdexcept>
 
 namespace heroespath
 {
 namespace misc
 {
-
-    namespace helpers
-    {
-        const std::runtime_error makeException(
-            const std::string_view TYPE_T_NAME,
-            const std::string_view MESSAGE,
-            const std::string_view TYPE_U_NAME = "");
-
-        const std::runtime_error makeException(
-            const std::string_view TYPE_T_NAME,
-            const std::string_view MESSAGE_1,
-            const std::string_view TYPE_U_NAME,
-            const std::string_view MESSAGE_2);
-
-    } // namespace helpers
 
     // wraps a pointer that can never be null
     template <typename T>
@@ -45,59 +26,30 @@ namespace misc
             std::is_assignable<T &, std::nullptr_t>::value,
             "NotNull<T> cannot be assigned nullptr.");
 
-        template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
+        template <typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
         constexpr explicit NotNull(U && thing)
             : ptr_(std::forward<U>(thing))
         {
             if (nullptr == ptr_)
             {
-                throw helpers::makeException(
-                    NAMEOF_TYPE_T(T), "(U && u) but u==nullptr.", NAMEOF_TYPE_T(U));
+                throw std::runtime_error("NotNull(U && u) constructor given nullptr.");
             }
         }
 
-        template <typename = std::enable_if_t<!std::is_same<std::nullptr_t, T>::value>>
+        template <typename = std::enable_if_t<!std::is_same_v<std::nullptr_t, T>>>
         constexpr explicit NotNull(T p)
             : ptr_(p)
         {
             if (nullptr == ptr_)
             {
-                throw helpers::makeException(NAMEOF_TYPE_T(T), "(T p) but p is nullptr.");
+                throw std::runtime_error("NotNull(T p) constructor given nullptr.");
             }
         }
 
-        template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
+        template <typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
         constexpr NotNull(const NotNull<U> & NOT_NULL)
             : NotNull(NOT_NULL.get())
         {}
-
-        template <typename U, typename = std::enable_if_t<std::is_convertible<U *, T>::value>>
-        constexpr NotNull(const std::unique_ptr<U> & UNIQUE_PTR)
-            : ptr_(UNIQUE_PTR.get())
-        {
-            if (UNIQUE_PTR.get() == nullptr)
-            {
-                throw helpers::makeException(
-                    NAMEOF_TYPE_T(T),
-                    ">(const std::unique_ptr<",
-                    NAMEOF_TYPE_T(U),
-                    "> & uptr) but uptr.get()==nullptr.");
-            }
-        }
-
-        template <typename U, typename = std::enable_if_t<std::is_convertible<U *, T>::value>>
-        constexpr NotNull(const std::shared_ptr<U> & SHARED_PTR)
-            : ptr_(SHARED_PTR.get())
-        {
-            if (SHARED_PTR.get() == nullptr)
-            {
-                throw helpers::makeException(
-                    NAMEOF_TYPE_T(T),
-                    ">(const std::shared_ptr<",
-                    NAMEOF_TYPE_T(U),
-                    "> & sptr) but sptr.get()==nullptr.");
-            }
-        }
 
         NotNull(NotNull &&) = default;
         NotNull(const NotNull &) = default;
@@ -107,8 +59,7 @@ namespace misc
         {
             if (nullptr == ptr_)
             {
-                throw helpers::makeException(
-                    NAMEOF_TYPE_T(T), "::get() called when ptr_==nullptr.");
+                throw std::runtime_error("NotNull::get() called when it was holding a nullptr.");
             }
 
             return ptr_;
@@ -137,13 +88,6 @@ namespace misc
     auto MakeNotNull(T && thing)
     {
         return NotNull<std::remove_cv_t<std::remove_reference_t<T>>> { std::forward<T>(thing) };
-    }
-
-    template <typename T>
-    std::ostream & operator<<(std::ostream & os, const NotNull<T> & NOT_NULL)
-    {
-        os << NOT_NULL.get();
-        return os;
     }
 
     template <typename T, class U>

@@ -704,7 +704,7 @@ namespace misc
         }
 
         // can't use normal log macros because they can cause endless recursion in the timing code
-        LogMacroHelper::Append(LogPriority::Default, ss.str(), __FILE__, __func__, __LINE__);
+        Log::Instance()->Append(LogPriority::Default, ss.str(), __FILE__, __func__, __LINE__);
 
         ResetCurrentContest();
     }
@@ -819,7 +819,7 @@ namespace misc
         }
 
         // can't use normal log macros because they can cause endless recursion in the timing code
-        LogMacroHelper::Append(LogPriority::Warn, ss.str(), __FILE__, __func__, __LINE__);
+        Log::Instance()->Append(LogPriority::Warn, ss.str(), __FILE__, __func__, __LINE__);
 
         ResetAllContests();
     }

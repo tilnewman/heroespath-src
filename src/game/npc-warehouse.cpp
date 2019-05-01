@@ -37,7 +37,7 @@ namespace game
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<NpcWarehouse *>(instanceUPtr_.get());
     }
 
     void NpcWarehouse::Acquire()

@@ -45,7 +45,7 @@ namespace game
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<Game *>(instanceUPtr_.get());
     }
 
     void Game::Acquire()

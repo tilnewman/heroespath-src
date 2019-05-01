@@ -49,7 +49,7 @@ namespace misc
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<SettingsFile *>(instanceUPtr_.get());
     }
 
     void SettingsFile::Acquire()

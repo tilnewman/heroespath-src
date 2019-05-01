@@ -14,7 +14,6 @@
 #include "misc/math-constants.hpp"
 #include "misc/nameof.hpp"
 #include "misc/random.hpp"
-#include "misc/strings.hpp"
 #include "misc/type-helpers.hpp"
 
 #include <string>
@@ -25,6 +24,15 @@ namespace heroespath
 {
 namespace gui
 {
+
+#define M_TEMP_FILE_FUNC_LINE_STR_MAKER                                                            \
+    std::string("(")                                                                               \
+        .append(__FILE__)                                                                          \
+        .append(":")                                                                               \
+        .append(__func__)                                                                          \
+        .append(":")                                                                               \
+        .append(std::to_string(__LINE__))                                                          \
+        .append(")")
 
     // All Sliders start at the given initial value and change when Update() is called until they
     // reach their target value or until Stop() is called.  Once IsStopped() all Sliders will stay
@@ -60,10 +68,10 @@ namespace gui
             if (SPEED < 0.0f)
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR << ")  The given SPEED<" << NAMEOF_TYPE_T(T)
-                                             << ">=" + misc::ToString(SPEED)
-                        + " is less than zero which is invalid.  This slider will be "
-                          "stopped.");
+                    "(" + FILE_FUNC_LINE_STR
+                    << ")  The given SPEED<" << NAMEOF_TYPE_T(T) << ">=" + std::to_string(SPEED)
+                    << " is less than zero which is invalid.  This slider will be "
+                       "stopped.");
 
                 isStopped = true;
             }
@@ -78,22 +86,18 @@ namespace gui
             if (START_AT_ORIG < FROM)
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<"
-                    << NAMEOF_TYPE_T(T)
-                    << ">=" + misc::ToString(START_AT_ORIG) + " is invalid (<FROM)(<"
-                        + misc::ToString(FROM)
-                        + ").  The actual starting ratio will be set to that FROM("
-                        + misc::ToString(FROM) + ").");
+                    FILE_FUNC_LINE_STR + "  The given START_AT_ORIG<"
+                    << NAMEOF_TYPE_T(T) << ">=" << START_AT_ORIG << " is invalid (<FROM)(<" << FROM
+                    << ").  The actual starting ratio will be set to that FROM(" << FROM << ").");
 
                 startAtFinal = FROM;
             }
             else if (START_AT_ORIG > TO)
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given START_AT_ORIG<" << NAMEOF_TYPE_T(T)
-                                                                             << ">="
-                        + misc::ToString(START_AT_ORIG) + " is invalid (>TO)(>" + misc::ToString(TO)
-                        + ").  The actual start value will be set to " + misc::ToString(TO) + ".");
+                    FILE_FUNC_LINE_STR + "  The given START_AT_ORIG<"
+                    << NAMEOF_TYPE_T(T) << ">=" << START_AT_ORIG << " is invalid (>TO)(>" << TO
+                    << ").  The actual start value will be set to " << TO << ".");
 
                 startAtFinal = TO;
             }
@@ -108,10 +112,9 @@ namespace gui
             if (misc::IsRealClose(FROM, TO))
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The given FROM<" << NAMEOF_TYPE_T(T)
-                                                                    << ">=" + misc::ToString(FROM)
-                        + " is the same as the given TO=" + misc::ToString(TO)
-                        + ", which is invalid.  This slider will be stopped.");
+                    FILE_FUNC_LINE_STR + "  The given FROM<"
+                    << NAMEOF_TYPE_T(T) << ">=" << FROM << " is the same as the given TO=" << TO
+                    << ", which is invalid.  This slider will be stopped.");
 
                 isStopped = true;
             }
@@ -133,11 +136,10 @@ namespace gui
             if (misc::IsRealClose(VALUE_MIN_FINAL, VALUE_MAX_FINAL))
             {
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The VALUE_MIN_FINAL<"
-                    << NAMEOF_TYPE_T(T)
-                    << ">(" + misc::ToString(VALUE_MIN_FINAL) + ") is equal to the VALUE_MAX_FINAL("
-                        + misc::ToString(VALUE_MAX_FINAL)
-                        + ", which is invalid.  This slider will be stopped.");
+                    FILE_FUNC_LINE_STR + "  The VALUE_MIN_FINAL<"
+                    << NAMEOF_TYPE_T(T) << ">(" << VALUE_MIN_FINAL
+                    << ") is equal to the VALUE_MAX_FINAL(" << VALUE_MAX_FINAL
+                    << ", which is invalid.  This slider will be stopped.");
 
                 isStopped = true;
             }
@@ -151,14 +153,13 @@ namespace gui
                     = std::clamp(VALUE_TO_START_AT_ORIG, VALUE_MIN_FINAL, VALUE_MAX_FINAL);
 
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The VALUE_TO_START_AT_ORIG<"
-                    << NAMEOF_TYPE_T(T)
-                    << ">(" + misc::ToString(VALUE_TO_START_AT_ORIG)
-                        + ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] "
-                          "or ["
-                        + misc::ToString(VALUE_MIN_FINAL) + ", " + misc::ToString(VALUE_MAX_FINAL)
-                        + "].  VALUE_TO_START_AT_ORIG will be changed/clamped to "
-                        + misc::ToString(valueToStartAtFinal) + ".");
+                    FILE_FUNC_LINE_STR + "  The VALUE_TO_START_AT_ORIG<"
+                    << NAMEOF_TYPE_T(T) << ">(" << VALUE_TO_START_AT_ORIG
+                    << ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] "
+                       "or ["
+                    << VALUE_MIN_FINAL << ", " << VALUE_MAX_FINAL
+                    << "].  VALUE_TO_START_AT_ORIG will be changed/clamped to "
+                    << valueToStartAtFinal << ".");
             }
 
             auto valueOfFirstTargetFinal { VALUE_OF_FIRST_TARGET_ORIG };
@@ -170,14 +171,13 @@ namespace gui
                     = std::clamp(VALUE_OF_FIRST_TARGET_ORIG, VALUE_MIN_FINAL, VALUE_MAX_FINAL);
 
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The VALUE_OF_FIRST_TARGET_ORIG<"
-                    << NAMEOF_TYPE_T(T)
-                    << ">(" + misc::ToString(VALUE_OF_FIRST_TARGET_ORIG)
-                        + ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] "
-                          "or ["
-                        + misc::ToString(VALUE_MIN_FINAL) + ", " + misc::ToString(VALUE_MAX_FINAL)
-                        + "].  VALUE_OF_FIRST_TARGET_ORIG will be changed/clamped to "
-                        + misc::ToString(valueOfFirstTargetFinal) + ".");
+                    FILE_FUNC_LINE_STR + "  The VALUE_OF_FIRST_TARGET_ORIG<"
+                    << NAMEOF_TYPE_T(T) << ">(" << VALUE_OF_FIRST_TARGET_ORIG
+                    << ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] "
+                       "or ["
+                    << VALUE_MIN_FINAL << ", " << VALUE_MAX_FINAL
+                    << "].  VALUE_OF_FIRST_TARGET_ORIG will be changed/clamped to "
+                    << valueOfFirstTargetFinal << ".");
             }
 
             if (misc::IsRealClose(valueToStartAtFinal, valueOfFirstTargetFinal))
@@ -194,12 +194,11 @@ namespace gui
                 }
 
                 M_HP_LOG_ERR(
-                    "(" + FILE_FUNC_LINE_STR + ")  The valueToStartAtFinal<"
-                    << NAMEOF_TYPE_T(T)
-                    << ">(" + misc::ToString(valueToStartAtFinal) + ")=valueOfFirstTargetFinal("
-                        + misc::ToString(VALUE_OF_FIRST_TARGET_FINAL_BEFORE)
-                        + "), which is invalid.  So valueOfFirstTargetFinal has been changed to  "
-                        + misc::ToString(valueOfFirstTargetFinal) + ".");
+                    FILE_FUNC_LINE_STR + "  The valueToStartAtFinal<"
+                    << NAMEOF_TYPE_T(T) << ">(" << valueToStartAtFinal
+                    << ")=valueOfFirstTargetFinal(" << VALUE_OF_FIRST_TARGET_FINAL_BEFORE
+                    << "), which is invalid.  So valueOfFirstTargetFinal has been changed to  "
+                    << valueOfFirstTargetFinal << ".");
             }
 
             return std::make_tuple(valueToStartAtFinal, valueOfFirstTargetFinal);
@@ -228,19 +227,20 @@ namespace gui
             : isStopped_(false)
             , speed_(SPEED)
             , value_(SliderValidators::StartAtClamp(
-                  0.0f, 1.0f, START_AT_ORIG, M_HP_FILE_FUNC_LINE_STR))
+                  0.0f, 1.0f, START_AT_ORIG, M_TEMP_FILE_FUNC_LINE_STR_MAKER))
             , radiansFrom_(misc::math::half_pi<float>)
             , radiansTo_(1.5f * misc::math::pi<float>)
             , radians_(radiansFrom_ + (misc::math::pi<float> * value_))
         {
-            SliderValidators::SpeedShouldNotBeNegative(isStopped_, SPEED, M_HP_FILE_FUNC_LINE_STR);
+            SliderValidators::SpeedShouldNotBeNegative(
+                isStopped_, SPEED, M_TEMP_FILE_FUNC_LINE_STR_MAKER);
 
             if (misc::IsRealClose(value_, 1.0f))
             {
-                M_HP_LOG_ERR(
-                    "The final START_AT=" + misc::ToString(value_)
-                    + " is equal to the TO value of 1.0f.  That means this slider is starting "
-                      "where it ends and cannot move, so "
+                M_HP_LOG_ERR_STR(
+                    "The final START_AT=" + std::to_string(value_)
+                    + " is equal to the TO value of 1.0f.  That means this "
+                      "slider is starting where it ends and cannot move, so "
                       "this slider will be stopped.");
 
                 isStopped_ = true;
@@ -331,8 +331,10 @@ namespace gui
             , value_(FROM)
             , sliderZeroToOne_(speed_)
         {
-            SliderValidators::SpeedShouldNotBeNegative(isStopped_, SPEED, M_HP_FILE_FUNC_LINE_STR);
-            SliderValidators::FromTo(isStopped_, FROM, TO, M_HP_FILE_FUNC_LINE_STR);
+            SliderValidators::SpeedShouldNotBeNegative(
+                isStopped_, SPEED, M_TEMP_FILE_FUNC_LINE_STR_MAKER);
+
+            SliderValidators::FromTo(isStopped_, FROM, TO, M_TEMP_FILE_FUNC_LINE_STR_MAKER);
 
             if (isStopped_)
             {
@@ -410,7 +412,7 @@ namespace gui
             , value_(0)
             , sliderFromTo_()
         {
-            Setup(FROM, TO, SPEED, FROM, M_HP_FILE_FUNC_LINE_STR);
+            Setup(FROM, TO, SPEED, FROM, M_TEMP_FILE_FUNC_LINE_STR_MAKER);
         }
 
         // Use this constructor if you want to specify the starting value.
@@ -422,7 +424,7 @@ namespace gui
             , value_(0)
             , sliderFromTo_()
         {
-            Setup(FROM, TO, SPEED, START_AT, M_HP_FILE_FUNC_LINE_STR);
+            Setup(FROM, TO, SPEED, START_AT, M_TEMP_FILE_FUNC_LINE_STR_MAKER);
         }
 
         virtual ~SliderOscillator() = default;
@@ -478,6 +480,7 @@ namespace gui
             const std::string & FILE_FUNC_LINE_STR)
         {
             SliderValidators::FromTo(isStopped_, FROM, TO, FILE_FUNC_LINE_STR);
+
             SliderValidators::SpeedShouldNotBeNegative(isStopped_, SPEED, FILE_FUNC_LINE_STR);
 
             value_ = SliderValidators::StartAtClamp(
@@ -544,7 +547,10 @@ namespace gui
             const auto [RANDOM_VALUE_TO_START_AT, RANDOM_VALUE_OF_FIRST_TARGET]
                 = RandomStartAndTargetValue(VALUE_MIN, VALUE_MAX);
 
-            Setup(RANDOM_VALUE_TO_START_AT, RANDOM_VALUE_OF_FIRST_TARGET, M_HP_FILE_FUNC_LINE_STR);
+            Setup(
+                RANDOM_VALUE_TO_START_AT,
+                RANDOM_VALUE_OF_FIRST_TARGET,
+                M_TEMP_FILE_FUNC_LINE_STR_MAKER);
         }
 
         // This constructor to set a specific starting value and target.
@@ -564,7 +570,7 @@ namespace gui
             , speed_(SPEED_MIN)
             , sliderFromTo_()
         {
-            Setup(VALUE_TO_START_AT, VALUE_OF_FIRST_TARGET, M_HP_FILE_FUNC_LINE_STR);
+            Setup(VALUE_TO_START_AT, VALUE_OF_FIRST_TARGET, M_TEMP_FILE_FUNC_LINE_STR_MAKER);
         }
 
         virtual ~SliderDrift() = default;

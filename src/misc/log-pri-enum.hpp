@@ -9,31 +9,63 @@
 //
 // log-pri-enum.hpp
 //
-#include "misc/enum-common.hpp"
-
-#include <string>
 
 namespace heroespath
 {
 namespace misc
 {
 
-    struct LogPriority : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct LogPriority
     {
-        enum Enum : EnumUnderlying_t
+        enum Enum
         {
-            Debug = 0,
+            Debug,
             Default,
             Warn,
             Error,
-            Fatal,
-            Count,
+            Fatal
         };
 
-        static const std::string ToString(const Enum PRIORITY);
-        static const std::string ToStringAcronym(const Enum PRIORITY);
-        static const std::string ConsoleColorStringBegin(const Enum PRIORITY);
-        static const std::string ConsoleColorStringEnd();
+        static const char * ToString(const Enum PRIORITY)
+        {
+            switch (PRIORITY)
+            {
+                case Debug: return "Debug";
+                case Default: return "Default";
+                case Warn: return "Warn";
+                case Error: return "Error";
+                case Fatal: return "Fatal";
+                default: return "Enum_value_out_of_range";
+            }
+        }
+
+        static const char * ToStringAcronym(const Enum PRIORITY)
+        {
+            switch (PRIORITY)
+            {
+                case Debug: return "DBG";
+                case Default: return "DEF";
+                case Warn: return "WRN";
+                case Error: return "ERR";
+                case Fatal: return "FAT";
+                default: return "Enum_value_out_of_range";
+            }
+        }
+
+        static const char * ConsoleColorStringBegin(const Enum PRIORITY)
+        {
+            switch (PRIORITY)
+            {
+                case Debug: return "\033[36;40m"; // cyan on black
+                case Warn: return "\033[33;40m"; // yellow on black
+                case Error:
+                case Fatal: return "\033[31;40m"; // red on black
+                case Default:
+                default: return "Enum_value_out_of_range";
+            }
+        }
+
+        static const char * ConsoleColorStringEnd() { return "\033[0;0m"; }
     };
 
 } // namespace misc

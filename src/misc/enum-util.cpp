@@ -11,10 +11,12 @@
 
 #include "misc/strings.hpp"
 
+#include <algorithm>
+
 namespace heroespath
 {
 
-namespace enum_helpers
+namespace helpers
 {
 
     const std::string MakeLowerCaseCopy(const std::string & STR) { return misc::ToLowerCopy(STR); }
@@ -43,31 +45,7 @@ namespace enum_helpers
         return misc::SplitByChars(STR_LOWERCASE, misc::SplitHow(seperatorChars));
     }
 
-    EnumUnderlying_t ReturnValueOfStringOr(
-        const misc::VectorMap<std::string, EnumUnderlying_t> & STRING_TO_VALUE_MAP,
-        const std::string & STRING_TO_FIND,
-        const EnumUnderlying_t TO_RETURN_IF_NOT_FOUND)
-    {
-        EnumUnderlying_t result { TO_RETURN_IF_NOT_FOUND };
-        STRING_TO_VALUE_MAP.Find(STRING_TO_FIND, result);
-        return result;
-    }
+    void sortStrNumPairVec(StrNumPairVec_t & v) { std::sort(std::begin(v), std::end(v)); }
 
-    EnumUnderlying_t WordsToBitFlags(
-        const std::vector<std::string> & WORDS_TO_FIND,
-        const misc::VectorMap<std::string, EnumUnderlying_t> & WORDS_TO_BIT_FLAG_MAP)
-    {
-        EnumUnderlying_t result { 0 };
-
-        for (const auto & WORD_TO_FIND : WORDS_TO_FIND)
-        {
-            EnumUnderlying_t bitFlag { 0 };
-            WORDS_TO_BIT_FLAG_MAP.Find(WORD_TO_FIND, bitFlag);
-            result |= bitFlag;
-        }
-
-        return result;
-    }
-
-} // namespace enum_helpers
+} // namespace helpers
 } // namespace heroespath

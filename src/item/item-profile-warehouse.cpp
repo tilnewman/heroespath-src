@@ -59,7 +59,7 @@ namespace item
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<ItemProfileWarehouse *>(instanceUPtr_.get());
     }
 
     void ItemProfileWarehouse::Acquire()
@@ -567,9 +567,7 @@ namespace item
                 case armor_type::Skin:
                 case armor_type::Not:
                 case armor_type::Count:
-                default:
-                {
-                    break;
+                default: { break;
                 }
             }
 

@@ -37,7 +37,7 @@ namespace item
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<ItemWarehouse *>(instanceUPtr_.get());
     }
 
     void ItemWarehouse::Acquire()

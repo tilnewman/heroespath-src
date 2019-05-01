@@ -328,11 +328,7 @@ namespace stage
             }
         }();
 
-        const auto TEXT = [&]() {
-            std::ostringstream ss;
-            ss << MODIFIER_NAME << ((VALUE > 0) ? "+" : "") << VALUE;
-            return ss.str();
-        }();
+        const std::string TEXT(MODIFIER_NAME + ((VALUE > 0) ? "+" : "") + std::to_string(VALUE));
 
         const gui::TextInfo TEXT_INFO(
             TEXT, gui::GuiFont::System, gui::FontManager::Instance()->Size_Small(), TEXT_COLOR);

@@ -98,7 +98,7 @@ template <typename EnumWrapper_t>
 void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STRING_TO_BE_EMPTY)
 {
     std::ostringstream msgSS;
-    msgSS << "EnumTest<" << EnumUtil<EnumWrapper_t>::TypeName() << ", "
+    msgSS << "EnumTest<" << NAMEOF_TYPE_T(EnumWrapper_t) << "::Enum, "
           << NAMEOF_TYPE_T(EnumUnderlying_t) << ">(last_valid_value=" << LAST_VALID_VALUE
           << ", must_first_be_empty=" << std::boolalpha << MUST_FIRST_STRING_TO_BE_EMPTY << ") ";
 
@@ -183,22 +183,22 @@ void TestBitFieldEnum()
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (misc::are_same_v<EnumUnderlying_t, UnderlyingTypeActual_t>),
-        EnumUtil<EnumWrapper_t>::TypeName()
+        NAMEOF_TYPE_T(EnumWrapper_t)
             << "Underlying type was: " << NAMEOF_TYPE_T(UnderlyingTypeActual_t)
             << " instead of what it should be: " << NAMEOF_TYPE_T(EnumUnderlying_t) << ".");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
-        (EnumWrapper_t::None == 0), EnumUtil<EnumWrapper_t>::TypeName() << "::None was not zero.");
+        (EnumWrapper_t::None == 0), NAMEOF_TYPE_T(EnumWrapper_t) << "::None was not zero.");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::Last > 0),
-        EnumUtil<EnumWrapper_t>::TypeName()
+        NAMEOF_TYPE_T(EnumWrapper_t)
             << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
             << " is not > zero.");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::Last <= EnumUtil<EnumWrapper_t>::LargestValidValue()),
-        EnumUtil<EnumWrapper_t>::TypeName()
+        NAMEOF_TYPE_T(EnumWrapper_t)
             << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
             << " is not <= the largest valid value=" << EnumUtil<EnumWrapper_t>::LargestValidValue()
             << ".");
@@ -214,7 +214,7 @@ void TestCountingEnum()
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (misc::are_same_v<EnumUnderlying_t, UnderlyingTypeActual_t>),
-        EnumUtil<EnumWrapper_t>::TypeName()
+        NAMEOF_TYPE_T(EnumWrapper_t)
             << "Underlying type was: " << NAMEOF_TYPE_T(UnderlyingTypeActual_t)
             << " instead of what it should be: " << NAMEOF_TYPE_T(EnumUnderlying_t) << ".");
 
@@ -222,15 +222,14 @@ void TestCountingEnum()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumWrapper_t::Not == 0),
-            EnumUtil<EnumWrapper_t>::TypeName()
-                << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
+            NAMEOF_TYPE_T(EnumWrapper_t) << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
     }
 
     if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::Nothing)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumWrapper_t::Nothing == 0),
-            EnumUtil<EnumWrapper_t>::TypeName()
+            NAMEOF_TYPE_T(EnumWrapper_t)
                 << "::Nothing=" << EnumWrapper_t::Nothing << " instead of zero.");
     }
 
@@ -238,7 +237,7 @@ void TestCountingEnum()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumWrapper_t::Never == 0),
-            EnumUtil<EnumWrapper_t>::TypeName()
+            NAMEOF_TYPE_T(EnumWrapper_t)
                 << "::Never=" << EnumWrapper_t::Never << " instead of zero.");
     }
 
@@ -246,36 +245,35 @@ void TestCountingEnum()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumWrapper_t::None == 0),
-            EnumUtil<EnumWrapper_t>::TypeName()
+            NAMEOF_TYPE_T(EnumWrapper_t)
                 << "::None=" << EnumWrapper_t::None << " instead of zero.");
     }
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::Count > 0),
-        EnumUtil<EnumWrapper_t>::TypeName()
+        NAMEOF_TYPE_T(EnumWrapper_t)
             << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
             << " is not > zero.");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
          == (EnumUtil<EnumWrapper_t>::LargestValidValue() + 1)),
-        EnumUtil<EnumWrapper_t>::TypeName()
-            << "::Count(" << EnumWrapper_t::ToString(EnumWrapper_t::Count)
-            << ")=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
-            << " is not one less than the largest valid value="
-            << EnumUtil<EnumWrapper_t>::LargestValidValue() << ".");
+        NAMEOF_TYPE_T(EnumWrapper_t) << "::Count(" << EnumWrapper_t::ToString(EnumWrapper_t::Count)
+                                     << ")=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
+                                     << " is not one less than the largest valid value="
+                                     << EnumUtil<EnumWrapper_t>::LargestValidValue() << ".");
 
     EnumTest<EnumWrapper_t>(EnumUtil<EnumWrapper_t>::LargestValidValue(), false);
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::ToString(EnumWrapper_t::Count) == "(Count)"),
-        EnumUtil<EnumWrapper_t>::TypeName() << "::ToString(Count) != \"(Count)\"");
+        NAMEOF_TYPE_T(EnumWrapper_t) << "::ToString(Count) != \"(Count)\"");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::ToString(
              static_cast<typename EnumWrapper_t::Enum>(EnumWrapper_t::Count + 10))
              .empty()),
-        EnumUtil<EnumWrapper_t>::TypeName() << "::ToString(Count+10) != \"\"");
+        NAMEOF_TYPE_T(EnumWrapper_t) << "::ToString(Count+10) != \"\"");
 }
 
 // a counting enum to test with
@@ -521,6 +519,65 @@ BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
     using Under_t = std::underlying_type<Bitfield::Enum>::type;
 
     BOOST_CHECK((are_same_v<Under_t, EnumUnderlying_t>));
+
+    {
+        const EnumUnderlying_t ZERO(0);
+        const EnumUnderlying_t FULL(~ZERO);
+        const EnumUnderlying_t ONE(1);
+        const EnumUnderlying_t TWO(2);
+        const EnumUnderlying_t THREE(3);
+
+        // compliment
+        {
+            BOOST_CHECK_EQUAL(~ZERO, FULL);
+            BOOST_CHECK_EQUAL(ZERO, ~FULL);
+
+            BOOST_CHECK_EQUAL(~Bitfield::None, FULL);
+            BOOST_CHECK_EQUAL(~Bitfield::A, ~ONE);
+            BOOST_CHECK_EQUAL(~Bitfield::B, ~TWO);
+        }
+
+        // or
+        {
+            BOOST_CHECK_EQUAL((ZERO | Bitfield::A), ONE);
+            BOOST_CHECK_EQUAL((ZERO | Bitfield::B), TWO);
+            BOOST_CHECK_EQUAL((ZERO | Bitfield::A | Bitfield::B), THREE);
+            BOOST_CHECK_EQUAL((ZERO | Bitfield2::A | Bitfield::B), THREE);
+
+            BOOST_CHECK_EQUAL(
+                (ZERO | Bitfield2::A | Bitfield::B | ZERO | Bitfield::A | Bitfield2::B), THREE);
+
+            auto temp = Bitfield2::A;
+            temp |= Bitfield2::B;
+            BOOST_CHECK_EQUAL(temp, THREE);
+        }
+
+        // and
+        {
+            BOOST_CHECK_EQUAL((ZERO & Bitfield::A), ZERO);
+            BOOST_CHECK_EQUAL((ZERO & Bitfield::B), ZERO);
+            BOOST_CHECK_EQUAL((ZERO & Bitfield::A & Bitfield::B), ZERO);
+            BOOST_CHECK_EQUAL((ZERO & Bitfield2::A & Bitfield::B), ZERO);
+
+            BOOST_CHECK_EQUAL((ONE & Bitfield::A), ONE);
+            BOOST_CHECK_EQUAL((ONE & Bitfield::B), ZERO);
+            BOOST_CHECK_EQUAL((THREE & Bitfield::B), TWO);
+            BOOST_CHECK_EQUAL((ONE & Bitfield::A & Bitfield::B), ZERO);
+            BOOST_CHECK_EQUAL((ONE & Bitfield2::A & Bitfield::B), ZERO);
+
+            {
+                auto temp = Bitfield::A;
+                temp &= Bitfield::B;
+                BOOST_CHECK_EQUAL(temp, Bitfield::None);
+            }
+
+            {
+                auto temp = Bitfield::B;
+                temp &= Bitfield::Enum(EnumUnderlying_t(3));
+                BOOST_CHECK_EQUAL(temp, TWO);
+            }
+        }
+    }
 
     {
         Under_t none { 0 };
@@ -803,7 +860,6 @@ BOOST_AUTO_TEST_CASE(Case_3_MiscEnumUtil_ActualEnums_Counting_Tests)
     TestCountingEnum<map::LayerType>();
     TestCountingEnum<map::LevelType>();
     TestCountingEnum<map::Level>();
-    TestCountingEnum<misc::LogPriority>();
     TestCountingEnum<popup::PopupStage>();
     TestCountingEnum<popup::PopupButtonColor>();
     TestCountingEnum<popup::PopupImage>();

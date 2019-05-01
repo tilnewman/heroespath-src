@@ -1320,9 +1320,7 @@ namespace combat
         }
         else
         {
-            std::ostringstream ss;
-            ss << COUNT << " times";
-            return ss.str();
+            return std::to_string(COUNT) + " times";
         }
     }
 

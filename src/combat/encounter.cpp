@@ -126,7 +126,7 @@ namespace combat
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<Encounter *>(instanceUPtr_.get());
     }
 
     void Encounter::Acquire()

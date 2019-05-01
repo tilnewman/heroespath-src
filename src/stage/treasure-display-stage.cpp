@@ -158,7 +158,10 @@ namespace stage
         else
         {
             return treasureStagePtrOpt_.value()->HandleListboxCallback(
-                treasureListboxUPtr_, inventoryListboxUPtr_, PACKET, PACKET_DESCRIPTION);
+                ItemListBoxPtr_t(treasureListboxUPtr_.get()),
+                ItemListBoxPtr_t(inventoryListboxUPtr_.get()),
+                PACKET,
+                PACKET_DESCRIPTION);
         }
     }
 
@@ -935,7 +938,8 @@ namespace stage
                 ITEM_PTR, gui::TextInfo(textInfo, ITEM_PTR->Name())));
         }
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, listboxUPtr);
+        EntityPtrAddCurrAndReplacePrevIfNeeded(
+            PREV_ENTITY_PTR, gui::IEntityPtr_t(listboxUPtr.get()));
     }
 
     void TreasureDisplayStage::SetupTreasure_ListboxLabel()
@@ -973,7 +977,8 @@ namespace stage
 
         treasureLabelUPtr_->SetEntityPos(LEFT, TOP);
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, treasureLabelUPtr_);
+        EntityPtrAddCurrAndReplacePrevIfNeeded(
+            PREV_ENTITY_PTR, gui::IEntityPtr_t(treasureLabelUPtr_.get()));
     }
 
     void TreasureDisplayStage::SetupTreasure_ListboxSortIcons()
@@ -1121,7 +1126,8 @@ namespace stage
         characterImageUPtr_ = std::make_unique<gui::ImageEntity>(
             "TreasureDisplayStage's_CharacterImage", gui::MouseImageInfo(true, ENTITY_IMAGE_INFO));
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, characterImageUPtr_);
+        EntityPtrAddCurrAndReplacePrevIfNeeded(
+            PREV_ENTITY_PTR, gui::IEntityPtr_t(characterImageUPtr_.get()));
     }
 
     void TreasureDisplayStage::SetupInventory_ListboxLabel()
@@ -1260,7 +1266,7 @@ namespace stage
             "TreasureDisplayStage's_RedXImage", gui::MouseImageInfo(true, makeEntityImageInfo()));
 
         EntityPtrAddCurrAndReplacePrevIfNeeded(
-            PREV_ENTITY_PTR, redXImageUPtr_, StageAddEntity::Wont);
+            PREV_ENTITY_PTR, gui::IEntityPtr_t(redXImageUPtr_.get()), StageAddEntity::Wont);
     }
 
     stage::treasure::Type TreasureDisplayStage::TreasureSource() const
@@ -1323,7 +1329,8 @@ namespace stage
 
         textRegionUPtr->SetEntityPos(HORIZ_POS, VERT_POS);
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, textRegionUPtr);
+        EntityPtrAddCurrAndReplacePrevIfNeeded(
+            PREV_ENTITY_PTR, gui::IEntityPtr_t(textRegionUPtr.get()));
     }
 
     float TreasureDisplayStage::CalculateInventoryTextPosLeft() const
@@ -1407,7 +1414,8 @@ namespace stage
             gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
             gui::ImageTextEntity::MouseStateSync::Image);
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, sortButtonUPtr);
+        EntityPtrAddCurrAndReplacePrevIfNeeded(
+            PREV_ENTITY_PTR, gui::IEntityPtr_t(sortButtonUPtr.get()));
     }
 
 } // namespace stage

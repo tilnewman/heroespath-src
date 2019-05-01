@@ -104,14 +104,13 @@ namespace misc
                 if ((THE_MIN < T(0)) && (THE_MAX_FINAL_LIMIT < theMaxFinal))
                 {
                     M_HP_LOG_ERR(
-                        "Unable to generate random number with the [MIN,MAX] given because the "
-                        "difference (MAX-MIN) overflows.  Will generate a random number over a "
-                        "reduced "
-                        "range instead."
-                        << M_HP_STREAM_TYPE(T) << M_HP_STREAM_VAR(THE_MIN)
-                        << M_HP_STREAM_VAR(THE_MAX_ORIG) << M_HP_STREAM_VAR(theMaxFinal)
-                        << ((IsRealClose(THE_MAX_ORIG, theMaxFinal)) ? "(same)" : "(different)")
-                        << M_HP_STREAM_VAR(THE_MAX_FINAL_LIMIT));
+                        "Random<"
+                        << NAMEOF_TYPE_T(T) << ">(MIN=" << THE_MIN << ", MAX=" << THE_MAX_ORIG
+                        << ") failing because the difference between (MAX-MIN) overflows for T="
+                        << NAMEOF_TYPE_T(T)
+                        << ".  So instead, generating a random number between [MIN, "
+                           "MIN+numeric_limit::max] or ["
+                        << THE_MIN << ", " << THE_MAX_FINAL_LIMIT << "].");
 
                     theMaxFinal = THE_MAX_FINAL_LIMIT;
                 }

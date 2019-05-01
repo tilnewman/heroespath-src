@@ -63,7 +63,7 @@ namespace gui
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<TextureCache *>(instanceUPtr_.get());
     }
 
     void TextureCache::Acquire()

@@ -57,7 +57,7 @@ namespace gui
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<SoundManager *>(instanceUPtr_.get());
     }
 
     void SoundManager::Acquire()

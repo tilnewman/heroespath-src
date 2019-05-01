@@ -19,6 +19,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
+#include <array>
 #include <vector>
 
 namespace heroespath

@@ -15,10 +15,9 @@
 //         creating and including enums as light-weight as possible.  So while you CAN include
 //         enum-util.hpp in a header file, it would defeat the design and slow down the build.
 //
-#include <cstddef> //for std::size_t
-#include <string>
-
 #include "misc/type-helpers.hpp"
+
+#include <string>
 
 namespace heroespath
 {
@@ -76,7 +75,7 @@ protected:
         const EnumUnderlying_t ENUM_VALUE,
         const EnumUnderlying_t BIT_TO_CHECK,
         const std::string & NAME,
-        const std::string & SEPARATOR = ", ")
+        const std::string & SEPARATOR)
     {
         if (ENUM_VALUE & BIT_TO_CHECK)
         {
@@ -130,15 +129,15 @@ constexpr typename std::enable_if_t<misc::are_enum_v<T>, T> operator~(const T X)
 }
 
 template <typename T>
-constexpr typename std::enable_if_t<misc::are_enum_v<T>, T> operator|(const T L, const T R) noexcept
-{
-    return static_cast<T>(static_cast<EnumUnderlying_t>(L) | static_cast<EnumUnderlying_t>(R));
-}
-
-template <typename T>
 constexpr typename std::enable_if_t<misc::are_enum_v<T>, T> operator&(const T L, const T R) noexcept
 {
     return static_cast<T>(static_cast<EnumUnderlying_t>(L) & static_cast<EnumUnderlying_t>(R));
+}
+
+template <typename T>
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T> operator|(const T L, const T R) noexcept
+{
+    return static_cast<T>(static_cast<EnumUnderlying_t>(L) | static_cast<EnumUnderlying_t>(R));
 }
 
 template <typename T>
@@ -148,23 +147,23 @@ constexpr typename std::enable_if_t<misc::are_enum_v<T>, T> operator^(const T L,
 }
 
 template <typename T>
-constexpr typename std::enable_if_t<misc::are_enum_v<T>, T &> operator|=(T & l, const T R) noexcept
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T &> operator&=(T & l, const T R) noexcept
 {
-    l = static_cast<T>(static_cast<EnumUnderlying_t>(l) | static_cast<EnumUnderlying_t>(R));
+    l = (l & R);
     return l;
 }
 
 template <typename T>
-constexpr typename std::enable_if_t<misc::are_enum_v<T>, T &> operator&=(T & l, const T R) noexcept
+constexpr typename std::enable_if_t<misc::are_enum_v<T>, T &> operator|=(T & l, const T R) noexcept
 {
-    l = static_cast<T>(static_cast<EnumUnderlying_t>(l) & static_cast<EnumUnderlying_t>(R));
+    l = (l | R);
     return l;
 }
 
 template <typename T>
 constexpr typename std::enable_if_t<misc::are_enum_v<T>, T &> operator^=(T & l, const T R) noexcept
 {
-    l = static_cast<T>(static_cast<EnumUnderlying_t>(l) ^ static_cast<EnumUnderlying_t>(R));
+    l = (l ^ R);
     return l;
 }
 
@@ -172,11 +171,9 @@ namespace helpers
 {
     template <typename T1, typename T2>
     constexpr bool are_bitwise_enum_types_valid_v
-        = ((misc::are_same_v<
-                T1,
-                T2> && (misc::are_all_v<EnumUnderlying_t, T1, T2> || misc::are_enum_v<T1, T2>))
-           || (misc::are_same_v<T1, EnumUnderlying_t> && misc::are_enum_v<T2>)
-           || (misc::are_same_v<T2, EnumUnderlying_t> && misc::are_enum_v<T1>));
+        = ((misc::are_all_v<EnumUnderlying_t, T1, T2> || misc::are_enum_v<T1, T2>)
+           || (misc::are_enum_v<T1> && misc::are_same_v<T2, EnumUnderlying_t>)
+           || (misc::are_enum_v<T2> && misc::are_same_v<T1, EnumUnderlying_t>));
 
 } // namespace helpers
 

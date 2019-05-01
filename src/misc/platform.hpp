@@ -15,9 +15,9 @@ namespace heroespath
 namespace misc
 {
 
-    enum class platform_enum
+    enum class platforms : unsigned
     {
-        Unknown,
+        Unknown = 0,
         Windows,
         Linux,
         LinuxGNU,
@@ -30,45 +30,45 @@ namespace misc
 #if (                                                                                              \
     defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(WIN64) || defined(_WIN64)   \
     || defined(__WINDOWS__))
-    constexpr auto platform = platform_enum::Windows;
+    constexpr auto platform_enum = platforms::Windows;
     constexpr auto platform_name = "Windows";
 #elif (defined(macintosh) || defined(Macintosh))
-    constexpr auto platform = platform_enum::Apple9;
+    constexpr auto platform_enum = platforms::Apple9;
     constexpr auto platform_name = "Apple9";
 #elif (defined(__APPLE__) || defined(__MACH__))
-    constexpr auto platform = platform_enum::Apple;
+    constexpr auto platform_enum = platforms::Apple;
     constexpr auto platform_name = "Apple";
 #elif (defined(linux) || defined(__linux) || defined(__linux__))
-    constexpr auto platform = platform_enum::Linux;
+    constexpr auto platform_enum = platforms::Linux;
     constexpr auto platform_name = "Linux";
 #elif (defined(__unix) || defined(__unix__))
-    constexpr auto platform = platform_enum::Linux;
-    constexpr auto platform_name = "Linux";
+    constexpr auto platform_enum = platforms::Linux;
+    constexpr auto platform_name = "Unix";
 #elif (defined(__posix) || defined(__posix__))
-    constexpr auto platform = platform_enum::Posix;
+    constexpr auto platform_enum = platforms::Posix;
     constexpr auto platform_name = "Posix";
 #elif defined(__CYGWIN__)
-    constexpr auto platform = platform_enum::Cygwin;
+    constexpr auto platform_enum = platforms::Cygwin;
     constexpr auto platform_name = "Cygwin";
 #elif defined(__gnu_linux__)
-    constexpr auto platform = platform_enum::LinuxGNU;
-    constexpr auto platform_name = "LinuxGNU";
+    constexpr auto platform_enum = platforms::LinuxGNU;
+    constexpr auto platform_name = "GNULinux";
 #else
-    constexpr auto platform = platform_enum::Unknown;
+    constexpr auto platform = platforms::Unknown;
     constexpr auto platform_name = "Unknown";
 #endif
 
-    constexpr bool platform_is_any_windows = (platform == platform_enum::Windows);
+    constexpr bool platform_is_any_windows = (platform_enum == platforms::Windows);
 
     constexpr bool platform_is_any_linux
-        = ((platform == platform_enum::Linux) || (platform == platform_enum::LinuxGNU));
+        = ((platform_enum == platforms::Linux) || (platform_enum == platforms::LinuxGNU));
 
     constexpr bool platform_is_any_apple
-        = ((platform == platform_enum::Apple) || (platform == platform_enum::Apple9));
+        = ((platform_enum == platforms::Apple) || (platform_enum == platforms::Apple9));
 
     constexpr bool platform_is_supported
-        = ((platform == platform_enum::Windows) || (platform == platform_enum::Apple)
-           || (platform == platform_enum::Linux));
+        = ((platform_enum == platforms::Windows) || (platform_enum == platforms::Apple)
+           || (platform_enum == platforms::Linux));
 
 } // namespace misc
 } // namespace heroespath

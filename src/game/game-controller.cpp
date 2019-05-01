@@ -59,7 +59,7 @@ namespace game
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<GameController *>(instanceUPtr_.get());
     }
 
     void GameController::Acquire()

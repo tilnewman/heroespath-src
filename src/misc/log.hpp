@@ -12,7 +12,7 @@
 #include "log-pri-enum.hpp"
 #include "misc/not-null.hpp"
 
-#include <fstream>
+#include <iosfwd>
 #include <memory>
 #include <string>
 
@@ -28,7 +28,7 @@ namespace misc
         explicit Log(
             const std::string & FILE_NAME,
             const std::string & FILE_EXT = ".txt", // must include the dot if not empty
-            const LogPriority::Enum LOWEST_PRI_TO_CONSOLE_ECHO = LogPriority::Count,
+            const LogPriority::Enum LOWEST_PRI_TO_CONSOLE_ECHO = LogPriority::Error,
             const std::size_t FILE_APPEND_COUNT_BEFORE_FLUSH = 0,
             const std::size_t CONSOLE_APPEND_COUNT_BEFORE_FLUSH = 0);
 
@@ -87,13 +87,13 @@ namespace misc
 
     private:
         static const int LINE_NUMBER_INVALID_;
-        static const std::string SEPARATOR_STR_;
+        static const char * const SEPARATOR_STR_;
         static std::unique_ptr<Log> instanceUPtr_;
 
         std::string fileName_;
         std::string fileNameExtension_; // must include the dot if not empty
         LogPriority::Enum lowestPriToConsoleEcho_;
-        std::ofstream fileStream_;
+        std::unique_ptr<std::ofstream> fileStreamUPtr_;
         std::size_t fileAppendCountBeforeFlush_;
         std::size_t fileAppendCountSinceLastFlush_;
         std::size_t consoleAppendCountBeforeFlush_;

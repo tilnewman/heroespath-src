@@ -78,8 +78,6 @@ namespace gui
         const std::string NumberFontFamilyName() { return numberFontFamilyName_; }
 
     private:
-        FontUPtr_t & GetFontRef(const GuiFont::Enum);
-
         static const unsigned int SIZE_LARGER_MAX_;
         static const unsigned int SIZE_LARGER_MIN_;
         static const unsigned int SIZE_LARGE_MAX_;

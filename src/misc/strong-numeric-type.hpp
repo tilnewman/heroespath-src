@@ -39,6 +39,8 @@ namespace misc
 
         virtual ~StrongNumericType() = default;
 
+        const std::string ToString() const { return std::to_string(this->m_value); }
+
         template <typename Prop_t>
         static std::enable_if_t<
             (are_arithmetic_nobool_v<Prop_t> || are_enum_v<Prop_t>),

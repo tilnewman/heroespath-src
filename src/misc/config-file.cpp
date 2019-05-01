@@ -48,7 +48,7 @@ namespace misc
             Acquire();
         }
 
-        return instanceUPtr_;
+        return misc::NotNull<ConfigFile *>(instanceUPtr_.get());
     }
 
     void ConfigFile::Acquire()
