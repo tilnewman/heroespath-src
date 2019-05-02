@@ -165,10 +165,8 @@ namespace stage
 
         for (const auto & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
-            std::ostringstream ss;
-            ss << CHARACTER_PTR->HealthCurrent() << "/" << CHARACTER_PTR->HealthNormal();
-
-            const gui::TextInfo TEXT_INFO { ss.str(),
+            const gui::TextInfo TEXT_INFO { (CHARACTER_PTR->HealthCurrent().ToString() + "/"
+                                             + CHARACTER_PTR->HealthNormal().ToString()),
                                             gui::GuiFont::Number,
                                             gui::FontManager::Instance()->Size_Smallish(),
                                             FadedDarkColor_Text() };
@@ -199,10 +197,8 @@ namespace stage
 
         for (const auto & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
-            std::ostringstream ss;
-            ss << CHARACTER_PTR->Mana() << "/" << CHARACTER_PTR->ManaNormal();
-
-            const gui::TextInfo TEXT_INFO { ss.str(),
+            const gui::TextInfo TEXT_INFO { (CHARACTER_PTR->Mana().ToString() + "/"
+                                             + CHARACTER_PTR->ManaNormal().ToString()),
                                             gui::GuiFont::Number,
                                             gui::FontManager::Instance()->Size_Smallish(),
                                             FadedDarkColor_Text() };

@@ -18,7 +18,6 @@
 #include "misc/random.hpp"
 
 #include <algorithm>
-#include <sstream>
 #include <tuple>
 
 namespace heroespath
@@ -35,43 +34,41 @@ namespace creature
 
     const std::string Condition::ToString() const
     {
-        std::ostringstream ss;
-        ss << Conditions::Name(type_);
+        std::string str(Conditions::Name(type_));
 
         if (isMagical_)
         {
-            ss << " (magical)";
+            str += " (magical)";
         }
 
-        ss << ".  " << Conditions::Desc(type_);
+        str += ".  " + Conditions::Desc(type_);
 
         const auto TRAIT_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
         {
-            ss << "  Traits: " << TRAIT_STR;
+            str += "  Traits: " + TRAIT_STR;
         }
 
-        return ss.str();
+        return str;
     }
 
     const std::string Condition::LongDesc() const
     {
-        std::ostringstream ss;
-        ss << Conditions::Desc(type_);
+        std::string str(Conditions::Desc(type_));
 
         if (isMagical_)
         {
-            ss << " (a magical condition)";
+            str += " (a magical condition)";
         }
 
         const auto TRAIT_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
         {
-            ss << "  Traits: " << TRAIT_STR;
+            str += "  Traits: " + TRAIT_STR;
         }
 
-        ss << ".";
-        return ss.str();
+        str += ".";
+        return str;
     }
 
     bool operator<(const Condition & L, const Condition & R)
@@ -198,16 +195,15 @@ namespace creature
                     CREATURE_INTERACTION.RemoveAddedCondition(
                         creature::Conditions::Poisoned, CREATURE_PTR, hitInfoVec, condsRemoved);
 
-                    std::ostringstream ss;
-                    ss << "The poison has left ";
+                    std::string descStr("The poison has left ");
 
                     if (CREATURE_PTR->IsPlayerCharacter() == false)
                     {
-                        ss << "the ";
+                        descStr += "the ";
                     }
 
                     const auto CONTENT_NAME_POS { combat::ContentAndNamePos(
-                        ss.str(), "'s body.", "", combat::NamePosition::TargetBefore) };
+                        descStr, "'s body.", "", combat::NamePosition::TargetBefore) };
 
                     hitInfoVec.emplace_back(combat::HitInfo(
                         false, Which(), CONTENT_NAME_POS, 0_health, {}, condsRemoved));
@@ -236,12 +232,12 @@ namespace creature
                         condsRemovedVec,
                         false);
 
-                    std::ostringstream ss;
-                    ss << " hurts " << creature::sex::HimHerIt(CREATURE_PTR->Sex(), false)
-                       << " for " << DAMAGE_FINAL.MakePositiveCopy() << " damage.";
+                    const std::string DESC_STR(
+                        " hurts " + creature::sex::HimHerIt(CREATURE_PTR->Sex(), false) + " for "
+                        + DAMAGE_FINAL.MakePositiveCopy().ToString() + " damage.");
 
                     const combat::ContentAndNamePos CNP(
-                        "The poison in ", ss.str(), "", combat::NamePosition::TargetBefore);
+                        "The poison in ", DESC_STR, "", combat::NamePosition::TargetBefore);
 
                     hitInfoVec.emplace_back(combat::HitInfo(
                         true, Which(), CNP, DAMAGE_FINAL, condsAddedVec, condsRemovedVec));

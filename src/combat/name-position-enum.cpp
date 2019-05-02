@@ -73,36 +73,36 @@ namespace combat
     const std::string ContentAndNamePos::Compose(
         const std::string & SOURCE_NAME, const std::string & TARGET_NAME) const
     {
-        std::ostringstream ss;
-        ss << pre_;
+        std::string result(pre_);
 
         if ((NamePosition::SourceThenTarget == posEnum_)
             || (NamePosition::SourceBefore == posEnum_))
         {
-            ss << SOURCE_NAME;
+            result += SOURCE_NAME;
         }
         else if (
             (NamePosition::TargetThenSource == posEnum_)
             || (NamePosition::TargetBefore == posEnum_))
         {
-            ss << TARGET_NAME;
+            result += TARGET_NAME;
         }
 
-        ss << content_;
+        result += content_;
 
         if ((NamePosition::TargetThenSource == posEnum_) || (NamePosition::SourceAfter == posEnum_))
         {
-            ss << SOURCE_NAME;
+            result += SOURCE_NAME;
         }
         else if (
             (NamePosition::SourceThenTarget == posEnum_) || (NamePosition::TargetAfter == posEnum_))
         {
-            ss << TARGET_NAME;
+            result += TARGET_NAME;
         }
 
-        ss << post_;
+        result += post_;
 
-        return ss.str();
+        return result;
     }
+
 } // namespace combat
 } // namespace heroespath

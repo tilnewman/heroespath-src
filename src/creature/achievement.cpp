@@ -17,7 +17,6 @@
 #include "misc/boost-string-includes.hpp"
 
 #include <limits>
-#include <sstream>
 
 namespace heroespath
 {
@@ -90,18 +89,22 @@ namespace creature
 
     const std::string Achievement::ToString() const
     {
-        std::ostringstream ss;
-        ss << Name() << "s current count=" << count_
-           << ", and has the following achievable titles: ";
+        std::string str(
+            Name() + "s current count=" + count_.ToString()
+            + ", and has the following achievable titles: ");
 
-        const auto SEP_STR { ", " };
         for (const auto & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
-            ss << Titles::Name(NEXT_TITLE_COUNT_PAIR.second) << " at count "
-               << NEXT_TITLE_COUNT_PAIR.first << SEP_STR;
+            if (!str.empty())
+            {
+                str += ", ";
+            }
+
+            str += Titles::Name(NEXT_TITLE_COUNT_PAIR.second) + " at count "
+                + NEXT_TITLE_COUNT_PAIR.first.ToString();
         }
 
-        return boost::algorithm::erase_last_copy(ss.str(), SEP_STR);
+        return str;
     }
 
     bool Achievement::IsRoleInList(const role::Enum ENUM) const

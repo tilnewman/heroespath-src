@@ -24,6 +24,7 @@
 #include "misc/vector-map.hpp"
 #include "sfutil/common.hpp"
 #include "sfutil/event.hpp"
+#include "sfutil/keyboard.hpp"
 #include "sfutil/primitives.hpp"
 #include "stage/i-stage.hpp"
 
@@ -1052,23 +1053,22 @@ namespace gui
 
         const std::string MakeTypeString(const std::string & ENTITY_NAME = "") const
         {
-            std::ostringstream ss;
-
-            ss << "ListBox<" << NAMEOF_TYPE_T(Stage_t) << ", " << NAMEOF_TYPE_T(Element_t)
-               << ">(entity_name=\"";
+            std::string str(
+                "ListBox<" + std::string(NAMEOF_TYPE_T(Stage_t)) + ", "
+                + std::string(NAMEOF_TYPE_T(Element_t)) + ">(entity_name=\"");
 
             if (ENTITY_NAME.empty())
             {
-                ss << GetEntityName();
+                str += GetEntityName();
             }
             else
             {
-                ss << ENTITY_NAME;
+                str += ENTITY_NAME;
             }
 
-            ss << "\")";
+            str += "\")";
 
-            return ss.str();
+            return str;
         }
 
         std::size_t MaxFirstDisplayableIndex() const
@@ -1090,10 +1090,11 @@ namespace gui
                 const ListBoxEventPacket<Stage_t, Element_t> EVENT_PACKET(
                     misc::MakeNotNull(this), GuiEvent::Keypress, KEY_EVENT);
 
-                std::ostringstream ss;
-                ss << "ListBoxEvent(" << MakeTypeString() << "\", keypress=" << KEY_EVENT << ")";
-
-                Callback_t::HandleAndLog(*callbackHandlerPtr_, EVENT_PACKET, ss.str());
+                Callback_t::HandleAndLog(
+                    *callbackHandlerPtr_,
+                    EVENT_PACKET,
+                    ("ListBoxEvent(" + MakeTypeString()
+                     + "\", keypress=" + sfutil::sfKeyToString(KEY_EVENT.code) + ")"));
             }
         }
 
@@ -1133,10 +1134,10 @@ namespace gui
                 const ListBoxEventPacket<Stage_t, Element_t> EVENT_PACKET(
                     misc::MakeNotNull(this), GuiEvent::DoubleClick);
 
-                std::ostringstream ss;
-                ss << "ListBoxEvent(" << MakeTypeString() << "\", double-click)";
-
-                Callback_t::HandleAndLog(*callbackHandlerPtr_, EVENT_PACKET, ss.str());
+                Callback_t::HandleAndLog(
+                    *callbackHandlerPtr_,
+                    EVENT_PACKET,
+                    "ListBoxEvent(" + MakeTypeString() + "\", double-click)");
             }
         }
 

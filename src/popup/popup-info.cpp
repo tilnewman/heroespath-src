@@ -269,7 +269,14 @@ namespace popup
 
             if (numberInvalidVec_.empty() == false)
             {
-                ss << ", invalid_selections=" << misc::Vector::Join(numberInvalidVec_);
+                ss << ", invalid_selections=(";
+
+                for (const auto & INVALID_NUM : numberInvalidVec_)
+                {
+                    ss << INVALID_NUM << ",";
+                }
+
+                ss << ")";
             }
 
             if (creaturePtrOpt_)

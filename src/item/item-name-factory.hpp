@@ -12,7 +12,6 @@
 #include "item/item-type-enum.hpp"
 #include "misc/not-null.hpp"
 
-#include <sstream>
 #include <string>
 
 namespace heroespath
@@ -56,7 +55,6 @@ namespace item
             const ItemProfile & PROFILE, const std::string & BASE_DESC) const;
 
     private:
-        const std::string HandledNamePrefix(const ItemProfile &) const;
         const std::string ReadableNameWithoutArmorBaseType(const ItemProfile &) const;
         const std::string PrefixAOrAn(const material::Enum) const;
         const std::string RandomCoatedPhrase() const;
@@ -65,8 +63,21 @@ namespace item
         const std::string AdornedAdjective() const;
         const std::string RandomClaspNoun() const;
 
-        bool IsNonEmptyWithoutTrailingSpace(std::ostringstream &) const;
-        const std::string AppendSpaceIfNeeded(std::ostringstream &) const;
+        inline bool IsNonEmptyWithoutTrailingSpace(const std::string & S) const
+        {
+            return (!S.empty() && (S.back() != ' '));
+        }
+
+        inline const std::string SpaceIfNeeded(const std::string & S) const
+        {
+            std::string spaceOrEmptyStr;
+            if (IsNonEmptyWithoutTrailingSpace(S))
+            {
+                spaceOrEmptyStr = " ";
+            }
+
+            return spaceOrEmptyStr;
+        }
 
         enum class PhraseType
         {
@@ -76,10 +87,7 @@ namespace item
 
         const std::string ArmorBaseTypeNamePrefix(const ItemProfile & PROFILE) const;
 
-        void AppendBlessedOrCursedIfNeeded(const ItemProfile & PROFILE, std::ostringstream &) const;
-
-        void AppendPixiePhraseIfNeeded(
-            const ItemProfile & PROFILE, const PhraseType PHRASE_TYPE, std::ostringstream &) const;
+        const std::string BlessedOrCursed(const ItemProfile & PROFILE) const;
 
         const std::string SeccondaryMaterialPhrase(const PhraseType, const ItemProfile &) const;
 

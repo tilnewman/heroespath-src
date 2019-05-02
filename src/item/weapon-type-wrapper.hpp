@@ -17,7 +17,6 @@
 
 #include <boost/variant.hpp>
 
-#include <sstream>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -283,13 +282,13 @@ namespace item
                         type_ = WEAPON_TYPE;
                         variant_ = SPECIFIC_WEAPON_ENUM;
 
-                        std::ostringstream ss;
-                        ss << "after SetupWithSpecificTypeName<" << NAMEOF_TYPE_T(T)
-                           << "::Enum>(system_name_lowercase=" << SYSTEM_NAME_LOWERCASE
-                           << ", weapon_type_tostring_lowercase=" << SPECIFIC_WEAPON_STR_LOWERCASE
-                           << ")";
+                        const std::string CONTEXT_STR(
+                            "after SetupWithSpecificTypeName<" + std::string(NAMEOF_TYPE_T(T))
+                            + "::Enum>(system_name_lowercase=" + SYSTEM_NAME_LOWERCASE
+                            + ", weapon_type_tostring_lowercase=" + SPECIFIC_WEAPON_STR_LOWERCASE
+                            + ")");
 
-                        SetNamesAndVerify(ss.str());
+                        SetNamesAndVerify(CONTEXT_STR);
                         return true;
                     }
                 }

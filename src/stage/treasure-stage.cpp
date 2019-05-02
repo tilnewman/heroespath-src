@@ -549,13 +549,12 @@ namespace stage
         {
             gui::SoundManager::Instance()->PlaySfx_AckMajor();
 
-            std::ostringstream ss;
-            ss << "\n"
-               << "All " << itemsToRemovePVec.size() << " items were taken.";
+            const std::string MSG_STR(
+                "\nAll " + std::to_string(itemsToRemovePVec.size()) + " items were taken.");
 
             const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_ALL_ITEMS_TAKEN_,
-                ss.str(),
+                MSG_STR,
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 
@@ -577,13 +576,13 @@ namespace stage
         {
             gui::SoundManager::Instance()->PlaySfx_Reject();
 
-            std::ostringstream ss;
-            ss << "\n"
-               << NUM_ITEMS_REMAINING << " items could not be taken by any of your characters.";
+            const std::string MSG_STR(
+                "\n" + std::to_string(NUM_ITEMS_REMAINING)
+                + " items could not be taken by any of your characters.");
 
             const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
-                ss.str(),
+                MSG_STR,
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 

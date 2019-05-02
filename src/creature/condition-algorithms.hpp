@@ -10,7 +10,7 @@
 // condition-algorithms.hpp
 //
 #include "creature/condition-enum.hpp"
-#include "misc/vectors.hpp"
+#include "misc/strings.hpp"
 
 #include <memory>
 #include <string>
@@ -37,7 +37,7 @@ namespace creature
                 const std::size_t MAX_TO_LIST = 0,
                 const std::size_t MIN_SEVERITY = 0,
                 const SortOpt SORT_OPTION = SortOpt::Ascending,
-                const misc::Vector::JoinOpt JOIN_OPTIONS = misc::Vector::JoinOpt::None);
+                const misc::JoinOpt JOIN_OPTIONS = misc::JoinOpt::None);
 
             // Note:  Each Condition has a unique Severity so these sorts are complete.
             static void SortBySeverity(

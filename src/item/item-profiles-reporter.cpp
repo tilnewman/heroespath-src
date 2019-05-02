@@ -15,11 +15,52 @@
 #include "misc/log-macros.hpp"
 
 #include <algorithm>
+#include <sstream>
 
 namespace heroespath
 {
 namespace item
 {
+
+    std::string ItemProfilesReporter::toNumberSpecialForType(const double NUMBER, const int WIDTH)
+    {
+        std::ostringstream ss;
+
+        if (WIDTH != 0)
+        {
+            ss << std::fixed << std::setfill(' ') << std::setw(WIDTH) << std::setprecision(WIDTH);
+        }
+
+        ss << NUMBER;
+
+        if (WIDTH != 0)
+        {
+            ss << std::setfill(' ') << std::setw(0) << std::setprecision(0);
+        }
+
+        return ss.str();
+    }
+
+    std::string
+        ItemProfilesReporter::toNumberSpecialForType(const long long NUMBER, const int WIDTH)
+    {
+        std::ostringstream ss;
+
+        if (WIDTH != 0)
+        {
+            ss << std::fixed << std::setfill(' ') << std::setw(WIDTH) << std::setprecision(WIDTH);
+        }
+
+        ss << NUMBER;
+
+        if (WIDTH != 0)
+        {
+            ss << std::setfill(' ') << std::setw(0) << std::setprecision(0);
+        }
+
+        return ss.str();
+    }
+
     void ItemProfilesReporter::LogReport()
     {
         std::ostringstream ss;
@@ -391,7 +432,7 @@ namespace item
                 {
                     std::sort(std::begin(scores), std::end(scores));
 
-                    const auto STATS { misc::Vector::MinMaxAvgStdDev<std::size_t>(scores) };
+                    const auto STATS { MinMaxAvgStdDev<std::size_t>(scores) };
 
                     ss << '\n'
                        << std::setw(10) << NAME << "count=" << std::setw(8) << STATS.count
@@ -611,6 +652,28 @@ namespace item
             ss << '\n' << stringReportPair.second.Make(SUB_REPORT_SOURCES, true);
         }
 
+        return ss.str();
+    }
+
+    const std::string ItemProfilesReporter::RatioToStringStringMaker(
+        const int DIGITS,
+        const std::string & POSTFIX,
+        const double AFTER_DIVISION,
+        const bool WILL_WRAP)
+    {
+        std::ostringstream ss;
+        ss << ((WILL_WRAP) ? "(" : "") << std::setw(DIGITS + 2) << std::setprecision(DIGITS)
+           << ((POSTFIX == "%") ? 100.0 : 1.0) * AFTER_DIVISION << std::setprecision(0) << POSTFIX
+           << ((WILL_WRAP) ? ")" : "");
+
+        return ss.str();
+    }
+
+    const std::string ItemProfilesReporter::SumPhraseStringMaker(
+        const std::string & NAME, const std::string & STATS_STR)
+    {
+        std::ostringstream ss;
+        ss << ", " << std::setw(12) << NAME << std::setw(0) << "=" << STATS_STR;
         return ss.str();
     }
 

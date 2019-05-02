@@ -16,7 +16,6 @@
 #include "misc/nameof.hpp"
 
 #include <exception>
-#include <sstream>
 #include <string>
 #include <tuple>
 #include <type_traits>

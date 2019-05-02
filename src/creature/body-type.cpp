@@ -52,115 +52,120 @@ namespace creature
 
     const std::string BodyType::ToString() const
     {
-        std::ostringstream ss;
-        ss << "A";
+        static std::string cachedStr;
 
-        if (0 == num_heads_)
+        if (cachedStr.empty())
         {
-            ss << " headless";
-        }
-        else
-        {
-            if (num_heads_ > 1)
+            cachedStr += "A";
+
+            if (0 == num_heads_)
             {
-                ss << " " << num_heads_ << "-headed";
-
-                if (0 == num_eyes_)
-                {
-                    ss << " each with no eyes";
-                }
-                else if (num_eyes_ != 2)
-                {
-                    ss << " each with" << num_eyes_ << " eyes";
-                }
+                cachedStr += " headless";
             }
             else
             {
-                if (0 == num_eyes_)
+                if (num_heads_ > 1)
                 {
-                    ss << "n eyeless";
-                }
-                else if (num_eyes_ != 2)
-                {
-                    ss << " " << num_eyes_ << "-eyed";
-                }
-            }
-        }
+                    cachedStr += " " + std::to_string(num_heads_) + "-headed";
 
-        if (0 == num_arms_)
-        {
-            ss << " armless";
-        }
-        else if (2 != num_arms_)
-        {
-            ss << " " << num_arms_ << "-armed";
-        }
-
-        if (has_spikes_)
-        {
-            ss << " spiked";
-        }
-
-        if (has_fangs_)
-        {
-            ss << " fanged";
-        }
-
-        if (has_claws_)
-        {
-            ss << " clawed";
-        }
-
-        if (has_horns_)
-        {
-            ss << " horned";
-        }
-
-        if (has_breath_)
-        {
-            ss << " with magical breath";
-        }
-
-        if (0 == num_legs_)
-        {
-            ss << " legless";
-        }
-        else
-        {
-            if (IsBiped())
-            {
-                ss << " biped";
-            }
-            else
-            {
-                if (IsQuadruped())
-                {
-                    ss << " quadruped";
+                    if (0 == num_eyes_)
+                    {
+                        cachedStr += " each with no eyes";
+                    }
+                    else if (num_eyes_ != 2)
+                    {
+                        cachedStr += " each with" + std::to_string(num_eyes_) + " eyes";
+                    }
                 }
                 else
                 {
-                    ss << " " << num_legs_ << "-legged creature";
+                    if (0 == num_eyes_)
+                    {
+                        cachedStr += "n eyeless";
+                    }
+                    else if (num_eyes_ != 2)
+                    {
+                        cachedStr += " " + std::to_string(num_eyes_) + "-eyed";
+                    }
                 }
             }
+
+            if (0 == num_arms_)
+            {
+                cachedStr += " armless";
+            }
+            else if (2 != num_arms_)
+            {
+                cachedStr += " " + std::to_string(num_arms_) + "-armed";
+            }
+
+            if (has_spikes_)
+            {
+                cachedStr += " spiked";
+            }
+
+            if (has_fangs_)
+            {
+                cachedStr += " fanged";
+            }
+
+            if (has_claws_)
+            {
+                cachedStr += " clawed";
+            }
+
+            if (has_horns_)
+            {
+                cachedStr += " horned";
+            }
+
+            if (has_breath_)
+            {
+                cachedStr += " with magical breath";
+            }
+
+            if (0 == num_legs_)
+            {
+                cachedStr += " legless";
+            }
+            else
+            {
+                if (IsBiped())
+                {
+                    cachedStr += " biped";
+                }
+                else
+                {
+                    if (IsQuadruped())
+                    {
+                        cachedStr += " quadruped";
+                    }
+                    else
+                    {
+                        cachedStr += " " + std::to_string(num_legs_) + "-legged creature";
+                    }
+                }
+            }
+
+            if (has_wings_)
+            {
+                cachedStr += " with wings";
+            }
+
+            if (has_tail_)
+            {
+                cachedStr += " with a tail";
+            }
+
+            if (num_tentacles_ > 0)
+            {
+                cachedStr += " with " + std::to_string(num_tentacles_) + " tentacles";
+            }
+
+            cachedStr += ".";
         }
 
-        if (has_wings_)
-        {
-            ss << " with wings";
-        }
-
-        if (has_tail_)
-        {
-            ss << " with a tail";
-        }
-
-        if (num_tentacles_ > 0)
-        {
-            ss << " with " << num_tentacles_ << " tentacles";
-        }
-
-        ss << ".";
-        return ss.str();
+        return cachedStr;
     }
 
     const BodyType BodyType::Make_Humanoid(
@@ -194,35 +199,21 @@ namespace creature
             case creature::race::Pug:
             case creature::race::Witch:
             case creature::race::Golem:
-            case creature::race::Gnome:
-            {
-                return Make_Humanoid();
+            case creature::race::Gnome: { return Make_Humanoid();
             }
-            case creature::race::Pixie:
-            {
-                return Make_Pixie();
+            case creature::race::Pixie: { return Make_Pixie();
             }
             case creature::race::Lion:
-            case creature::race::Wolfen:
-            {
-                return Make_Wolfen(ROLE);
+            case creature::race::Wolfen: { return Make_Wolfen(ROLE);
             }
-            case creature::race::Dragon:
-            {
-                return Make_Dragon(true);
+            case creature::race::Dragon: { return Make_Dragon(true);
             }
             case creature::race::Goblin:
-            case creature::race::Orc:
-            {
-                return Make_Humanoid(true, true);
+            case creature::race::Orc: { return Make_Humanoid(true, true);
             }
-            case creature::race::Newt:
-            {
-                return Make_Humanoid(false, true);
+            case creature::race::Newt: { return Make_Humanoid(false, true);
             }
-            case creature::race::Spider:
-            {
-                return BodyType(1, 0, 8, 6, true);
+            case creature::race::Spider: { return BodyType(1, 0, 8, 6, true);
             }
             case creature::race::Bog:
             {
@@ -249,21 +240,15 @@ namespace creature
                 // all others
                 return BodyType::Make_Humanoid();
             }
-            case creature::race::CaveCrawler:
-            {
-                return BodyType(1, 0, 6, 4, true, true);
+            case creature::race::CaveCrawler: { return BodyType(1, 0, 6, 4, true, true);
             }
             case creature::race::Hydra:
             {
                 return BodyType(6, 0, 4, 12, true, true, true, false, true, false, false, 0, true);
             }
-            case creature::race::LizardWalker:
-            {
-                return Make_Humanoid(true, true, true);
+            case creature::race::LizardWalker: { return Make_Humanoid(true, true, true);
             }
-            case creature::race::Minotaur:
-            {
-                return Make_Humanoid(false, false, true, true);
+            case creature::race::Minotaur: { return Make_Humanoid(false, false, true, true);
             }
             case creature::race::Plant:
             {
@@ -289,9 +274,7 @@ namespace creature
 
                 break;
             }
-            case creature::race::Shade:
-            {
-                return BodyType(1, 2, 0, 2, false, true, false, true);
+            case creature::race::Shade: { return BodyType(1, 2, 0, 2, false, true, false, true);
             }
             case creature::race::Skeleton:
             {
@@ -313,9 +296,7 @@ namespace creature
                 // um...default skeleton
                 return BodyType(1, 2, 2, 2, false, true, false, true);
             }
-            case creature::race::Beetle:
-            {
-                return BodyType(1, 0, 4, 4, true, true);
+            case creature::race::Beetle: { return BodyType(1, 0, 4, 4, true, true);
             }
             case creature::race::Boar:
             {
@@ -355,9 +336,7 @@ namespace creature
 
                 break;
             }
-            case creature::race::Harpy:
-            {
-                return BodyType(1, 2, 2, 2, false, true, true);
+            case creature::race::Harpy: { return BodyType(1, 2, 2, 2, false, true, true);
             }
             case creature::race::Griffin:
             {
@@ -377,9 +356,7 @@ namespace creature
             {
                 return BodyType(1, 0, 4, 2, true, false, false, false, true, false, true);
             }
-            case creature::race::Naga:
-            {
-                return BodyType(1, 2, 0, 2, true, true, false, true, true);
+            case creature::race::Naga: { return BodyType(1, 2, 0, 2, true, true, false, true, true);
             }
             case creature::race::Ramonaut:
             {
@@ -414,9 +391,7 @@ namespace creature
                 return wyvernBodyType;
             }
             case creature::race::Bat:
-            case creature::race::Werebat:
-            {
-                return BodyType(1, 2, 2, 2, true, true, true);
+            case creature::race::Werebat: { return BodyType(1, 2, 2, 2, true, true, true);
             }
             case creature::race::Ghoul:
             {
@@ -451,9 +426,7 @@ namespace creature
                 return giantBodyType;
             }
             case creature::race::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 

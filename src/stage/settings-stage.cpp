@@ -29,7 +29,6 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
-#include <sstream>
 #include <vector>
 
 namespace heroespath
@@ -596,21 +595,21 @@ namespace stage
 
         const auto MUSIC_INFO_VEC { gui::SoundManager::Instance()->MusicInfoSet() };
 
-        std::ostringstream ss;
+        std::string str;
         for (const auto & MUSIC_INFO : MUSIC_INFO_VEC)
         {
-            ss << "\"" << MUSIC_INFO.SongName() << "\"\nby " << MUSIC_INFO.ArtistName()
-               << "\nLicense: " << MUSIC_INFO.LicenseTitle()
-               << "\nDuration: " << MUSIC_INFO.Duration().ToString() << "\n\n";
+            str += "\"" + MUSIC_INFO.SongName() + "\"\nby " + MUSIC_INFO.ArtistName()
+                + "\nLicense: " + MUSIC_INFO.LicenseTitle()
+                + "\nDuration: " + MUSIC_INFO.Duration().ToString() + "\n\n";
         }
 
-        if (ss.str().empty())
+        if (str.empty())
         {
-            ss << " ";
+            str += " ";
         }
 
         const gui::TextInfo TEXT_INFO(
-            ss.str(),
+            str,
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Normal(),
             sfutil::color::Light,
@@ -641,11 +640,11 @@ namespace stage
 
     void SettingsStage::Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
-        std::ostringstream ss;
-        ss << "Revision: " << misc::ConfigFile::Instance()->Value("system-revision");
+        const std::string STR(
+            "Revision: " + misc::ConfigFile::Instance()->Value("system-revision"));
 
         const gui::TextInfo TEXT_INFO(
-            ss.str(),
+            STR,
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::Light,

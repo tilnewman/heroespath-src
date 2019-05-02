@@ -25,6 +25,7 @@
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
+#include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 #include "song/song-holder.hpp"
 #include "song/song.hpp"
@@ -437,7 +438,7 @@ namespace creature
             MAX_TO_LIST,
             MIN_SEVERITY,
             condition::Algorithms::SortOpt::Descending,
-            misc::Vector::JoinOpt::Ellipsis);
+            misc::JoinOpt::Ellipsis);
     }
 
     const std::string Creature::CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX) const

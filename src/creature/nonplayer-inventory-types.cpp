@@ -325,37 +325,21 @@ namespace creature
         {
             switch (WEALTH_TYPE)
             {
-                case Destitute:
-                {
-                    return "Destitute";
+                case Destitute: { return "Destitute";
                 }
-                case Poor:
-                {
-                    return "Poor";
+                case Poor: { return "Poor";
                 }
-                case LowerMiddle:
-                {
-                    return "LowerMiddle";
+                case LowerMiddle: { return "LowerMiddle";
                 }
-                case UpperMiddle:
-                {
-                    return "UpperMiddle";
+                case UpperMiddle: { return "UpperMiddle";
                 }
-                case Rich:
-                {
-                    return "Rich";
+                case Rich: { return "Rich";
                 }
-                case Lavish:
-                {
-                    return "Lavish";
+                case Lavish: { return "Lavish";
                 }
-                case Royal:
-                {
-                    return "Royal";
+                case Royal: { return "Royal";
                 }
-                case Count:
-                {
-                    return "(Count)";
+                case Count: { return "(Count)";
                 }
                 default:
                 {
@@ -382,11 +366,9 @@ namespace creature
                 const auto NEXT_WEALTH_TYPE { static_cast<wealth_type::Enum>(i) };
                 const auto NEXT_WEALTH_TYPE_NAME { wealth_type::ToString(NEXT_WEALTH_TYPE) };
 
-                std::ostringstream ss;
-                ss << "wealthtype-chance-" << RANK_CLASS_STR << "-"
-                   << NEXT_WEALTH_TYPE_NAME << "-one-in";
-
-                const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(ss.str()) };
+                const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(
+                    "wealthtype-chance-" + RANK_CLASS_STR + "-" + NEXT_WEALTH_TYPE_NAME
+                    + "-one-in") };
 
                 if (NEXT_VALUE_STR == "remaining")
                 {
@@ -466,10 +448,8 @@ namespace creature
             // adjust for race
             const auto RACE_STR { race::ToString(CHARACTER_PTR->Race()) };
 
-            const auto RACE_KEY {
-                "nonplayer-ownershipprofile-collectortype-chance-adjustment-race-"
-                + RACE_STR
-            };
+            const auto RACE_KEY { "nonplayer-ownershipprofile-collectortype-chance-adjustment-race-"
+                                  + RACE_STR };
 
             const auto RACE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(RACE_KEY) };
 
@@ -497,10 +477,8 @@ namespace creature
             // adjust for roles
             const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
 
-            const auto ROLE_KEY {
-                "nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
-                + ROLE_STR
-            };
+            const auto ROLE_KEY { "nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
+                                  + ROLE_STR };
 
             const auto ROLE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(ROLE_KEY) };
 
@@ -634,9 +612,8 @@ namespace creature
             {
                 const auto RACE_STR(race::ToString(CHARACTER_PTR->Race()));
 
-                const auto RACE_KEY {
-                    "nonplayer-ownershipprofile-ownsmagictype-chance-race-" + RACE_STR
-                };
+                const auto RACE_KEY { "nonplayer-ownershipprofile-ownsmagictype-chance-race-"
+                                      + RACE_STR };
 
                 const auto RACE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
                     RACE_KEY) };
@@ -677,13 +654,8 @@ namespace creature
             {
                 const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
 
-                std::ostringstream ss;
-                ss << "nonplayer-ownershipprofile-"
-                   << "ownsmagictype-chance-adjustment-Rarely-role-" << ROLE_STR;
-
                 const auto ROLE_KEY {
-                    "nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-"
-                    + ROLE_STR
+                    "nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-" + ROLE_STR
                 };
 
                 const auto ROLE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
@@ -746,8 +718,7 @@ namespace creature
             }
 
             // determine
-            const auto RAND(
-                misc::Random(0.0f, (chanceRarely + chanceReligious + chanceRarely)));
+            const auto RAND(misc::Random(0.0f, (chanceRarely + chanceReligious + chanceRarely)));
 
             if (RAND < chanceMagical)
             {
@@ -770,25 +741,15 @@ namespace creature
         {
             switch (COMPLEXITY_TYPE)
             {
-                case Animal:
-                {
-                    return "Animal";
+                case Animal: { return "Animal";
                 }
-                case Simple:
-                {
-                    return "Simple";
+                case Simple: { return "Simple";
                 }
-                case Moderate:
-                {
-                    return "Moderate";
+                case Moderate: { return "Moderate";
                 }
-                case Complex:
-                {
-                    return "Complex";
+                case Complex: { return "Complex";
                 }
-                case Count:
-                {
-                    return "(Count)";
+                case Count: { return "(Count)";
                 }
                 default:
                 {

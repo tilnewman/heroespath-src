@@ -12,7 +12,6 @@
 #include "creature/race-enum.hpp"
 
 #include <cstddef> //for std::size_t
-#include <sstream>
 #include <string>
 
 namespace heroespath

@@ -18,6 +18,8 @@
 #include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 
+#include "unit-test-test-stuff.hpp"
+
 #include <algorithm>
 #include <cctype>
 #include <iomanip>
@@ -226,7 +228,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 
                 const auto AVERAGE { sum / static_cast<float>(TIMES.size()) };
 
-                const float STANDARD_DEVIATION { misc::Vector::StandardDeviation(
+                const float STANDARD_DEVIATION { StandardDeviation(
                     TIMES, TIMES.size(), AVERAGE, false) };
 
                 std::ostringstream ssReport;
@@ -756,4 +758,70 @@ BOOST_AUTO_TEST_CASE(misc_strings__Trim)
     BOOST_CHECK(TrimNonDisplayableCopy(str) == str);
     BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(str) == str);
     BOOST_CHECK(TrimWhitespaceCopy(str) == str);
+}
+
+BOOST_AUTO_TEST_CASE(join_when_empty_tests)
+{
+    namespace ts = test_stuff;
+
+    const ts::IntVec_t EMPTY;
+    for (const auto VALUE : ts::TEST_COUNTS)
+    {
+        const auto SIZET_VALUE { static_cast<std::size_t>(VALUE) };
+
+        const auto EMPTY_RESULT_1 { Join(EMPTY, SIZET_VALUE) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_1 == ""),
+            "Join(empty, " << VALUE << ") result=\"" << EMPTY_RESULT_1 << "\"");
+
+        const auto EMPTY_RESULT_2 { Join(EMPTY, SIZET_VALUE, Wrap) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_2 == ""),
+            "Join(empty, " << VALUE << ", Wrap) result=\"" << EMPTY_RESULT_2 << "\"");
+
+        const auto EMPTY_RESULT_3 { Join(EMPTY, SIZET_VALUE, And) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_3 == ""),
+            "Join(empty, " << VALUE << ", And) result=\"" << EMPTY_RESULT_3 << "\"");
+
+        const auto EMPTY_RESULT_4 { Join(EMPTY, SIZET_VALUE, Ellipsis) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_4 == ""),
+            "Join(empty, " << VALUE << ", Ellipsis) result=\"" << EMPTY_RESULT_4 << "\"");
+
+        const auto EMPTY_RESULT_5 { Join(
+            EMPTY, SIZET_VALUE, static_cast<JoinOpt>(Wrap | And | Ellipsis)) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_5 == ""),
+            "Join(empty, " << VALUE << ", Wrap/And/Ellipsis) result=\"" << EMPTY_RESULT_5 << "\"");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(join_123_tests)
+{
+    namespace ts = test_stuff;
+    const ts::IntVec_t A = { 1, 2, 3 };
+
+    BOOST_CHECK(Join(A, 0) == "1, 2, 3");
+    BOOST_CHECK(Join(A, 9) == "1, 2, 3");
+    BOOST_CHECK(Join(A, 3) == "1, 2, 3");
+    BOOST_CHECK(Join(A, 2) == "1, 2");
+    BOOST_CHECK(Join(A, 1) == "1");
+
+    BOOST_CHECK(Join(A, 0, Wrap) == "(1, 2, 3)");
+    BOOST_CHECK(Join(A, 2, Wrap) == "(1, 2)");
+    BOOST_CHECK(Join(A, 1, Wrap) == "(1)");
+
+    BOOST_CHECK(Join(A, 0, And) == "1, 2, and 3");
+    BOOST_CHECK(Join(A, 2, And) == "1, 2");
+    BOOST_CHECK(Join(A, 1, And) == "1");
+
+    BOOST_CHECK(Join(A, 0, Ellipsis) == "1, 2, 3");
+    BOOST_CHECK(Join(A, 2, Ellipsis) == "1, 2...");
+    BOOST_CHECK(Join(A, 1, Ellipsis) == "1...");
 }

@@ -27,7 +27,6 @@
 
 #include <algorithm>
 #include <exception>
-#include <sstream>
 #include <utility>
 
 namespace heroespath
@@ -1025,10 +1024,9 @@ namespace creature
             float & leatherChance,
             float & silkChance) const
         {
-            std::ostringstream ss;
-            ss << "inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType) << "-chances";
-
-            const auto WEARABLE_STR_BASE { ss.str() };
+            const auto WEARABLE_STR_BASE {
+                "inventory-clothing-" + wealth_type::ToString(PROFILE.wealthType) + "-chances"
+            };
 
             // find the chance-subtotal and the material that will have the remaining chance
             auto chanceSubTotal(0.0f);
@@ -1500,11 +1498,12 @@ namespace creature
             ItemChances itemChancesBase;
             Make_ClothingMaterialChancesPrimary(PROFILE, CHARACTER_PTR, itemChancesBase);
             Make_MaterialChancesSecondary(PROFILE, CHARACTER_PTR, itemChancesBase.mat_map_sec);
-
-            std::ostringstream ss;
+            ;
             const std::string KEY_BASE { "inventory-clothing-" };
-            ss << KEY_BASE << wealth_type::ToString(PROFILE.wealthType) << "-chances-";
-            const auto WEARABLE_STR_BASE { ss.str() };
+
+            const std::string WEARABLE_STR_BASE {
+                KEY_BASE + wealth_type::ToString(PROFILE.wealthType) + "-chances-"
+            };
 
             const auto MIN_VAL { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 KEY_BASE + "chance-min") };

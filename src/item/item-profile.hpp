@@ -89,7 +89,7 @@ namespace item
 
         bool IsNonMagicalWeaponOrArmor() const
         {
-            return (IsWeapon() || IsArmor()) && (IsMagical() == false) && (IsMisc() == false);
+            return ((IsWeapon() || IsArmor()) && !IsMagical() && !IsMisc());
         }
 
         bool IsMagical() const
@@ -99,17 +99,17 @@ namespace item
 
         bool IsMisc() const
         {
-            return ((MiscType() != misc_type::Count) && (MiscType() != misc_type::Not));
+            return !((MiscType() == misc_type::Count) || (MiscType() == misc_type::Not));
         }
 
         bool IsUnique() const { return misc_type::IsUnique(thinProfile_.MiscType()); }
 
         bool IsNamed() const
         {
-            return ((named_ != named_type::Count) && (named_ != named_type::Not));
+            return !((named_type::Count == named_) || (named_type::Not == named_));
         }
 
-        bool IsSet() const { return ((set_ != set_type::Count) && (set_ != set_type::Not)); }
+        bool IsSet() const { return !((set_type::Count == set_) || (set_type::Not == set_)); }
 
         bool IsElemental() const { return (element_ != element_type::None); }
 

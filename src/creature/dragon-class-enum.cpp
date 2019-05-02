@@ -54,9 +54,8 @@ namespace creature
 
     const std::string dragon_class::Desc(const dragon_class::Enum DRAGON_CLASS_TYPE)
     {
-        std::ostringstream ss;
-        ss << "creature-race-desc-dragon-" << ToString(DRAGON_CLASS_TYPE);
-        return misc::ConfigFile::Instance()->Value(ss.str());
+        return misc::ConfigFile::Instance()->Value(
+            "creature-race-desc-dragon-" + ToString(DRAGON_CLASS_TYPE));
     }
 
     dragon_class::Enum dragon_class::ClassFromRank(const Rank_t & RANK)

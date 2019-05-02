@@ -14,8 +14,6 @@
 #include "misc/strings.hpp"
 #include "sfutil/color.hpp"
 
-#include <sstream>
-
 namespace heroespath
 {
 namespace game
@@ -31,17 +29,7 @@ namespace game
 
     struct FadeStatus
     {
-        const std::string ToString() const
-        {
-            std::ostringstream ss;
-
-            ss << "FadeStatus(is_fading" << std::boolalpha << is_fading
-               << ", direction=" << ((FadeDirection::In == direction) ? "in" : "out")
-               << ", current_color=" << current_color << ", target_color=" << target_color
-               << ", will_draw_under_popup=" << will_draw_under_popup << ")";
-
-            return ss.str();
-        }
+        const std::string ToString() const;
 
         bool is_fading = false;
         sf::Color target_color = sf::Color::Transparent;
@@ -115,50 +103,7 @@ namespace game
 
         void GameExitRequestReset() { is_game_exit_requested = false; }
 
-        const std::string ToString() const
-        {
-            std::ostringstream ss;
-
-            auto prefixSeparatorString = [&]() {
-                if (ss.str().empty() == false)
-                {
-                    ss << ", ";
-                }
-            };
-
-            if (is_loop_running)
-            {
-                prefixSeparatorString();
-                ss << "loop_is_running";
-            }
-
-            // if (is_loop_stop_requested)
-            //{
-            //    prefixSeparatorString();
-            //    ss << "loop_exit_requested";
-            //}
-
-            if (is_game_exit_requested)
-            {
-                prefixSeparatorString();
-                ss << "game_exit_requested";
-            }
-
-            if (fade_status.is_fading)
-            {
-                prefixSeparatorString();
-                ss << fade_status.ToString();
-            }
-
-            if (ss.str().empty())
-            {
-                return "Status(none)";
-            }
-            else
-            {
-                return "Status(" + ss.str() + ")";
-            }
-        }
+        const std::string ToString() const;
 
         bool IsGameExiting() const { return is_game_exiting; }
         void SetGameIsExiting() { is_game_exiting = true; }

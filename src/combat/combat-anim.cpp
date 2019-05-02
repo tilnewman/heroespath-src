@@ -1100,22 +1100,22 @@ namespace combat
                 continue;
             }
 
-            std::ostringstream ss;
+            std::string result;
             sf::Color startColor(255, 0, 0);
             sf::Color endColor(255, 0, 0, 0);
             if (NEXT_DAMAGE_VALUE > 0_health)
             {
-                ss << "+";
+                result += "+";
                 startColor.g = 232;
                 startColor.b = 232;
                 endColor.g = 232;
                 endColor.b = 232;
             }
 
-            ss << NEXT_DAMAGE_VALUE;
+            result += NEXT_DAMAGE_VALUE.ToString();
 
             textAnimUVec_.emplace_back(std::make_unique<gui::animation::TextAnimation>(
-                ss.str(),
+                result,
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 1.0f,
                 1,

@@ -300,16 +300,14 @@ namespace creature
     Health_t
         PlayerInitialSetup::GetStartingHealth(const creature::CreaturePtr_t CHARACTER_PTR) const
     {
-        std::ostringstream ss;
-        ss << "player-race-health-initial-" << creature::race::ToString(CHARACTER_PTR->Race());
+        const auto HEALTH_BASE { misc::ConfigFile::Instance()->ValueOrDefault<Health_t>(
+            "player-race-health-initial-" + creature::race::ToString(CHARACTER_PTR->Race())) };
 
-        const auto HEALTH_BASE { misc::ConfigFile::Instance()->ValueOrDefault<Health_t>(ss.str()) };
-
-        ss.str("");
-        ss << "player-role-health-adjustment-initial-"
-           << creature::role::ToString(CHARACTER_PTR->Role());
-
-        return (HEALTH_BASE + misc::ConfigFile::Instance()->ValueOrDefault<Health_t>(ss.str()));
+        return (
+            HEALTH_BASE
+            + misc::ConfigFile::Instance()->ValueOrDefault<Health_t>(
+                  "player-role-health-adjustment-initial-"
+                  + creature::role::ToString(CHARACTER_PTR->Role())));
     }
 
     void PlayerInitialSetup::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR) const

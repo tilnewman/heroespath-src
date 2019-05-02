@@ -92,27 +92,28 @@ namespace creature
 
             // if we get here something is wrong, so log everything
 
-            std::ostringstream ss;
-            ss << "creature::nonplayer::MappedRandomFloatChance(T=\"" << NAMEOF_TYPE_T(T)
-               << "\") failed to random select.  chanceSubTotal=" << chanceSubTotal
-               << ", RAND=" << RAND << ", MAP={";
+            std::string errorStr(
+                "creature::nonplayer::MappedRandomFloatChance(T=\"" + std::string(NAMEOF_TYPE_T(T))
+                + "\") failed to random select.  chanceSubTotal=" + std::to_string(chanceSubTotal)
+                + ", RAND=" + std::to_string(RAND) + ", MAP={");
 
             for (const auto & NEXT_MAP_PAIR : MAP)
             {
-                ss << NEXT_MAP_PAIR.second << ", ";
+                errorStr += std::to_string(NEXT_MAP_PAIR.second) + ", ";
             }
 
-            ss << "}  ";
+            errorStr += "}  ";
 
             std::size_t i { 0 };
             for (const auto & NEXT_MAP_PAIR : MAP)
             {
                 if (NEXT_MAP_PAIR.second > 0.0f)
                 {
-                    ss << "picking " << static_cast<int>(NEXT_MAP_PAIR.first)
-                       << " with chance=" << NEXT_MAP_PAIR.second << " at index=" << i;
+                    errorStr += "picking " + std::to_string(static_cast<int>(NEXT_MAP_PAIR.first))
+                        + " with chance=" + std::to_string(NEXT_MAP_PAIR.second)
+                        + " at index=" + std::to_string(i);
 
-                    M_HP_LOG_WRN(ss.str());
+                    M_HP_LOG_WRN(errorStr);
                     return NEXT_MAP_PAIR.first;
                 }
                 else
@@ -121,10 +122,11 @@ namespace creature
                 }
             }
 
-            ss << "-MORE problems: Could not find any chance greater-than zero so raising this "
-                  "to an exception and throwing.";
+            errorStr
+                += "-MORE problems: Could not find any chance greater-than zero so raising this "
+                   "to an exception and throwing.";
 
-            throw std::runtime_error(ss.str());
+            throw std::runtime_error(errorStr);
         }
 
         // A wrapper for all information needed to determine if an item is owned, and what

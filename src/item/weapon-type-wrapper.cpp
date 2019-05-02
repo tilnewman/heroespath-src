@@ -68,27 +68,27 @@ namespace item
             {
                 if (false
                     == SetupWithSpecificTypeName<sword_type>(
-                        SYSTEM_NAME_LOWERCASE, weapon_type::Sword))
+                           SYSTEM_NAME_LOWERCASE, weapon_type::Sword))
                 {
                     if (false
                         == SetupWithSpecificTypeName<axe_type>(
-                            SYSTEM_NAME_LOWERCASE, weapon_type::Axe))
+                               SYSTEM_NAME_LOWERCASE, weapon_type::Axe))
                     {
                         if (false
                             == SetupWithSpecificTypeName<club_type>(
-                                SYSTEM_NAME_LOWERCASE, weapon_type::Club))
+                                   SYSTEM_NAME_LOWERCASE, weapon_type::Club))
                         {
                             if (false
                                 == SetupWithSpecificTypeName<whip_type>(
-                                    SYSTEM_NAME_LOWERCASE, weapon_type::Whip))
+                                       SYSTEM_NAME_LOWERCASE, weapon_type::Whip))
                             {
                                 if (false
                                     == SetupWithSpecificTypeName<body_part>(
-                                        SYSTEM_NAME_LOWERCASE, weapon_type::BodyPart))
+                                           SYSTEM_NAME_LOWERCASE, weapon_type::BodyPart))
                                 {
                                     if (false
                                         == SetupWithSpecificTypeName<projectile_type>(
-                                            SYSTEM_NAME_LOWERCASE, weapon_type::Projectile))
+                                               SYSTEM_NAME_LOWERCASE, weapon_type::Projectile))
                                     {
                                         SetupWithSpecificTypeName<bladedstaff_type>(
                                             SYSTEM_NAME_LOWERCASE, weapon_type::BladedStaff);
@@ -100,14 +100,11 @@ namespace item
                 }
             }
 
-            std::ostringstream errorSS;
-            errorSS << "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(name=\"" << SYSTEM_NAME
-                    << "\") ";
-
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IsValidCompleteCheck()),
-                errorSS.str() << " after this 'name' constructor the object was invalid: "
-                              << ToString());
+                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(name=\""
+                    << SYSTEM_NAME
+                    << "\") after this 'name' constructor the object was invalid: " << ToString());
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const KnifeOrDagger, const bool IS_DAGGER)
@@ -270,44 +267,103 @@ namespace item
 
         const std::string WeaponTypeWrapper::ToString() const
         {
+            std::string str("(empty)");
+
             if (*this == WeaponTypeWrapper())
             {
-                return "(empty)";
+                return str;
             }
 
+            str.clear();
+
             misc::VectorMap<std::string, std::string> namesMap;
+            namesMap.Reserve(4);
             namesMap[boost::algorithm::erase_all_copy(generalName_, " ")] += "general\\";
             namesMap[boost::algorithm::erase_all_copy(specificName_, " ")] += "specific\\";
             namesMap[boost::algorithm::erase_all_copy(systemName_, " ")] += "system\\";
             namesMap[boost::algorithm::erase_all_copy(readableName_, " ")] += "readable\\";
 
-            std::ostringstream ss;
             for (const auto & VALUE_NAME_PAIR : namesMap)
             {
-                ss << "\"" << VALUE_NAME_PAIR.first << "\"=" << VALUE_NAME_PAIR.second << ", ";
+                str += "\"" + VALUE_NAME_PAIR.first + "\"=" + VALUE_NAME_PAIR.second + ", ";
             }
 
-            ss << "type=" << weapon_type::ToString(type_, EnumStringHow(Wrap::Yes))
-               << std::boolalpha << ", " << ((IsStaff()) ? "Staff," : "")
-               << ((IsQuarterstaff()) ? "Quarterstaff," : "")
-               << ((IsBodyPart()) ? (body_part::ToString(BodyPartType()) + ",") : "")
-               << ((IsBite()) ? "Bite," : "") << ((IsFists()) ? "Fists," : "")
-               << ((IsKnife()) ? "Knife," : "") << ((IsDagger()) ? "Dagger," : "")
-               << ((IsSword()) ? sword_type::ToString(SwordType()) + "," : "")
-               << ((IsAxe()) ? axe_type::ToString(AxeType()) + "," : "")
-               << ((IsClub()) ? club_type::ToString(ClubType()) + "," : "")
-               << ((IsWhip()) ? whip_type::ToString(WhipType()) + "," : "")
-               << ((IsProjectile()) ? projectile_type::ToString(ProjectileType()) + "," : "")
-               << ((IsBladedStaff()) ? bladedstaff_type::ToString(BladedStaffType()) + "," : "")
-               << " variant_=" << variant_.which() << ", ";
+            str += "type=" + weapon_type::ToString(type_, EnumStringHow(Wrap::Yes)) + ", ";
+
+            if (IsStaff())
+            {
+                str += "Staff,";
+            }
+
+            if (IsQuarterstaff())
+            {
+                str += "Quarterstaff,";
+            }
+
+            if (IsBodyPart())
+            {
+                str += body_part::ToString(BodyPartType()) + ",";
+            }
+
+            if (IsBite())
+            {
+                str += "Bite,";
+            }
+
+            if (IsFists())
+            {
+                str += "Fists,";
+            }
+
+            if (IsKnife())
+            {
+                str += "Knife,";
+            }
+
+            if (IsDagger())
+            {
+                str += "Dagger,";
+            }
+
+            if (IsSword())
+            {
+                str += sword_type::ToString(SwordType()) + ",";
+            }
+
+            if (IsAxe())
+            {
+                str += axe_type::ToString(AxeType()) + ",";
+            }
+
+            if (IsClub())
+            {
+                str += club_type::ToString(ClubType()) + ",";
+            }
+
+            if (IsWhip())
+            {
+                str += whip_type::ToString(WhipType()) + ",";
+            }
+
+            if (IsProjectile())
+            {
+                str += projectile_type::ToString(ProjectileType()) + ",";
+            }
+
+            if (IsBladedStaff())
+            {
+                str += bladedstaff_type::ToString(BladedStaffType()) + ",";
+            }
+
+            str += " variant_=" + std::to_string(variant_.which()) + ", ";
 
             if ((elementTypes_.size() != 1) || (elementTypes_.at(0) != element_type::None))
             {
-                ss << ", element_types={";
+                str += ", element_types={";
 
                 if (elementTypes_.empty())
                 {
-                    ss << "empty/invalid";
+                    str += "empty/invalid";
                 }
                 else
                 {
@@ -315,40 +371,41 @@ namespace item
                     {
                         if (i > 0)
                         {
-                            ss << ",";
+                            str += ",";
                         }
 
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
 
-                        ss << element_type::ToString(
+                        str += element_type::ToString(
                             ELEMENT_TYPE, EnumStringHow(Wrap::Yes, "&", NoneEmpty::No));
                     }
                 }
 
-                ss << "}";
+                str += "}";
             }
 
-            return ss.str();
+            return str;
         }
 
         const std::string WeaponTypeWrapper::ImageFilename(
             const std::string & SEPARATOR, const std::string & EXTENSION) const
         {
-            std::ostringstream ss;
-
             // remove any spaces from the generalName_
             const auto GENERAL_NAME_FILENAME_VERSION { boost::algorithm::replace_all_copy(
                 generalName_, " ", "") };
 
-            ss << GENERAL_NAME_FILENAME_VERSION;
+            std::string imageFilenameStr(GENERAL_NAME_FILENAME_VERSION);
 
             if ((systemName_ != GENERAL_NAME_FILENAME_VERSION) && (systemName_ != "Bite"))
             {
-                ss << SEPARATOR << systemName_;
+                imageFilenameStr += SEPARATOR + systemName_;
             }
 
-            ss << EXTENSION;
-            return misc::ToLowerCopy(ss.str());
+            imageFilenameStr += EXTENSION;
+
+            misc::ToLower(imageFilenameStr);
+
+            return imageFilenameStr;
         }
 
         bool WeaponTypeWrapper::IsGeneralNameAlmostSpecificName() const
@@ -564,9 +621,7 @@ namespace item
                         }
                         case sword_type::Shortsword:
                         case sword_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -616,9 +671,7 @@ namespace item
                         }
                         case axe_type::Handaxe:
                         case axe_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -650,9 +703,7 @@ namespace item
                         }
                         case whip_type::Bullwhip:
                         case whip_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -702,9 +753,7 @@ namespace item
                         }
                         case club_type::Maul:
                         case club_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -754,9 +803,7 @@ namespace item
                             break;
                         }
                         case projectile_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -843,9 +890,7 @@ namespace item
                         case bladedstaff_type::Spear:
                         case bladedstaff_type::ShortSpear:
                         case bladedstaff_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -870,9 +915,7 @@ namespace item
                 case weapon_type::Melee:
                 case weapon_type::Bladed:
                 case weapon_type::Pointed:
-                default:
-                {
-                    break;
+                default: { break;
                 }
             }
 

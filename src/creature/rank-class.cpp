@@ -30,10 +30,8 @@ namespace creature
         {
             const rank_class::Enum RANK_ENUM { static_cast<rank_class::Enum>(i) };
 
-            std::ostringstream ss;
-            ss << "rankclass-" << ToString(RANK_ENUM) << "-rankmax";
-
-            rankCumulative += misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(ss.str());
+            rankCumulative += misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
+                "rankclass-" + ToString(RANK_ENUM) + "-rankmax");
 
             if (RANK_PARAM <= rankCumulative)
             {

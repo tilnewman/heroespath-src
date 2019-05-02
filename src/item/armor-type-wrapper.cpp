@@ -19,7 +19,6 @@
 
 #include <exception>
 #include <numeric>
-#include <sstream>
 
 namespace heroespath
 {
@@ -53,15 +52,15 @@ namespace item
 
             if (false
                 == SetupWithSpecificTypeName<cover_type>(
-                    SYSTEM_NAME, armor_type::Covering, BASE_TYPE))
+                       SYSTEM_NAME, armor_type::Covering, BASE_TYPE))
             {
                 if (false
                     == SetupWithSpecificTypeName<helm_type>(
-                        SYSTEM_NAME, armor_type::Helm, BASE_TYPE))
+                           SYSTEM_NAME, armor_type::Helm, BASE_TYPE))
                 {
                     if (false
                         == SetupWithSpecificTypeName<shield_type>(
-                            SYSTEM_NAME, armor_type::Shield, BASE_TYPE))
+                               SYSTEM_NAME, armor_type::Shield, BASE_TYPE))
                     {
                         if (SYSTEM_NAME == GLOVES_NAME_)
                         {
@@ -214,42 +213,89 @@ namespace item
 
         const std::string ArmorTypeWrapper::ToString() const
         {
+            std::string str("(empty)");
+
             if (*this == ArmorTypeWrapper())
             {
-                return "(empty)";
+                return str;
             }
 
+            str.clear();
+
             misc::VectorMap<std::string, std::string> namesMap;
+            namesMap.Reserve(4);
             namesMap[boost::algorithm::erase_all_copy(generalName_, " ")] += "general\\";
             namesMap[boost::algorithm::erase_all_copy(specificName_, " ")] += "specific\\";
             namesMap[boost::algorithm::erase_all_copy(systemName_, " ")] += "system\\";
             namesMap[boost::algorithm::erase_all_copy(readableName_, " ")] += "readable\\";
 
-            std::ostringstream ss;
             for (const auto & VALUE_NAME_PAIR : namesMap)
             {
-                ss << "\"" << VALUE_NAME_PAIR.first << "\"=" << VALUE_NAME_PAIR.second << ", ";
+                str += "\"" + VALUE_NAME_PAIR.first + "\"=" + VALUE_NAME_PAIR.second + ", ";
             }
 
-            ss << "type=" << armor_type::ToString(type_)
-               << ", base=" << ((base_type::Count == base_) ? "Count" : base_type::ToString(base_))
-               << ", variant_.which()=" << variant_.which() << ", type=("
-               << ((IsShield()) ? shield_type::ToString(ShieldType()) : "") << ","
-               << ((IsHelm()) ? helm_type::ToString(HelmType()) : "") << ","
-               << ((IsGauntlets()) ? "gauntlets" : "") << "," << ((IsPants()) ? "pants" : "") << ","
-               << ((IsBoots()) ? "boots" : "") << "," << ((IsShirt()) ? "shirt" : "") << ","
-               << ((IsBracers()) ? "bracers" : "") << "," << ((IsAventail()) ? "aventail" : "")
-               << "," << ((IsCover()) ? cover_type::ToString(CoverType()) : "") << ","
-               << ((IsSkin()) ? "skin" : "") << ")"
-               << ")";
+            str += "type=" + armor_type::ToString(type_)
+                + ", base=" + ((base_type::Count == base_) ? "Count" : base_type::ToString(base_))
+                + ", variant_.which()=" + std::to_string(variant_.which()) + ", type=(";
+
+            if (IsShield())
+            {
+                str += shield_type::ToString(ShieldType()) + ",";
+            }
+            if (IsHelm())
+            {
+                str += helm_type::ToString(HelmType()) + ",";
+            }
+
+            if (IsGauntlets())
+            {
+                str += "gauntlets,";
+            }
+
+            if (IsPants())
+            {
+                str += "pants,";
+            }
+
+            if (IsBoots())
+            {
+                str += "boots,";
+            }
+
+            if (IsShirt())
+            {
+                str += "shirt,";
+            }
+
+            if (IsBracers())
+            {
+                str += "bracers,";
+            }
+
+            if (IsAventail())
+            {
+                str += "aventail,";
+            }
+
+            if (IsCover())
+            {
+                str += cover_type::ToString(CoverType()) + ",";
+            }
+
+            if (IsSkin())
+            {
+                str += "skin";
+            }
+
+            str += ")";
 
             if ((elementTypes_.size() != 1) || (elementTypes_.at(0) != element_type::None))
             {
-                ss << ", element_types={";
+                str += ", element_types={";
 
                 if (elementTypes_.empty())
                 {
-                    ss << "empty/invalid";
+                    str += "empty/invalid";
                 }
                 else
                 {
@@ -257,30 +303,30 @@ namespace item
                     {
                         if (i > 0)
                         {
-                            ss << ",";
+                            str += ",";
                         }
 
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
 
-                        ss << element_type::ToString(
+                        str += element_type::ToString(
                             ELEMENT_TYPE, EnumStringHow(Wrap::Yes, "&", NoneEmpty::No));
                     }
                 }
 
-                ss << "}";
+                str += "}";
             }
 
-            return ss.str();
+            return str;
         }
 
         const std::string ArmorTypeWrapper::ImageFilename(
             const std::string & SEPARATOR, const std::string & EXTENSION) const
         {
-            std::ostringstream ss;
+            std::string imageFilenameStr;
 
             if (IsGauntlets() && (base_type::Plain == base_))
             {
-                ss << armor_type::ToString(armor_type::Gauntlets);
+                imageFilenameStr += armor_type::ToString(armor_type::Gauntlets);
             }
             else
             {
@@ -288,21 +334,24 @@ namespace item
                 const auto GENERAL_NAME_FILENAME_VERSION { boost::algorithm::replace_all_copy(
                     generalName_, " ", "") };
 
-                ss << GENERAL_NAME_FILENAME_VERSION;
+                imageFilenameStr += GENERAL_NAME_FILENAME_VERSION;
 
                 if (systemName_ != GENERAL_NAME_FILENAME_VERSION)
                 {
-                    ss << SEPARATOR << systemName_;
+                    imageFilenameStr += SEPARATOR + systemName_;
                 }
             }
 
             if (base_type::Count != base_)
             {
-                ss << SEPARATOR << base_type::ToString(base_);
+                imageFilenameStr += SEPARATOR + base_type::ToString(base_);
             }
 
-            ss << EXTENSION;
-            return misc::ToLowerCopy(ss.str());
+            imageFilenameStr += EXTENSION;
+
+            misc::ToLower(imageFilenameStr);
+
+            return imageFilenameStr;
         }
 
         bool ArmorTypeWrapper::IsGeneralNameAlmostSpecificName() const
@@ -450,9 +499,7 @@ namespace item
 
                 case armor_type::Not:
                 case armor_type::Count:
-                default:
-                {
-                    break;
+                default: { break;
                 }
             }
 
@@ -494,9 +541,7 @@ namespace item
                 case armor_type::Bracers:
                 case armor_type::Shirt:
                 case armor_type::Boots:
-                case armor_type::Pants:
-                {
-                    return (base_type::Count != base_);
+                case armor_type::Pants: { return (base_type::Count != base_);
                 }
 
                 case armor_type::Shield:
@@ -520,16 +565,12 @@ namespace item
                         && (boost::get<cover_type::Enum>(variant_) != cover_type::Count));
                 }
 
-                case armor_type::Skin:
-                {
-                    return true;
+                case armor_type::Skin: { return true;
                 }
 
                 case armor_type::Not:
                 case armor_type::Count:
-                default:
-                {
-                    return false;
+                default: { return false;
                 }
             }
         }
@@ -593,9 +634,7 @@ namespace item
                         }
                         case shield_type::Buckler:
                         case shield_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -632,9 +671,7 @@ namespace item
                         }
                         case helm_type::Leather:
                         case helm_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -662,9 +699,7 @@ namespace item
                 case armor_type::Skin:
                 case armor_type::Not:
                 case armor_type::Count:
-                default:
-                {
-                    break;
+                default: { break;
                 }
             }
 

@@ -843,11 +843,10 @@ namespace stage
 
         // Setup the strength attribute here because it is special.
         // See below where it is added by hand.
-        std::ostringstream ss;
-        ss << creature::Traits::Name(creature::Traits::Strength) << " - "
-           << misc::ConfigFile::Instance()->Value("stats-stat-desc_Strength") << "\n\n";
-
-        const auto STRENGTH_BASE_TEXT { ss.str() };
+        const auto STRENGTH_BASE_TEXT {
+            creature::Traits::Name(creature::Traits::Strength) + " - "
+            + misc::ConfigFile::Instance()->Value("stats-stat-desc_Strength") + "\n\n"
+        };
 
         gui::TextInfo strHelpTextInfo(descTextInfo);
 
@@ -911,12 +910,8 @@ namespace stage
         gui::TextInfo & descTextInfo,
         gui::TextRegionUVec_t & textRegionUVec)
     {
-        std::ostringstream ss;
-
-        ss << creature::Traits::Name(TRAIT_ENUM) << " - "
-           << misc::ConfigFile::Instance()->Value(DESC_KEY) << "\n\n";
-
-        descTextInfo.text = ss.str();
+        descTextInfo.text = creature::Traits::Name(TRAIT_ENUM) + " - "
+            + misc::ConfigFile::Instance()->Value(DESC_KEY) + "\n\n";
 
         textRegionUVec.emplace_back(std::make_unique<gui::TextRegion>(
             creature::Traits::ToString(TRAIT_ENUM) + "StatDesc", descTextInfo, REGION));

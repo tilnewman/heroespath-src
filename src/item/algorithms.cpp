@@ -20,11 +20,9 @@ namespace item
 {
 
     const std::string Algorithms::Names(
-        const ItemPVec_t & ITEM_PVEC,
-        const std::size_t MAX_COUNT,
-        const misc::Vector::JoinOpt OPTIONS)
+        const ItemPVec_t & ITEM_PVEC, const std::size_t MAX_COUNT, const misc::JoinOpt OPTIONS)
     {
-        return misc::Vector::Join<ItemPtr_t>(
+        return misc::Join<ItemPtr_t>(
             ITEM_PVEC, MAX_COUNT, OPTIONS, [](const auto & ITEM_PTR) -> const std::string {
                 return ITEM_PTR->Name();
             });

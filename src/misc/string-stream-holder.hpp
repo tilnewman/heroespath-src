@@ -24,6 +24,9 @@ namespace misc
     {
         static void init();
         static void reset();
+
+        static const std::string toString();
+
         static std::ostream & ostreamer();
 
         static void
@@ -43,6 +46,7 @@ namespace misc
 
     private:
         static std::unique_ptr<std::ostringstream> ss_uptr;
+        static bool hasInitAlready;
     };
 
 } // namespace misc

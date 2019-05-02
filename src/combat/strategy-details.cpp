@@ -85,12 +85,9 @@ namespace combat
 
                 const auto RACE_ENUM(static_cast<creature::race::Enum>(i));
                 const auto RACE_STR(creature::race::ToString(RACE_ENUM));
-
-                std::ostringstream keySS;
-                keySS << "nonplayer-combat-strategy-race-" << RACE_STR;
-                const std::string KEY(keySS.str());
-
+                const std::string KEY("nonplayer-combat-strategy-race-" + RACE_STR);
                 const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));
+
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (VALUE.empty() == false),
                     "combat::strategy::CreatureStrategies::Initialize()  (while parsing race=\""
@@ -203,12 +200,9 @@ namespace combat
 
                 const auto ROLE_ENUM(static_cast<creature::role::Enum>(i));
                 const auto ROLE_STR(creature::role::ToString(ROLE_ENUM));
-
-                std::ostringstream keySS;
-                keySS << "nonplayer-combat-strategy-adjustment-role-" << ROLE_STR;
-                const std::string KEY(keySS.str());
-
+                const std::string KEY("nonplayer-combat-strategy-adjustment-role-" + ROLE_STR);
                 const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));
+
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (VALUE.empty() == false),
                     "combat::strategy::CreatureStrategies::Initialize()  (while parsing role=\""

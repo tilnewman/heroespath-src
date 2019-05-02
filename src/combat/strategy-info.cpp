@@ -11,7 +11,6 @@
 //
 #include "strategy-info.hpp"
 
-#include <sstream>
 #include <string>
 #include <tuple>
 
@@ -47,21 +46,17 @@ namespace combat
 
         const std::string Info::ToString() const
         {
-            std::ostringstream ss;
-
-            ss << "StrategyInfo:"
-               << " Select=" << SelectType::ToString(selectType_, EnumStringHow(Wrap::Yes))
-               << ", Refine=" << RefineType::ToString(refineType_, EnumStringHow(Wrap::Yes))
-               << ", Advance=" << AdvanceType::ToString(advanceType_)
-               << ", Retreat=" << RetreatType::ToString(retreatType_)
-               << ", RetreatCount=" << outnumberRetreatCount_
-               << ", Roar=" << FrequencyType::ToString(roarFreqType_)
-               << ", Cast=" << FrequencyType::ToString(castFreqType_)
-               << ", Fly=" << FrequencyType::ToString(flyFreqType_)
-               << ", FlyPounce=" << FrequencyType::ToString(flyPounceFreqType_)
-               << ", StandPounce=" << FrequencyType::ToString(standPounceFreqType_);
-
-            return ss.str();
+            return std::string("StrategyInfo:")
+                + " Select=" + SelectType::ToString(selectType_, EnumStringHow(Wrap::Yes))
+                + ", Refine=" + RefineType::ToString(refineType_, EnumStringHow(Wrap::Yes))
+                + ", Advance=" + AdvanceType::ToString(advanceType_)
+                + ", Retreat=" + RetreatType::ToString(retreatType_)
+                + ", RetreatCount=" + std::to_string(outnumberRetreatCount_)
+                + ", Roar=" + FrequencyType::ToString(roarFreqType_)
+                + ", Cast=" + FrequencyType::ToString(castFreqType_)
+                + ", Fly=" + FrequencyType::ToString(flyFreqType_)
+                + ", FlyPounce=" + FrequencyType::ToString(flyPounceFreqType_)
+                + ", StandPounce=" + FrequencyType::ToString(standPounceFreqType_);
         }
 
         bool operator<(const Info & L, const Info & R)
@@ -115,6 +110,7 @@ namespace combat
                        R.flyPounceFreqType_,
                        R.standPounceFreqType_);
         }
+
     } // namespace strategy
 } // namespace combat
 } // namespace heroespath

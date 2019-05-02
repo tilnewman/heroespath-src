@@ -20,7 +20,6 @@
 #include <algorithm>
 #include <exception>
 #include <memory>
-#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -76,11 +75,9 @@ namespace combat
 
                 if (ENUM_CHANCE_STR_VEC.size() != 2)
                 {
-                    std::ostringstream ss;
-                    ss << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
-                       << "() Found invalid subparts string: \"" << SUB_STR << "\".";
-
-                    throw std::runtime_error(ss.str());
+                    throw std::runtime_error(
+                        "combat::strategy::CreatureStrategies::" + FUNCTION_NAME
+                        + "() Found invalid subparts string: \"" + SUB_STR + "\".");
                 }
 
                 EnumType typeEnum;
@@ -90,29 +87,21 @@ namespace combat
                 }
                 catch (const std::exception & EX)
                 {
-                    std::ostringstream exceptionSS;
-
-                    exceptionSS
-                        << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
-                        << "()  Threw exception calling T::FromString(\""
-                        << ENUM_CHANCE_STR_VEC.at(0)
-                        << "\")  This is probably just a typo in the gamedatafile.  Exception: ["
-                        << EX.what() << "].";
-
-                    throw std::runtime_error(exceptionSS.str());
+                    throw std::runtime_error(
+                        "combat::strategy::CreatureStrategies::" + FUNCTION_NAME
+                        + "()  Threw exception calling T::FromString(\"" + ENUM_CHANCE_STR_VEC.at(0)
+                        + "\")  This is probably just a typo in the gamedatafile.  Exception: ["
+                        + EX.what() + "].");
                 }
 
                 const auto CHANCE { ParseChanceString(ENUM_CHANCE_STR_VEC.at(1)) };
                 if ((CHANCE < 0.0f) || (CHANCE > 1.0f))
                 {
-                    std::ostringstream ss;
-
-                    ss << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
-                       << "()  Failed to parse \"" << ENUM_CHANCE_STR_VEC.at(1)
-                       << "\" into a valid 'enum:float'.  Resulting float (chance) was: " << CHANCE
-                       << ".";
-
-                    throw std::runtime_error(ss.str());
+                    throw std::runtime_error(
+                        "combat::strategy::CreatureStrategies::" + FUNCTION_NAME
+                        + "()  Failed to parse \"" + ENUM_CHANCE_STR_VEC.at(1)
+                        + "\" into a valid 'enum:float'.  Resulting float (chance) was: "
+                        + std::to_string(CHANCE) + ".");
                 }
 
                 OutParam_EnumChanceMap[typeEnum] = CHANCE;

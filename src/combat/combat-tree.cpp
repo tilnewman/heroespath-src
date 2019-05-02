@@ -68,9 +68,8 @@ namespace combat
             }
         }
 
-        std::ostringstream ss;
-        ss << "CombatTree::GetNodePtr(id=" << ID << ") -but that vertex does not exist.";
-        throw std::invalid_argument(ss.str());
+        throw std::invalid_argument(
+            "CombatTree::GetNodePtr(id=" + ID.ToString() + ") -but that vertex does not exist.");
     }
 
     CombatNodePtr_t CombatTree::GetNodePtr(const creature::CreaturePtr_t CREATURE_PTR) const
@@ -83,10 +82,9 @@ namespace combat
             }
         }
 
-        std::ostringstream ss;
-        ss << "CombatTree::GetNodePtr(creature=" << CREATURE_PTR->ToString()
-           << ") -but a vertex for that creature does not exist.";
-        throw std::invalid_argument(ss.str());
+        throw std::invalid_argument(
+            "CombatTree::GetNodePtr(creature=" + CREATURE_PTR->ToString()
+            + ") -but a vertex for that creature does not exist.");
     }
 
     ID_t CombatTree::GetNodeId(const CombatNodePtr_t COMBAT_NODE_PTR) const
@@ -99,11 +97,9 @@ namespace combat
             }
         }
 
-        std::ostringstream ss;
-        ss << "CombatTree::GetNodeId(combat_node=" << COMBAT_NODE_PTR->ToString()
-           << ") -but that combat_node was not found.";
-
-        throw std::invalid_argument(ss.str());
+        throw std::invalid_argument(
+            "CombatTree::GetNodeId(combat_node=" + COMBAT_NODE_PTR->ToString()
+            + ") -but that combat_node was not found.");
     }
 
     ID_t CombatTree::GetNodeId(const creature::CreaturePtr_t CREATURE_PTR) const
@@ -116,11 +112,9 @@ namespace combat
             }
         }
 
-        std::ostringstream ss;
-        ss << "CombatTree::GetNodeId(creature={" << CREATURE_PTR->ToString()
-           << "}) -but that creature was not found.";
-
-        throw std::invalid_argument(ss.str());
+        throw std::invalid_argument(
+            "CombatTree::GetNodeId(creature={" + CREATURE_PTR->ToString()
+            + "}) -but that creature was not found.");
     }
 
     const CombatNodePtrOpt_t CombatTree::GetNodePtrOpt(const float POS_X, const float POS_Y) const
@@ -152,24 +146,24 @@ namespace combat
 
     const std::string CombatTree::VertexesString(const bool WILL_WRAP) const
     {
-        std::ostringstream ss;
+        std::string result;
 
         if (WILL_WRAP)
         {
-            ss << "[";
+            result += "[";
         }
 
         for (const auto & VERTEX : vertexes_)
         {
-            ss << VERTEX.id << ":" << VERTEX.node_sptr->ToString() << ", ";
+            result += VERTEX.id.ToString() + ":" + VERTEX.node_sptr->ToString() + ", ";
         }
 
         if (WILL_WRAP)
         {
-            ss << "]";
+            result += "]";
         }
 
-        return ss.str();
+        return result;
     }
 
     CombatNodePtr_t CombatTree::AddVertex(const creature::CreaturePtr_t CREATURE_PTR)
@@ -288,24 +282,25 @@ namespace combat
 
     const std::string CombatTree::EdgesString(const bool WILL_WRAP) const
     {
-        std::ostringstream ss;
+        std::string result;
 
         if (WILL_WRAP)
         {
-            ss << "(";
+            result += "(";
         }
 
         for (const auto & EDGE : edges_)
         {
-            ss << EDGE.a << "-" << EDGE.b << ":" << EdgeType::ToString(EDGE.type) << ", ";
+            result += EDGE.a.ToString() + "-" + EDGE.b.ToString() + ":"
+                + EdgeType::ToString(EDGE.type) + ", ";
         }
 
         if (WILL_WRAP)
         {
-            ss << ")";
+            result += ")";
         }
 
-        return ss.str();
+        return result;
     }
 
     void CombatTree::AddEdge(const ID_t & ID1, const ID_t & ID2, const EdgeType::Enum TYPE)

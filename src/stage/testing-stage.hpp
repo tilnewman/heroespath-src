@@ -22,7 +22,6 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
-#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>

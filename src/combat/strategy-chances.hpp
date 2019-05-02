@@ -17,7 +17,6 @@
 #include "misc/vector-map.hpp"
 
 #include <numeric>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -151,22 +150,24 @@ namespace combat
                 const misc::VectorMap<EnumType, float> & CHANCE_MAP,
                 const bool WILL_WRAP = false) const
             {
-                const std::string SEP(", ");
+                std::string result;
+                for (const auto & NEXT_TYPECHANCE_PAIR : CHANCE_MAP)
+                {
+                    if (!result.empty())
+                    {
+                        result += ", ";
+                    }
 
-                std::ostringstream ss;
+                    result += StructType::ToString(NEXT_TYPECHANCE_PAIR.first) + ":"
+                        + std::to_string(NEXT_TYPECHANCE_PAIR.second);
+                }
 
                 if (WILL_WRAP)
                 {
-                    ss << "(";
+                    result = "(" + result + ")";
                 }
 
-                for (const auto & NEXT_TYPECHANCE_PAIR : CHANCE_MAP)
-                {
-                    ss << StructType::ToString(NEXT_TYPECHANCE_PAIR.first) << ":"
-                       << NEXT_TYPECHANCE_PAIR.second << SEP;
-                }
-
-                return boost::algorithm::erase_last_copy(ss.str(), SEP) + ((WILL_WRAP) ? ")" : "");
+                return result;
             }
 
         private:

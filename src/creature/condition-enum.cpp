@@ -24,65 +24,35 @@ namespace creature
     {
         switch (ENUM)
         {
-            case Good:
-            {
-                return "Good";
+            case Good: { return "Good";
             }
-            case Bold:
-            {
-                return "Bold";
+            case Bold: { return "Bold";
             }
-            case Heroic:
-            {
-                return "Heroic";
+            case Heroic: { return "Heroic";
             }
-            case Daunted:
-            {
-                return "Daunted";
+            case Daunted: { return "Daunted";
             }
-            case Panic:
-            {
-                return "Panic";
+            case Panic: { return "Panic";
             }
-            case Dazed:
-            {
-                return "Dazed";
+            case Dazed: { return "Dazed";
             }
-            case Tripped:
-            {
-                return "Tripped";
+            case Tripped: { return "Tripped";
             }
-            case AsleepNatural:
-            {
-                return "AsleepNatural";
+            case AsleepNatural: { return "AsleepNatural";
             }
-            case Poisoned:
-            {
-                return "Poisoned";
+            case Poisoned: { return "Poisoned";
             }
-            case Pounced:
-            {
-                return "Pounced";
+            case Pounced: { return "Pounced";
             }
-            case AsleepMagical:
-            {
-                return "AsleepMagical";
+            case AsleepMagical: { return "AsleepMagical";
             }
-            case Unconscious:
-            {
-                return "Unconscious";
+            case Unconscious: { return "Unconscious";
             }
-            case Stone:
-            {
-                return "Stone";
+            case Stone: { return "Stone";
             }
-            case Dead:
-            {
-                return "Dead";
+            case Dead: { return "Dead";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -113,9 +83,8 @@ namespace creature
 
     const std::string Conditions::Desc(const Conditions::Enum ENUM)
     {
-        std::ostringstream keySS;
-        keySS << "creature-condition-" << ToString(ENUM) << "-desc";
-        return misc::ConfigFile::Instance()->Value(keySS.str());
+        return misc::ConfigFile::Instance()->Value(
+            "creature-condition-" + ToString(ENUM) + "-desc");
     }
 
     const std::string Conditions::ImageFilename(const Conditions::Enum ENUM)
@@ -155,61 +124,33 @@ namespace creature
         {
             switch (ENUM)
             {
-                case Conditions::Good:
-                {
-                    return GOOD;
+                case Conditions::Good: { return GOOD;
                 }
-                case Conditions::Bold:
-                {
-                    return 100;
+                case Conditions::Bold: { return 100;
                 }
-                case Conditions::Heroic:
-                {
-                    return 400;
+                case Conditions::Heroic: { return 400;
                 }
-                case Conditions::Daunted:
-                {
-                    return 1001;
+                case Conditions::Daunted: { return 1001;
                 }
-                case Conditions::Panic:
-                {
-                    return 1050;
+                case Conditions::Panic: { return 1050;
                 }
-                case Conditions::Dazed:
-                {
-                    return 1100;
+                case Conditions::Dazed: { return 1100;
                 }
-                case Conditions::Tripped:
-                {
-                    return 1200;
+                case Conditions::Tripped: { return 1200;
                 }
-                case Conditions::AsleepNatural:
-                {
-                    return 1300;
+                case Conditions::AsleepNatural: { return 1300;
                 }
-                case Conditions::Poisoned:
-                {
-                    return 1400;
+                case Conditions::Poisoned: { return 1400;
                 }
-                case Conditions::Pounced:
-                {
-                    return 1450;
+                case Conditions::Pounced: { return 1450;
                 }
-                case Conditions::AsleepMagical:
-                {
-                    return 1500;
+                case Conditions::AsleepMagical: { return 1500;
                 }
-                case Conditions::Unconscious:
-                {
-                    return 1800;
+                case Conditions::Unconscious: { return 1800;
                 }
-                case Conditions::Stone:
-                {
-                    return 1900;
+                case Conditions::Stone: { return 1900;
                 }
-                case Conditions::Dead:
-                {
-                    return 2000;
+                case Conditions::Dead: { return 2000;
                 }
                 case Conditions::Count:
                 default:

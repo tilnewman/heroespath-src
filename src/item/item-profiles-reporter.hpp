@@ -11,6 +11,8 @@
 //
 #include "game/strong-types.hpp"
 #include "item/item-profile.hpp"
+#include "misc/real.hpp"
+#include "misc/strings.hpp"
 #include "misc/vector-map.hpp"
 #include "misc/vectors.hpp"
 
@@ -30,6 +32,139 @@ namespace item
         static void LogReport();
 
     private:
+        static std::string toNumberSpecialForType(const double NUMBER, const int WIDTH);
+        static std::string toNumberSpecialForType(const long long NUMBER, const int WIDTH);
+
+        template <typename T>
+        static std::enable_if_t<misc::are_floating_point_v<T>, const std::string>
+            toNumberSpecial(const T NUMBER, const int WIDTH)
+        {
+            return toNumberSpecialForType(static_cast<double>(NUMBER), WIDTH);
+        }
+
+        template <typename T>
+        static std::enable_if_t<!misc::are_floating_point_v<T>, const std::string>
+            toNumberSpecial(const T NUMBER, const int WIDTH)
+        {
+            return toNumberSpecialForType(static_cast<long long>(NUMBER), WIDTH);
+        }
+
+        template <typename T>
+        struct MinMaxAvgStdDev
+        {
+            MinMaxAvgStdDev(const std::vector<T> & VALUES, const std::size_t COUNT)
+                : count(0)
+                , min(0)
+                , max(0)
+                , avg(0)
+                , sum(0)
+                , stddev(0)
+            {
+                Setup(VALUES, COUNT);
+            }
+
+            explicit MinMaxAvgStdDev(const std::vector<T> & VALUES)
+                : count(0)
+                , min(0)
+                , max(0)
+                , avg(0)
+                , sum(0)
+                , stddev(0)
+            {
+                Setup(VALUES, VALUES.size());
+            }
+
+            MinMaxAvgStdDev(const MinMaxAvgStdDev &) = default;
+            MinMaxAvgStdDev(MinMaxAvgStdDev &&) = default;
+            MinMaxAvgStdDev & operator=(const MinMaxAvgStdDev &) = default;
+            MinMaxAvgStdDev & operator=(MinMaxAvgStdDev &&) = default;
+
+            void Reset()
+            {
+                count = 0;
+                min = T(0);
+                max = T(0);
+                avg = T(0);
+                sum = T(0);
+                stddev = T(0);
+            }
+
+            void Setup(const std::vector<T> & VALUES) { Setup(VALUES, VALUES.size()); }
+
+            void Setup(const std::vector<T> & VALUES, const std::size_t COUNT)
+            {
+                Reset();
+
+                if ((VALUES.size() < 3) || (COUNT < 3) || ((COUNT - 1) > VALUES.size()))
+                {
+                    return;
+                }
+
+                count = COUNT;
+                min = VALUES.front();
+                max = min;
+
+                using Math_t = long double;
+
+                Math_t tempSum { 0.0L };
+
+                for (std::size_t index { 0 }; index < COUNT; ++index)
+                {
+                    const auto VALUE { VALUES.at(index) };
+
+                    if (VALUE < min)
+                    {
+                        min = VALUE;
+                    }
+
+                    if (VALUE > max)
+                    {
+                        max = VALUE;
+                    }
+
+                    tempSum += static_cast<Math_t>(VALUE);
+                }
+
+                avg = static_cast<T>(tempSum / static_cast<Math_t>(COUNT));
+                sum = static_cast<T>(tempSum);
+
+                stddev = misc::Vector::StandardDeviation(VALUES, COUNT, avg);
+            }
+
+            const std::string ToString(
+                const bool WILL_INCLUDE_COUNT = false,
+                const bool WILL_INCLUDE_SUM = false,
+                const std::size_t WIDTH = 0) const
+            {
+                std::string str;
+
+                const auto WIDTH_INT { static_cast<int>(WIDTH) };
+
+                if (WILL_INCLUDE_COUNT)
+                {
+                    str += "x" + toNumberSpecial(count, WIDTH_INT) + " ";
+                }
+
+                str += "[" + toNumberSpecial(min, WIDTH_INT) + ", "
+                    + toNumberSpecial(avg, WIDTH_INT) + ", " + toNumberSpecial(max, WIDTH_INT)
+                    + "] (" + toNumberSpecial(stddev, WIDTH_INT) + ")";
+
+                if (WILL_INCLUDE_SUM)
+                {
+                    str += " (sum=" + std::to_string(sum) + ")";
+                }
+
+                return str;
+            }
+
+            std::size_t count;
+            T min;
+            T max;
+            T avg;
+            T sum;
+            T stddev;
+        };
+
         struct SourceProfiles
         {
             SourceProfiles(
@@ -138,17 +273,25 @@ namespace item
         };
 
         template <typename T, typename U>
-        static double DivideAsDouble(const T NUMERATOR, const U DENOMINATOR)
+        static double DivideAsDouble(const T NUMERATOR, const U DENOMINATOR_ORIG)
         {
-            if (static_cast<double>(DENOMINATOR) > 0.0)
+            const auto DENOMINATOR = static_cast<double>(DENOMINATOR_ORIG);
+
+            if (!misc::IsRealZeroOrLess(DENOMINATOR))
             {
-                return (static_cast<double>(NUMERATOR) / static_cast<double>(DENOMINATOR));
+                return (static_cast<double>(NUMERATOR) / DENOMINATOR);
             }
             else
             {
                 return -0.0;
             }
         }
+
+        static const std::string RatioToStringStringMaker(
+            const int DIGITS,
+            const std::string & POSTFIX,
+            const double AFTER_DIVISION,
+            const bool WILL_WRAP);
 
         template <typename T, typename U>
         static const std::string RatioToString(
@@ -160,12 +303,8 @@ namespace item
         {
             if (DENOMINATOR > 0)
             {
-                std::ostringstream ss;
-                ss << ((WILL_WRAP) ? "(" : "") << std::setw(DIGITS + 2) << std::setprecision(DIGITS)
-                   << ((POSTFIX == "%") ? 100.0 : 1.0) * DivideAsDouble(NUMERATOR, DENOMINATOR)
-                   << std::setprecision(0) << POSTFIX << ((WILL_WRAP) ? ")" : "");
-
-                return ss.str();
+                return RatioToStringStringMaker(
+                    DIGITS, POSTFIX, DivideAsDouble(NUMERATOR, DENOMINATOR), WILL_WRAP);
             }
             else
             {
@@ -192,35 +331,34 @@ namespace item
         static const std::string
             CountPhrase(const std::string & NAME, const T COUNT, const U COUNT_COMPARED_WITH)
         {
-            std::ostringstream ss;
-            ss << ", " << NAME << "_count=" << COUNT;
+            std::string str(", " + NAME + "_count=" + std::to_string(COUNT));
 
             if (COUNT_COMPARED_WITH > 0)
             {
-                ss << PercentToString(COUNT, COUNT_COMPARED_WITH);
+                str += PercentToString(COUNT, COUNT_COMPARED_WITH);
             }
 
-            return ss.str();
+            return str;
         }
+
+        static const std::string
+            SumPhraseStringMaker(const std::string & NAME, const std::string & STATS_STR);
 
         // NAME=[min, avg, max](#sum)(#std_dev)(#%)
         template <typename T, typename U>
         static const std::string SumPhrase(
             const std::string & NAME, const std::vector<T> & VALUES, const U SUM_COMPARED_WITH = 0)
         {
-            const auto STATS { misc::Vector::MinMaxAvgStdDev<T>(VALUES) };
+            const auto STATS { MinMaxAvgStdDev<T>(VALUES) };
 
-            std::ostringstream ss;
-
-            ss << ", " << std::setw(12) << NAME << std::setw(0) << "="
-               << STATS.ToString(false, true, 4);
+            std::string str(SumPhraseStringMaker(NAME, STATS.ToString(false, true, 4)));
 
             if (SUM_COMPARED_WITH > 0)
             {
-                ss << PercentToString(STATS.sum, SUM_COMPARED_WITH);
+                str += PercentToString(STATS.sum, SUM_COMPARED_WITH);
             }
 
-            return ss.str();
+            return str;
         }
     };
 

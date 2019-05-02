@@ -29,13 +29,13 @@ namespace creature
             const std::size_t MAX_COUNT,
             const std::size_t MIN_SEVERITY,
             const SortOpt SORT_OPTION,
-            const misc::Vector::JoinOpt JOIN_OPTIONS)
+            const misc::JoinOpt JOIN_OPTIONS)
         {
             auto tempVec { CONDITIONS_VEC };
             RemoveByMinSeverity(tempVec, MIN_SEVERITY);
             SortBySeverity(tempVec, SORT_OPTION);
 
-            return misc::Vector::Join<Conditions::Enum>(
+            return misc::Join<Conditions::Enum>(
                 tempVec,
                 MAX_COUNT,
                 JOIN_OPTIONS,

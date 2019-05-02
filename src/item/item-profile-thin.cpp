@@ -44,62 +44,62 @@ namespace item
 
     const std::string ItemProfileThin::ToString() const
     {
-        std::ostringstream ss;
+        std::string str;
 
         if (weapon::WeaponTypeWrapper() != weaponInfo_)
         {
-            ss << "weapon_info=" << weaponInfo_.ToString() << ", ";
+            str += "weapon_info=" + weaponInfo_.ToString() + ", ";
         }
 
         if (armor::ArmorTypeWrapper() != armorInfo_)
         {
-            ss << "armor_info=" << armorInfo_.ToString();
+            str += "armor_info=" + armorInfo_.ToString();
         }
 
-        ss << ", misc_type="
-           << ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
+        str += ", misc_type="
+            + ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
 
-        return ss.str();
+        return str;
     }
 
     const std::string ItemProfileThin::ReadableName() const
     {
+        std::string name;
+
         if (IsMisc())
         {
-            return misc_type::Name(MiscType());
+            name = misc_type::Name(MiscType());
         }
         else if (IsWeapon())
         {
-            return weaponInfo_.ReadableName();
+            name = weaponInfo_.ReadableName();
         }
         else if (IsArmor())
         {
-            return armorInfo_.ReadableName();
+            name = armorInfo_.ReadableName();
         }
-        else
-        {
-            return "";
-        }
+
+        return name;
     }
 
     const std::string ItemProfileThin::SystemName() const
     {
+        std::string name;
+
         if (IsMisc())
         {
-            return misc_type::ToString(MiscType());
+            name = misc_type::ToString(MiscType());
         }
         else if (IsWeapon())
         {
-            return weaponInfo_.SystemName();
+            name = weaponInfo_.SystemName();
         }
         else if (IsArmor())
         {
-            return armorInfo_.SystemName();
+            name = armorInfo_.SystemName();
         }
-        else
-        {
-            return "";
-        }
+
+        return name;
     }
 
     name_material_type::Enum ItemProfileThin::NameMaterialType() const

@@ -16,7 +16,6 @@
 
 #include <exception>
 #include <memory>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -50,23 +49,23 @@ namespace misc
         {
             const auto SIZE { Size() };
 
-            std::ostringstream ss;
-            ss << "misc::NotNullWarehouse<" << NAMEOF_TYPE_T(T) << "> destructing, ";
+            std::string str(
+                "misc::NotNullWarehouse<" + std::string(NAMEOF_TYPE_T(T)) + "> destructing, ");
 
             if (SIZE != 0)
             {
-                ss << "with " << SIZE << " objects NOT free'd, ";
+                str += "with " + std::to_string(SIZE) + " objects NOT free'd, ";
             }
 
-            ss << "at most " << uPtrVec_.size() << " were held at once.";
+            str += "at most " + std::to_string(uPtrVec_.size()) + " were held at once.";
 
             if (SIZE == 0)
             {
-                M_HP_LOG_DBG(ss.str());
+                M_HP_LOG_DBG(str);
             }
             else
             {
-                M_HP_LOG_WRN(ss.str());
+                M_HP_LOG_WRN(str);
 
                 for (auto & uPtr : uPtrVec_)
                 {
@@ -151,11 +150,9 @@ namespace misc
                 const auto STORED_PTR { uPtrVec_[i].get() };
                 if (STORED_PTR == ptrToStore)
                 {
-                    std::ostringstream ss;
-                    ss << "misc::Warehouse<" << NAMEOF_TYPE_T(T) << ">::StoreImpl("
-                       << ptrToStore->ToString() << ") was already stored.";
-
-                    throw std::runtime_error(ss.str());
+                    throw std::runtime_error(
+                        "misc::Warehouse<" + std::string(NAMEOF_TYPE_T(T)) + ">::StoreImpl("
+                        + ptrToStore->ToString() + ") was already stored.");
                 }
                 else if (STORED_PTR == nullptr)
                 {

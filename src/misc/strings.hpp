@@ -11,11 +11,11 @@
 //
 #include "misc/log-macros.hpp"
 #include "misc/nameof.hpp"
+#include "misc/string-stream-holder.hpp"
 #include "misc/type-helpers.hpp"
 
 #include <boost/lexical_cast.hpp>
 
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -84,12 +84,10 @@ namespace misc
     template <typename T>
     const std::string ToString(const T & THING)
     {
-        std::ostringstream ss;
-
         try
         {
-            ss << std::boolalpha << THING;
-            return ss.str();
+            stringStreamHolder::ostreamer() << THING;
+            return stringStreamHolder::toString();
         }
         catch (const std::exception & EXCEPTION)
         {
@@ -136,27 +134,26 @@ namespace misc
     template <typename T = int, typename = std::enable_if_t<are_integral_nobool_v<T>>>
     const std::string NumberToStringWithOrdinalSuffix(const T NUMBER)
     {
-        std::ostringstream ss;
-        ss << NUMBER;
+        std::string str(std::to_string(NUMBER));
 
         if (NUMBER == 1)
         {
-            ss << "st";
+            str += "st";
         }
         else if (NUMBER == 2)
         {
-            ss << "nd";
+            str += "nd";
         }
         else if (NUMBER == 3)
         {
-            ss << "rd";
+            str += "rd";
         }
         else
         {
-            ss << "th";
+            str += "th";
         }
 
-        return ss.str();
+        return str;
     }
 
     const std::string MakeLoggableString(
@@ -278,6 +275,83 @@ namespace misc
     // empty then TO_SPLIT is the only string returned.
     const std::vector<std::string>
         SplitByChars(const std::string & TO_SPLIT, const SplitHow HOW = SplitHow());
+
+    enum JoinOpt : unsigned
+    {
+        None = 0,
+        Wrap = 1 << 0,
+        And = 1 << 1,
+        Ellipsis = 1 << 2
+    };
+
+    template <typename T>
+    const std::string Join(
+        const std::vector<T> & VEC,
+        const std::size_t MAX_COUNT = 0,
+        const JoinOpt OPTIONS = JoinOpt::None,
+        const std::string (*TO_STRING_FUNC)(const T &)
+        = [](const T & X) -> const std::string { return ToString(X); },
+        bool (*ONLY_IF_FUNC)(const T) = [](const T) -> bool { return true; })
+    {
+        std::string str;
+
+        const auto VEC_SIZE = VEC.size();
+
+        if (VEC_SIZE == 0)
+        {
+            return str;
+        }
+
+        std::vector<T> toJoinVec;
+        toJoinVec.reserve(VEC_SIZE);
+
+        for (const auto & THING : VEC)
+        {
+            if (ONLY_IF_FUNC(THING))
+            {
+                toJoinVec.emplace_back(THING);
+                if (toJoinVec.size() == MAX_COUNT)
+                {
+                    break;
+                }
+            }
+        }
+
+        const auto TO_JOIN_SIZE { toJoinVec.size() };
+        if (TO_JOIN_SIZE == 0)
+        {
+            return str; // skip wrapping on empty case
+        }
+
+        for (std::size_t i(0); i < TO_JOIN_SIZE; ++i)
+        {
+            if (i != 0)
+            {
+                str += ", ";
+            }
+
+            if ((OPTIONS & JoinOpt::And) && (TO_JOIN_SIZE > 2) && (i >= 2)
+                && ((TO_JOIN_SIZE - 1) == i))
+            {
+                str += "and ";
+            }
+
+            str += TO_STRING_FUNC(toJoinVec[i]);
+
+            if ((OPTIONS & JoinOpt::Ellipsis) && (TO_JOIN_SIZE < VEC_SIZE)
+                && ((TO_JOIN_SIZE - 1) == i))
+            {
+                str += "...";
+            }
+        }
+
+        if ((OPTIONS & JoinOpt::Wrap) && !str.empty())
+        {
+            str = "(" + str + ")";
+        }
+
+        return str;
+    }
 
 } // namespace misc
 

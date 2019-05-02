@@ -20,6 +20,7 @@
 #include "item/item.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
@@ -408,7 +409,7 @@ namespace combat
                     }
 
                     ss << " to "
-                       << item::Algorithms::Names(HELD_WEAPONS_PVEC, 0, misc::Vector::JoinOpt::And);
+                       << item::Algorithms::Names(HELD_WEAPONS_PVEC, 0, misc::JoinOpt::And);
                 }
 
                 break;
@@ -1355,9 +1356,7 @@ namespace combat
         {
             ss << ", causing "
                << creature::condition::Algorithms::Names(
-                      ADDED_CONDS_EXCLUDING_DEAD_VEC,
-                      NUM_CONDS_TO_LIST,
-                      misc::Vector::JoinOpt::And);
+                      ADDED_CONDS_EXCLUDING_DEAD_VEC, NUM_CONDS_TO_LIST, misc::JoinOpt::And);
 
             if (NUM_ADDED_CONDS > NUM_CONDS_TO_LIST)
             {
@@ -1372,7 +1371,7 @@ namespace combat
         {
             ss << ", and eliminating "
                << creature::condition::Algorithms::Names(
-                      REMOVED_CONDS_SVEC, NUM_CONDS_TO_LIST, misc::Vector::JoinOpt::And);
+                      REMOVED_CONDS_SVEC, NUM_CONDS_TO_LIST, misc::JoinOpt::And);
 
             if (NUM_REMOVED_CONDS > NUM_CONDS_TO_LIST)
             {

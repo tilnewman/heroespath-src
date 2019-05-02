@@ -20,8 +20,6 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include <sstream>
-
 namespace heroespath
 {
 namespace stage
@@ -201,38 +199,36 @@ namespace stage
 
         const auto ITEM_PTR { ITEM_PTR_OPT.value() };
 
-        std::ostringstream ss;
-        ss << ITEM_PTR->Name() << "\n" << ITEM_PTR->Desc() << "\n\n";
+        std::string str(ITEM_PTR->Name() + "\n" + ITEM_PTR->Desc() + "\n\n");
 
         if (ITEM_PTR->Category() != item::category::None)
         {
-            ss << item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) << "\n";
+            str += item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n";
         }
 
         if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
         {
-            ss << "(can only be used by " << creature::role::ToString(ITEM_PTR->ExclusiveRole())
-               << "s)\n";
+            str += "(can only be used by " + creature::role::ToString(ITEM_PTR->ExclusiveRole())
+                + "s)\n";
         }
 
-        ss << "\n";
-
-        ss << "weighs " << ITEM_PTR->Weight() << "\n"
-           << "worth about " << ITEM_PTR->Price() << " coins\n";
+        str += "\nweighs " + ITEM_PTR->Weight().ToString() + "\n" + "worth about "
+            + ITEM_PTR->Price().ToString() + " coins\n";
 
         if (ITEM_PTR->IsWeapon())
         {
-            ss << "Damage:  " << ITEM_PTR->DamageMin() << "-" << ITEM_PTR->DamageMax();
+            str += "Damage:  " + ITEM_PTR->DamageMin().ToString() + "-"
+                + ITEM_PTR->DamageMax().ToString();
         }
         else if (ITEM_PTR->IsArmor())
         {
-            ss << "Armor Bonus:  " << ITEM_PTR->ArmorRating();
+            str += "Armor Bonus:  " + ITEM_PTR->ArmorRating().ToString();
         }
 
-        ss << "\n\n";
+        str += "\n\n";
 
         const gui::TextInfo TEXT_INFO(
-            ss.str(),
+            str,
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Normal(),
             sf::Color::White,

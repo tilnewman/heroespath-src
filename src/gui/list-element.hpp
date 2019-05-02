@@ -25,7 +25,6 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
-#include <sstream>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -64,13 +63,13 @@ namespace gui
         {
             if (LE.textRegionUPtr_)
             {
-                std::ostringstream ss;
-                ss << LE.textRegionUPtr_->GetEntityName() << "CopyMadeBy_ListElement<"
-                   << NAMEOF_TYPE_T(Element_t) << ">::CopyConstructor(MakingCopyOf_" + LE.ToString()
-                   << ")_";
+                const auto GUI_NAME(
+                    LE.textRegionUPtr_->GetEntityName() + "CopyMadeBy_ListElement<"
+                    + NAMEOF_TYPE_T(Element_t) + ">::CopyConstructor(MakingCopyOf_" + LE.ToString()
+                    + ")_");
 
                 textRegionUPtr_
-                    = std::make_unique<TextRegion>(ss.str(), LE.textRegionUPtr_->GetTextInfo());
+                    = std::make_unique<TextRegion>(GUI_NAME, LE.textRegionUPtr_->GetTextInfo());
             }
         }
 
@@ -78,12 +77,12 @@ namespace gui
         {
             if (LE.textRegionUPtr_)
             {
-                std::ostringstream ss;
-                ss << LE.textRegionUPtr_->GetEntityName() << "CopyMadeBy_" << ToString()
-                   << "'s::CopyAssignmentOperator(MakingCopyOf_" << LE.ToString() << ")_";
+                const auto GUI_NAME(
+                    LE.textRegionUPtr_->GetEntityName() + "CopyMadeBy_" + ToString()
+                    + "'s::CopyAssignmentOperator(MakingCopyOf_" + LE.ToString() + ")_");
 
                 textRegionUPtr_
-                    = std::make_unique<TextRegion>(ss.str(), LE.textRegionUPtr_->GetTextInfo());
+                    = std::make_unique<TextRegion>(GUI_NAME, LE.textRegionUPtr_->GetTextInfo());
             }
 
             cachedTextureOpt_ = LE.cachedTextureOpt_;
@@ -119,11 +118,11 @@ namespace gui
 
             if (TEXT_INFO_OPT)
             {
-                std::ostringstream ss;
-                ss << "TextRegionMadeBy_" << ToString() << "'s_Constructor_ThatSays_\""
-                   << TEXT_INFO_OPT->text << "\"";
+                const auto GUI_NAME(
+                    "TextRegionMadeBy_" + ToString() + "'s_Constructor_ThatSays_\""
+                    + TEXT_INFO_OPT->text + "\"");
 
-                textRegionUPtr_ = std::make_unique<TextRegion>(ss.str(), TEXT_INFO_OPT.value());
+                textRegionUPtr_ = std::make_unique<TextRegion>(GUI_NAME, TEXT_INFO_OPT.value());
             }
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -304,13 +303,12 @@ namespace gui
 
         const std::string ToString() const
         {
-            std::ostringstream ss;
-            ss << "ListElement<" << NAMEOF_TYPE_T(Element_t) << ">("
-               << ((HasElement()) ? "HasElement" : "NoElement") << ")("
-               << ((cachedTextureOpt_) ? cachedTextureOpt_->Path() : "NoImage") << ")("
-               << ((textRegionUPtr_) ? "\"" + textRegionUPtr_->GetText() + "\"" : "NoText") << ")";
-
-            return ss.str();
+            return "ListElement<" + std::string(NAMEOF_TYPE_T(Element_t))
+                + ((HasElement()) ? ">(HasElement)(" : ">(NoElement)(")
+                + std::string(
+                      (cachedTextureOpt_) ? cachedTextureOpt_->Path() : std::string("NoImage"))
+                      .append(")(")
+                + ((textRegionUPtr_) ? "\"" + textRegionUPtr_->GetText() + "\"" : "NoText") + ")";
         }
 
     private:

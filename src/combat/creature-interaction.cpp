@@ -27,6 +27,7 @@
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
+#include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
@@ -426,7 +427,7 @@ namespace combat
                   << creature::Algorithms::Names(
                          creaturesCastUponPVec,
                          0,
-                         misc::Vector::JoinOpt::None,
+                         misc::JoinOpt::None,
                          creature::Algorithms::NamesOpt::WithRaceAndRole)
                   << "\") spell target_type=" << TargetType::ToString(SPELL_PTR->Target())
                   << " but there were " << creaturesCastUponPVec.size()
@@ -564,7 +565,7 @@ namespace combat
                   << creature::Algorithms::Names(
                          CREATURES_LISTENING_PVEC,
                          0,
-                         misc::Vector::JoinOpt::None,
+                         misc::JoinOpt::None,
                          creature::Algorithms::NamesOpt::WithRaceAndRole)
                   << "\") song target_type=" << TargetType::ToString(SONG_PTR->Target())
                   << " but there were " << CREATURES_LISTENING_PVEC.size()

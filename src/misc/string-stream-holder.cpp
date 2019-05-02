@@ -25,6 +25,8 @@ namespace misc
     std::unique_ptr<std::ostringstream>
         stringStreamHolder::ss_uptr(std::make_unique<std::ostringstream>());
 
+    bool stringStreamHolder::hasInitAlready(false);
+
     void stringStreamHolder::init()
     {
         ss_uptr->imbue(std::locale::classic());
@@ -37,8 +39,16 @@ namespace misc
         ss_uptr->str("");
     }
 
+    const std::string stringStreamHolder::toString() { return ss_uptr->str(); }
+
     std::ostream & stringStreamHolder::ostreamer()
     {
+        if (!hasInitAlready)
+        {
+            init();
+            hasInitAlready = true;
+        }
+
         reset();
         return *(ss_uptr);
     }

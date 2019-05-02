@@ -1122,33 +1122,32 @@ namespace stage
 
     void InventoryStage::Setup_CreatureDetails(const bool WILL_UPDATE_POSITION)
     {
-        std::ostringstream ss;
-        ss << "Character # "
-           << game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1 << "\n"
-           << creaturePtr_->Name() << "\n"
-           << creaturePtr_->SexName() << "\n"
-           << creaturePtr_->RaceName();
+        std::string str(
+            "Character # "
+            + std::to_string(game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1)
+            + "\n" + creaturePtr_->Name() + "\n" + creaturePtr_->SexName() + "\n"
+            + creaturePtr_->RaceName());
 
         if (creaturePtr_->IsBeast())
         {
             if (creaturePtr_->Race() != creature::race::Wolfen)
             {
-                ss << ", " << creaturePtr_->RoleName();
+                str += ", " + creaturePtr_->RoleName();
             }
 
-            ss << " " << creaturePtr_->RankClassName() << "\n";
+            str += " " + creaturePtr_->RankClassName() + "\n";
         }
         else
         {
-            ss << " " << creaturePtr_->RankClassName() << " " << creaturePtr_->RoleName() << "\n";
+            str += " " + creaturePtr_->RankClassName() + " " + creaturePtr_->RoleName() + "\n";
         }
 
-        ss << "Rank:  " << creaturePtr_->Rank() << "\n"
-           << "Experience: " << creaturePtr_->Exp() << "\n"
-           << "Health:  " << creaturePtr_->HealthCurrent() << "/" << creaturePtr_->HealthNormal()
-           << " " << creaturePtr_->HealthRatio() << "%\n"
-           << "Condition:  " << creaturePtr_->ConditionNames(4) << "\n"
-           << "\n";
+        str += "Rank:  " + creaturePtr_->Rank().ToString() + "\n"
+            + "Experience: " + creaturePtr_->Exp().ToString() + "\n"
+            + "Health:  " + creaturePtr_->HealthCurrent().ToString() + "/"
+            + creaturePtr_->HealthNormal().ToString() + " "
+            + std::to_string(int(creaturePtr_->HealthRatio())) + "%\n"
+            + "Condition:  " + creaturePtr_->ConditionNames(4) + "\n\n";
 
         sf::FloatRect detailsTextRect(
             CREATURE_IMAGE_POS_LEFT_ + creatureSprite_.getGlobalBounds().width
@@ -1167,7 +1166,7 @@ namespace stage
         if (!detailsTextRegionUPtr_)
         {
             const gui::TextInfo DETAILS_TEXT_INFO(
-                ss.str(),
+                str,
                 gui::GuiFont::Default,
                 gui::FontManager::Instance()->Size_Smallish(),
                 sfutil::color::GrayDarker,
@@ -1180,7 +1179,7 @@ namespace stage
         }
         else
         {
-            detailsTextRegionUPtr_->SetText(ss.str());
+            detailsTextRegionUPtr_->SetText(str);
         }
 
         detailsTextRegionUPtr_->SetEntityPos(
@@ -1204,14 +1203,14 @@ namespace stage
         const auto INT_MOD_STR { creaturePtr_->TraitModifiedString(
             creature::Traits::Intelligence, true) };
 
-        std::ostringstream ss;
-        ss << "Strength:       " << creaturePtr_->Strength() << " " << STR_MOD_STR << "\n"
-           << "Accuracy:      " << creaturePtr_->Accuracy() << " " << ACC_MOD_STR << "\n"
-           << "Charm:          " << creaturePtr_->Charm() << " " << CHA_MOD_STR << "\n"
-           << "Luck:             " << creaturePtr_->Luck() << " " << LCK_MOD_STR << "\n"
-           << "Speed:            " << creaturePtr_->Speed() << " " << SPD_MOD_STR << "\n"
-           << "Intelligence:   " << creaturePtr_->Intelligence() << " " << INT_MOD_STR << "\n"
-           << "\n \n ";
+        const std::string STATS_STR(
+            "Strength:       " + creaturePtr_->Strength().ToString() + " " + STR_MOD_STR + "\n"
+            + "Accuracy:      " + creaturePtr_->Accuracy().ToString() + " " + ACC_MOD_STR + "\n"
+            + "Charm:          " + creaturePtr_->Charm().ToString() + " " + CHA_MOD_STR + "\n"
+            + "Luck:             " + creaturePtr_->Luck().ToString() + " " + LCK_MOD_STR + "\n"
+            + "Speed:            " + creaturePtr_->Speed().ToString() + " " + SPD_MOD_STR + "\n"
+            + "Intelligence:   " + creaturePtr_->Intelligence().ToString() + " " + INT_MOD_STR
+            + "\n\n \n ");
 
         if (!statsTextRegionUPtr_)
         {
@@ -1219,7 +1218,7 @@ namespace stage
                 STATS_POS_LEFT_, sfutil::Bottom(stageTitle_.Region()) + 20.0f, 0.0f, 0.0f);
 
             const gui::TextInfo STATS_TEXT_INFO(
-                ss.str(),
+                STATS_STR,
                 gui::GuiFont::SystemCondensed,
                 gui::FontManager::Instance()->Size_Normal(),
                 sfutil::color::GrayDarker,
@@ -1232,7 +1231,7 @@ namespace stage
         }
         else
         {
-            statsTextRegionUPtr_->SetText(ss.str());
+            statsTextRegionUPtr_->SetText(STATS_STR);
         }
     }
 
@@ -1240,19 +1239,18 @@ namespace stage
     {
         const auto & INVENTORY { creaturePtr_->Inventory() };
 
-        std::ostringstream ss;
-        ss << "Coins:  " << INVENTORY.Coins() << "\n"
-           << "Gems:  " << INVENTORY.Gems() << "\n"
-           << "Meteor Shards:  " << INVENTORY.Shards() << "\n"
-           << "Mana:  " << creaturePtr_->Mana() << "/" << creaturePtr_->ManaNormal() << "\n"
-           << "Weight: " << INVENTORY.Weight() << "/" << creaturePtr_->WeightCanCarry() << "\n"
-           << "\n \n ";
+        const std::string CENTER_STR(
+            std::string("Coins:  ") + INVENTORY.Coins().ToString() + "\nGems:  "
+            + INVENTORY.Gems().ToString() + "\nMeteor Shards:  " + INVENTORY.Shards().ToString()
+            + "\nMana:  " + creaturePtr_->Mana().ToString() + "/"
+            + creaturePtr_->ManaNormal().ToString() + "\nWeight: " + INVENTORY.Weight().ToString()
+            + "/" + creaturePtr_->WeightCanCarry().ToString() + "\n\n \n ");
 
         const bool WAS_ALREADY_INSTANTIATED { centerTextRegionUPtr_ };
 
         if (WAS_ALREADY_INSTANTIATED)
         {
-            centerTextRegionUPtr_->SetText(ss.str());
+            centerTextRegionUPtr_->SetText(CENTER_STR);
         }
         else
         {
@@ -1264,7 +1262,7 @@ namespace stage
                 0.0f);
 
             const gui::TextInfo CENTER_TEXT_INFO(
-                ss.str(),
+                CENTER_STR,
                 gui::GuiFont::SystemCondensed,
                 gui::FontManager::Instance()->Size_Normal(),
                 sfutil::color::GrayDarker,
@@ -3694,35 +3692,33 @@ namespace stage
             (SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f),
             DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_);
 
-        std::ostringstream ss;
-        ss << ITEM_PTR->Name() << "\n"
-           << ITEM_PTR->Desc() << "\n\n"
-           << item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) << "\n";
+        std::string str(
+            ITEM_PTR->Name() + "\n" + ITEM_PTR->Desc() + "\n\n"
+            + item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n");
 
         if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
         {
-            ss << "(can only be used by " << creature::role::ToString(ITEM_PTR->ExclusiveRole())
-               << "s)\n";
+            str += "(can only be used by " + creature::role::ToString(ITEM_PTR->ExclusiveRole())
+                + "s)\n";
         }
 
-        ss << "\n";
-
-        ss << "weighs " << ITEM_PTR->Weight() << "\n"
-           << "worth about " << ITEM_PTR->Price() << " coins\n";
+        str += "\nweighs " + ITEM_PTR->Weight().ToString() + "\nworth about "
+            + ITEM_PTR->Price().ToString() + " coins\n";
 
         if (ITEM_PTR->IsWeapon())
         {
-            ss << "Damage:  " << ITEM_PTR->DamageMin() << "-" << ITEM_PTR->DamageMax();
+            str += std::string("Damage:  ") + ITEM_PTR->DamageMin().ToString() + "-"
+                + ITEM_PTR->DamageMax().ToString();
         }
         else if (ITEM_PTR->IsArmor())
         {
-            ss << "Armor Bonus:  " << ITEM_PTR->ArmorRating();
+            str += "Armor Bonus:  " + ITEM_PTR->ArmorRating().ToString();
         }
 
-        ss << "\n\n";
+        str += "\n\n";
 
         const gui::TextInfo TEXT_INFO(
-            ss.str(),
+            str,
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
@@ -3764,30 +3760,29 @@ namespace stage
             (SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f),
             DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_ + sfutil::SpacerOld(50.0f));
 
-        std::ostringstream ss;
-        ss << "\n"
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::EnemiesFaced)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::MeleeHits)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::BattlesSurvived)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::ProjectileHits)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::BeastMindLinks)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedStanding)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedFlying)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::LocksPicked)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::BackstabsHits)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::SongsPlayed)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::SpiritsLifted)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::BeastRoars)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::MoonHowls)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::PackActions)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::FlyingAttackHits)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::TurnsInFlight)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::SpellsCast)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthGiven)
-           << MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthTraded);
+        const std::string STR(
+            "\n" + MakeTitleString(CREATURE_PTR, creature::AchievementType::EnemiesFaced)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::MeleeHits)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BattlesSurvived)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::ProjectileHits)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BeastMindLinks)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedStanding)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedFlying)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::LocksPicked)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BackstabsHits)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::SongsPlayed)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::SpiritsLifted)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BeastRoars)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::MoonHowls)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::PackActions)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::FlyingAttackHits)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::TurnsInFlight)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::SpellsCast)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthGiven)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthTraded));
 
         const gui::TextInfo TEXT_INFO(
-            ss.str(),
+            STR,
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Smallish(),
             sf::Color::White,
@@ -3813,12 +3808,9 @@ namespace stage
 
         if (ACHIEVEMENT.IsRoleInList(CREATURE_PTR->Role()))
         {
-            std::ostringstream ss;
-            ss << "\n"
-               << ACHIEVEMENT.Name() << MakeTitleSeparatorString(WHICH_ACHV) << ACHIEVEMENT.Count()
-               << MakeTitleCountNeededString(CREATURE_PTR, WHICH_ACHV);
-
-            return ss.str();
+            return "\n" + ACHIEVEMENT.Name() + MakeTitleSeparatorString(WHICH_ACHV)
+                + ACHIEVEMENT.Count().ToString()
+                + MakeTitleCountNeededString(CREATURE_PTR, WHICH_ACHV);
         }
         else
         {
@@ -3839,11 +3831,8 @@ namespace stage
             const auto ACHV_COUNT_CURRENT { ACHIEVEMENTS.Get(WHICH_ACHV).Count() };
             const auto NEEDED_COUNT { ACHV_COUNT_REQUIRED - ACHV_COUNT_CURRENT };
 
-            std::ostringstream ss;
-            ss << ", need  " << NEEDED_COUNT << " more to achieve \""
-               << TITLE_PTR_OPT.value()->Name() << "\"";
-
-            return ss.str();
+            return ", need  " + NEEDED_COUNT.ToString() + " more to achieve \""
+                + TITLE_PTR_OPT.value()->Name() + "\"";
         }
         else
         {

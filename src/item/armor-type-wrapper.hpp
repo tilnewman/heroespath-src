@@ -207,13 +207,13 @@ namespace item
                         base_ = BASE_TYPE;
                         variant_ = SPECIFIC_TYPE_ENUM;
 
-                        std::ostringstream ss;
-                        ss << "after SetupWithSpecificTypeName<" << NAMEOF_TYPE_T(T)
-                           << "::Enum>(system_name_lowercase=" << SYSTEM_NAME_LOWERCASE
-                           << ", armor_type_tostring_lowercase=" << SPECIFIC_TYPE_STR_LOWERCASE
-                           << ")";
+                        const std::string CONTEXT_STR(
+                            "after SetupWithSpecificTypeName<" + std::string(NAMEOF_TYPE_T(T))
+                            + "::Enum>(system_name_lowercase=" + SYSTEM_NAME_LOWERCASE
+                            + ", armor_type_tostring_lowercase=" + SPECIFIC_TYPE_STR_LOWERCASE
+                            + ")");
 
-                        SetNamesAndVerify(ss.str());
+                        SetNamesAndVerify(CONTEXT_STR);
                         return true;
                     }
                 }

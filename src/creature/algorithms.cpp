@@ -16,11 +16,10 @@
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-
 #include "misc/random.hpp"
+#include "misc/vectors.hpp"
 
 #include <algorithm>
-#include <sstream>
 
 namespace heroespath
 {
@@ -141,12 +140,12 @@ namespace creature
     const std::string Algorithms::Names(
         const CreaturePVec_t & CREATURE_PVEC,
         const std::size_t MAX_COUNT,
-        const misc::Vector::JoinOpt JOIN_OPTIONS,
+        const misc::JoinOpt JOIN_OPTIONS,
         const NamesOpt NAMES_OPTIONS)
     {
         if (NAMES_OPTIONS == NamesOpt::WithRaceAndRole)
         {
-            return misc::Vector::Join<CreaturePtr_t>(
+            return misc::Join<CreaturePtr_t>(
                 CREATURE_PVEC,
                 MAX_COUNT,
                 JOIN_OPTIONS,
@@ -156,7 +155,7 @@ namespace creature
         }
         else
         {
-            return misc::Vector::Join<CreaturePtr_t>(
+            return misc::Join<CreaturePtr_t>(
                 CREATURE_PVEC,
                 MAX_COUNT,
                 JOIN_OPTIONS,

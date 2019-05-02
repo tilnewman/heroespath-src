@@ -53,7 +53,6 @@
 #include <algorithm>
 #include <chrono>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -591,12 +590,9 @@ namespace stage
             const auto IMAGE_PATH_STR { misc::ConfigFile::Instance()->GetMediaPath(
                 imagePathKeyVec[imageIndex]) };
 
-            std::ostringstream ss;
-
-            ss << "PerformTest_IndividualImage: \"" << imagePathKeyVec[imageIndex] << "\", \""
-               << IMAGE_PATH_STR << "\"";
-
-            TestingStrAppend(ss.str());
+            TestingStrAppend(
+                "PerformTest_IndividualImage: \"" + imagePathKeyVec[imageIndex] + "\", \""
+                + IMAGE_PATH_STR + "\"");
 
             TestingImageSet(IMAGE_PATH_STR);
 
@@ -606,6 +602,7 @@ namespace stage
 
         TestingStrAppend(
             "stage::TestingStage::PerformTest_ImageSet() All Individual Image Tests Passed...");
+
         return true;
     }
 
@@ -636,9 +633,7 @@ namespace stage
                 const auto IMAGE_DIR_PATH { misc::ConfigFile::Instance()->GetMediaPath(
                     IMAGE_DIR_PATH_KEY) };
 
-                std::ostringstream ss;
-                ss << "PerformTest_DirectoryImages path: \"" << IMAGE_DIR_PATH << "\"";
-                TestingStrAppend(ss.str());
+                TestingStrAppend("PerformTest_DirectoryImages path: \"" + IMAGE_DIR_PATH + "\"");
 
                 imagePathsVec = misc::filesystem::FindFiles(
                     false,
@@ -652,11 +647,9 @@ namespace stage
             {
                 const auto IMAGE_PATH_STR { imagePathsVec[imageIndex] };
 
-                std::ostringstream ss;
-                ss << "PerformTest_DirectoryImage: #" << imageIndex << "\t\"" << IMAGE_PATH_STR
-                   << "\"";
-
-                TestingStrAppend(ss.str());
+                TestingStrAppend(
+                    "PerformTest_DirectoryImage: #" + std::to_string(imageIndex) + "\t\""
+                    + IMAGE_PATH_STR + "\"");
 
                 TestingImageSet(IMAGE_PATH_STR);
                 ++imageIndex;
@@ -692,10 +685,9 @@ namespace stage
         {
             const auto WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(imageIndex) };
 
-            std::ostringstream ss;
-            ss << "PerformTest_CharacterImageSet() \"" << avatar::Avatar::ToString(WHICH_AVATAR)
-               << "\"";
-            TestingStrAppend(ss.str());
+            TestingStrAppend(
+                "PerformTest_CharacterImageSet() \"" + avatar::Avatar::ToString(WHICH_AVATAR)
+                + "\"");
 
             const auto IMAGE_PATH_STR { avatar::Avatar::ImagePath(WHICH_AVATAR) };
             TestingImageSet(IMAGE_PATH_STR);
@@ -771,10 +763,9 @@ namespace stage
             {
                 const auto WHICH_LEVEL { static_cast<map::Level::Enum>(mapIndex) };
 
-                std::ostringstream ss;
-                ss << "TestMaps() Testing \"" << map::Level::ToString(WHICH_LEVEL)
-                   << "\" Map in First Pass Loading";
-                TestingStrAppend(ss.str());
+                TestingStrAppend(
+                    "TestMaps() Testing \"" + map::Level::ToString(WHICH_LEVEL)
+                    + "\" Map in First Pass Loading");
 
                 transitions[WHICH_LEVEL] = ParseMap(WHICH_LEVEL, "initial parse");
 
@@ -800,11 +791,9 @@ namespace stage
             {
                 const auto CURRENT_LEVEL { transitionIter->first };
 
-                std::ostringstream ss;
-                ss << "TestMaps() Testing \"" << map::Level::ToString(CURRENT_LEVEL)
-                   << "\" Map's transitions";
-
-                TestingStrAppend(ss.str());
+                TestingStrAppend(
+                    "TestMaps() Testing \"" + map::Level::ToString(CURRENT_LEVEL)
+                    + "\" Map's transitions");
 
                 for (const auto ENTRY_LEVEL : transitionIter->second.entry_levels)
                 {
@@ -871,9 +860,7 @@ namespace stage
                 "stats-race-bonus-minor-adj-ratio",
                 "stats-role-bonus-base-adj-ratio",
                 "stats-role-bonus-minor-adj-ratio",
-
                 "item-secondary-material-armor-adj-ratio",
-
                 "fight-stats-luck-adj-ratio",
                 "fight-stats-amazing-ratio",
                 "fight-stats-base-high-val",
@@ -895,11 +882,11 @@ namespace stage
         static std::size_t keyIndex { 0 };
         if (keyIndex < keyVec.size())
         {
-            std::ostringstream ss;
-            ss << "Testing GameDataFile Key() \"" << keyVec[keyIndex]
-               << "\"=" << misc::ConfigFile::Instance()->ValueOrDefault<float>(keyVec[keyIndex]);
+            TestingStrAppend(
+                "Testing GameDataFile Key() \"" + keyVec[keyIndex] + "\"="
+                + std::to_string(
+                      misc::ConfigFile::Instance()->ValueOrDefault<float>(keyVec[keyIndex])));
 
-            TestingStrAppend(ss.str());
             ++keyIndex;
             return false;
         }
@@ -929,9 +916,8 @@ namespace stage
             {
                 const auto ENUM { static_cast<gui::Animations::Enum>(animIndex) };
 
-                std::ostringstream ss;
-                ss << "PerformTest_Animations() \"" << gui::Animations::ToString(ENUM) << "\"";
-                TestingStrAppend(ss.str());
+                TestingStrAppend(
+                    "PerformTest_Animations() \"" + gui::Animations::ToString(ENUM) + "\"");
 
                 animUPtr_ = gui::AnimationFactory::Make(
                     static_cast<gui::Animations::Enum>(animIndex),
@@ -1003,23 +989,17 @@ namespace stage
                     }
                 }() };
 
-                {
-                    std::ostringstream ss;
-
-                    ss << "InventoryFactory Testing: race=" << RACE_STR << " and role=" << ROLE_STR
-                       << "...";
-
-                    TestingStrAppend(ss.str());
-                }
+                TestingStrAppend(
+                    "InventoryFactory Testing: race=" + RACE_STR + " and role=" + ROLE_STR + "...");
 
                 for (int rankIndex(1); rankIndex <= RANK_MAX; ++rankIndex)
                 {
-                    std::ostringstream nameSS;
-                    nameSS << "Name_" << RACE_STR << "_" << ROLE_STR << "_" << rankIndex;
+                    const std::string NAME_STR(
+                        "Name_" + RACE_STR + "_" + ROLE_STR + "_" + std::to_string(rankIndex));
 
                     creature::Creature character(
                         false,
-                        nameSS.str(),
+                        NAME_STR,
                         ((misc::RandomBool()) ? creature::sex::Female : creature::sex::Male),
                         RACE_ENUM,
                         ROLE_ENUM,
@@ -1268,16 +1248,15 @@ namespace stage
             StrSizePairVec_t::const_reverse_iterator rItr { testingBlurbsVec_.crbegin() };
             for (; rItr != testingBlurbsVec_.rend(); ++rItr)
             {
-                std::ostringstream ss;
-                ss << rItr->first;
+                std::string str(rItr->first);
 
                 if (rItr->second > 0)
                 {
-                    ss << " " << rItr->second;
+                    str += " " + std::to_string(rItr->second);
                 }
 
                 gui::Text text(
-                    ss.str(), gui::GuiFont::Default, gui::FontManager::Instance()->Size_Normal());
+                    str, gui::GuiFont::Default, gui::FontManager::Instance()->Size_Normal());
 
                 text.setPosition(1.0f, posTop);
 

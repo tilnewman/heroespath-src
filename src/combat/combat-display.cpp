@@ -35,7 +35,6 @@
 
 #include <algorithm>
 #include <numeric>
-#include <sstream>
 
 namespace heroespath
 {
@@ -764,12 +763,10 @@ namespace combat
         // that already has too many creatures
         if (OBSTACLE_CREATURE_COUNT_AT_NEW_POS > SHOULDER_TO_SHOULDER_MAX_)
         {
-            std::ostringstream ss;
-            ss << "Cannot " << ADVANCE_OR_RETREAT_STR << "because there are too many ("
-               << OBSTACLE_CREATURE_COUNT_AT_NEW_POS << ") opposing creatures in the way."
-               << "  The limit is " << SHOULDER_TO_SHOULDER_MAX_ << ".";
-
-            return ss.str();
+            return std::string("Cannot ") + ADVANCE_OR_RETREAT_STR + "because there are too many ("
+                + std::to_string(OBSTACLE_CREATURE_COUNT_AT_NEW_POS)
+                + ") opposing creatures in the way." + "  The limit is "
+                + std::to_string(SHOULDER_TO_SHOULDER_MAX_) + ".";
         }
 
         // Check if attempting to move into a shoulder-to-shoulder line that
