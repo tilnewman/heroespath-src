@@ -211,10 +211,11 @@ namespace misc
             return;
         }
 
-        outlier_ratio = STATS_VEC.front().outlier_ratio;
+        const auto & STATS_VEC_FRONT { STATS_VEC.front() };
 
-        outlier_min = STATS_VEC.front().outlier_min;
-        outlier_max = STATS_VEC.front().outlier_max;
+        outlier_ratio = STATS_VEC_FRONT.outlier_ratio;
+        outlier_min = STATS_VEC_FRONT.outlier_min;
+        outlier_max = STATS_VEC_FRONT.outlier_max;
 
         TimeStats sums;
 

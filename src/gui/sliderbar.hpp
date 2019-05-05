@@ -81,28 +81,28 @@ namespace gui
         virtual void OnChange(const float NEW_VALUE);
 
     private:
-        void SetupInitialSpritePositions(const sf::Vector2f POS_V);
+        void SetupInitialSpritePositions(const sf::Vector2f & POS_V);
         float CalcPositionRatioChangeOnMouseUp(const sf::Vector2f & MOUSE_POS_V) const;
         float CalcPositionRatioFromScreenPos(const sf::Vector2f & SCREEN_POS_V) const;
 
-        const sf::IntRect TextureCoordsBaseOnStyle_TopOrLeft(const SliderStyle STYLE) const;
+        const sf::IntRect TextureCoordsBaseOnStyle_TopOrLeft(const SliderStyle & STYLE) const;
 
         const sf::IntRect
-            TextureCoordsBaseOnStyle_TopOrLeft_Horizontal(const SliderStyle STYLE) const;
+            TextureCoordsBaseOnStyle_TopOrLeft_Horizontal(const SliderStyle & STYLE) const;
 
         const sf::IntRect
-            TextureCoordsBaseOnStyle_TopOrLeft_Vertical(const SliderStyle STYLE) const;
+            TextureCoordsBaseOnStyle_TopOrLeft_Vertical(const SliderStyle & STYLE) const;
 
-        const sf::IntRect TextureCoordsBaseOnStyle_BottomOrRight(const SliderStyle STYLE) const;
-
-        const sf::IntRect
-            TextureCoordsBaseOnStyle_BottomOrRight_Horizontal(const SliderStyle STYLE) const;
+        const sf::IntRect TextureCoordsBaseOnStyle_BottomOrRight(const SliderStyle & STYLE) const;
 
         const sf::IntRect
-            TextureCoordsBaseOnStyle_BottomOrRight_Vertical(const SliderStyle STYLE) const;
+            TextureCoordsBaseOnStyle_BottomOrRight_Horizontal(const SliderStyle & STYLE) const;
 
-        const sf::IntRect TextureCoordsBasedOnStyle_Bar(const SliderStyle STYLE) const;
-        const sf::IntRect TextureCoordsBasedOnStyle_Pad(const SliderStyle STYLE) const;
+        const sf::IntRect
+            TextureCoordsBaseOnStyle_BottomOrRight_Vertical(const SliderStyle & STYLE) const;
+
+        const sf::IntRect TextureCoordsBasedOnStyle_Bar(const SliderStyle & STYLE) const;
+        const sf::IntRect TextureCoordsBasedOnStyle_Pad(const SliderStyle & STYLE) const;
 
         // calls the callback
         void UpdatePadPosition();

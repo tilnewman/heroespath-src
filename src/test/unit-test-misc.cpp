@@ -852,8 +852,8 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
 
     // delete notNull2; should not compile
     delete p2;
-    delete notNull3;
-    delete NOTNULL4;
+    delete notNull3.get();
+    delete NOTNULL4.get();
 
     boost::optional<heroespath::misc::NotNull<Thing *>> notNullThingPtrOpt { new Thing(69) };
     BOOST_CHECK(notNullThingPtrOpt.value()->get() == 69);
@@ -981,7 +981,7 @@ BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
 BOOST_AUTO_TEST_CASE(strong_type_tests)
 {
     Name_t a;
-    BOOST_CHECK_EQUAL(a.Get(), std::string(""));
+    BOOST_CHECK_EQUAL(a.Get(), std::string());
 
     Name_t b(a);
     BOOST_CHECK_EQUAL(a.Get(), b.Get());

@@ -683,7 +683,7 @@ namespace stage
         creature::NameInfo creatureNameInfo;
 
         gui::TextInfo nameEntryTextInfo(creatureNameInfo.MakeTextInfo());
-        nameEntryTextInfo.text = "";
+        nameEntryTextInfo.text.clear();
         nameEntryTextInfo.color = DESC_TEXT_COLOR_;
 
         const sf::FloatRect REGION(

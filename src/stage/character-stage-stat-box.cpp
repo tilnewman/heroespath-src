@@ -260,11 +260,11 @@ namespace stage
     {
         if (IsValid(TRAIT))
         {
-            return TRAIT;
+            return static_cast<std::size_t>(TRAIT);
         }
         else
         {
-            return StatInvalid();
+            return static_cast<std::size_t>(StatInvalid());
         }
     }
 

@@ -544,8 +544,7 @@ BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
             BOOST_CHECK_EQUAL((ZERO | Bitfield::A | Bitfield::B), THREE);
             BOOST_CHECK_EQUAL((ZERO | Bitfield2::A | Bitfield::B), THREE);
 
-            BOOST_CHECK_EQUAL(
-                (ZERO | Bitfield2::A | Bitfield::B | ZERO | Bitfield::A | Bitfield2::B), THREE);
+            BOOST_CHECK_EQUAL((ZERO | Bitfield2::A | Bitfield::B | ZERO | Bitfield::A), THREE);
 
             auto temp = Bitfield2::A;
             temp |= Bitfield2::B;

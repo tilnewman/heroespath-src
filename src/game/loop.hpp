@@ -55,7 +55,7 @@ namespace game
         // to be able to make changes on the one true instance, while intentionally taking FLAGS by
         // const-copy so this function has its own copy to work with and the caller is free to make
         // changes to their own copy
-        Loop(ActiveStages & stages, IStatusForLoop & iStatus, const ExecuteCommand FLAGS);
+        Loop(ActiveStages & stages, IStatusForLoop & iStatus, const ExecuteCommand & FLAGS);
         ~Loop();
 
         Loop(const Loop &) = delete;

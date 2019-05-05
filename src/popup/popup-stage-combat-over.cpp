@@ -52,19 +52,13 @@ namespace popup
         const auto TITLE_TEXT { [&]() {
             switch (popupInfo_.HowCombatEnded())
             {
-                case combat::CombatEnd::Win:
-                {
-                    return "Victory!";
+                case combat::CombatEnd::Win: { return "Victory!";
                 }
-                case combat::CombatEnd::Lose:
-                {
-                    return "Death Strikes!";
+                case combat::CombatEnd::Lose: { return "Death Strikes!";
                 }
                 case combat::CombatEnd::Ran:
                 case combat::CombatEnd::Count:
-                default:
-                {
-                    return "Defeat!";
+                default: { return "Defeat!";
                 }
             }
         }() };
@@ -132,8 +126,7 @@ namespace popup
 
         const sf::FloatRect COMBAT_DESC_RECT(
             ContentRegion().left,
-            titleTextRegionUPtr_->GetEntityRegion().top
-                + titleTextRegionUPtr_->GetEntityRegion().height + VERT_SPACER,
+            sfutil::Bottom(titleTextRegionUPtr_->GetEntityRegion()) + VERT_SPACER,
             ContentRegion().width,
             ContentRegion().height
                 - (titleTextRegionUPtr_->GetEntityRegion().height + (VERT_SPACER * 2.0f)));
@@ -168,9 +161,7 @@ namespace popup
             }
             case combat::CombatEnd::Ran:
             case combat::CombatEnd::Count:
-            default:
-            {
-                return gui::CombatImageType::RandomConfigFileKey(gui::CombatImageType::Run);
+            default: { return gui::CombatImageType::RandomConfigFileKey(gui::CombatImageType::Run);
             }
         }
     }

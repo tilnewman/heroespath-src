@@ -1232,7 +1232,8 @@ namespace combat
             highestBlockingPos += BLOCKING_POS_MARGIN_;
             blockingPosMax_ = highestBlockingPos;
 
-            shoulderToShoulderMax += static_cast<std::size_t>(2 * BLOCKING_POS_MARGIN_);
+            shoulderToShoulderMax
+                += static_cast<std::size_t>(2) * static_cast<std::size_t>(BLOCKING_POS_MARGIN_);
         }
 
         const float CELL_WIDTH_MIN(sfutil::MapByRes(

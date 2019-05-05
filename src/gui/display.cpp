@@ -18,6 +18,7 @@
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/color.hpp"
+#include "sfutil/vector-and-rect.hpp"
 #include "stage/i-stage.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -53,8 +54,8 @@ namespace gui
             "Unable to open render window.  Check console for explanation.  Bail.");
 
         M_HP_LOG(
-            "Window open " << winUPtr_->getSize().x << "x" << winUPtr_->getSize().y
-                           << " with color depth reported as " << winUPtr_->getSettings().depthBits
+            "Window open " << winUPtr_->getSize() << " with color depth reported as "
+                           << winUPtr_->getSettings().depthBits
                            << ((0 == winUPtr_->getSettings().depthBits)
                                    ? "(which is really 32...), "
                                    : ", ")

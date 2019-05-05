@@ -330,17 +330,14 @@ namespace creature
 
         creaturesWithCondsButAreStillAThreatVec.reserve(CREATURE_PVEC.size());
 
-        if (CREATURE_PVEC.empty() == false)
-        {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(creaturesWithCondsButAreStillAThreatVec),
-                [CONDITION_OPTION](const auto & PTR) {
-                    return PTR->HasConditionNotAThreatTemp()
-                        == (CONDITION_OPTION == CondSingleOpt::Has);
-                });
-        }
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(creaturesWithCondsButAreStillAThreatVec),
+            [CONDITION_OPTION](const auto & PTR) {
+                return PTR->HasConditionNotAThreatTemp()
+                    == (CONDITION_OPTION == CondSingleOpt::Has);
+            });
 
         return creaturesWithCondsButAreStillAThreatVec;
     }

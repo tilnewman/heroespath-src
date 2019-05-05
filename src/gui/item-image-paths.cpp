@@ -645,17 +645,30 @@ namespace gui
     const std::vector<std::string> ItemImagePaths::MakeFilenames(
         const std::string & PREFIX, const int LAST_NUMBER, const int FIRST_NUMBER)
     {
-        std::vector<std::string> filenames;
-        filenames.reserve(static_cast<std::size_t>((LAST_NUMBER - FIRST_NUMBER) + 1));
-
-        for (int i(FIRST_NUMBER); i <= LAST_NUMBER; ++i)
+        const int DIFF((LAST_NUMBER - FIRST_NUMBER) + 1);
+        if (DIFF > 0)
         {
-            filenames.emplace_back(
-                PREFIX + ContentImage::FilenameSeparator() + std::to_string(i)
-                + ContentImage::FilenameExtension());
-        }
+            std::vector<std::string> filenames;
+            filenames.reserve(static_cast<std::size_t>(DIFF));
 
-        return filenames;
+            for (int i(FIRST_NUMBER); i <= LAST_NUMBER; ++i)
+            {
+                filenames.emplace_back(
+                    PREFIX + ContentImage::FilenameSeparator() + std::to_string(i)
+                    + ContentImage::FilenameExtension());
+            }
+
+            return filenames;
+        }
+        else
+        {
+            std::ostringstream ss;
+            ss << "ItemImagePaths::MakeFilenames(prefix=" << PREFIX
+               << ", last_number=" << LAST_NUMBER << ", first_number=" << FIRST_NUMBER
+               << ")  first was <= last";
+
+            throw std::runtime_error(ss.str());
+        }
     }
 
 } // namespace gui

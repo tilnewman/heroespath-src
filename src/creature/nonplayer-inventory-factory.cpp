@@ -189,10 +189,11 @@ namespace creature
             {
                 // helm/shield/aventail/plate
                 auto hasNoPixieVersion { [](const auto ITEM_PTR) {
+                    const auto ARMOR_INFO { ITEM_PTR->ArmorInfo() };
+
                     return (
-                        ITEM_PTR->ArmorInfo().IsShield() || ITEM_PTR->ArmorInfo().IsHelm()
-                        || ITEM_PTR->ArmorInfo().IsAventail()
-                        || (ITEM_PTR->ArmorInfo().BaseType() == item::armor::base_type::Plate));
+                        ARMOR_INFO.IsShield() || ARMOR_INFO.IsHelm() || ARMOR_INFO.IsAventail()
+                        || (ARMOR_INFO.BaseType() == item::armor::base_type::Plate));
                 } };
 
                 RemoveItemsAndFree(armorItemsPVecPair.first, hasNoPixieVersion);

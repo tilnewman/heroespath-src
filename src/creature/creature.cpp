@@ -819,7 +819,9 @@ namespace creature
                     + std::to_string(armorEquipLimit) + " helms.)";
             }
 
-            if (ITEM_PTR->ArmorInfo().IsCover())
+            const auto & ARMOR_INFO { ITEM_PTR->ArmorInfo() };
+
+            if (ARMOR_INFO.IsCover())
             {
                 // can't equip Robe+Cloak, but can equip Vest with either Robe or Cloak, and
                 // can also equip Cape with Vest
@@ -835,13 +837,12 @@ namespace creature
                 const auto HAS_EQUIPPED_CLOAK { inventory_.HasCoverTypeEquipped(
                     item::armor::cover_type::Cloak) };
 
-                if ((ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Vest)
-                    && HAS_EQUIPPED_VEST)
+                if ((ARMOR_INFO.CoverType() == item::armor::cover_type::Vest) && HAS_EQUIPPED_VEST)
                 {
                     equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
                         + "Can't equip vest because already has a vest equipped.";
                 }
-                else if (ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Cape)
+                else if (ARMOR_INFO.CoverType() == item::armor::cover_type::Cape)
                 {
                     if (HAS_EQUIPPED_CAPE)
                     {
@@ -855,7 +856,7 @@ namespace creature
                             + "Can't equip cape because already has a robe or cloak equipped.";
                     }
                 }
-                else if (ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Robe)
+                else if (ARMOR_INFO.CoverType() == item::armor::cover_type::Robe)
                 {
                     if (HAS_EQUIPPED_ROBE)
                     {
@@ -875,7 +876,7 @@ namespace creature
                             + "Can't equip robe because already has a cloak equipped.";
                     }
                 }
-                else if (ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Cloak)
+                else if (ARMOR_INFO.CoverType() == item::armor::cover_type::Cloak)
                 {
                     if (HAS_EQUIPPED_CLOAK)
                     {
@@ -944,22 +945,24 @@ namespace creature
             return "Only " + creature::role::ToString(EXCLUSIVE_ROLE) + "s may equip this item.";
         }
 
-        if (((ROLE != role::Knight) && (ROLE != role::Warlord))
-            && ITEM_PTR->WeaponInfo().IsBladedStaff()
-            && (ITEM_PTR->WeaponInfo().IsSpear() == false))
+        const auto & WEAPON_INFO { ITEM_PTR->WeaponInfo() };
+        const auto & ARMOR_INFO { ITEM_PTR->ArmorInfo() };
+
+        if (((ROLE != role::Knight) && (ROLE != role::Warlord)) && WEAPON_INFO.IsBladedStaff()
+            && (WEAPON_INFO.IsSpear() == false))
         {
             return "Only knights and warlords may equip non-simple-spear bladed staff weapons.";
         }
 
         if ((role_ != role::Knight) && (ITEM_PTR->IsArmor())
-            && (ITEM_PTR->ArmorInfo().BaseType() == item::armor::base_type::Plate))
+            && (ARMOR_INFO.BaseType() == item::armor::base_type::Plate))
         {
             return "Only knights may equip plate armor.";
         }
 
         if ((ROLE != role::Knight) && (ITEM_PTR->IsArmor())
-            && ((ITEM_PTR->ArmorInfo().ShieldType() == item::armor::shield_type::Heater)
-                || (ITEM_PTR->ArmorInfo().ShieldType() == item::armor::shield_type::Pavis)))
+            && ((ARMOR_INFO.ShieldType() == item::armor::shield_type::Heater)
+                || (ARMOR_INFO.ShieldType() == item::armor::shield_type::Pavis)))
         {
             return "Only knights may equip Pavis or Heater shields.";
         }
@@ -986,12 +989,11 @@ namespace creature
         {
             if (ITEM_PTR->IsWeapon())
             {
-                if ((ITEM_PTR->WeaponInfo().IsBlowpipe() == false)
+                if ((WEAPON_INFO.IsBlowpipe() == false)
                     && (ITEM_PTR->HasWeaponType(item::weapon_type::Knife) == false)
-                    && (ITEM_PTR->WeaponInfo().ProjectileType()
-                        != item::weapon::projectile_type::Sling)
+                    && (WEAPON_INFO.ProjectileType() != item::weapon::projectile_type::Sling)
                     && (ITEM_PTR->HasWeaponType(item::weapon_type::Staff) == false)
-                    && (ITEM_PTR->WeaponInfo().IsWhip() == false))
+                    && (WEAPON_INFO.IsWhip() == false))
                 {
                     return std::string((ROLE == role::Cleric) ? "Clerics" : "Sorcerers")
                         + " can only equip staffs, knives, daggers, whips, slings,  and blowpipes.";
@@ -1013,13 +1015,13 @@ namespace creature
 
         if ((role::Bard == ROLE) || (role::Archer == ROLE))
         {
-            if ((ITEM_PTR->WeaponInfo().AxeType() == item::weapon::axe_type::Waraxe)
-                || (ITEM_PTR->WeaponInfo().ClubType() == item::weapon::club_type::Warhammer))
+            if ((WEAPON_INFO.AxeType() == item::weapon::axe_type::Waraxe)
+                || (WEAPON_INFO.ClubType() == item::weapon::club_type::Warhammer))
             {
                 return role::Name(ROLE) + "s cannot equip axes or clubs made for war.";
             }
 
-            if (ITEM_PTR->WeaponInfo().IsBladedStaff())
+            if (WEAPON_INFO.IsBladedStaff())
             {
                 return role::Name(ROLE) + "s cannot equip bladed staffs.";
             }
@@ -1028,9 +1030,8 @@ namespace creature
         if (role::Thief == ROLE)
         {
             if (ITEM_PTR->HasCategoryType(item::category::TwoHanded) && ITEM_PTR->IsWeapon()
-                && (ITEM_PTR->WeaponInfo().ProjectileType() != item::weapon::projectile_type::Sling)
-                && (ITEM_PTR->WeaponInfo().ProjectileType()
-                    != item::weapon::projectile_type::Blowpipe))
+                && (WEAPON_INFO.ProjectileType() != item::weapon::projectile_type::Sling)
+                && (WEAPON_INFO.ProjectileType() != item::weapon::projectile_type::Blowpipe))
             {
                 return "Thieves cannot equip two-handed weapons except for Slings and Blowpipes.";
             }
@@ -1708,11 +1709,15 @@ namespace creature
         item::ItemPVec_t ssBPNonBCWeaponsPVec;
         for (const auto & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
-            if (NEXT_ITEM_PTR->IsWeapon() && NEXT_ITEM_PTR->IsBodypart()
-                && (NEXT_ITEM_PTR->WeaponInfo().IsBite() == false)
-                && (NEXT_ITEM_PTR->WeaponInfo().IsClaws() == false))
+            if (NEXT_ITEM_PTR->IsWeapon())
             {
-                ssBPNonBCWeaponsPVec.emplace_back(NEXT_ITEM_PTR);
+                const auto & WEAPON_INFO { NEXT_ITEM_PTR->WeaponInfo() };
+
+                if (NEXT_ITEM_PTR->IsBodypart() && (WEAPON_INFO.IsBite() == false)
+                    && (WEAPON_INFO.IsClaws() == false))
+                {
+                    ssBPNonBCWeaponsPVec.emplace_back(NEXT_ITEM_PTR);
+                }
             }
         }
 
@@ -1725,10 +1730,15 @@ namespace creature
         item::ItemPVec_t ssBPBCWeaponsPVec;
         for (const auto & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
-            if (NEXT_ITEM_PTR->IsWeapon() && NEXT_ITEM_PTR->IsBodypart()
-                && (NEXT_ITEM_PTR->WeaponInfo().IsBite() || NEXT_ITEM_PTR->WeaponInfo().IsClaws()))
+            if (NEXT_ITEM_PTR->IsWeapon())
             {
-                ssBPBCWeaponsPVec.emplace_back(NEXT_ITEM_PTR);
+                const auto & WEAPON_INFO { NEXT_ITEM_PTR->WeaponInfo() };
+
+                if (NEXT_ITEM_PTR->IsWeapon() && NEXT_ITEM_PTR->IsBodypart()
+                    && (WEAPON_INFO.IsBite() || WEAPON_INFO.IsClaws()))
+                {
+                    ssBPBCWeaponsPVec.emplace_back(NEXT_ITEM_PTR);
+                }
             }
         }
 

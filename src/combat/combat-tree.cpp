@@ -788,7 +788,7 @@ namespace combat
     }
 
     int CombatTree::GetClosestBlockingDistanceByType(
-        creature::CreaturePtr_t CREATURE_PTR, const bool WILL_FIND_PLAYERS) const
+        const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_FIND_PLAYERS) const
     {
         CombatNodePtrOpt_t closestNodePtrOpt { boost::none };
         auto closestBlockingDistanceABS { GetBlockingDistanceMax() + 1 };

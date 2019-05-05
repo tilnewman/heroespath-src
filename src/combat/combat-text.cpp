@@ -577,7 +577,8 @@ namespace combat
     {
         std::vector<std::string> strVec;
 
-        if (WEAPON_PTR->WeaponInfo().IsAxe())
+        const auto & WEAPON_INFO { WEAPON_PTR->WeaponInfo() };
+        if (WEAPON_INFO.IsAxe())
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("chopping");
@@ -593,7 +594,7 @@ namespace combat
                 strVec.emplace_back("swings");
         }
 
-        if (WEAPON_PTR->WeaponInfo().IsBite())
+        if (WEAPON_INFO.IsBite())
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("bitting");
@@ -633,10 +634,8 @@ namespace combat
                 strVec.emplace_back("swings");
         }
 
-        if (WEAPON_PTR->WeaponInfo().IsBladedStaff()
-            || WEAPON_PTR->HasWeaponType(item::weapon_type::Pointed)
-            || WEAPON_PTR->HasWeaponType(item::weapon_type::Knife)
-            || WEAPON_PTR->WeaponInfo().IsSpear())
+        if (WEAPON_INFO.IsBladedStaff() || WEAPON_PTR->HasWeaponType(item::weapon_type::Pointed)
+            || WEAPON_PTR->HasWeaponType(item::weapon_type::Knife) || WEAPON_INFO.IsSpear())
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("stabbing");
@@ -652,7 +651,7 @@ namespace combat
                 strVec.emplace_back("jabs");
         }
 
-        if (WEAPON_PTR->WeaponInfo().IsBlowpipe())
+        if (WEAPON_INFO.IsBlowpipe())
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("darting");
@@ -660,7 +659,7 @@ namespace combat
                 strVec.emplace_back("darts");
         }
 
-        if (WEAPON_PTR->WeaponInfo().IsProjectile())
+        if (WEAPON_INFO.IsProjectile())
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("shooting");
@@ -672,7 +671,7 @@ namespace combat
                 strVec.emplace_back("fires");
         }
 
-        if (WEAPON_PTR->WeaponInfo().IsBreath())
+        if (WEAPON_INFO.IsBreath())
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("breathing");
@@ -680,7 +679,7 @@ namespace combat
                 strVec.emplace_back("breathes");
         }
 
-        if (WEAPON_PTR->WeaponInfo().IsClaws())
+        if (WEAPON_INFO.IsClaws())
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("tearing");
@@ -700,8 +699,7 @@ namespace combat
                 strVec.emplace_back("rips");
         }
 
-        if (WEAPON_PTR->WeaponInfo().IsClub()
-            || WEAPON_PTR->HasWeaponType(item::weapon_type::Staff))
+        if (WEAPON_INFO.IsClub() || WEAPON_PTR->HasWeaponType(item::weapon_type::Staff))
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("swinging");
@@ -725,7 +723,7 @@ namespace combat
                 strVec.emplace_back("crushes");
         }
 
-        if (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
+        if (WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Sling)
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("slinging");
@@ -733,7 +731,7 @@ namespace combat
                 strVec.emplace_back("slings");
         }
 
-        if (WEAPON_PTR->WeaponInfo().IsWhip())
+        if (WEAPON_INFO.IsWhip())
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("whipping");
@@ -741,7 +739,7 @@ namespace combat
                 strVec.emplace_back("whips");
         }
 
-        if (WEAPON_PTR->WeaponInfo().IsTentacles())
+        if (WEAPON_INFO.IsTentacles())
         {
             if (WILL_APPEND_ING)
                 strVec.emplace_back("whipping");

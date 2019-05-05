@@ -208,10 +208,12 @@ namespace item
                 + " magic";
         }
 
-        if (PROFILE.SummonInfo().CanSummon())
+        const auto & SUMMON_INFO { PROFILE.SummonInfo() };
+
+        if (SUMMON_INFO.CanSummon())
         {
-            desc += ", used to summon a " + creature::race::Name(PROFILE.SummonInfo().Race()) + " "
-                + creature::role::Name(PROFILE.SummonInfo().Role());
+            desc += ", used to summon a " + creature::race::Name(SUMMON_INFO.Race()) + " "
+                + creature::role::Name(SUMMON_INFO.Role());
         }
 
         return desc;

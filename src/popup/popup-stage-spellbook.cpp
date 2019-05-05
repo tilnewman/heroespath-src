@@ -550,9 +550,9 @@ namespace popup
 
         const auto SPELL_UNABLE_TEXTRECT_LEFT { pageRectRight_.left };
 
-        const auto SPELL_UNABLE_TEXTRECT_TOP { spellDetailsTextUPtr_->GetEntityRegion().top
-                                               + spellDetailsTextUPtr_->GetEntityRegion().height
-                                               + VERT_SPACER };
+        const auto SPELL_UNABLE_TEXTRECT_TOP {
+            sfutil::Bottom(spellDetailsTextUPtr_->GetEntityRegion()) + VERT_SPACER
+        };
 
         const auto SPELL_UNABLE_TEXTRECT_WIDTH { pageRectRight_.width };
         const auto SPELL_UNABLE_TEXTRECT_HEIGHT { 0.0f };

@@ -769,18 +769,20 @@ namespace gui
             }
 
             static EnumUnderlying_t sfxSetIndex { 0 };
-            if (sfxSetIndex < sfxSetVec_.size())
+            if (static_cast<std::size_t>(sfxSetIndex) < sfxSetVec_.size())
             {
                 static std::size_t sfxSetInnerIndex { 0 };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (sfxSetVec_.at(sfxSetIndex).IsValid()),
+                    (sfxSetVec_.at(static_cast<std::size_t>(sfxSetIndex)).IsValid()),
                     "gui::SoundManager::Test() While testing SoudEffectsSets #"
                         << sfxSetIndex << ", enum="
                         << sound_effect::ToString(static_cast<sound_effect::Enum>(sfxSetIndex))
                         << " found IsValid()==false.");
 
-                if (false == TestSfxSet(sfxSetVec_.at(sfxSetIndex), sfxSetInnerIndex))
+                if (false
+                    == TestSfxSet(
+                           sfxSetVec_.at(static_cast<std::size_t>(sfxSetIndex)), sfxSetInnerIndex))
                 {
                     ++sfxSetInnerIndex;
                     return false;
@@ -834,7 +836,6 @@ namespace gui
                     return false;
                 }
 
-                if (playOrStop)
                 {
                     MusicStop(NEXT_ENUM);
                     playOrStop = false;

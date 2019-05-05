@@ -520,8 +520,7 @@ namespace popup
 
         const auto SONG_UNABLE_TEXTRECT_LEFT { pageRectRight_.left };
 
-        const auto SONG_UNABLE_TEXTRECT_TOP { detailsTextUPtr_->GetEntityRegion().top
-                                              + detailsTextUPtr_->GetEntityRegion().height
+        const auto SONG_UNABLE_TEXTRECT_TOP { sfutil::Bottom(detailsTextUPtr_->GetEntityRegion())
                                               + VERT_SPACER };
 
         const auto SONG_UNABLE_TEXTRECT_WIDTH { pageRectRight_.width };

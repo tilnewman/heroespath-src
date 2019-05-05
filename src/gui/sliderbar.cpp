@@ -193,7 +193,7 @@ namespace gui
         botOrRightPadSprite_.move(HORIZ, VERT);
     }
 
-    void SliderBar::SetupInitialSpritePositions(const sf::Vector2f POS_V)
+    void SliderBar::SetupInitialSpritePositions(const sf::Vector2f & POS_V)
     {
         // the end caps are not placed at either end of the length_ because that would grow the
         // length_, instead they are placed on-top-of or within the length_, which preserves the
@@ -370,7 +370,7 @@ namespace gui
         }
     }
 
-    const sf::IntRect SliderBar::TextureCoordsBaseOnStyle_TopOrLeft(const SliderStyle STYLE) const
+    const sf::IntRect SliderBar::TextureCoordsBaseOnStyle_TopOrLeft(const SliderStyle & STYLE) const
     {
         if (style_.orientation == Orientation::Horiz)
         {
@@ -383,7 +383,7 @@ namespace gui
     }
 
     const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_BottomOrRight(const SliderStyle STYLE) const
+        SliderBar::TextureCoordsBaseOnStyle_BottomOrRight(const SliderStyle & STYLE) const
     {
         if (style_.orientation == Orientation::Horiz)
         {
@@ -396,7 +396,7 @@ namespace gui
     }
 
     const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_TopOrLeft_Horizontal(const SliderStyle STYLE) const
+        SliderBar::TextureCoordsBaseOnStyle_TopOrLeft_Horizontal(const SliderStyle & STYLE) const
     {
         switch (STYLE.brightness)
         {
@@ -440,7 +440,7 @@ namespace gui
     }
 
     const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_TopOrLeft_Vertical(const SliderStyle STYLE) const
+        SliderBar::TextureCoordsBaseOnStyle_TopOrLeft_Vertical(const SliderStyle & STYLE) const
     {
         switch (STYLE.brightness)
         {
@@ -482,8 +482,8 @@ namespace gui
         }
     }
 
-    const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_BottomOrRight_Horizontal(const SliderStyle STYLE) const
+    const sf::IntRect SliderBar::TextureCoordsBaseOnStyle_BottomOrRight_Horizontal(
+        const SliderStyle & STYLE) const
     {
         switch (STYLE.brightness)
         {
@@ -526,7 +526,7 @@ namespace gui
     }
 
     const sf::IntRect
-        SliderBar::TextureCoordsBaseOnStyle_BottomOrRight_Vertical(const SliderStyle STYLE) const
+        SliderBar::TextureCoordsBaseOnStyle_BottomOrRight_Vertical(const SliderStyle & STYLE) const
     {
         switch (STYLE.brightness)
         {
@@ -568,7 +568,7 @@ namespace gui
         }
     }
 
-    const sf::IntRect SliderBar::TextureCoordsBasedOnStyle_Bar(const SliderStyle STYLE) const
+    const sf::IntRect SliderBar::TextureCoordsBasedOnStyle_Bar(const SliderStyle & STYLE) const
     {
         sf::IntRect textureRect;
 
@@ -588,7 +588,7 @@ namespace gui
         return textureRect;
     }
 
-    const sf::IntRect SliderBar::TextureCoordsBasedOnStyle_Pad(const SliderStyle STYLE) const
+    const sf::IntRect SliderBar::TextureCoordsBasedOnStyle_Pad(const SliderStyle & STYLE) const
     {
         if (STYLE.orientation == Orientation::Horiz)
         {

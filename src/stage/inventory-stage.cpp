@@ -3025,7 +3025,9 @@ namespace stage
 
     bool InventoryStage::HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM)
     {
-        const auto CURR_INDEX { game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) };
+        auto & party { game::Game::Instance()->State().Party() };
+
+        const auto CURR_INDEX { party.GetOrderNum(creaturePtr_) };
 
         if (CURR_INDEX == CHARACTER_NUM)
         {
@@ -3034,8 +3036,7 @@ namespace stage
         else
         {
             return HandlePlayerChangeTo(
-                game::Game::Instance()->State().Party().GetAtOrderPos(CHARACTER_NUM),
-                (CURR_INDEX < CHARACTER_NUM));
+                party.GetAtOrderPos(CHARACTER_NUM), (CURR_INDEX < CHARACTER_NUM));
         }
     }
 
@@ -3124,10 +3125,11 @@ namespace stage
     void InventoryStage::PopupCharacterSelectWindow(
         const std::string & PROMPT_TEXT, const bool CAN_SELECT_SELF, const bool CAN_SELECT_BEASTS)
     {
-        const std::size_t CURRENT_CREATURE_ORDER_NUM(
-            game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
+        auto & party { game::Game::Instance()->State().Party() };
 
-        const auto NUM_CHARACTERS { game::Game::Instance()->State().Party().Characters().size() };
+        const std::size_t CURRENT_CREATURE_ORDER_NUM(party.GetOrderNum(creaturePtr_));
+
+        const auto NUM_CHARACTERS { party.Characters().size() };
 
         std::vector<std::string> invalidTextVec;
         invalidTextVec.resize(NUM_CHARACTERS);
@@ -3138,9 +3140,7 @@ namespace stage
             {
                 invalidTextVec[i] = "Cannot select self";
             }
-            else if (
-                game::Game::Instance()->State().Party().GetAtOrderPos(i)->IsBeast()
-                && (CAN_SELECT_BEASTS == false))
+            else if (party.GetAtOrderPos(i)->IsBeast() && (CAN_SELECT_BEASTS == false))
             {
                 invalidTextVec[i] = "Cannot select Beasts";
             }
@@ -3398,10 +3398,12 @@ namespace stage
 
     void InventoryStage::HandleCoinsShare()
     {
+        auto & party { game::Game::Instance()->State().Party() };
+
         // ensure there are any coins to share
         {
             auto totalCoins { 0_coin };
-            for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            for (const auto & CREATURE_PTR : party.Characters())
             {
                 totalCoins += CREATURE_PTR->Inventory().Coins();
             }
@@ -3419,13 +3421,12 @@ namespace stage
 
         const auto COINS_TOTAL { creaturePtr_->Inventory().Coins() };
 
-        const auto HUMANOID_COUNT_IN_COINS { Coin_t::Make(
-            game::Game::Instance()->State().Party().GetNumHumanoid()) };
+        const auto HUMANOID_COUNT_IN_COINS { Coin_t::Make(party.GetNumHumanoid()) };
 
         const auto COINS_TO_SHARE { COINS_TOTAL / HUMANOID_COUNT_IN_COINS };
         const auto COINS_LEFT_OVER { COINS_TOTAL % HUMANOID_COUNT_IN_COINS };
 
-        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
+        for (auto nextCreaturePtr : party.Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
@@ -3435,7 +3436,7 @@ namespace stage
         }
 
         auto toHandOut { COINS_LEFT_OVER };
-        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
+        for (auto nextCreaturePtr : party.Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0_coin))
             {
@@ -3465,10 +3466,12 @@ namespace stage
 
     void InventoryStage::HandleGemsShare()
     {
+        auto & party { game::Game::Instance()->State().Party() };
+
         // ensure there are any gems to share
         {
             auto totalGems { 0_gem };
-            for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            for (const auto & CREATURE_PTR : party.Characters())
             {
                 totalGems += CREATURE_PTR->Inventory().Gems();
             }
@@ -3486,13 +3489,12 @@ namespace stage
 
         const auto GEMS_TOTAL { creaturePtr_->Inventory().Gems() };
 
-        const auto HUMANOID_COUNT_IN_GEMS { Gem_t::Make(
-            game::Game::Instance()->State().Party().GetNumHumanoid()) };
+        const auto HUMANOID_COUNT_IN_GEMS { Gem_t::Make(party.GetNumHumanoid()) };
 
         const auto GEMS_TO_SHARE { GEMS_TOTAL / HUMANOID_COUNT_IN_GEMS };
         const auto GEMS_LEFT_OVER { GEMS_TOTAL % HUMANOID_COUNT_IN_GEMS };
 
-        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
+        for (auto nextCreaturePtr : party.Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
@@ -3502,7 +3504,7 @@ namespace stage
         }
 
         auto toHandOut { GEMS_LEFT_OVER };
-        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
+        for (auto nextCreaturePtr : party.Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0_gem))
             {
@@ -3532,10 +3534,12 @@ namespace stage
 
     void InventoryStage::HandleShardsShare()
     {
+        auto & party { game::Game::Instance()->State().Party() };
+
         // ensure there are any shards to share
         {
             auto totalShards { 0_shard };
-            for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            for (const auto & CREATURE_PTR : party.Characters())
             {
                 totalShards += CREATURE_PTR->Inventory().Shards();
             }
@@ -3553,13 +3557,12 @@ namespace stage
 
         const auto METEORSHARDS_TOTAL { creaturePtr_->Inventory().Shards() };
 
-        const auto HUMANOID_COUNT_IN_SHARDS { Shard_t::Make(
-            game::Game::Instance()->State().Party().GetNumHumanoid()) };
+        const auto HUMANOID_COUNT_IN_SHARDS { Shard_t::Make(party.GetNumHumanoid()) };
 
         const auto METEORSHARDS_TO_SHARE { METEORSHARDS_TOTAL / HUMANOID_COUNT_IN_SHARDS };
         const auto METEORSHARDS_LEFT_OVER { METEORSHARDS_TOTAL % HUMANOID_COUNT_IN_SHARDS };
 
-        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
+        for (auto nextCreaturePtr : party.Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
@@ -3569,7 +3572,7 @@ namespace stage
         }
 
         auto toHandOut { METEORSHARDS_LEFT_OVER };
-        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
+        for (auto nextCreaturePtr : party.Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0_shard))
             {

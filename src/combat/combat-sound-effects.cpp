@@ -28,18 +28,18 @@ namespace combat
     void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR) const
     {
         const auto WEAPON_TYPE { WEAPON_PTR->WeaponType() };
+        const auto & WEAPON_INFO { WEAPON_PTR->WeaponInfo() };
 
-        if ((WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Blowpipe)
-            || (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling))
+        if ((WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Blowpipe)
+            || (WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Sling))
         {
             gui::SoundManager::Instance()
                 ->GetSoundEffectSet(gui::sound_effect_set::BlowpipeShoot)
                 .PlayRandom();
         }
         else if (
-            WEAPON_PTR->WeaponInfo().IsBow()
-            || (WEAPON_PTR->WeaponInfo().ProjectileType()
-                == item::weapon::projectile_type::Crossbow))
+            WEAPON_INFO.IsBow()
+            || (WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Crossbow))
         {
             gui::SoundManager::Instance()
                 ->GetSoundEffectSet(gui::sound_effect_set::ArrowShoot)
@@ -68,17 +68,17 @@ namespace combat
 
         const auto WEAPON_PTR { WEAPON_PTR_OPT.value() };
         const auto WEAPON_TYPE { WEAPON_PTR->WeaponType() };
+        const auto & WEAPON_INFO { WEAPON_PTR->WeaponInfo() };
 
         if (HIT_INFO.WasHit())
         {
-            if (WEAPON_PTR->WeaponInfo().IsBlowpipe())
+            if (WEAPON_INFO.IsBlowpipe())
             {
                 gui::SoundManager::Instance()
                     ->GetSoundEffectSet(gui::sound_effect_set::BlowpipeHit)
                     .PlayRandom();
             }
-            else if (
-                WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
+            else if (WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Sling)
             {
                 // The horn hit sfx sounded good for slings too
                 return gui::SoundManager::Instance()
@@ -86,46 +86,41 @@ namespace combat
                     .Play(gui::sound_effect::MaterialHitHorn);
             }
             else if (
-                WEAPON_PTR->WeaponInfo().IsBow()
-                || (WEAPON_PTR->WeaponInfo().ProjectileType()
-                    == item::weapon::projectile_type::Crossbow))
+                WEAPON_INFO.IsBow()
+                || (WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Crossbow))
             {
                 gui::SoundManager::Instance()
                     ->GetSoundEffectSet(gui::sound_effect_set::ArrowHit)
                     .PlayRandom();
             }
-            else if (WEAPON_PTR->WeaponInfo().IsFists())
+            else if (WEAPON_INFO.IsFists())
             {
                 gui::SoundManager::Instance()
                     ->GetSoundEffectSet(gui::sound_effect_set::FistHit)
                     .PlayRandom();
             }
-            else if (WEAPON_PTR->WeaponInfo().IsTentacles())
+            else if (WEAPON_INFO.IsTentacles())
             {
                 gui::SoundManager::Instance()
                     ->GetSoundEffectSet(gui::sound_effect_set::TentacleHit)
                     .PlayRandom();
             }
-            else if (
-                WEAPON_PTR->WeaponInfo().IsBreath()
-                && (CREATURE_PTR->Role() == creature::role::Firebrand))
+            else if (WEAPON_INFO.IsBreath() && (CREATURE_PTR->Role() == creature::role::Firebrand))
             {
                 gui::SoundManager::Instance()->SoundEffectPlay(
                     gui::sound_effect::BreathHitFirebrand);
             }
-            else if (
-                WEAPON_PTR->WeaponInfo().IsBreath()
-                && (CREATURE_PTR->Role() == creature::role::Sylavin))
+            else if (WEAPON_INFO.IsBreath() && (CREATURE_PTR->Role() == creature::role::Sylavin))
             {
                 gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::BreathHitSylavin);
             }
-            else if (WEAPON_PTR->WeaponInfo().IsClaws())
+            else if (WEAPON_INFO.IsClaws())
             {
                 gui::SoundManager::Instance()
                     ->GetSoundEffectSet(gui::sound_effect_set::ClawHit)
                     .PlayRandom();
             }
-            else if (WEAPON_PTR->WeaponInfo().IsWhip())
+            else if (WEAPON_INFO.IsWhip())
             {
                 gui::SoundManager::Instance()
                     ->GetSoundEffectSet(gui::sound_effect_set::WhipHit)
@@ -466,8 +461,7 @@ namespace combat
                     return;
                 }
                 case creature::wolfen_class::Count:
-                default:
-                {
+                default: {
                 }
             }
         }
@@ -524,8 +518,7 @@ namespace combat
                     return;
                 }
                 case creature::dragon_class::Count:
-                default:
-                {
+                default: {
                 }
             }
         }
@@ -582,8 +575,7 @@ namespace combat
                     return;
                 }
                 case creature::dragon_class::Count:
-                default:
-                {
+                default: {
                 }
             }
 
@@ -864,8 +856,7 @@ namespace combat
                 return;
             }
             case creature::race::Count:
-            default:
-            {
+            default: {
             }
         }
     }

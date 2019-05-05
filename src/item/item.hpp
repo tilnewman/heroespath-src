@@ -73,8 +73,8 @@ namespace item
 
         const std::string ImagePath() const;
 
-        const weapon::WeaponTypeWrapper WeaponInfo() const { return weaponInfo_; }
-        const armor::ArmorTypeWrapper ArmorInfo() const { return armorInfo_; }
+        const weapon::WeaponTypeWrapper & WeaponInfo() const { return weaponInfo_; }
+        const armor::ArmorTypeWrapper & ArmorInfo() const { return armorInfo_; }
 
         category::Enum Category() const { return category_; }
         material::Enum MaterialPrimary() const { return materialPri_; }

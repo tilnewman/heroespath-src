@@ -68,8 +68,8 @@ namespace gui
             sprite_.setPosition(0.0f, 0.0f);
             sprite_.setScale(1.0f, 1.0f);
 
-            sprite_.setOrigin(
-                sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
+            const auto SPRITE_LOCAL_BOUNDS { sprite_.getLocalBounds() };
+            sprite_.setOrigin(SPRITE_LOCAL_BOUNDS.width * 0.5f, SPRITE_LOCAL_BOUNDS.height * 0.5f);
 
             sprite_.rotate(misc::Random(0.5f, 3.0f));
 

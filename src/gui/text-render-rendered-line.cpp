@@ -79,11 +79,12 @@ namespace gui
             texts.emplace_back(TEXT);
 
             // move to top right of this line
-            const auto MOVE_V { sf::Vector2f(posLeft, posTop) - sfutil::Position(texts.back()) };
-            texts.back().move(MOVE_V);
-
+            // then...
             // shift down to a vert pos that is appropriate for the height of this text
-            texts.back().move(0.0f, calcDownShiftForCharHeight(TEXT));
+            const auto MOVE_V { (sf::Vector2f(posLeft, posTop) - sfutil::Position(texts.back()))
+                                + sf::Vector2f(0.0f, calcDownShiftForCharHeight(TEXT)) };
+
+            texts.back().move(MOVE_V);
 
             // stretch the bounding region of this line to accommodate for the shift above
             const auto TOP_BEFORE { region.top };

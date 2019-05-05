@@ -37,6 +37,7 @@ namespace stage
               gui::Animations::SmokeSwirl, sf::FloatRect(0.0f, 0.0f, ANIM_SIZE_, ANIM_SIZE_)))
         , animPosSliderHoriz_()
         , animPosSliderVert_()
+        , isStarted_(false)
     {
         SetupAnimation();
     }

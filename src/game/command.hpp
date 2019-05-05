@@ -33,7 +33,7 @@ namespace game
         FadeCommand(
             const FadeDirection DIRECTION,
             const float SPEED,
-            const BoolOpt_t SET_WILL_DRAW_UNDER_POPUP_OPT,
+            const BoolOpt_t & SET_WILL_DRAW_UNDER_POPUP_OPT,
             const sf::Color & COLOR)
             : direction(DIRECTION)
             , speed(SPEED)

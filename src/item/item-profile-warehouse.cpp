@@ -598,73 +598,75 @@ namespace item
 
         if (THIN_PROFILE.IsWeapon())
         {
-            if (THIN_PROFILE.WeaponInfo().IsSword())
+            const auto & THIN_PROFILE_WEAPON_INFO { THIN_PROFILE.WeaponInfo() };
+            
+            if (THIN_PROFILE_WEAPON_INFO.IsSword())
             {
                 profile.SetSword(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().SwordType(),
+                    THIN_PROFILE_WEAPON_INFO.SwordType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
             }
-            else if (THIN_PROFILE.WeaponInfo().IsAxe())
+            else if (THIN_PROFILE_WEAPON_INFO.IsAxe())
             {
                 profile.SetAxe(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().AxeType(),
+                    THIN_PROFILE_WEAPON_INFO.AxeType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
             }
-            else if (THIN_PROFILE.WeaponInfo().IsClub())
+            else if (THIN_PROFILE_WEAPON_INFO.IsClub())
             {
                 profile.SetClub(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().ClubType(),
+                    THIN_PROFILE_WEAPON_INFO.ClubType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
             }
-            else if (THIN_PROFILE.WeaponInfo().IsWhip())
+            else if (THIN_PROFILE_WEAPON_INFO.IsWhip())
             {
                 profile.SetWhip(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().WhipType(),
+                    THIN_PROFILE_WEAPON_INFO.WhipType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
             }
-            else if (THIN_PROFILE.WeaponInfo().IsProjectile())
+            else if (THIN_PROFILE_WEAPON_INFO.IsProjectile())
             {
                 profile.SetProjectile(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().ProjectileType(),
+                    THIN_PROFILE_WEAPON_INFO.ProjectileType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
             }
-            else if (THIN_PROFILE.WeaponInfo().IsBladedStaff())
+            else if (THIN_PROFILE_WEAPON_INFO.IsBladedStaff())
             {
                 profile.SetBladedStaff(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().BladedStaffType(),
+                    THIN_PROFILE_WEAPON_INFO.BladedStaffType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
             }
-            else if (THIN_PROFILE.WeaponInfo().IsKnife())
+            else if (THIN_PROFILE_WEAPON_INFO.IsKnife())
             {
                 profile.SetKnife(
                     THIN_PROFILE,
@@ -684,7 +686,7 @@ namespace item
                     ELEMENT_TYPE,
                     true);
             }
-            else if (THIN_PROFILE.WeaponInfo().IsDagger())
+            else if (THIN_PROFILE_WEAPON_INFO.IsDagger())
             {
                 profile.SetDagger(
                     THIN_PROFILE,
@@ -704,7 +706,7 @@ namespace item
                     ELEMENT_TYPE,
                     true);
             }
-            else if (THIN_PROFILE.WeaponInfo().IsStaff())
+            else if (THIN_PROFILE_WEAPON_INFO.IsStaff())
             {
                 profile.SetStaff(
                     THIN_PROFILE,
@@ -726,7 +728,7 @@ namespace item
                     misc_type::Not,
                     true);
             }
-            else if (THIN_PROFILE.WeaponInfo().IsQuarterstaff())
+            else if (THIN_PROFILE_WEAPON_INFO.IsQuarterstaff())
             {
                 profile.SetQuarterStaff(
                     THIN_PROFILE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);

@@ -801,8 +801,8 @@ namespace map
             }
         }
 
-        const auto TILES_PER_LAYER_COUNT { static_cast<std::size_t>(
-            PACKET.tile_count_v.x * PACKET.tile_count_v.y) };
+        const auto TILES_PER_LAYER_COUNT { static_cast<std::size_t>(PACKET.tile_count_v.x)
+                                           * static_cast<std::size_t>(PACKET.tile_count_v.y) };
 
         const auto TOTAL_TILES_IN_SET_LAYERS { uniqueLayerCountMap.Size() * TILES_PER_LAYER_COUNT };
         const auto TOTAL_TEXTURES_COUNT { PACKET.MapTileTextureCount() };
@@ -907,7 +907,9 @@ namespace map
 
     std::size_t MapTileOptimizer::PixelsInTexture(const sf::Texture & TEXTURE)
     {
-        return static_cast<std::size_t>(TEXTURE.getSize().x * TEXTURE.getSize().y);
+        return (
+            static_cast<std::size_t>(TEXTURE.getSize().x)
+            * static_cast<std::size_t>(TEXTURE.getSize().y));
     }
 
     std::size_t MapTileOptimizer::TilesInTexture(

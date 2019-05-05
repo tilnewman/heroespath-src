@@ -162,7 +162,7 @@ namespace sfutil
 
     // changes R so the min dimension equals the max and then scales to SCALE
     template <typename T, typename Scale_t>
-    const sf::Rect<T> GrowToSquare(sf::Rect<T> & r, const sf::Vector2<Scale_t> & SCALE_V) noexcept
+    void GrowToSquare(sf::Rect<T> & r, const sf::Vector2<Scale_t> & SCALE_V) noexcept
     {
         r = GrowToSquareCopy(r, SCALE_V);
     }

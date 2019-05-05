@@ -879,8 +879,8 @@ namespace stage
 
         const auto ZOOM_SLIDERBAR_POS_LEFT { COMMAND_REGION_.left + COMMAND_REGION_PAD_ };
 
-        const auto ZOOM_SLIDERBAR_POS_TOP { zoomLabelTextRegionUPtr_->GetEntityRegion().top
-                                            + zoomLabelTextRegionUPtr_->GetEntityRegion().height };
+        const auto ZOOM_SLIDERBAR_POS_TOP { sfutil::Bottom(
+            zoomLabelTextRegionUPtr_->GetEntityRegion()) };
 
         const auto ZOOM_SLIDERBAR_LENGTH { (settingsButtonUPtr_->GetEntityPos().x
                                             - COMMAND_REGION_.left)

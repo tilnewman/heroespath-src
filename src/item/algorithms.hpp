@@ -33,7 +33,7 @@ namespace item
     struct Algorithms
     {
         static const std::string
-            Names(const ItemPVec_t &, const misc::JoinHow JOIN_HOW = misc::JoinHow());
+            Names(const ItemPVec_t &, const misc::JoinHow & JOIN_HOW = misc::JoinHow());
 
         enum class MatchOpt
         {

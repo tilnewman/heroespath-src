@@ -64,7 +64,8 @@ inline bool areImagesEqual(const sf::Image & A, const sf::Image & B)
             memcmp(
                 A.getPixelsPtr(),
                 B.getPixelsPtr(),
-                static_cast<std::size_t>(A.getSize().x * A.getSize().y * unsigned(4)))
+                (static_cast<std::size_t>(A.getSize().x) * static_cast<std::size_t>(A.getSize().y)
+                 * static_cast<std::size_t>(4)))
             == 0);
     }
     else
@@ -94,7 +95,7 @@ inline const sf::Image
 }
 
 inline const sf::Image
-    quickLoadByKey(const std::string & KEY, const ImageOptions OPTIONS = ImageOptions())
+    quickLoadByKey(const std::string & KEY, const ImageOptions & OPTIONS = ImageOptions())
 {
     return quickLoadByPath(heroespath::misc::ConfigFile::Instance()->GetMediaPath(KEY), OPTIONS);
 }

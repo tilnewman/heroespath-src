@@ -357,16 +357,18 @@ namespace stage
             }
         }
 
+        auto & charToUseCreaturePtr { charToUsePtrOpt.value() };
+
         std::ostringstream ss;
-        ss << misc::ConfigFile::Instance()->Value("intro-text5") << charToUsePtrOpt.value()->Name()
+        ss << misc::ConfigFile::Instance()->Value("intro-text5") << charToUseCreaturePtr->Name()
            << " " << misc::ConfigFile::Instance()->Value("intro-text6") << "  "
-           << creature::sex::HeSheIt(charToUsePtrOpt.value()->Sex(), false) << " "
+           << creature::sex::HeSheIt(charToUseCreaturePtr->Sex(), false) << " "
            << misc::ConfigFile::Instance()->Value("intro-text7") << " "
-           << creature::sex::HimHerIt(charToUsePtrOpt.value()->Sex(), false) << ", but ";
+           << creature::sex::HimHerIt(charToUseCreaturePtr->Sex(), false) << ", but ";
 
         const auto BEAST_PVEC { creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
         const auto NONLOAD_NONBEAST_PVEC { misc::Vector::Exclude(
-            NOTBEASTS_PVEC, charToUsePtrOpt.value()) };
+            NOTBEASTS_PVEC, charToUseCreaturePtr) };
 
         if (NONLOAD_NONBEAST_PVEC.empty())
         {

@@ -17,45 +17,35 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 
+#include <tuple>
+
 namespace sf
 {
 
 bool operator<(const sf::Sprite & L, const sf::Sprite & R)
 {
-    if ((L.getGlobalBounds() < R.getGlobalBounds()) || (L.getGlobalBounds() > R.getGlobalBounds()))
-    {
-        return (L.getGlobalBounds() < R.getGlobalBounds());
-    }
-    else if (L.getTexture() != R.getTexture())
-    {
-        return (L.getTexture() < R.getTexture());
-    }
-    else if (L.getColor() != R.getColor())
-    {
-        return (L.getColor() < R.getColor());
-    }
-    else if ((L.getLocalBounds() < R.getLocalBounds()) || (L.getLocalBounds() > R.getLocalBounds()))
-    {
-        return (L.getLocalBounds() < R.getLocalBounds());
-    }
-    else if ((L.getRotation() < R.getRotation()) || (L.getRotation() > R.getRotation()))
-    {
-        return (L.getRotation() < R.getRotation());
-    }
-    else
-    {
-        return (L.getTextureRect() < R.getTextureRect());
-    }
+    return (
+        std::make_tuple(
+            L.getGlobalBounds(), L.getTexture(), L.getColor(), L.getLocalBounds(), L.getRotation())
+        < std::make_tuple(
+              R.getGlobalBounds(),
+              R.getTexture(),
+              R.getColor(),
+              R.getLocalBounds(),
+              R.getRotation()));
 }
 
 bool operator==(const sf::Sprite & L, const sf::Sprite & R)
 {
-    return !(
-        ((L.getGlobalBounds() < R.getGlobalBounds()) || (L.getGlobalBounds() > R.getGlobalBounds()))
-        || (L.getTexture() != R.getTexture()) || (L.getColor() != R.getColor())
-        || ((L.getLocalBounds() < R.getLocalBounds()) || (L.getLocalBounds() > R.getLocalBounds()))
-        || ((L.getRotation() < R.getRotation()) || (L.getRotation() > R.getRotation()))
-        || (L.getRotation() < R.getRotation()));
+    return (
+        std::make_tuple(
+            L.getGlobalBounds(), L.getTexture(), L.getColor(), L.getLocalBounds(), L.getRotation())
+        == std::make_tuple(
+               R.getGlobalBounds(),
+               R.getTexture(),
+               R.getColor(),
+               R.getLocalBounds(),
+               R.getRotation()));
 }
 
 } // namespace sf

@@ -28,7 +28,7 @@ namespace heroespath
 namespace game
 {
 
-    Loop::Loop(ActiveStages & stages, IStatusForLoop & iStatus, const ExecuteCommand FLAGS)
+    Loop::Loop(ActiveStages & stages, IStatusForLoop & iStatus, const ExecuteCommand & FLAGS)
         : stages_(stages)
         , iStatus_(iStatus)
         , flags_(FLAGS)

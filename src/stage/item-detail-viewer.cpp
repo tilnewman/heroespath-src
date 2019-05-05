@@ -235,14 +235,9 @@ namespace stage
             gui::Justified::Center);
 
         const auto TEXT_LEFT { TARGET_RECT_.left + INNER_SPACER_ };
-
-        const auto TEXT_TOP { sprite_.getGlobalBounds().top + sprite_.getGlobalBounds().height
-                              + INNER_SPACER_ };
-
+        const auto TEXT_TOP { sfutil::Bottom(sprite_.getGlobalBounds()) + INNER_SPACER_ };
         const auto TEXT_WIDTH { TARGET_RECT_.width - DOUBLE_INNER_SPACER_ };
-
         const auto SPRITE_BOTTOM { sprite_.getPosition().y + sprite_.getGlobalBounds().height };
-
         const auto TEXT_HEIGHT { (TARGET_RECT_.height - SPRITE_BOTTOM) - DOUBLE_INNER_SPACER_ };
 
         const sf::FloatRect TEXT_RECT { TEXT_LEFT, TEXT_TOP, TEXT_WIDTH, TEXT_HEIGHT };

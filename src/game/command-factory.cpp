@@ -244,7 +244,7 @@ namespace game
     const FadeCommand CommandFactory::MakeCommandForStateChangeFade(
         const FadeDirection DIRECTION,
         const ForPopup IS_FOR_POPUP,
-        const BoolOpt_t SET_WILL_DRAW_UNDER_POPUP_OPT) const
+        const BoolOpt_t & SET_WILL_DRAW_UNDER_POPUP_OPT) const
     {
         const auto FADE_SPEED = [&]() {
             if (DIRECTION == FadeDirection::In)

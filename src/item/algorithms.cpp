@@ -18,7 +18,8 @@ namespace heroespath
 namespace item
 {
 
-    const std::string Algorithms::Names(const ItemPVec_t & ITEM_PVEC, const misc::JoinHow JOIN_HOW)
+    const std::string
+        Algorithms::Names(const ItemPVec_t & ITEM_PVEC, const misc::JoinHow & JOIN_HOW)
     {
         return misc::Join(
             ITEM_PVEC, JOIN_HOW, [](const auto & ITEM_PTR) { return ITEM_PTR->Name(); });

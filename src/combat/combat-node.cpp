@@ -143,7 +143,7 @@ namespace combat
     {
         return std::string("CombatNode ") + ((isPlayer_) ? "Player " : "NonPlayer ")
             + creaturePtr_->RaceName() + " " + creaturePtr_->RoleName()
-            + ((isPlayer_) ? (std::string(" \"") + creaturePtr_->Name() + "\"") : std::string(""))
+            + ((isPlayer_) ? (" \"" + creaturePtr_->Name() + "\"") : std::string())
             + " blocking_pos=" + std::to_string(blockingPos_);
     }
 

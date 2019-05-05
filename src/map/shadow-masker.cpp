@@ -38,20 +38,21 @@ namespace map
 
     void ShadowMasker::ChangeColors(sf::Image & image, const bool IS_SHADOW_IMAGE)
     {
-        const auto DEST_IMAGE_SIZE_X { static_cast<std::size_t>(image.getSize().x) };
+        const sf::Vector2<std::size_t> IMAGE_SIZE_VT { image.getSize() };
 
         auto destPixelX { [&](const std::size_t INDEX) {
-            return static_cast<unsigned>((INDEX / COLOR_COMPONENT_COUNT_) % DEST_IMAGE_SIZE_X);
+            return static_cast<unsigned>((INDEX / COLOR_COMPONENT_COUNT_) % IMAGE_SIZE_VT.x);
         } };
 
         auto destPixelY { [&](const std::size_t INDEX) {
-            return static_cast<unsigned>((INDEX / COLOR_COMPONENT_COUNT_) / DEST_IMAGE_SIZE_X);
+            return static_cast<unsigned>((INDEX / COLOR_COMPONENT_COUNT_) / IMAGE_SIZE_VT.x);
         } };
 
         const sf::Uint8 * const FIRST_PIXEL_PTR { image.getPixelsPtr() };
 
-        const auto COLOR_COMPONENTS_IN_IMAGE_COUNT { static_cast<std::size_t>(
-            image.getSize().x * image.getSize().y * COLOR_COMPONENT_COUNT_) };
+        const auto COLOR_COMPONENTS_IN_IMAGE_COUNT {
+            IMAGE_SIZE_VT.x * IMAGE_SIZE_VT.y * static_cast<std::size_t>(COLOR_COMPONENT_COUNT_)
+        };
 
         for (std::size_t pixelIndex(0); pixelIndex < COLOR_COMPONENTS_IN_IMAGE_COUNT;
              pixelIndex += COLOR_COMPONENT_COUNT_)

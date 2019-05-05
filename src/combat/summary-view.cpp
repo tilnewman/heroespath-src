@@ -253,7 +253,7 @@ namespace combat
     }
 
     void SummaryView::SetupAndStartTransition(
-        CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMBAT_REGION)
+        const CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMBAT_REGION)
     {
         itemWithTextUVec_.clear();
 
@@ -591,8 +591,9 @@ namespace combat
             nextItemTextUPtr->sprite.setPosition(
                 ITEM_IMAGE_POS_LEFT, ITEM_IMAGE_POS_TOP_START + itemListHeight);
 
+            const auto NAME { nextItemTextUPtr->item_ptr->Name() };
             const gui::TextInfo ITEM_NAME_TEXT_INFO(
-                nextItemTextUPtr->item_ptr->Name(),
+                NAME,
                 gui::GuiFont::Default,
                 gui::FontManager::Instance()->Size_Small(),
                 sfutil::color::Light,
@@ -606,8 +607,7 @@ namespace combat
                 0.0f);
 
             nextItemTextUPtr->name_text_region_uptr = std::make_unique<gui::TextRegion>(
-                "CombatDisplay_EnemyDetails_ItemList_ItemName_"
-                    + nextItemTextUPtr->item_ptr->Name(),
+                "CombatDisplay_EnemyDetails_ItemList_ItemName_" + NAME,
                 ITEM_NAME_TEXT_INFO,
                 ITEM_NAME_RECT);
 
@@ -627,8 +627,7 @@ namespace combat
                 0.0f);
 
             nextItemTextUPtr->desc_text_region_uptr = std::make_unique<gui::TextRegion>(
-                "CombatDisplay_EnemyDetails_ItemList_ItemDesc_"
-                    + nextItemTextUPtr->item_ptr->Name(),
+                "CombatDisplay_EnemyDetails_ItemList_ItemDesc_" + NAME,
                 ITEM_DESC_TEXT_INFO,
                 ITEM_DESC_RECT);
 
@@ -636,7 +635,7 @@ namespace combat
 
             if (nextItemTextUPtr->item_ptr->IsQuestItem())
             {
-                infoStr += std::string((infoStr.empty()) ? "" : ", ") + "(Quest Item)";
+                infoStr += "(Quest Item)";
             }
 
             if (nextItemTextUPtr->item_ptr->IsWeapon())
@@ -674,10 +673,7 @@ namespace combat
                 0.0f);
 
             nextItemTextUPtr->info_text_region_uptr = std::make_unique<gui::TextRegion>(
-                "CombatDisplay_EnemyDetails_ItemList_ItemInfo_"
-                    + nextItemTextUPtr->item_ptr->Name(),
-                INFO_TEXT_INFO,
-                INFO_RECT);
+                "CombatDisplay_EnemyDetails_ItemList_ItemInfo_" + NAME, INFO_TEXT_INFO, INFO_RECT);
 
             const float CURR_ITEM_HORIZ_EXTENT(
                 ITEM_IMAGE_POS_LEFT + nextItemTextUPtr->sprite.getGlobalBounds().width

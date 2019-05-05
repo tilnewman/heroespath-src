@@ -457,7 +457,9 @@ namespace item
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->IsBroken() == false), makeErrorReportPrefix() << "broken.");
 
-        if (ITEM_PTR->ArmorInfo().HelmType() == armor::helm_type::Leather)
+        const auto ARMOR_INFO { ITEM_PTR->ArmorInfo() };
+
+        if (ARMOR_INFO.HelmType() == armor::helm_type::Leather)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ITEM_PTR->MaterialPrimary() == material::Leather),
@@ -528,18 +530,17 @@ namespace item
         if (ITEM_PTR->IsArmor())
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (ITEM_PTR->ArmorInfo().IsTypeValid()),
+                (ARMOR_INFO.IsTypeValid()),
                 makeErrorReportPrefix() << "IsArmor() but ArmorInfo().IsValid()==false.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                ((ITEM_PTR->ArmorInfo().NameMaterialType() != name_material_type::Count)
-                 && (ITEM_PTR->ArmorInfo().NameMaterialType() != name_material_type::Misc)),
+                ((ARMOR_INFO.NameMaterialType() != name_material_type::Count)
+                 && (ARMOR_INFO.NameMaterialType() != name_material_type::Misc)),
                 makeErrorReportPrefix()
                     << "armor had invalid name_material_type="
-                    << ((ITEM_PTR->ArmorInfo().NameMaterialType() == name_material_type::Count)
+                    << ((ARMOR_INFO.NameMaterialType() == name_material_type::Count)
                             ? "Count"
-                            : name_material_type::ToString(
-                                  ITEM_PTR->ArmorInfo().NameMaterialType()))
+                            : name_material_type::ToString(ARMOR_INFO.NameMaterialType()))
                     << ".");
 
             if (ITEM_PTR->ArmorType() == armor_type::Gauntlets)
@@ -547,26 +548,24 @@ namespace item
                 if (material::IsGarmentType(ITEM_PTR->MaterialPrimary()))
                 {
                     M_HP_ASSERT_OR_LOG_AND_THROW(
-                        (ITEM_PTR->ArmorInfo().SpecificName()
-                         == armor::ArmorTypeWrapper::GLOVES_NAME_),
+                        (ARMOR_INFO.SpecificName() == armor::ArmorTypeWrapper::GLOVES_NAME_),
                         makeErrorReportPrefix()
                             << "gauntlets with primary material "
                             << material::ToString(ITEM_PTR->MaterialPrimary())
                             << " which means gloves but all the names did not equal \""
                             << armor::ArmorTypeWrapper::GLOVES_NAME_
                             << "\".  ArmorTypeWrapper::SpecificName()=\""
-                            << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
+                            << ARMOR_INFO.SpecificName() << "\".");
                 }
                 else
                 {
                     M_HP_ASSERT_OR_LOG_AND_THROW(
-                        (ITEM_PTR->ArmorInfo().SpecificName()
-                         != armor::ArmorTypeWrapper::GLOVES_NAME_),
+                        (ARMOR_INFO.SpecificName() != armor::ArmorTypeWrapper::GLOVES_NAME_),
                         makeErrorReportPrefix() << "gauntlets with primary material "
                                                 << material::ToString(ITEM_PTR->MaterialPrimary())
                                                 << " which means gauntlets and NOT gloves but the "
                                                    "ArmorTypeWrapper::SpecificName()=\""
-                                                << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
+                                                << ARMOR_INFO.SpecificName() << "\".");
                 }
             }
 
@@ -580,24 +579,24 @@ namespace item
                 if (IS_SPECIFIC_ARMOR_TYPE)
                 {
                     M_HP_ASSERT_OR_LOG_AND_THROW(
-                        (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Count),
+                        (ARMOR_INFO.BaseType() == armor::base_type::Count),
                         makeErrorReportPrefix()
                             << "armor is specific armor_type="
                             << armor_type::ToString(ITEM_PTR->ArmorType())
                             << " but had an invalid base_type="
-                            << armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType()) << ".");
+                            << armor::base_type::ToString(ARMOR_INFO.BaseType()) << ".");
                 }
                 else
                 {
                     M_HP_ASSERT_OR_LOG_AND_THROW(
-                        (ITEM_PTR->ArmorInfo().BaseType() != armor::base_type::Count),
+                        (ARMOR_INFO.BaseType() != armor::base_type::Count),
                         makeErrorReportPrefix()
                             << "armor is non-specific armor_type="
                             << armor_type::ToString(ITEM_PTR->ArmorType())
                             << " but had a base_type="
-                            << armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType()) << ".");
+                            << armor::base_type::ToString(ARMOR_INFO.BaseType()) << ".");
 
-                    if (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Plain)
+                    if (ARMOR_INFO.BaseType() == armor::base_type::Plain)
                     {
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             ((ITEM_PTR->MaterialPrimary() == material::Cloth)
@@ -614,19 +613,19 @@ namespace item
                                 << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
                     }
                     else if (
-                        (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Mail)
-                        || (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Plate))
+                        (ARMOR_INFO.BaseType() == armor::base_type::Mail)
+                        || (ARMOR_INFO.BaseType() == armor::base_type::Plate))
                     {
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             (material::IsMetal(ITEM_PTR->MaterialPrimary())),
                             makeErrorReportPrefix()
                                 << "armor is non-specific armor_type="
                                 << armor_type::ToString(ITEM_PTR->ArmorType()) << " with base_type="
-                                << armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType())
+                                << armor::base_type::ToString(ARMOR_INFO.BaseType())
                                 << " but the primary material was not metal.  It was "
                                 << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
                     }
-                    else if (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Scale)
+                    else if (ARMOR_INFO.BaseType() == armor::base_type::Scale)
                     {
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             (ITEM_PTR->MaterialPrimary() == material::Scales),
