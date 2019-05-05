@@ -481,7 +481,6 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
 BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
 {
     const int ERROR_NUMBER_INT { -321 };
-    const float ERROR_NUMBER_FLOAT { -321.0 };
 
     const std::vector<NumStr<int>> NUM_STRS = { { 0, "0" },
                                                 { 1, "1" },
@@ -511,17 +510,17 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
         const auto TO_NUMBER_FROM_STR(ToNumberOr(NUM_STR.str, ERROR_NUMBER_INT));
 
         BOOST_CHECK_MESSAGE(
-            (TO_STRING_FROM_NUM == NUM_STR.str),
+            (TO_STRING_FROM_NUM == STR_ORIG),
             makeErrorStr(
                 NUM_ORIG, STR_ORIG, "(to_str_from_num==str_orig)", TO_STRING_FROM_NUM, STR_ORIG));
 
         BOOST_CHECK_MESSAGE(
-            (TO_NUMBER_FROM_STR == NUM_STR.num),
+            (TO_NUMBER_FROM_STR == NUM_ORIG),
             makeErrorStr(
                 NUM_ORIG, STR_ORIG, "(to_num_from_str==num_orig)", TO_NUMBER_FROM_STR, NUM_ORIG));
 
         BOOST_CHECK_MESSAGE(
-            (ToString(TO_NUMBER_FROM_STR) == NUM_STR.str),
+            (ToString(TO_NUMBER_FROM_STR) == STR_ORIG),
             makeErrorStr(
                 NUM_ORIG,
                 STR_ORIG,
@@ -530,7 +529,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
                 STR_ORIG));
 
         BOOST_CHECK_MESSAGE(
-            (ToNumberOr(TO_STRING_FROM_NUM, ERROR_NUMBER_INT) == NUM_STR.num),
+            (ToNumberOr(TO_STRING_FROM_NUM, ERROR_NUMBER_INT) == NUM_ORIG),
             makeErrorStr(
                 NUM_ORIG,
                 STR_ORIG,
@@ -538,6 +537,8 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
                 ToNumberOr(TO_STRING_FROM_NUM, ERROR_NUMBER_INT),
                 NUM_ORIG));
     }
+
+    const float ERROR_NUMBER_FLOAT { -321.0 };
 
     const std::vector<NumStr<float>> FLOAT_STRS
         = { { 0, "0" },      { 1, "1" },      { -1.0f, "-1" }, { 0.0f, "0" },    { 1.0f, "1" },
@@ -631,8 +632,9 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
     testToNumber("-0", -0.0);
 
     // overflows
-    testToNumber("999999", short(999999));
-    testToNumber("-999999", short(-999999));
+    short s(0);
+    BOOST_CHECK(!ToNumber("999999", s));
+    BOOST_CHECK(!ToNumber("-999999", s));
 
     // unusual
     testToNumber(" 0", 0);

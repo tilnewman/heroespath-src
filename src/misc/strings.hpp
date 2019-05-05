@@ -184,7 +184,7 @@ namespace misc
         }
 
         using Str2NumInteger_t = unsigned long long;
-        using Str2NumReal_t = double;
+        using Str2NumReal_t = long double;
 
         const std::tuple<bool, Str2NumInteger_t> ToNumber_ParseInteger(
             std::string::const_iterator iter, const std::string::const_iterator END);
@@ -251,41 +251,66 @@ namespace misc
                     return false;
                 }
 
-                const Str2NumReal_t TOTAL((static_cast<Str2NumReal_t>(INTEGER) + FRACTION));
+                const Str2NumReal_t TOTAL(static_cast<Str2NumReal_t>(INTEGER) + FRACTION);
 
-                // if (TOTAL > static_cast<Str2NumReal_t>(std::numeric_limits<T>::max()))
-                //{
-                //    return false;
-                //}
-                //
-                // if (TOTAL <
-                // static_cast<Str2NumReal_t>(std::numeric_limits<T>::lowest()))
-                //{
-                //    return false;
-                //}
+                if (TOTAL > static_cast<Str2NumReal_t>(std::numeric_limits<T>::max()))
+                {
+                    return false;
+                }
+
+                if (PARSE.is_negative)
+                {
+                    if (-TOTAL < static_cast<Str2NumReal_t>(std::numeric_limits<T>::lowest()))
+                    {
+                        return false;
+                    }
+                }
 
                 result = static_cast<T>(TOTAL);
             }
             else
             {
-                // if (INTEGER >
-                // static_cast<Str2NumInteger_t>(std::numeric_limits<T>::max()))
-                //{
-                //    return false;
-                //}
-                //
-                // if (INTEGER <
-                // static_cast<Str2NumInteger_t>(std::numeric_limits<T>::lowest()))
-                //{
-                //    return false;
-                //}
+                if (INTEGER > static_cast<Str2NumInteger_t>(std::numeric_limits<T>::max()))
+                {
+                    if (!(PARSE.is_negative)
+                        || !(INTEGER
+                             == (static_cast<Str2NumInteger_t>(std::numeric_limits<T>::max()) + 1)))
+                    {
+                        return false;
+                    }
+                }
+
+                if constexpr (are_signed_v<T>)
+                {
+                    if (INTEGER
+                        > static_cast<Str2NumInteger_t>(std::numeric_limits<long long>::max()))
+                    {
+                        return false;
+                    }
+
+                    if (PARSE.is_negative)
+                    {
+                        const auto LONG_LONG_T_LOWEST { static_cast<long long>(
+                            std::numeric_limits<T>::lowest()) };
+
+                        const auto NEG_LONG_LONG_INTEGER { -static_cast<long long>(INTEGER) };
+
+                        if (NEG_LONG_LONG_INTEGER < LONG_LONG_T_LOWEST)
+                        {
+                            return false;
+                        }
+                    }
+                }
 
                 result = static_cast<T>(INTEGER);
             }
 
-            if (PARSE.is_negative)
+            if constexpr (are_signed_v<T>)
             {
-                result = -result;
+                if (PARSE.is_negative)
+                {
+                    result = -result;
+                }
             }
 
             return true;
@@ -532,8 +557,8 @@ namespace misc
         const bool IS_CASE_SENSITIVE);
 
     // returns the NTH_NUMBER (zero indexed) positive int found in STR, if STR is empty or
-    // contains no digits or there is no NTH_NUMBER then returns negative. If NTH_NUMBER is negative
-    // then returns the last number found.
+    // contains no digits or there is no NTH_NUMBER then returns negative. If NTH_NUMBER is
+    // negative then returns the last number found.
     //
     //  "This string has these numbers 0.1f and some inside this filename: 'log-234-5-67.txt'"
     //      Find(negative)  = 67
