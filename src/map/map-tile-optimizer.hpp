@@ -68,9 +68,9 @@ namespace map
         // these are just two helper types used by OptimizeLayers()
         struct LayerInfo
         {
-            std::size_t layer_index;
-            misc::VectorMap<std::size_t, int> texture_count_map;
-            misc::VectorMap<sf::Vector2i, std::vector<std::size_t>> pos_indexes_map;
+            std::size_t layer_index = 0;
+            misc::VectorMap<std::size_t, int> texture_count_map {};
+            misc::VectorMap<sf::Vector2i, std::vector<std::size_t>> pos_indexes_map {};
         };
         using LayerInfoMap_t = misc::VectorMap<std::size_t, LayerInfo>;
 

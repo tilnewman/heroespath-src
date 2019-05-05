@@ -191,8 +191,9 @@ namespace misc
 
             M_HP_LOG_ERR(
                 "misc::NotNullWarehouse<"
-                << NAMEOF_TYPE_T(T) << ">::FreeImpl(" << ptrToFree->ToString()
-                << ") not found.  Will delete manually.  Cross your fingers...");
+                << NAMEOF_TYPE_T(T) << ">::FreeImpl(ptrToFree=\""
+                << ((ptrToFree != nullptr) ? ptrToFree->ToString() : std::string("nullptr"))
+                << "\") not found.  Will delete manually.  Cross your fingers...");
 
             delete ptrToFree;
             ptrToFree = nullptr;

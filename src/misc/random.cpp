@@ -13,7 +13,7 @@
 #include "random.hpp"
 
 #include <array>
-#include <cstdlib>
+#include <ctime>
 
 namespace heroespath
 {

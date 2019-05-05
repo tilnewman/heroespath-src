@@ -171,8 +171,10 @@ namespace helpers
 {
     template <typename T1, typename T2>
     constexpr bool are_bitwise_enum_types_valid_v
-        = ((misc::are_all_v<EnumUnderlying_t, T1, T2> || misc::are_enum_v<T1, T2>)
-           || (misc::are_enum_v<T1> && misc::are_same_v<T2, EnumUnderlying_t>)
+        = (misc::are_all_v<
+               EnumUnderlying_t,
+               T1,
+               T2> || misc::are_enum_v<T1, T2> || (misc::are_enum_v<T1> && misc::are_same_v<T2, EnumUnderlying_t>)
            || (misc::are_enum_v<T2> && misc::are_same_v<T1, EnumUnderlying_t>));
 
 } // namespace helpers
