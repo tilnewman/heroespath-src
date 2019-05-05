@@ -302,19 +302,6 @@ namespace stage
         {
             testingBlurbsVec_.erase(testingBlurbsVec_.begin());
         }
-
-        //#ifndef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
-        //        // hack to get status messages on the screen BEFORE a test is finished
-        //        gui::Display::Instance()->ClearToBlack();
-        //
-        //        // okay, wow, if we pass "this" to Display::DrawStage(this) then the windows build
-        //        seems to
-        //        // slice the this pointer itself and crash hard, no real understanding here...
-        //        const auto THIS_STAGE_PTR { this };
-        //
-        //        gui::Display::Instance()->DrawStage(THIS_STAGE_PTR);
-        //        gui::Display::Instance()->DisplayFrameBuffer();
-        //#endif
     }
 
     void TestingStage::TestingStrIncrement(const std::string & S)

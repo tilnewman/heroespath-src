@@ -9,17 +9,7 @@
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_gui_sliders_test"
 
-#include "misc/platform.hpp"
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
-#pragma warning(push)
-#pragma warning(disable : 4266)
-#endif
-
 #include <boost/test/unit_test.hpp>
-
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
-#pragma warning(pop)
-#endif
 
 #include "gui/sliders.hpp"
 #include "misc/nameof.hpp"
