@@ -89,9 +89,11 @@ namespace creature
 
     const std::string Achievement::ToString() const
     {
-        std::string str(
-            Name() + "s current count=" + count_.ToString()
-            + ", and has the following achievable titles: ");
+        std::string str;
+        str.reserve(512);
+
+        str = Name() + "s current count=" + count_.ToString()
+            + ", and has the following achievable titles: ";
 
         for (const auto & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {

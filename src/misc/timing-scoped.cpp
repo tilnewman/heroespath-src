@@ -26,25 +26,15 @@ const std::string TimeRes::ToString(const Enum RES)
 {
     switch (RES)
     {
-        case Nano:
-        {
-            return "ns";
+        case Nano: { return "ns";
         }
-        case Milli:
-        {
-            return "ms";
+        case Milli: { return "ms";
         }
-        case Micro:
-        {
-            return "us";
+        case Micro: { return "us";
         }
-        case Second:
-        {
-            return "s";
+        case Second: { return "s";
         }
-        case Count:
-        {
-            return "(Count)";
+        case Count: { return "(Count)";
         }
         default:
         {
@@ -86,13 +76,14 @@ namespace misc
                 || (Log::Instance()->LineCount() == logCountBeforeStarting_))
             {
                 // can't use log macros because they can cause endless recursion in the timing code
-                std::ostringstream ss;
-
-                ss << "ScopedLogTimer \"" << message_ << "\" took " << DURATION
-                   << TimeRes::ToString(resolution_);
 
                 Log::Instance()->Append(
-                    LogPriority::Default, ss.str(), __FILE__, __func__, __LINE__);
+                    LogPriority::Default,
+                    ("ScopedLogTimer \"" + message_ + "\" took " + std::to_string(DURATION)
+                     + TimeRes::ToString(resolution_)),
+                    __FILE__,
+                    __func__,
+                    __LINE__);
             }
         }
         catch (const std::exception & EXCEPTION)

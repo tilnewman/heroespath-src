@@ -15,6 +15,7 @@
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/platform.hpp"
+#include "misc/strings.hpp"
 
 namespace heroespath
 {
@@ -31,13 +32,18 @@ namespace misc
         , mediaBasePathKey_()
         , mediaBasePath_()
     {
-        M_HP_LOG_DBG("Subsystem Construction: ConfigFile");
+        if constexpr (platform_is_any_windows)
+        {
+            mediaBasePathKey_ = MEDIA_BASE_PATH_KEY_FOR_WINDOWS_;
+        }
+        else
+        {
+            mediaBasePathKey_ = MEDIA_BASE_PATH_KEY_FOR_NON_WINDOWS_;
+        }
 
-#if defined(HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS)
-        mediaBasePathKey_ = MEDIA_BASE_PATH_KEY_FOR_WINDOWS_;
-#else
-        mediaBasePathKey_ = MEDIA_BASE_PATH_KEY_FOR_NON_WINDOWS_;
-#endif
+        M_HP_LOG_DBG(
+            "Subsystem Construction: ConfigFile (mediaBasePathKey_=\"" << mediaBasePathKey_
+                                                                       << "\"");
     }
 
     misc::NotNull<ConfigFile *> misc::ConfigFile::Instance()
@@ -140,10 +146,10 @@ namespace misc
         }
 
         sf::IntRect rect;
-        rect.left = misc::ToNumber(NUMBER_STR_VEC.at(0), -1);
-        rect.top = misc::ToNumber(NUMBER_STR_VEC.at(1), -1);
-        rect.width = misc::ToNumber(NUMBER_STR_VEC.at(2), -1);
-        rect.height = misc::ToNumber(NUMBER_STR_VEC.at(3), -1);
+        rect.left = misc::ToNumberOr(NUMBER_STR_VEC.at(0), -1);
+        rect.top = misc::ToNumberOr(NUMBER_STR_VEC.at(1), -1);
+        rect.width = misc::ToNumberOr(NUMBER_STR_VEC.at(2), -1);
+        rect.height = misc::ToNumberOr(NUMBER_STR_VEC.at(3), -1);
 
         if ((rect.left < 0) || (rect.top < 0) || (rect.width < 0) || (rect.height < 0))
         {

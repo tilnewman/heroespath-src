@@ -43,11 +43,9 @@ namespace gui
 
     const std::string Resolution::ToString(const bool WILL_WRAP) const
     {
-        std::ostringstream ss;
-        ss << ((WILL_WRAP) ? "[" : "") << std::setw(4) << width << "x" << std::setw(4) << height
-           << " : " << std::setw(2) << bits_per_pixel << " " << std::setw(5) << aspect_ratio << " "
-           << std::setw(7) << name << ((WILL_WRAP) ? "]" : "");
-        return ss.str();
+        return std::string((WILL_WRAP) ? "[" : "") + std::to_string(width) + "x"
+            + std::to_string(height) + " : " + std::to_string(bits_per_pixel) + " " + aspect_ratio
+            + " " + name + ((WILL_WRAP) ? "]" : "");
     }
 
     bool operator==(const Resolution & L, const Resolution & R)

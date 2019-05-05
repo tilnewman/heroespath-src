@@ -437,18 +437,14 @@ namespace stage
             }
             else
             {
-                std::ostringstream ss;
-
                 if (willShowModValues_)
                 {
-                    ss << currentSet_.Get(TRAIT);
+                    textValue.setString(std::to_string(currentSet_.Get(TRAIT)));
                 }
                 else
                 {
-                    ss << baseSet_.Get(TRAIT);
+                    textValue.setString(std::to_string(baseSet_.Get(TRAIT)));
                 }
-
-                textValue.setString(ss.str());
 
                 textValue.setPosition(sfutil::CenterToCopy(
                     sfutil::Size(textValue.getGlobalBounds()), numberRegions_.at(i)));

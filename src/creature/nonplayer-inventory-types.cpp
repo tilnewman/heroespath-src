@@ -375,15 +375,7 @@ namespace creature
                     wealthTypeChanceRemaining = NEXT_WEALTH_TYPE;
                 }
 
-                auto nextChanceValue { 0.0f };
-                try
-                {
-                    nextChanceValue = boost::lexical_cast<float>(NEXT_VALUE_STR);
-                }
-                catch (...)
-                {
-                    nextChanceValue = -1.0f;
-                }
+                auto nextChanceValue = misc::ToNumberOrZero<float>(NEXT_VALUE_STR);
 
                 wealthChanceMap[NEXT_WEALTH_TYPE]
                     = ((nextChanceValue > 0.0f) ? (1.0f / nextChanceValue) : (0.0f));
@@ -426,6 +418,7 @@ namespace creature
             const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
             std::string str;
+            str.reserve(32);
 
             AppendNameIfBitIsSet(
                 str, ENUM_VALUE, collector_type::Minimalist, "Minimalist", SEPARATOR);
@@ -437,6 +430,7 @@ namespace creature
                 str, ENUM_VALUE, collector_type::Collector, "Collector", SEPARATOR);
 
             AppendNameIfBitIsSet(str, ENUM_VALUE, collector_type::Hoarder, "Hoarder", SEPARATOR);
+
             return str;
         }
 
@@ -803,18 +797,16 @@ namespace creature
 
         float ConvertStringToFloat(const std::string & KEY, const std::string & STR_FLOAT)
         {
-            try
-            {
-                return boost::lexical_cast<float>(STR_FLOAT);
-            }
-            catch (...)
-            {
-                std::ostringstream ss;
-                ss << "creature::nonplayer::ConvertStringToFloat(key=" << KEY
-                   << ", STR_FLOAT=" << STR_FLOAT << " unable to convert that str to a float.";
+            const float ERROR_NUMBER = -6969.6969f;
+            const float RESULT = misc::ToNumberOr(STR_FLOAT, ERROR_NUMBER);
 
-                throw std::runtime_error(ss.str());
-            }
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (!misc::IsRealClose(RESULT, ERROR_NUMBER)),
+                "creature::nonplayer::ConvertStringToFloat(key="
+                    << KEY << ", STR_FLOAT=" << STR_FLOAT
+                    << " unable to convert that str to a float.");
+
+            return RESULT;
         }
 
     } // namespace nonplayer

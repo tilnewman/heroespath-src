@@ -101,65 +101,66 @@ namespace item
 
     const std::string ItemProfile::ToString() const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(128);
 
         if (category::None != category_)
         {
-            ss << "category=" << category::ToString(category_, EnumStringHow(Wrap::Yes));
+            str += "category=" + category::ToString(category_, EnumStringHow(Wrap::Yes));
         }
 
-        if (ss.str().empty() == false)
+        if (!str.empty())
         {
-            ss << ", ";
+            str += ", ";
         }
 
-        ss << thinProfile_.ToString();
+        str += thinProfile_.ToString();
 
         if (isPixie_)
         {
-            ss << ", is_pixie=" << std::boolalpha << isPixie_;
+            str += ", is_pixie=" + misc::ToString(isPixie_);
         }
 
         const auto ROLE_RESTRICTION { RoleRestriction() };
 
         if (ROLE_RESTRICTION != creature::role::Count)
         {
-            ss << ", role_restriction=" << creature::role::ToString(ROLE_RESTRICTION);
+            str += ", role_restriction=" + creature::role::ToString(ROLE_RESTRICTION);
         }
 
-        ss << ", mat_pri=" << material::ToString(matPri_);
+        str += ", mat_pri=" + material::ToString(matPri_);
 
         if (material::Nothing != matSec_)
         {
-            ss << ", mat_sec=" << material::ToString(matSec_);
+            str += ", mat_sec=" + material::ToString(matSec_);
         }
 
         if (set_type::Not != set_)
         {
-            ss << ", set_type=" << ((set_type::Count == set_) ? "Count" : set_type::ToString(set_));
+            str += ", set_type=" + ((set_type::Count == set_) ? "Count" : set_type::ToString(set_));
         }
 
         if (named_type::Not != named_)
         {
-            ss << ", named_type="
-               << ((named_type::Count == named_) ? "Count" : named_type::ToString(named_));
+            str += ", named_type="
+                + ((named_type::Count == named_) ? "Count" : named_type::ToString(named_));
         }
 
         if (element_type::None != element_)
         {
-            ss << ", element_type=" << element_type::ToString(element_, EnumStringHow(Wrap::Yes));
+            str += ", element_type=" + element_type::ToString(element_, EnumStringHow(Wrap::Yes));
         }
 
         if (summonInfo_.CanSummon())
         {
-            ss << ", summonInfo=" << summonInfo_.ToString();
+            str += ", summonInfo=" + summonInfo_.ToString();
         }
         else if (summonInfo_.IsDefaultAndCompletelyInvalid() == false)
         {
-            ss << ", summonInfo=" << summonInfo_.ToString() << "(but CanSummon()=false?)";
+            str += ", summonInfo=" + summonInfo_.ToString() + "(but CanSummon()=false?)";
         }
 
-        return ss.str();
+        return str;
     }
 
     void ItemProfile::SetMisc(

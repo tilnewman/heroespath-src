@@ -26,16 +26,17 @@ namespace creature
 
     const std::string Trait::ToString(const bool WILL_PREPEND_PLUS) const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(8);
 
         if (WILL_PREPEND_PLUS && (current_ > 0))
         {
-            ss << "+";
+            str += "+";
         }
 
-        ss << current_;
+        str += std::to_string(current_);
 
-        return ss.str();
+        return str;
     }
 
 } // namespace creature

@@ -151,6 +151,8 @@ namespace combat
                 const bool WILL_WRAP = false) const
             {
                 std::string result;
+                result.reserve(64);
+
                 for (const auto & NEXT_TYPECHANCE_PAIR : CHANCE_MAP)
                 {
                     if (!result.empty())

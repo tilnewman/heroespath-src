@@ -23,57 +23,31 @@ namespace popup
     {
         switch (STAGE)
         {
-            case Generic:
-            {
-                return "Generic";
+            case Generic: { return "Generic";
             }
-            case CharacterSelect:
-            {
-                return "CharacterSelect";
+            case CharacterSelect: { return "CharacterSelect";
             }
-            case CombatOver:
-            {
-                return "CombatOver";
+            case CombatOver: { return "CombatOver";
             }
-            case ImageFade:
-            {
-                return "ImageFade";
+            case ImageFade: { return "ImageFade";
             }
-            case ImageSelect:
-            {
-                return "ImageSelect";
+            case ImageSelect: { return "ImageSelect";
             }
-            case InventoryPrompt:
-            {
-                return "InventoryPrompt";
+            case InventoryPrompt: { return "InventoryPrompt";
             }
-            case Musicsheet:
-            {
-                return "Musicsheet";
+            case Musicsheet: { return "Musicsheet";
             }
-            case NumberSelect:
-            {
-                return "NumberSelect";
+            case NumberSelect: { return "NumberSelect";
             }
-            case ResolutionChange:
-            {
-                return "ResolutionChange:";
+            case ResolutionChange: { return "ResolutionChange:";
             }
-            case Spellbook:
-            {
-                return "Spellbook";
+            case Spellbook: { return "Spellbook";
             }
-            case SystemError:
-            {
-                return "SystemError";
+            case SystemError: { return "SystemError";
             }
-            case TreasureTrap:
-            {
-                return "TreasureTrap";
+            case TreasureTrap: { return "TreasureTrap";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -95,6 +69,7 @@ namespace popup
         const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(16);
         AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::None, "None", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::Okay, "Okay", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::Continue, "Continue", SEPARATOR);
@@ -114,17 +89,11 @@ namespace popup
     {
         switch (COLOR)
         {
-            case Light:
-            {
-                return "Light";
+            case Light: { return "Light";
             }
-            case Dark:
-            {
-                return "Dark";
+            case Dark: { return "Dark";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -141,37 +110,21 @@ namespace popup
     {
         switch (IMAGE)
         {
-            case Banner:
-            {
-                return "Banner";
+            case Banner: { return "Banner";
             }
-            case Regular:
-            {
-                return "Regular";
+            case Regular: { return "Regular";
             }
-            case RegularSidebar:
-            {
-                return "RegularSidebar";
+            case RegularSidebar: { return "RegularSidebar";
             }
-            case Large:
-            {
-                return "Large";
+            case Large: { return "Large";
             }
-            case LargeSidebar:
-            {
-                return "LargeSidebar";
+            case LargeSidebar: { return "LargeSidebar";
             }
-            case Spellbook:
-            {
-                return "Spellbook";
+            case Spellbook: { return "Spellbook";
             }
-            case MusicSheet:
-            {
-                return "MusicSheet";
+            case MusicSheet: { return "MusicSheet";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -189,25 +142,15 @@ namespace popup
     {
         switch (IMAGE)
         {
-            case Banner:
-            {
-                return sf::FloatRect(0.16f, 0.125f, 0.66f, 0.7f);
+            case Banner: { return sf::FloatRect(0.16f, 0.125f, 0.66f, 0.7f);
             }
-            case Regular:
-            {
-                return sf::FloatRect(0.066f, 0.125f, 0.848f, 0.765f);
+            case Regular: { return sf::FloatRect(0.066f, 0.125f, 0.848f, 0.765f);
             }
-            case RegularSidebar:
-            {
-                return sf::FloatRect(0.2f, 0.081f, 0.714f, 0.81f);
+            case RegularSidebar: { return sf::FloatRect(0.2f, 0.081f, 0.714f, 0.81f);
             }
-            case Large:
-            {
-                return sf::FloatRect(0.094f, 0.086f, 0.786f, 0.794f);
+            case Large: { return sf::FloatRect(0.094f, 0.086f, 0.786f, 0.794f);
             }
-            case LargeSidebar:
-            {
-                return sf::FloatRect(0.168f, 0.098f, 0.712f, 0.782f);
+            case LargeSidebar: { return sf::FloatRect(0.168f, 0.098f, 0.712f, 0.782f);
             }
             case Spellbook:
             {
@@ -247,19 +190,13 @@ namespace popup
     {
         switch (IMAGE)
         {
-            case Banner:
-            {
-                return 0.25f;
+            case Banner: { return 0.25f;
             }
             case Regular:
-            case RegularSidebar:
-            {
-                return 0.333f;
+            case RegularSidebar: { return 0.333f;
             }
             case Large:
-            case LargeSidebar:
-            {
-                return 0.5f;
+            case LargeSidebar: { return 0.5f;
             }
             case Spellbook:
             case MusicSheet:
@@ -285,40 +222,27 @@ namespace popup
 
         switch (IMAGE)
         {
-            case PopupImage::Banner:
-            {
-                return PREFIX + "banner";
+            case PopupImage::Banner: { return PREFIX + "banner";
             }
-            case PopupImage::Regular:
-            {
-                return PREFIX + "medium";
+            case PopupImage::Regular: { return PREFIX + "medium";
             }
-            case PopupImage::RegularSidebar:
-            {
-                return PREFIX + "medium-bar";
+            case PopupImage::RegularSidebar: { return PREFIX + "medium-bar";
             }
-            case PopupImage::Large:
-            {
-                return PREFIX + "large";
+            case PopupImage::Large: { return PREFIX + "large";
             }
-            case PopupImage::LargeSidebar:
-            {
-                return PREFIX + "large-bar";
+            case PopupImage::LargeSidebar: { return PREFIX + "large-bar";
             }
-            case PopupImage::Spellbook:
-            {
-                return PREFIX + "spell-book";
+            case PopupImage::Spellbook: { return PREFIX + "spell-book";
             }
-            case PopupImage::MusicSheet:
-            {
-                return PREFIX + "music-sheet";
+            case PopupImage::MusicSheet: { return PREFIX + "music-sheet";
             }
             case PopupImage::Count:
             default:
             {
                 M_HP_LOG_ERR(
-                    "gui::PopupManager::BackgroundImagePath(" << popup::PopupImage::ToString(
-                        IMAGE) << ") but that popup::PopupImage::Enum value was invalid.");
+                    "gui::PopupManager::BackgroundImagePath("
+                    << popup::PopupImage::ToString(IMAGE)
+                    << ") but that popup::PopupImage::Enum value was invalid.");
 
                 return "media-image-misc-error";
             }

@@ -15,8 +15,6 @@
 #include "misc/strong-numeric-type.hpp"
 #include "misc/type-helpers.hpp"
 
-#include <boost/lexical_cast.hpp>
-
 #include <string>
 #include <vector>
 
@@ -135,68 +133,26 @@ namespace misc
                 {
                     return false;
                 }
+
+                M_HP_LOG_ERR("With T=bool, key=\"" << KEY << "\", failed to parse as bool.");
+
+                return RETURN_IF_CONVERSION_ERROR;
             }
-
-            // lexical_cast<>() does not work as expected with one byte arithmetic types, so
-            // this block is a work-around for that
-            if constexpr (are_integral_nobool_v<T> && (sizeof(T) == 1))
+            else
             {
-                const int NUMBER_MIN_INT { std::numeric_limits<int>::lowest() };
-                const int NUMBER_MAX_INT { std::numeric_limits<int>::max() };
-
-                const int NUMBER_MIN_T_AS_INT { static_cast<int>(
-                    std::numeric_limits<T>::lowest()) };
-                const int NUMBER_MAX_T_AS_INT { static_cast<int>(std::numeric_limits<T>::max()) };
-
-                const int RESULT_AS_INT { ValueAs<int>(KEY, NUMBER_MIN_INT, NUMBER_MAX_INT) };
-
-                if (RESULT_AS_INT == NUMBER_MIN_INT)
+                T result(RETURN_IF_CONVERSION_ERROR);
+                if (misc::ToNumber(VALUE_STR, result))
                 {
-                    // key not found error and that has already been logged
-                    return RETURN_IF_NOT_FOUND;
-                }
-                else if (RESULT_AS_INT == NUMBER_MAX_INT)
-                {
-                    // conversion error and that has already been logged
-                    return RETURN_IF_CONVERSION_ERROR;
-                }
-                else if (
-                    (RESULT_AS_INT < NUMBER_MIN_T_AS_INT) || (RESULT_AS_INT > NUMBER_MAX_T_AS_INT))
-                {
-                    M_HP_LOG_ERR(
-                        "For key=\""
-                        << KEY << "\" boost::lexical_cast<" << NAMEOF_TYPE_T(T) << ">(value=\""
-                        << VALUE_STR
-                        << "\") fails because the desired type is a one-byte type with a range "
-                           "limited to ["
-                        << NUMBER_MIN_T_AS_INT << ", " << NUMBER_MAX_T_AS_INT
-                        << "] and the given value of \"" << VALUE_STR << "\" or (" << RESULT_AS_INT
-                        << ") is outside of that range.  Returning return_on_conversion_error="
-                        << ToString(RETURN_IF_CONVERSION_ERROR));
-
-                    return RETURN_IF_CONVERSION_ERROR;
+                    return result;
                 }
                 else
                 {
-                    return static_cast<T>(RESULT_AS_INT);
+                    M_HP_LOG_ERR(
+                        "With T=" << NAMEOF_TYPE_T(T) << ", key=\"" << KEY
+                                  << "\", failed to parse as that type.");
+
+                    return RETURN_IF_CONVERSION_ERROR;
                 }
-            }
-
-            try
-            {
-                return boost::lexical_cast<T>(VALUE_STR);
-            }
-            catch (const std::exception & EXCEPTION)
-            {
-                M_HP_LOG_ERR(
-                    "For key=\"" << KEY << "\" boost::lexical_cast<" << NAMEOF_TYPE_T(T)
-                                 << ">(value=\"" << VALUE_STR << "\") threw exception \""
-                                 << EXCEPTION.what() << "\".  Returning return_on_conversion_error="
-                                 << RETURN_IF_CONVERSION_ERROR << ".  "
-                                 << M_HP_VAR_STR(RETURN_IF_NOT_FOUND)
-                                 << M_HP_VAR_STR(RETURN_IF_CONVERSION_ERROR));
-
-                return RETURN_IF_CONVERSION_ERROR;
             }
         }
 
@@ -245,8 +201,8 @@ namespace misc
             return ValueAs(KEY, S());
         }
 
-        // returns true if the KEY was found and it's value set, returns false if KEY or VALUE is
-        // empty, returns false if KEY is not found, caller is responsible for avoiding keys
+        // returns true if the KEY was found and it's value set, returns false if KEY or VALUE
+        // is empty, returns false if KEY is not found, caller is responsible for avoiding keys
         // containing separator_ or commentPrefix_, will set all matching keys if there are
         // duplicates
         bool Set(const std::string & KEY, const std::string & VALUE);
@@ -258,8 +214,8 @@ namespace misc
         // if Set() fails then returns Append()
         bool SetOrAppend(const std::string & KEY, const std::string & VALUE);
 
-        // returns false if commentPrefix_ is empty, COMMENT can be empty, commentPrefix_ will be
-        // prepended if not already
+        // returns false if commentPrefix_ is empty, COMMENT can be empty, commentPrefix_ will
+        // be prepended if not already
         bool AppendComment(const std::string & COMMENT);
 
         template <typename T>

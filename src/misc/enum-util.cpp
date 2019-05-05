@@ -31,6 +31,7 @@ namespace helpers
         }
 
         std::string seperatorChars;
+        seperatorChars.reserve(STR_ORIG.size());
 
         for (const auto CHAR : STR_LOWERCASE)
         {

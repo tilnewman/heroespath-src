@@ -1403,6 +1403,7 @@ namespace creature
             || (ROLE_ENUM == role::Water)) };
 
         std::string str;
+        str.reserve(32);
 
         if (IS_ROLE_FIRST)
         {

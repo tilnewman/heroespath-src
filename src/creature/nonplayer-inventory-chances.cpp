@@ -23,8 +23,6 @@
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 
-#include <boost/lexical_cast.hpp>
-
 #include <algorithm>
 #include <exception>
 #include <utility>
@@ -161,7 +159,7 @@ namespace creature
             const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
             const std::vector<std::string> STR_VEC { misc::SplitByChars(
-                VALUE_STR, misc::SplitHow(',')) };
+                VALUE_STR, misc::SplitHow(",")) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (STR_VEC.size() == 2),
@@ -169,15 +167,8 @@ namespace creature
                     << KEY_STR << "\", retrieving \"" << VALUE_STR
                     << "\" which failed to be parsed into 2 comma sep strings.");
 
-            try
-            {
-                coinsMin_OutParam
-                    = Coin_t::Make(boost::lexical_cast<Coin_t::value_type>(STR_VEC[0]));
-            }
-            catch (...)
-            {
-                coinsMin_OutParam = -1_coin;
-            }
+            const Coin_t::value_type ERROR_NUMBER(-1);
+            coinsMin_OutParam = Coin_t::Make(misc::ToNumberOr(STR_VEC[0], ERROR_NUMBER));
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (coinsMin_OutParam >= 0_coin),
@@ -187,15 +178,7 @@ namespace creature
                        "coins."
                     << "  coinsMin=" << coinsMin_OutParam);
 
-            try
-            {
-                coinsMax_OutParam
-                    = Coin_t::Make(boost::lexical_cast<Coin_t::value_type>(STR_VEC[1]));
-            }
-            catch (...)
-            {
-                coinsMax_OutParam = -1_coin;
-            }
+            coinsMax_OutParam = Coin_t::Make(misc::ToNumberOr(STR_VEC[1], ERROR_NUMBER));
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (coinsMax_OutParam >= coinsMin_OutParam),
@@ -971,6 +954,7 @@ namespace creature
         float ChanceFactory::GetFloatFromGameDataFile(
             const std::string & KEY, const float MIN, const float MAX) const
         {
+            const float ERROR_NUMBER(-1.0f);
             const std::string MIN_STR { "min" };
             const std::string MAX_STR { "max" };
             const std::string REMAINING_STR { "remaining" };
@@ -980,40 +964,25 @@ namespace creature
             {
                 return MIN;
             }
+            else if (VALUE_STR == MAX_STR)
+            {
+                return MAX;
+            }
+            else if (VALUE_STR == REMAINING_STR)
+            {
+                return ERROR_NUMBER;
+            }
             else
             {
-                if (VALUE_STR == MAX_STR)
-                {
-                    return MAX;
-                }
-                else
-                {
-                    if (VALUE_STR == REMAINING_STR)
-                    {
-                        return -1.0f;
-                    }
-                    else
-                    {
-                        std::string exceptionWhatStr("");
-                        try
-                        {
-                            return boost::lexical_cast<float>(VALUE_STR);
-                        }
-                        catch (const std::exception & EX)
-                        {
-                            exceptionWhatStr = EX.what();
-                        }
+                const auto RESULT = misc::ToNumberOr(VALUE_STR, ERROR_NUMBER);
 
-                        M_HP_ASSERT_OR_LOG_AND_THROW(
-                            (exceptionWhatStr.empty()),
-                            "creature::nonplayer::ChanceFactory::GetFloatFromGameDataFile(key=\""
-                                << KEY << "\"), found value \"" << VALUE_STR
-                                << "\" that failed to be parsed as a float, throwing exception: \""
-                                << exceptionWhatStr << "\".");
+                M_HP_ASSERT_OR_LOG_AND_THROW(
+                    (!misc::IsRealClose(RESULT, ERROR_NUMBER)),
+                    "creature::nonplayer::ChanceFactory::GetFloatFromGameDataFile(key=\""
+                        << KEY << "\"), found value \"" << VALUE_STR
+                        << "\" that failed to be parsed as a float.");
 
-                        return -1.0f;
-                    }
-                }
+                return RESULT;
             }
         }
 
@@ -1743,14 +1712,14 @@ namespace creature
                 const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
                 const std::vector<std::string> ARMOR_CHANCES_VEC { misc::SplitByChars(
-                    VALUE_STR, misc::SplitHow('|')) };
+                    VALUE_STR, misc::SplitHow("|")) };
 
                 RoleArmorChanceVec_t roleArmorChanceVec;
 
                 for (const auto & NEXT_ARMOR_CHANCE_STR : ARMOR_CHANCES_VEC)
                 {
                     const std::vector<std::string> PIECES_VEC { misc::SplitByChars(
-                        NEXT_ARMOR_CHANCE_STR, misc::SplitHow(',')) };
+                        NEXT_ARMOR_CHANCE_STR, misc::SplitHow(",")) };
 
                     M_HP_ASSERT_OR_LOG_AND_THROW(
                         (PIECES_VEC.size() >= 2),
@@ -1767,18 +1736,10 @@ namespace creature
                     const auto ARMOR_CHANCE_STR { PIECES_VEC.back() };
 
                     const auto INVALID_CHANCE { -1.0f };
-                    auto armorChanceVal { INVALID_CHANCE };
-                    try
-                    {
-                        armorChanceVal = boost::lexical_cast<float>(ARMOR_CHANCE_STR);
-                    }
-                    catch (...)
-                    {
-                        armorChanceVal = INVALID_CHANCE;
-                    }
+                    auto armorChanceVal = misc::ToNumberOr(ARMOR_CHANCE_STR, INVALID_CHANCE);
 
                     M_HP_ASSERT_OR_LOG_AND_THROW(
-                        (misc::IsRealClose(INVALID_CHANCE, armorChanceVal) == false),
+                        (!misc::IsRealClose(armorChanceVal, INVALID_CHANCE)),
                         "nonplayerChanceFactory::CacheRoleArmorChances() role=\""
                             << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                             << "\" which had float str=\"" << ARMOR_CHANCE_STR
@@ -1870,7 +1831,7 @@ namespace creature
                 WeaponSet nextWeaponSet;
 
                 const std::vector<std::string> INSTRUCTIONS_VEC { misc::SplitByChars(
-                    NEXT_WEAPON_SET_STR, misc::SplitHow('|')) };
+                    NEXT_WEAPON_SET_STR, misc::SplitHow("|")) };
 
                 // Loop over each instruction, denoted by the pipe character in the GameDataFile.
                 // A collection of instructions composes a WeaponSet
@@ -1886,14 +1847,7 @@ namespace creature
                             const auto COUNT_STR { ba::erase_first_copy(
                                 ba::erase_first_copy(NEXT_INSTRUCTION_STR, PICK_CSTR), "]") };
 
-                            try
-                            {
-                                nextWeaponSet.count = boost::lexical_cast<std::size_t>(COUNT_STR);
-                            }
-                            catch (...)
-                            {
-                                nextWeaponSet.count = 0;
-                            }
+                            nextWeaponSet.count = misc::ToNumberOrZero<std::size_t>(COUNT_STR);
 
                             M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (nextWeaponSet.count > 0),
@@ -1926,7 +1880,7 @@ namespace creature
                         // <weapon name>,<chance float> or (<weapon name>),<chance float>
                         //-so it must have two comma separated strings.
                         const std::vector<std::string> PARTS_VEC { misc::SplitByChars(
-                            NEXT_INSTRUCTION_STR, misc::SplitHow(',')) };
+                            NEXT_INSTRUCTION_STR, misc::SplitHow(",")) };
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             ((PARTS_VEC.size() > 1) && (PARTS_VEC.at(0).size() > 2)
@@ -1945,15 +1899,7 @@ namespace creature
                         const item::weapon::WeaponTypeWrapper WEAPON_INFO(WEAPON_NAME);
 
                         // parse weapon chance
-                        float chance(0.0f);
-                        try
-                        {
-                            chance = boost::lexical_cast<float>(CHANCE_STR);
-                        }
-                        catch (...)
-                        {
-                            chance = -1.0f;
-                        }
+                        float chance = misc::ToNumberOrZero<float>(CHANCE_STR);
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             (chance > 0.0f),

@@ -389,12 +389,13 @@ namespace gui
                 IS_MOUSE_OVER_IMAGE,
                 IS_MOUSE_OVER_TEXT);
 
-            std::ostringstream ss;
-            ss << "ImageTextEntity(" << GetEntityName()
-               << "\", on-mouse-single-click, is_mouse_over_image=" << std::boolalpha
-               << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
+            // std::ostringstream ss;
+            // ss << "ImageTextEntity(" << GetEntityName()
+            //   << "\", on-mouse-single-click, is_mouse_over_image=" << std::boolalpha
+            //   << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
 
-            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), EVENT_PACKET, ss.str());
+            Callback_t::HandleAndLog(
+                *callbackHandlerPtrOpt_.value(), EVENT_PACKET, "ImageTextEntity::OnClick()");
         }
     }
 
@@ -415,12 +416,13 @@ namespace gui
                 IS_MOUSE_OVER_IMAGE,
                 IS_MOUSE_OVER_TEXT);
 
-            std::ostringstream ss;
-            ss << "ImageTextEntity(" << GetEntityName()
-               << "\", on-mouse-double-click, is_mouse_over_image=" << std::boolalpha
-               << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
+            // std::ostringstream ss;
+            // ss << "ImageTextEntity(" << GetEntityName()
+            //   << "\", on-mouse-double-click, is_mouse_over_image=" << std::boolalpha
+            //   << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
 
-            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), EVENT_PACKET, ss.str());
+            Callback_t::HandleAndLog(
+                *callbackHandlerPtrOpt_.value(), EVENT_PACKET, "ImageTextEntity::OnDoubleClick()");
         }
     }
 

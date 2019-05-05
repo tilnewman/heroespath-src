@@ -15,7 +15,6 @@
 #include "item/item-type-enum.hpp"
 #include "misc/not-null.hpp"
 #include "misc/strings.hpp"
-#include "misc/vectors.hpp"
 
 #include <memory>
 #include <string>
@@ -33,10 +32,8 @@ namespace item
 
     struct Algorithms
     {
-        static const std::string Names(
-            const ItemPVec_t &,
-            const std::size_t MAX_COUNT = 0,
-            const misc::JoinOpt OPTIONS = misc::JoinOpt::None);
+        static const std::string
+            Names(const ItemPVec_t &, const misc::JoinHow JOIN_HOW = misc::JoinHow());
 
         enum class MatchOpt
         {

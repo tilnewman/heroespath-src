@@ -104,7 +104,7 @@ namespace item
                 "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(name="
                     << SYSTEM_NAME << ", orig_base_type="
                     << ((BASE_TYPE == base_type::Count) ? "Count" : base_type::ToString(BASE_TYPE))
-                    << ", final_base_type = "
+                    << ", final_base_type="
                     << ((base_ == base_type::Count) ? "Count" : base_type::ToString(base_))
                     << ") but IsValidCompleteCheck()=false at first step check: " << ToString());
         }
@@ -221,7 +221,7 @@ namespace item
             }
 
             str.clear();
-
+            str.reserve(255);
             misc::VectorMap<std::string, std::string> namesMap;
             namesMap.Reserve(4);
             namesMap[boost::algorithm::erase_all_copy(generalName_, " ")] += "general\\";
@@ -323,6 +323,7 @@ namespace item
             const std::string & SEPARATOR, const std::string & EXTENSION) const
         {
             std::string imageFilenameStr;
+            imageFilenameStr.reserve(32);
 
             if (IsGauntlets() && (base_type::Plain == base_))
             {

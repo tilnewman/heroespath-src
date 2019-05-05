@@ -65,7 +65,7 @@ namespace item
 
             // break the line of text into comma separated field strings
             const std::vector<std::string> FIELDS_VEC { misc::SplitByChars(
-                VALUE_STR, misc::SplitHow(',')) };
+                VALUE_STR, misc::SplitHow(",")) };
 
             // verify there are eight fields
             M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -95,23 +95,15 @@ namespace item
             const std::string & FIELD_NAME, const std::string & NUM_STR)
         {
             const int ERROR_VAL(-1);
-            int result(ERROR_VAL);
-            try
-            {
-                result = boost::lexical_cast<int>(NUM_STR);
-            }
-            catch (...)
-            {
-                result = ERROR_VAL;
-            }
+            const int RESULT = misc::ToNumberOr(NUM_STR, ERROR_VAL);
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (result != ERROR_VAL),
+                (RESULT != ERROR_VAL),
                 "item::armor::ArmorDetailsLoader::StringFieldToInt(field_name=\""
                     << FIELD_NAME << "\", num_str=\"" << NUM_STR << "\") failed to convert the "
                     << FIELD_NAME << " field of \"" << NUM_STR << "\" into an int.");
 
-            return result;
+            return RESULT;
         }
 
         const std::string ArmorDetailLoader::CleanStringField(

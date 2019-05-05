@@ -60,9 +60,8 @@ namespace stage
 
     void AnimNum::CreateNewTextRegion()
     {
-        std::ostringstream ss;
-        ss << value_;
-        textInfo_.text = ss.str();
+        textInfo_.text.reserve(8);
+        textInfo_.text += std::to_string(value_);
 
         if (textInfo_.text == "0")
         {

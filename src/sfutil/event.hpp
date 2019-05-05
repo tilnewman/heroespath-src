@@ -11,7 +11,7 @@
 //
 #include <SFML/Window/Event.hpp>
 
-#include <ostream>
+#include <iosfwd>
 
 namespace heroespath
 {

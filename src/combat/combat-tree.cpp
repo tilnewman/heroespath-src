@@ -147,6 +147,7 @@ namespace combat
     const std::string CombatTree::VertexesString(const bool WILL_WRAP) const
     {
         std::string result;
+        result.reserve(128);
 
         if (WILL_WRAP)
         {
@@ -283,6 +284,7 @@ namespace combat
     const std::string CombatTree::EdgesString(const bool WILL_WRAP) const
     {
         std::string result;
+        result.reserve(255);
 
         if (WILL_WRAP)
         {

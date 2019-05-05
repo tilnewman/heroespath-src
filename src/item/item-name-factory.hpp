@@ -70,13 +70,14 @@ namespace item
 
         inline const std::string SpaceIfNeeded(const std::string & S) const
         {
-            std::string spaceOrEmptyStr;
             if (IsNonEmptyWithoutTrailingSpace(S))
             {
-                spaceOrEmptyStr = " ";
+                return " ";
             }
-
-            return spaceOrEmptyStr;
+            else
+            {
+                return "";
+            }
         }
 
         enum class PhraseType

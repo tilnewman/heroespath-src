@@ -11,7 +11,7 @@
 //
 #include <SFML/Graphics/Font.hpp>
 
-#include <ostream>
+#include <iosfwd>
 #include <string>
 
 namespace sf
@@ -29,11 +29,7 @@ inline bool operator==(const sf::Font & L, const sf::Font & R)
 
 inline bool operator!=(const sf::Font & L, const sf::Font & R) { return !(L == R); }
 
-inline std::ostream & operator<<(std::ostream & os, const sf::Font & F)
-{
-    os << "(\"" << F.getInfo().family << "\")";
-    return os;
-}
+std::ostream & operator<<(std::ostream & os, const sf::Font & F);
 
 } // namespace sf
 

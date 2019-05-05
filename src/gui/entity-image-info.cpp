@@ -129,40 +129,47 @@ namespace gui
 
     const std::string EntityImageInfo::ToString(const bool WILL_PREFIX, const Wrap WILL_WRAP) const
     {
-        std::ostringstream ss;
-
-        if (cached_texture_opt)
-        {
-            ss << "path\"" << cached_texture_opt->Path() << "\"";
-        }
-        else
-        {
-            ss << "no_image";
-        }
-
-        ss << "_region" << sprite.getGlobalBounds() << "_" << sprite.getColor() << "_scale"
-           << sprite.getScale() << ", will_";
-
-        if (will_resize_instead_of_fit)
-        {
-            ss << "resize";
-        }
-        else
-        {
-            ss << "fit";
-        }
-
-        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+        std::string str;
+        str.reserve(128);
 
         if (WILL_PREFIX)
         {
-            return std::string("EntityImageInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
-                + PARTS_STR;
+            str += std::string("EntityImageInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=");
+        }
+
+        if (WILL_WRAP == Wrap::Yes)
+        {
+            str += "(";
+        }
+
+        if (cached_texture_opt)
+        {
+            str += "path\"" + cached_texture_opt->Path() + "\"";
         }
         else
         {
-            return PARTS_STR;
+            str += "no_image";
         }
+
+        str += "_region" + sfutil::RectToString(sprite.getGlobalBounds()) + "_"
+            + sfutil::ColorToString(sprite.getColor()) + "_scale"
+            + sfutil::VectorToString(sprite.getScale()) + ", will_";
+
+        if (will_resize_instead_of_fit)
+        {
+            str += "resize";
+        }
+        else
+        {
+            str += "fit";
+        }
+
+        if (WILL_WRAP == Wrap::Yes)
+        {
+            str += ")";
+        }
+
+        return str;
     }
 
     void EntityImageInfo::SetRegion(const sf::FloatRect & NEW_GLOBAL_BOUNDS)

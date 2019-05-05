@@ -28,6 +28,7 @@ namespace game
         Phase::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(32);
         AppendNameIfBitIsSet(str, ENUM_VALUE, Phase::Combat, "Combat", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, Phase::Exploring, "Exploring", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, Phase::Conversation, "Conversation", SEPARATOR);

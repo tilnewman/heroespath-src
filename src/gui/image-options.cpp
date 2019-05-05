@@ -85,69 +85,77 @@ namespace gui
     const std::string ImageOptions::ToString(
         const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(64);
+
+        if (WILL_PREFIX)
+        {
+            str += std::string("ImageOptions").append((WILL_WRAP == Wrap::Yes) ? "" : "=");
+        }
+
+        if (WILL_WRAP == Wrap::Yes)
+        {
+            str += "(";
+        }
+
+        auto separatorIf = [&]() -> std::string { return ((str.empty()) ? "" : SEPARATOR); };
 
         if (option_enum & ImageOpt::Smooth)
         {
-            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Smooth";
+            str += separatorIf() + "Smooth";
         }
 
         if (option_enum & ImageOpt::Repeated)
         {
-            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Repeated";
+            str += separatorIf() + "Repeated";
         }
 
         if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) == 0))
         {
-            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Invert"
-               << ((option_enum & ImageOpt::InvertIncludesAlpha) ? "NoAlpha" : "");
+            str += separatorIf() + "Invert"
+                + ((option_enum & ImageOpt::InvertIncludesAlpha) ? "NoAlpha" : "");
         }
 
         if (HasMask())
         {
             const auto C { mask_color_opt.value() };
 
-            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Mask" << int(C.r) << "-" << int(C.g)
-               << "-" << int(C.b);
+            str += separatorIf() + "Mask" + std::to_string(int(C.r)) + "-"
+                + std::to_string(int(C.g)) + "-" + std::to_string(int(C.b));
 
             if (C.a < 255)
             {
-                ss << "-" << int(C.a);
+                str += "-" + std::to_string(int(C.a));
             }
 
             if (IsMaskAlphaDefault() == false)
             {
-                ss << SEPARATOR << "MaskAlpha" << unsigned(mask_alpha);
+                str += SEPARATOR + "MaskAlpha" + std::to_string(unsigned(mask_alpha));
             }
         }
 
         if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) > 0))
         {
-            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Invert"
-               << ((option_enum & ImageOpt::InvertIncludesAlpha) ? "ExcludingAlpha" : "");
+            str += separatorIf() + "Invert"
+                + ((option_enum & ImageOpt::InvertIncludesAlpha) ? "ExcludingAlpha" : "");
         }
 
         if (option_enum & ImageOpt::FlipHoriz)
         {
-            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "FlipHoriz";
+            str += separatorIf() + "FlipHoriz";
         }
 
         if (option_enum & ImageOpt::FlipVert)
         {
-            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "FlipVert";
+            str += separatorIf() + "FlipVert";
         }
 
-        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+        if (WILL_WRAP == Wrap::Yes)
+        {
+            str += ")";
+        }
 
-        if (WILL_PREFIX)
-        {
-            return std::string("ImageOptions").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
-                + PARTS_STR;
-        }
-        else
-        {
-            return PARTS_STR;
-        }
+        return str;
     }
 
     bool operator<(const ImageOptions & L, const ImageOptions & R)

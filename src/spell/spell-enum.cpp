@@ -24,57 +24,31 @@ namespace spell
     {
         switch (ENUM)
         {
-            case Sparks:
-            {
-                return "Sparks";
+            case Sparks: { return "Sparks";
             }
-            case Bandage:
-            {
-                return "Bandage";
+            case Bandage: { return "Bandage";
             }
-            case Sleep:
-            {
-                return "Sleep";
+            case Sleep: { return "Sleep";
             }
-            case Awaken:
-            {
-                return "Awaken";
+            case Awaken: { return "Awaken";
             }
-            case Trip:
-            {
-                return "Trip";
+            case Trip: { return "Trip";
             }
-            case Lift:
-            {
-                return "Lift";
+            case Lift: { return "Lift";
             }
-            case Daze:
-            {
-                return "Daze";
+            case Daze: { return "Daze";
             }
-            case Panic:
-            {
-                return "Panic";
+            case Panic: { return "Panic";
             }
-            case ClearMind:
-            {
-                return "ClearMind";
+            case ClearMind: { return "ClearMind";
             }
-            case Poison:
-            {
-                return "Poison";
+            case Poison: { return "Poison";
             }
-            case Antidote:
-            {
-                return "Antidote";
+            case Antidote: { return "Antidote";
             }
-            case PoisonCloud:
-            {
-                return "PoisonCloud";
+            case PoisonCloud: { return "PoisonCloud";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -91,57 +65,31 @@ namespace spell
     {
         switch (ENUM)
         {
-            case Sparks:
-            {
-                return "Sparks";
+            case Sparks: { return "Sparks";
             }
-            case Bandage:
-            {
-                return "Bandage";
+            case Bandage: { return "Bandage";
             }
-            case Sleep:
-            {
-                return "Sleep";
+            case Sleep: { return "Sleep";
             }
-            case Awaken:
-            {
-                return "Awaken";
+            case Awaken: { return "Awaken";
             }
-            case Trip:
-            {
-                return "Trip";
+            case Trip: { return "Trip";
             }
-            case Lift:
-            {
-                return "Lift";
+            case Lift: { return "Lift";
             }
-            case Daze:
-            {
-                return "Daze";
+            case Daze: { return "Daze";
             }
-            case Panic:
-            {
-                return "Panic";
+            case Panic: { return "Panic";
             }
-            case ClearMind:
-            {
-                return "Clear Mind";
+            case ClearMind: { return "Clear Mind";
             }
-            case Poison:
-            {
-                return "Poison";
+            case Poison: { return "Poison";
             }
-            case Antidote:
-            {
-                return "Antidote";
+            case Antidote: { return "Antidote";
             }
-            case PoisonCloud:
-            {
-                return "Poison Cloud";
+            case PoisonCloud: { return "Poison Cloud";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -156,16 +104,12 @@ namespace spell
 
     const std::string Spells::ShortDesc(const Spells::Enum ENUM)
     {
-        std::ostringstream keySS;
-        keySS << "spell-" << ToString(ENUM) << "-short-desc";
-        return misc::ConfigFile::Instance()->Value(keySS.str());
+        return misc::ConfigFile::Instance()->Value("spell-" + ToString(ENUM) + "-short-desc");
     }
 
     const std::string Spells::ExtraDesc(const Spells::Enum ENUM)
     {
-        std::ostringstream keySS;
-        keySS << "spell-" << ToString(ENUM) << "-extra-desc";
-        return misc::ConfigFile::Instance()->Value(keySS.str());
+        return misc::ConfigFile::Instance()->Value("spell-" + ToString(ENUM) + "-extra-desc");
     }
 
     const std::string Spells::ImageFilename(const Spells::Enum ENUM)

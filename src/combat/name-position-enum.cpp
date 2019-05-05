@@ -74,6 +74,7 @@ namespace combat
         const std::string & SOURCE_NAME, const std::string & TARGET_NAME) const
     {
         std::string result(pre_);
+        result.reserve(post_.size() + ((SOURCE_NAME.size() + TARGET_NAME.size()) * 2));
 
         if ((NamePosition::SourceThenTarget == posEnum_)
             || (NamePosition::SourceBefore == posEnum_))

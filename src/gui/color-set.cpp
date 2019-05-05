@@ -70,18 +70,25 @@ namespace gui
 
     const std::string FocusColors::ToString(const bool WILL_WRAP) const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(64);
 
         if (WILL_WRAP)
-            ss << "(";
+        {
+            str += "(";
+        }
 
-        ss << "fg_wf=" << foreground_with << ", fg_wof=" << foreground_without
-           << ", bg_wf=" << background_with << ", bg_wof=" << background_without;
+        str += "fg_wf=" + sfutil::ColorToString(foreground_with)
+            + ", fg_wof=" + sfutil::ColorToString(foreground_without)
+            + ", bg_wf=" + sfutil::ColorToString(background_with)
+            + ", bg_wof=" + sfutil::ColorToString(background_without);
 
         if (WILL_WRAP)
-            ss << ")";
+        {
+            str += ")";
+        }
 
-        return ss.str();
+        return str;
     }
 
     bool operator<(const FocusColors & L, const FocusColors & R)

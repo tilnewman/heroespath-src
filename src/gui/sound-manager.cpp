@@ -657,7 +657,7 @@ namespace gui
             const auto FILE_NAME_STR { misc::filesystem::Filename(MUSIC_FILE_PATH_STR) };
 
             const std::vector<std::string> FILE_NAME_PARTS_VEC { misc::SplitByChars(
-                FILE_NAME_STR, misc::SplitHow('_')) };
+                FILE_NAME_STR, misc::SplitHow("_")) };
             ;
             if (FILE_NAME_PARTS_VEC.size() != 4)
             {
@@ -787,10 +787,8 @@ namespace gui
                 }
                 else
                 {
-                    std::ostringstream ss;
-                    ss << sfxSetIndex;
                     iStagePtr->TestingStrIncrement(
-                        "SoundManager SfxSet SFX Tested Set #" + ss.str());
+                        "SoundManager SfxSet SFX Tested Set #" + std::to_string(sfxSetIndex));
 
                     sfxSetInnerIndex = 0;
                     ++sfxSetIndex;
@@ -815,8 +813,7 @@ namespace gui
         {
             if (musicIndex < music::Count)
             {
-                std::ostringstream ss;
-                ss << musicIndex;
+                const std::string MUSIC_INDEX_STR = std::to_string(musicIndex);
 
                 auto NEXT_ENUM(static_cast<music::Enum>(musicIndex));
 
@@ -831,7 +828,7 @@ namespace gui
                 if (counter < MUSIC_COUNT_MAX)
                 {
                     iStagePtr->TestingStrIncrement(
-                        "SoundManager Music Test #" + ss.str() + " Delay...");
+                        "SoundManager Music Test #" + MUSIC_INDEX_STR + " Delay...");
 
                     ++counter;
                     return false;
@@ -842,7 +839,7 @@ namespace gui
                     MusicStop(NEXT_ENUM);
                     playOrStop = false;
                     ++musicIndex;
-                    iStagePtr->TestingStrIncrement("SoundManager Music Test #" + ss.str());
+                    iStagePtr->TestingStrIncrement("SoundManager Music Test #" + MUSIC_INDEX_STR);
                     return false;
                 }
             }

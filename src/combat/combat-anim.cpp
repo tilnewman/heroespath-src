@@ -1101,6 +1101,7 @@ namespace combat
             }
 
             std::string result;
+            result.reserve(16);
             sf::Color startColor(255, 0, 0);
             sf::Color endColor(255, 0, 0, 0);
             if (NEXT_DAMAGE_VALUE > 0_health)

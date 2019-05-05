@@ -144,7 +144,7 @@ namespace gui
             return true;
         }
 
-        const auto CHAR { sfutil::sfKeyToNameValidCharacterNameChar(
+        const auto CHAR { sfutil::sfKeyToNameValidCharacterNameCharOrZero(
             KEY_EVENT.code, KEY_EVENT.shift) };
 
         if (CHAR == 0)

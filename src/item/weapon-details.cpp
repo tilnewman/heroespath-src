@@ -18,8 +18,6 @@
 #include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 
-#include <boost/lexical_cast.hpp>
-
 #include <exception>
 #include <sstream>
 #include <vector>
@@ -77,7 +75,7 @@ namespace item
 
             // break the line of text into comma separated field strings
             const std::vector<std::string> FIELDS_VEC { misc::SplitByChars(
-                VALUE_STR, misc::SplitHow(',')) };
+                VALUE_STR, misc::SplitHow(",")) };
 
             // verify there are eight fields
             M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -112,15 +110,7 @@ namespace item
             const std::string & FIELD_NAME, const std::string & NUM_STR)
         {
             const int ERROR_VAL(-1);
-            int result(ERROR_VAL);
-            try
-            {
-                result = boost::lexical_cast<int>(NUM_STR);
-            }
-            catch (...)
-            {
-                result = ERROR_VAL;
-            }
+            int result = misc::ToNumberOr(NUM_STR, ERROR_VAL);
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (result != ERROR_VAL),

@@ -275,7 +275,7 @@ namespace item
             }
 
             str.clear();
-
+            str.reserve(128);
             misc::VectorMap<std::string, std::string> namesMap;
             namesMap.Reserve(4);
             namesMap[boost::algorithm::erase_all_copy(generalName_, " ")] += "general\\";
@@ -394,7 +394,10 @@ namespace item
             const auto GENERAL_NAME_FILENAME_VERSION { boost::algorithm::replace_all_copy(
                 generalName_, " ", "") };
 
-            std::string imageFilenameStr(GENERAL_NAME_FILENAME_VERSION);
+            std::string imageFilenameStr;
+            imageFilenameStr.reserve(GENERAL_NAME_FILENAME_VERSION.size() + 64);
+
+            imageFilenameStr += GENERAL_NAME_FILENAME_VERSION;
 
             if ((systemName_ != GENERAL_NAME_FILENAME_VERSION) && (systemName_ != "Bite"))
             {

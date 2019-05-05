@@ -167,11 +167,9 @@ namespace item
         static auto didTestImages { false };
         if (false == didTestImages)
         {
-            std::ostringstream ss;
-            ss << "item::ItemFactory::Test() Starting Images Test.  ("
-               << imageFilenameProfileMap.Size() << ")  Please wait...";
-
-            iStagePtr->TestingStrAppend(ss.str());
+            iStagePtr->TestingStrAppend(
+                "item::ItemFactory::Test() Starting Images Test.  ("
+                + std::to_string(imageFilenameProfileMap.Size()) + ")  Please wait...");
 
             for (const auto & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
             {
@@ -194,9 +192,11 @@ namespace item
         {
             didLogRandomItemsForNameAndDescriptionCheck = true;
 
-            std::ostringstream randNameAndDescSS;
-            randNameAndDescSS << "\n\n~~~~~~~~~~~~~~~~~~~~ Random Item Names and Descriptions To "
-                                 "Verify ~~~~~~~~~~~~~~~~~~~~";
+            std::string str;
+            str.reserve(4096);
+
+            str += "\n\n~~~~~~~~~~~~~~~~~~~~ Random Item Names and Descriptions To "
+                   "Verify ~~~~~~~~~~~~~~~~~~~~";
 
             auto appendProfileNamesIf { [&](auto ifLambda,
                                             const std::string & CATEGORY_NAME = "",
@@ -217,12 +217,12 @@ namespace item
 
                 if (ACTUAL_COUNT_TO_DISPLAY > 1)
                 {
-                    randNameAndDescSS << "\n~~~" << ACTUAL_COUNT_TO_DISPLAY << " " << CATEGORY_NAME
-                                      << ":\n";
+                    str += "\n~~~" + std::to_string(ACTUAL_COUNT_TO_DISPLAY) + " " + CATEGORY_NAME
+                        + ":\n";
                 }
                 else
                 {
-                    randNameAndDescSS << '\n';
+                    str += '\n';
                 }
 
                 for (std::size_t i(0); i < ACTUAL_COUNT_TO_DISPLAY; ++i)
@@ -230,20 +230,19 @@ namespace item
                     const auto & PROFILE { misc::RandomSelect(tempProfiles) };
                     auto itemPtr { Make(PROFILE) };
 
-                    randNameAndDescSS << "\tName=\"" << itemPtr->Name() << "\"\n\tDesc=\""
-                                      << itemPtr->Desc() << "\"\n\tItem={" << itemPtr->ToString()
-                                      << "}\n\n";
+                    str += "\tName=\"" + itemPtr->Name() + "\"\n\tDesc=\"" + itemPtr->Desc()
+                        + "\"\n\tItem={" + itemPtr->ToString() + "}\n\n";
 
                     ItemWarehouse::Access().Free(itemPtr);
                 }
 
                 if (ACTUAL_COUNT_TO_DISPLAY > 1)
                 {
-                    randNameAndDescSS << "~~~\n\n";
+                    str += "~~~\n\n";
                 }
                 else
                 {
-                    randNameAndDescSS << "\n\n";
+                    str += "\n\n";
                 }
             } };
 
@@ -359,9 +358,9 @@ namespace item
             appendProfileNamesIf(
                 [](const ItemProfile & PROFILE) { return PROFILE.IsUnique(); }, "Unique", 10);
 
-            randNameAndDescSS << "\n\n~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~\n\n";
+            str += "\n\n~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~\n\n";
 
-            M_HP_LOG_DBG(randNameAndDescSS.str());
+            M_HP_LOG_DBG(str);
         }
 
         static auto didPostFinal { false };
@@ -381,12 +380,8 @@ namespace item
     void ItemFactory::TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFILE) const
     {
         auto makeErrorReportPrefix { [&]() {
-            std::ostringstream ss;
-
-            ss << std::boolalpha << "item::ItemFactory::TestItem(\nitem={" << ITEM_PTR->ToString()
-               << "}\nprofile={" << ITEM_PROFILE.ToString() << "})\nERROR: ";
-
-            return ss.str();
+            return "item::ItemFactory::TestItem(\nitem={" + ITEM_PTR->ToString() + "}\nprofile={"
+                + ITEM_PROFILE.ToString() + "})\nERROR: ";
         } };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(

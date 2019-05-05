@@ -11,6 +11,8 @@
 
 #include "misc/enum-util.hpp"
 
+#include <sstream>
+
 namespace heroespath
 {
 namespace creature

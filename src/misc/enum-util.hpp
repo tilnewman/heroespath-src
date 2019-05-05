@@ -239,12 +239,12 @@ struct EnumUtil
 {
     // this may look redundant but callers can pass in the enum type (EnumWrapper::Enum)
     // and get the underlying type (EnumUnderlying_t) back
-    static constexpr EnumUnderlying_t ToUnderlyingType(const EnumUnderlying_t ENUM_VALUE)
+    static constexpr EnumUnderlying_t ToUnderlyingType(const EnumUnderlying_t ENUM_VALUE) noexcept
     {
         return ENUM_VALUE;
     }
 
-    static constexpr bool IsValid(const EnumUnderlying_t ENUM_VALUE)
+    static constexpr bool IsValid(const EnumUnderlying_t ENUM_VALUE) noexcept
     {
         if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
         {
@@ -256,7 +256,7 @@ struct EnumUtil
         }
     }
 
-    static constexpr bool IsValidAndNonZero(const EnumUnderlying_t ENUM_VALUE)
+    static constexpr bool IsValidAndNonZero(const EnumUnderlying_t ENUM_VALUE) noexcept
     {
         return ((ENUM_VALUE != 0) && IsValid(ENUM_VALUE));
     }

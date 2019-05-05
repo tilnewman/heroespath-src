@@ -127,7 +127,10 @@ namespace creature
 
     const std::string Creature::NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
-        std::string result { Name() };
+        std::string result;
+        result.reserve(64);
+
+        result += Name();
 
         if (result != RaceName())
         {
@@ -232,7 +235,11 @@ namespace creature
 
     const std::string Creature::HealthPercentStr(const bool WILL_APPEND_SYMBOL) const
     {
-        std::string result("0");
+        std::string result;
+
+        result.reserve(8);
+
+        result += "0";
 
         const float HEALTH_RATIO(HealthRatio());
         if (!misc::IsRealClose(HEALTH_RATIO, 0.0f))
@@ -435,10 +442,9 @@ namespace creature
     {
         return creature::condition::Algorithms::Names(
             conditionsVec_,
-            MAX_TO_LIST,
+            misc::JoinHow(misc::JoinOpt::Ellipsis, MAX_TO_LIST),
             MIN_SEVERITY,
-            condition::Algorithms::SortOpt::Descending,
-            misc::JoinOpt::Ellipsis);
+            condition::Algorithms::SortOpt::Descending);
     }
 
     const std::string Creature::CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX) const
@@ -570,7 +576,10 @@ namespace creature
         }
         else if (ITEM_PTR->HasCategoryType(item::category::Equipable) == false)
         {
-            std::string result("Not an equipable item.");
+            std::string result;
+            result.reserve(128);
+
+            result += ("Not an equipable item.");
 
             if (ITEM_PTR->HasCategoryType(item::category::Useable))
             {
@@ -588,7 +597,10 @@ namespace creature
             IsPixie() && (ITEM_PTR->IsPixie() == false)
             && (ITEM_PTR->MustBePixieVersionForPixiesToEquip()))
         {
-            std::string result("Can't equip because it is not made for pixies.");
+            std::string result;
+            result.reserve(128);
+
+            result += ("Can't equip because it is not made for pixies.");
 
             if (ITEM_PTR->MustBePixieVersionForPixiesToEquip()
                 && item::misc_type::HasPixieVersion(ITEM_PTR->MiscType()))
@@ -619,6 +631,7 @@ namespace creature
 
         // collect all the remaining reasons why the equip is not possible into one ss
         std::string equipFailReasonStr;
+        equipFailReasonStr.reserve(255);
 
         auto separatorIfNotEmpty { [](const std::string & S) -> const std::string {
             if (S.empty())
@@ -760,6 +773,7 @@ namespace creature
             std::size_t armorEquipLimit { 1 };
 
             std::string equipLimitErrorStr;
+            equipLimitErrorStr.reserve(255);
 
             if ((ARMOR_TYPE == item::armor_type::Bracers)
                 || (ARMOR_TYPE == item::armor_type::Gauntlets))
@@ -1021,14 +1035,14 @@ namespace creature
                 return "Thieves cannot equip two-handed weapons except for Slings and Blowpipes.";
             }
 
-            if (ITEM_PTR->HasWeaponType(item::weapon_type::Axe)
-                || ITEM_PTR->HasWeaponType(item::weapon_type::Sword)
-                || ITEM_PTR->HasWeaponType(item::weapon_type::Club))
-            {
-                return std::string("Thieves cannot equip ")
-                    .append(item::weapon_type::ToString(ITEM_PTR->WeaponType()))
-                    .append("s.");
-            }
+            // if (ITEM_PTR->HasWeaponType(item::weapon_type::Axe)
+            //    || ITEM_PTR->HasWeaponType(item::weapon_type::Sword)
+            //    || ITEM_PTR->HasWeaponType(item::weapon_type::Club))
+            //{
+            //    return std::string("Thieves cannot equip ")
+            //        .append(item::weapon_type::ToString(ITEM_PTR->WeaponType()))
+            //        .append("s.");
+            //}
         }
 
         return ITEM_ACTION_SUCCESS_STR_;
@@ -1186,6 +1200,8 @@ namespace creature
         }
 
         std::string weaponstr;
+        weaponstr.reserve(tempPVec.size() * 32);
+
         for (const auto & NEXT_ITEM_PTR : tempPVec)
         {
             if (!weaponstr.empty())
@@ -1222,6 +1238,8 @@ namespace creature
         }
 
         std::string armorStr;
+        armorStr.reserve(armorItemsPVec.size() * 32);
+
         for (const auto & NEXT_ITEM_PTR : armorItemsPVec)
         {
             if (!armorStr.empty())
@@ -1443,13 +1461,16 @@ namespace creature
 
     const std::string Creature::ToString() const
     {
-        std::string result(
-            "\"" + name_ + "\"" + ", " + sex::ToString(sex_) + ", " + race::Name(race_) + ", "
-            + role::Name(role_) + ", " + actualSet_.StatsString(false)
-            + ", health=" + healthCurrent_.ToString() + "/" + healthNormal_.ToString()
-            + ", mana=" + std::to_string(TraitWorking(Traits::Mana)) + "/"
-            + std::to_string(TraitNormal(Traits::Mana)) + ", rank=" + Rank().ToString()
-            + ", exp=" + Exp().ToString() + ", body[" + bodyType_.ToString() + "], conds=");
+        std::string result;
+        result.reserve(2048);
+
+        result
+            += ("\"" + name_ + "\"" + ", " + sex::ToString(sex_) + ", " + race::Name(race_) + ", "
+                + role::Name(role_) + ", " + actualSet_.StatsString(false)
+                + ", health=" + healthCurrent_.ToString() + "/" + healthNormal_.ToString()
+                + ", mana=" + std::to_string(TraitWorking(Traits::Mana)) + "/"
+                + std::to_string(TraitNormal(Traits::Mana)) + ", rank=" + Rank().ToString()
+                + ", exp=" + Exp().ToString() + ", body[" + bodyType_.ToString() + "], conds=");
 
         for (const auto NEXT_CONDITION_ENUM : conditionsVec_)
         {
@@ -1601,6 +1622,8 @@ namespace creature
         const auto NORMAL { TraitNormal(ENUM) };
 
         std::string result;
+        result.reserve(16);
+
         if (WORKING != NORMAL)
         {
             if (WILL_WRAP)

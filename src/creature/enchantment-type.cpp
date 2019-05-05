@@ -27,6 +27,7 @@ namespace creature
         const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(128);
         AppendNameIfBitIsSet(str, ENUM_VALUE, EnchantmentType::WhenUsed, "when used:", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, EnchantmentType::WhenHeld, "when held:", SEPARATOR);
 

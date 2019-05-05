@@ -48,18 +48,18 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case)
     // test all individual chars
     for (char ch(std::numeric_limits<char>::lowest());; ++ch)
     {
-        if (misc::IsAlpha(ch))
+        if (IsAlpha(ch))
         {
-            BOOST_CHECK(misc::IsUpper(ch) != misc::IsLower(ch));
-            BOOST_CHECK(misc::IsUpper(misc::ToUpperCopy(ch)));
-            BOOST_CHECK(misc::IsLower(misc::ToLowerCopy(ch)));
+            BOOST_CHECK(IsUpper(ch) != IsLower(ch));
+            BOOST_CHECK(IsUpper(ToUpperCopy(ch)));
+            BOOST_CHECK(IsLower(ToLowerCopy(ch)));
         }
         else
         {
-            BOOST_CHECK(misc::IsUpper(ch) == false);
-            BOOST_CHECK(misc::IsLower(ch) == false);
-            BOOST_CHECK(misc::IsUpper(misc::ToUpperCopy(ch)) == false);
-            BOOST_CHECK(misc::IsLower(misc::ToLowerCopy(ch)) == false);
+            BOOST_CHECK(IsUpper(ch) == false);
+            BOOST_CHECK(IsLower(ch) == false);
+            BOOST_CHECK(IsUpper(ToUpperCopy(ch)) == false);
+            BOOST_CHECK(IsLower(ToLowerCopy(ch)) == false);
         }
 
         if (std::numeric_limits<char>::max() == ch)
@@ -71,16 +71,16 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case)
     // test whole strings -empty
     const std::string EMPTY_STR { "" };
 
-    BOOST_CHECK(misc::ToUpperCopy(EMPTY_STR) == EMPTY_STR);
-    BOOST_CHECK(misc::ToLowerCopy(EMPTY_STR) == EMPTY_STR);
+    BOOST_CHECK(ToUpperCopy(EMPTY_STR) == EMPTY_STR);
+    BOOST_CHECK(ToLowerCopy(EMPTY_STR) == EMPTY_STR);
 
     // test whole strings -without letters
     const std::string NON_LETTER_STR {
         "\t \r\n 0 12 345 6789 \t \r [ ] - _ !@#$%^&*(())_+-=[]{}\\|;':\",.<> / ? `~  \n \n\r"
     };
 
-    BOOST_CHECK(misc::ToUpperCopy(NON_LETTER_STR) == NON_LETTER_STR);
-    BOOST_CHECK(misc::ToLowerCopy(NON_LETTER_STR) == NON_LETTER_STR);
+    BOOST_CHECK(ToUpperCopy(NON_LETTER_STR) == NON_LETTER_STR);
+    BOOST_CHECK(ToLowerCopy(NON_LETTER_STR) == NON_LETTER_STR);
 
     // test whole strings -with letters
     const std::string MIXED_CASE_TEST_STR {
@@ -95,21 +95,53 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case)
         "this string has a mix of upper and lower case characters."
     };
 
-    BOOST_CHECK(misc::ToUpperCopy(MIXED_CASE_TEST_STR) == UPPER_CASE_TEST_STR);
-    BOOST_CHECK(misc::ToUpperCopy(UPPER_CASE_TEST_STR) == UPPER_CASE_TEST_STR);
-    BOOST_CHECK(misc::ToUpperCopy(LOWER_CASE_TEST_STR) == UPPER_CASE_TEST_STR);
+    BOOST_CHECK(ToUpperCopy(MIXED_CASE_TEST_STR) == UPPER_CASE_TEST_STR);
+    BOOST_CHECK(ToUpperCopy(UPPER_CASE_TEST_STR) == UPPER_CASE_TEST_STR);
+    BOOST_CHECK(ToUpperCopy(LOWER_CASE_TEST_STR) == UPPER_CASE_TEST_STR);
 
-    BOOST_CHECK(misc::ToLowerCopy(MIXED_CASE_TEST_STR) == LOWER_CASE_TEST_STR);
-    BOOST_CHECK(misc::ToLowerCopy(UPPER_CASE_TEST_STR) == LOWER_CASE_TEST_STR);
-    BOOST_CHECK(misc::ToLowerCopy(LOWER_CASE_TEST_STR) == LOWER_CASE_TEST_STR);
+    BOOST_CHECK(ToLowerCopy(MIXED_CASE_TEST_STR) == LOWER_CASE_TEST_STR);
+    BOOST_CHECK(ToLowerCopy(UPPER_CASE_TEST_STR) == LOWER_CASE_TEST_STR);
+    BOOST_CHECK(ToLowerCopy(LOWER_CASE_TEST_STR) == LOWER_CASE_TEST_STR);
+
+    BOOST_CHECK(AreEqualCaseInsensitive("", ""));
+    BOOST_CHECK(!AreEqualCaseInsensitive("", " "));
+    BOOST_CHECK(!AreEqualCaseInsensitive(" ", ""));
+    BOOST_CHECK(AreEqualCaseInsensitive(" ", " "));
+    BOOST_CHECK(!AreEqualCaseInsensitive(NON_LETTER_STR, ""));
+    BOOST_CHECK(!AreEqualCaseInsensitive(NON_LETTER_STR, " "));
+
+    BOOST_CHECK(AreEqualCaseInsensitive(NON_LETTER_STR, NON_LETTER_STR));
+
+    BOOST_CHECK(AreEqualCaseInsensitive(
+        NON_LETTER_STR,
+        "\t \r\n 0 12 345 6789 \t \r [ ] - _ !@#$%^&*(())_+-=[]{}\\|;':\",.<> / ? `~  \n \n\r"));
+
+    BOOST_CHECK(!AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, ""));
+    BOOST_CHECK(!AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, " "));
+
+    BOOST_CHECK(AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, MIXED_CASE_TEST_STR));
+    BOOST_CHECK(AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, ToUpperCopy(MIXED_CASE_TEST_STR)));
+    BOOST_CHECK(AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, ToLowerCopy(MIXED_CASE_TEST_STR)));
+
+    BOOST_CHECK(AreEqualCaseInsensitive(UPPER_CASE_TEST_STR, UPPER_CASE_TEST_STR));
+    BOOST_CHECK(AreEqualCaseInsensitive(UPPER_CASE_TEST_STR, ToUpperCopy(UPPER_CASE_TEST_STR)));
+    BOOST_CHECK(AreEqualCaseInsensitive(UPPER_CASE_TEST_STR, ToLowerCopy(UPPER_CASE_TEST_STR)));
+
+    BOOST_CHECK(AreEqualCaseInsensitive(LOWER_CASE_TEST_STR, LOWER_CASE_TEST_STR));
+    BOOST_CHECK(AreEqualCaseInsensitive(LOWER_CASE_TEST_STR, ToUpperCopy(LOWER_CASE_TEST_STR)));
+    BOOST_CHECK(AreEqualCaseInsensitive(LOWER_CASE_TEST_STR, ToLowerCopy(LOWER_CASE_TEST_STR)));
+
+    BOOST_CHECK(AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, UPPER_CASE_TEST_STR));
+    BOOST_CHECK(AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, LOWER_CASE_TEST_STR));
+    BOOST_CHECK(AreEqualCaseInsensitive(UPPER_CASE_TEST_STR, LOWER_CASE_TEST_STR));
 }
 
 /*
- * only run this when checking speed of misc::strings functions
+ * only run this when checking speed of strings functions
   *
 BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 {
-    auto makeRandomChar = []() { return static_cast<char>(misc::Random(32, 90)); };
+    auto makeRandomChar = []() { return static_cast<char>(Random(32, 90)); };
 
     auto makeRandomString = [makeRandomChar](const std::size_t LENGTH) {
         std::string str;
@@ -161,29 +193,29 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 
         for (std::size_t testIteration(0); testIteration <= REPEAT_TEST_COUNT; ++testIteration)
         {
-            // misc::RandomShuffle(strings);
+            // RandomShuffle(strings);
 
             trash.clear();
 
             for (const std::string & STR_TO_TEST : strings)
             {
-                trash.emplace_back(misc::ToLowerCopy(STR_TO_TEST));
+                trash.emplace_back(ToLowerCopy(STR_TO_TEST));
             }
             sf::Clock clock;
             for (const std::string & STR_TO_TEST : strings)
             {
-                trash.emplace_back(misc::ToLowerCopy(STR_TO_TEST));
+                trash.emplace_back(ToLowerCopy(STR_TO_TEST));
             }
             result.boost_times.emplace_back(clock.getElapsedTime().asMilliseconds());
 
             for (const std::string & STR_TO_TEST : strings)
             {
-                trash.emplace_back(misc::ToLowerCopy(STR_TO_TEST));
+                trash.emplace_back(ToLowerCopy(STR_TO_TEST));
             }
             clock.restart();
             for (const std::string & STR_TO_TEST : strings)
             {
-                trash.emplace_back(misc::ToLowerCopy(STR_TO_TEST));
+                trash.emplace_back(ToLowerCopy(STR_TO_TEST));
             }
             result.my_times.emplace_back(clock.getElapsedTime().asMilliseconds());
         }
@@ -307,8 +339,8 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
 {
     // test empty cases
-    BOOST_CHECK(misc::CamelTo("", '_') == "");
-    BOOST_CHECK(misc::CamelTo("", "") == "");
+    BOOST_CHECK(CamelTo("", '_') == "");
+    BOOST_CHECK(CamelTo("", "") == "");
 
     // test non-letter cases
     const std::string NON_LETTER_STR {
@@ -318,25 +350,25 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
     const char SEPARATOR_CHAR { '_' };
     const std::string SEPARATOR_STR { std::string(1, SEPARATOR_CHAR) };
 
-    BOOST_CHECK(misc::CamelTo(NON_LETTER_STR, SEPARATOR_CHAR) == NON_LETTER_STR);
-    BOOST_CHECK(misc::CamelTo(NON_LETTER_STR, "") == NON_LETTER_STR);
-    BOOST_CHECK(misc::CamelTo(NON_LETTER_STR, SEPARATOR_STR) == NON_LETTER_STR);
+    BOOST_CHECK(CamelTo(NON_LETTER_STR, SEPARATOR_CHAR) == NON_LETTER_STR);
+    BOOST_CHECK(CamelTo(NON_LETTER_STR, "") == NON_LETTER_STR);
+    BOOST_CHECK(CamelTo(NON_LETTER_STR, SEPARATOR_STR) == NON_LETTER_STR);
 
     // test valid cases
 
     auto test = [](const std::string & INPUT,
                    const std::string & SEPARATOR,
-                   const misc::CaseChange CASE_CHANGE,
+                   const CaseChange CASE_CHANGE,
                    const std::string & EXPECTED_OUTPUT,
                    const std::string & CASE_MESSAGE = "normal") {
         //
         auto makeErrorMessage = [&](const std::string & ACTUAL_OUTPUT) {
             const auto CASE_CHANGE_STR = [CASE_CHANGE]() {
-                if (CASE_CHANGE == misc::CaseChange::Both)
+                if (CASE_CHANGE == CaseChange::Both)
                 {
                     return "Both";
                 }
-                else if (CASE_CHANGE == misc::CaseChange::UpperToLower)
+                else if (CASE_CHANGE == CaseChange::UpperToLower)
                 {
                     return "UpperToLower";
                 }
@@ -346,12 +378,12 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
                 }
             }();
 
-            return "(" + misc::Quoted(CASE_MESSAGE) + " case)  CamelTo(\"" + INPUT
-                + "\", sep=" + misc::Quoted(SEPARATOR) + ", case_change=" + CASE_CHANGE_STR + ")!="
-                + misc::Quoted(EXPECTED_OUTPUT) + "\"  actual=" + misc::Quoted(ACTUAL_OUTPUT);
+            return "(" + Quoted(CASE_MESSAGE) + " case)  CamelTo(\"" + INPUT
+                + "\", sep=" + Quoted(SEPARATOR) + ", case_change=" + CASE_CHANGE_STR
+                + ")!=" + Quoted(EXPECTED_OUTPUT) + "\"  actual=" + Quoted(ACTUAL_OUTPUT);
         };
 
-        const auto ACTUAL_OUTPUT { misc::CamelTo(INPUT, SEPARATOR, CASE_CHANGE) };
+        const auto ACTUAL_OUTPUT { CamelTo(INPUT, SEPARATOR, CASE_CHANGE) };
         BOOST_TEST(ACTUAL_OUTPUT == EXPECTED_OUTPUT, makeErrorMessage(ACTUAL_OUTPUT));
     };
 
@@ -373,29 +405,29 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
         testEachCaseChange(INPUT, SEPARATOR_STR, INPUT, CASE_MESSAGE + ", as is");
 
         testEachCaseChange(
-            misc::ToLowerCopy(INPUT),
+            ToLowerCopy(INPUT),
             SEPARATOR_STR,
-            misc::ToLowerCopy(INPUT),
+            ToLowerCopy(INPUT),
             CASE_MESSAGE + ", with input lower case");
 
         testEachCaseChange(
-            misc::ToUpperCopy(INPUT),
+            ToUpperCopy(INPUT),
             SEPARATOR_STR,
-            misc::ToUpperCopy(INPUT),
+            ToUpperCopy(INPUT),
             CASE_MESSAGE + ", with input upper case");
 
         testEachCaseChange(INPUT, "", INPUT, CASE_MESSAGE + ", with empty separator");
 
         testEachCaseChange(
-            misc::ToLowerCopy(INPUT),
+            ToLowerCopy(INPUT),
             "",
-            misc::ToLowerCopy(INPUT),
+            ToLowerCopy(INPUT),
             CASE_MESSAGE + ", with input lower case" + " with empty separator");
 
         testEachCaseChange(
-            misc::ToUpperCopy(INPUT),
+            ToUpperCopy(INPUT),
             "",
-            misc::ToUpperCopy(INPUT),
+            ToUpperCopy(INPUT),
             CASE_MESSAGE + ", with input upper case" + " with empty separator");
     };
 
@@ -459,10 +491,52 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
 
     for (const auto & NUM_STR : NUM_STRS)
     {
-        BOOST_CHECK(ToString(NUM_STR.num) == NUM_STR.str);
-        BOOST_CHECK(ToNumber(NUM_STR.str, ERROR_NUMBER_INT) == NUM_STR.num);
-        BOOST_CHECK(ToString(ToNumber(NUM_STR.str, ERROR_NUMBER_INT)) == NUM_STR.str);
-        BOOST_CHECK(ToNumber(ToString(NUM_STR.num), ERROR_NUMBER_INT) == NUM_STR.num);
+        auto makeErrorStr = [ERROR_NUMBER_INT](
+                                const auto NUM_ORIG,
+                                const std::string & STR_ORIG,
+                                const std::string & MESSAGE,
+                                const auto LEFT,
+                                const auto RIGHT) {
+            std::ostringstream sss;
+            sss << "NUM_ORIG=\"" << NUM_ORIG << "\", STR_ORIG=\"" << STR_ORIG
+                << "\", ERROR_INT=" << ERROR_NUMBER_INT << ", \"" << MESSAGE << "\""
+                << " : (" << LEFT << "!=" << RIGHT << ")";
+
+            return sss.str();
+        };
+
+        const auto NUM_ORIG(NUM_STR.num);
+        const auto STR_ORIG(NUM_STR.str);
+        const auto TO_STRING_FROM_NUM(ToString(NUM_STR.num));
+        const auto TO_NUMBER_FROM_STR(ToNumberOr(NUM_STR.str, ERROR_NUMBER_INT));
+
+        BOOST_CHECK_MESSAGE(
+            (TO_STRING_FROM_NUM == NUM_STR.str),
+            makeErrorStr(
+                NUM_ORIG, STR_ORIG, "(to_str_from_num==str_orig)", TO_STRING_FROM_NUM, STR_ORIG));
+
+        BOOST_CHECK_MESSAGE(
+            (TO_NUMBER_FROM_STR == NUM_STR.num),
+            makeErrorStr(
+                NUM_ORIG, STR_ORIG, "(to_num_from_str==num_orig)", TO_NUMBER_FROM_STR, NUM_ORIG));
+
+        BOOST_CHECK_MESSAGE(
+            (ToString(TO_NUMBER_FROM_STR) == NUM_STR.str),
+            makeErrorStr(
+                NUM_ORIG,
+                STR_ORIG,
+                "(to_str(to_num_from_str)==str_orig)",
+                ToString(TO_NUMBER_FROM_STR),
+                STR_ORIG));
+
+        BOOST_CHECK_MESSAGE(
+            (ToNumberOr(TO_STRING_FROM_NUM, ERROR_NUMBER_INT) == NUM_STR.num),
+            makeErrorStr(
+                NUM_ORIG,
+                STR_ORIG,
+                "(to_num(to_str_from_num)==num_orig)",
+                ToNumberOr(TO_STRING_FROM_NUM, ERROR_NUMBER_INT),
+                NUM_ORIG));
     }
 
     const std::vector<NumStr<float>> FLOAT_STRS
@@ -471,37 +545,433 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
 
     for (const auto & NUM_STR : FLOAT_STRS)
     {
-        BOOST_CHECK(ToString(NUM_STR.num) == NUM_STR.str);
-        BOOST_CHECK(misc::IsRealClose(ToNumber(NUM_STR.str, ERROR_NUMBER_FLOAT), NUM_STR.num));
-        BOOST_CHECK(ToString(ToNumber(NUM_STR.str, ERROR_NUMBER_FLOAT)) == NUM_STR.str);
+        BOOST_CHECK_EQUAL(ToString(NUM_STR.num), NUM_STR.str);
+
+        BOOST_CHECK_MESSAGE(
+            IsRealClose(ToNumberOr(NUM_STR.str, ERROR_NUMBER_FLOAT), NUM_STR.num),
+            "ToNumberOr(\"" << NUM_STR.str << "\", err_def=\"" << ERROR_NUMBER_FLOAT
+                            << "\") = " << ToNumberOr(NUM_STR.str, ERROR_NUMBER_FLOAT)
+                            << " != " << NUM_STR.num);
+
+        BOOST_CHECK_EQUAL(ToString(ToNumberOr(NUM_STR.str, ERROR_NUMBER_FLOAT)), NUM_STR.str);
 
         BOOST_CHECK(
-            misc::IsRealClose(ToNumber(ToString(NUM_STR.num), ERROR_NUMBER_FLOAT), NUM_STR.num));
+            IsRealClose(ToNumberOr(ToString(NUM_STR.num), ERROR_NUMBER_FLOAT), NUM_STR.num));
     }
 
-    BOOST_CHECK(ToString(true) == "true");
-    BOOST_CHECK(ToString(false) == "false");
-    BOOST_CHECK(ToString("") == "");
-    BOOST_CHECK(ToString("abc 123") == "abc 123");
+    BOOST_CHECK_EQUAL(ToString(true), "true");
+    BOOST_CHECK_EQUAL(ToString(false), "false");
+    BOOST_CHECK_EQUAL(ToString(""), "");
+    BOOST_CHECK_EQUAL(ToString("abc 123"), "abc 123");
 
     std::ostringstream ss;
     ss << "abc 123";
     BOOST_CHECK(ToString(ss.str()) == "abc 123");
 
-    BOOST_CHECK(ToNumber("", ERROR_NUMBER_INT) == ERROR_NUMBER_INT);
-    BOOST_CHECK(ToNumber("a", ERROR_NUMBER_INT) == ERROR_NUMBER_INT);
-    BOOST_CHECK(ToNumber("abc", ERROR_NUMBER_INT) == ERROR_NUMBER_INT);
+    BOOST_CHECK_EQUAL(ToNumberOr("", ERROR_NUMBER_INT), ERROR_NUMBER_INT);
+    BOOST_CHECK_EQUAL(ToNumberOr("a", ERROR_NUMBER_INT), ERROR_NUMBER_INT);
+    BOOST_CHECK_EQUAL(ToNumberOr("abc", ERROR_NUMBER_INT), ERROR_NUMBER_INT);
 
-    BOOST_CHECK(misc::IsRealClose(ToNumber("", ERROR_NUMBER_FLOAT), ERROR_NUMBER_FLOAT));
-    BOOST_CHECK(misc::IsRealClose(ToNumber("a", ERROR_NUMBER_FLOAT), ERROR_NUMBER_FLOAT));
-    BOOST_CHECK(misc::IsRealClose(ToNumber("abc", ERROR_NUMBER_FLOAT), ERROR_NUMBER_FLOAT));
+    BOOST_CHECK(IsRealClose(ToNumberOr("", ERROR_NUMBER_FLOAT), ERROR_NUMBER_FLOAT));
+    BOOST_CHECK(IsRealClose(ToNumberOr("a", ERROR_NUMBER_FLOAT), ERROR_NUMBER_FLOAT));
+    BOOST_CHECK(IsRealClose(ToNumberOr("abc", ERROR_NUMBER_FLOAT), ERROR_NUMBER_FLOAT));
 
-    BOOST_CHECK(ToNumber("-0", ERROR_NUMBER_INT) == 0);
-    BOOST_CHECK(ToNumber("0000", ERROR_NUMBER_INT) == 0);
-    BOOST_CHECK(ToNumber("00001", ERROR_NUMBER_INT) == 1);
-    BOOST_CHECK(ToNumber("1 2", ERROR_NUMBER_INT) == ERROR_NUMBER_INT);
+    BOOST_CHECK_EQUAL(ToNumberOr("-0", ERROR_NUMBER_INT), 0);
+    BOOST_CHECK_EQUAL(ToNumberOr("0000", ERROR_NUMBER_INT), 0);
+    BOOST_CHECK_EQUAL(ToNumberOr("00001", ERROR_NUMBER_INT), 1);
+    BOOST_CHECK_EQUAL(ToNumberOr("1 2", ERROR_NUMBER_INT), ERROR_NUMBER_INT);
 
-    BOOST_CHECK(ToNumber("1.9", ERROR_NUMBER_INT) == ERROR_NUMBER_INT);
+    BOOST_CHECK_EQUAL(ToNumberOr("1.9", ERROR_NUMBER_INT), 1);
+
+    auto testToNumber = [&](const std::string & STR, const auto EXPECTED) {
+        const auto VALUE_IF_ERROR = static_cast<decltype(EXPECTED)>(696969.696969);
+
+        BOOST_CHECK_MESSAGE(
+            !IsRealClose(EXPECTED, VALUE_IF_ERROR),
+            "Tried to test misc::ToNumber() but the default value to use on error was equal to the "
+            "expected!  *** SANITY CHECK FAIL");
+
+        const auto ACTUAL(ToNumberOr(STR, VALUE_IF_ERROR));
+
+        std::ostringstream sss;
+        sss << "STR=\"" << STR << "\", VALUE_IF_ERROR=" << VALUE_IF_ERROR
+            << ", EXPECTED=" << EXPECTED << ", ACTUAL=" << ACTUAL << "IsRealClose<"
+            << NAMEOF_TYPE_T(decltype(VALUE_IF_ERROR)) << ">(\"" << ACTUAL << "\", \"" << EXPECTED
+            << "\") != \"" << EXPECTED << "\"";
+
+        BOOST_CHECK_MESSAGE(IsRealClose(ACTUAL, EXPECTED), sss.str());
+    };
+
+    auto testToNumberWillFailWith = [&](const std::string & STR, const auto ERROR_VALUE) {
+        BOOST_CHECK_EQUAL(ToNumberOr(STR, ERROR_VALUE), ERROR_VALUE);
+    };
+
+    auto testToNumberWillFail
+        = [&](const std::string & STR) { testToNumberWillFailWith(STR, int(696969)); };
+
+    testToNumber("999999", 999999);
+
+    testToNumber("2147483647", std::int32_t(2147483647));
+    testToNumber("2147483647.", std::int32_t(2147483647));
+    testToNumber("2147483647.0", std::int32_t(2147483647));
+    testToNumber("2147483647.0000", std::int32_t(2147483647));
+    testToNumber("2147483647.999", std::int32_t(2147483647));
+
+    testToNumber("-2147483648", std::int32_t(-2147483648));
+    testToNumber("-2147483648.", std::int32_t(-2147483648));
+    testToNumber("-2147483648.0", std::int32_t(-2147483648));
+    testToNumber("-2147483648.0000", std::int32_t(-2147483648));
+    testToNumber("-2147483648.999", std::int32_t(-2147483648));
+
+    // sign mismatches
+    testToNumberWillFailWith("-1", 1u);
+    testToNumberWillFailWith("-10", 10u);
+    testToNumberWillFailWith("-0", 0u);
+    testToNumber("-0.0", -0.0);
+    testToNumber("-0", -0.0);
+
+    // overflows
+    testToNumber("999999", short(999999));
+    testToNumber("-999999", short(-999999));
+
+    // unusual
+    testToNumber(" 0", 0);
+    testToNumber("0 ", 0);
+    testToNumber(" 0 ", 0);
+
+    testToNumber(" 00", 0);
+    testToNumber("00 ", 0);
+    testToNumber(" 00 ", 0);
+
+    testToNumber(" 000", 0);
+    testToNumber("000 ", 0);
+    testToNumber(" 000 ", 0);
+
+    testToNumber(" 1", 1);
+    testToNumber("1 ", 1);
+    testToNumber(" 1 ", 1);
+
+    testToNumber(" 123", 123);
+    testToNumber("123 ", 123);
+    testToNumber(" 123 ", 123);
+
+    testToNumber(" 1.23", 1.23);
+    testToNumber("3.21 ", 3.21);
+    testToNumber(" 9.87 ", 9.87);
+
+    testToNumber("  1", 1);
+    testToNumber("1  ", 1);
+    testToNumber("  1  ", 1);
+
+    testToNumber("   1", 1);
+    testToNumber("1   ", 1);
+    testToNumber("   1   ", 1);
+
+    testToNumber("\t0", 0);
+    testToNumber("0\t", 0);
+    testToNumber("\t0\t", 0);
+
+    testToNumber("00", 0);
+    testToNumber("000", 0);
+    testToNumber("0000", 0);
+
+    testToNumber("0001", 1);
+    testToNumber("0010", 10);
+    testToNumber("0100", 100);
+    testToNumber("1000", 1000);
+    testToNumber("01000", 1000);
+    testToNumber("001000", 1000);
+    testToNumber("0001000", 1000);
+
+    testToNumber("000123", 123);
+    testToNumber("001230", 1230);
+    testToNumber("012300", 12300);
+    testToNumber("123000", 123000);
+    testToNumber("0123000", 123000);
+    testToNumber("00123000", 123000);
+    testToNumber("000123000", 123000);
+
+    testToNumber("000123.", 123.0);
+    testToNumber("001230.", 1230.0);
+    testToNumber("012300.", 12300.0);
+    testToNumber("123000.", 123000.0);
+    testToNumber("0123000.", 123000.0);
+    testToNumber("00123000.", 123000.0);
+    testToNumber("000123000.", 123000.0);
+
+    testToNumber("000123.0", 123.0);
+    testToNumber("001230.0", 1230.0);
+    testToNumber("012300.0", 12300.0);
+    testToNumber("123000.0", 123000.0);
+    testToNumber("012300.0", 12300.0);
+    testToNumber("00123000.0", 123000.0);
+    testToNumber("000123000.0", 123000.0);
+
+    testToNumber("0.000123", 0.000123);
+    testToNumber("0.001230", 0.00123);
+    testToNumber("0.012300", 0.0123);
+    testToNumber("0.123000", 0.123);
+    testToNumber("0.0123000", 0.0123);
+    testToNumber("0.00123000", 0.00123);
+    testToNumber("0.000123000", 0.000123);
+
+    testToNumber("000123.000123", 123.000123);
+    testToNumber("001230.001230", 1230.00123);
+    testToNumber("012300.012300", 12300.0123);
+    testToNumber("123000.123000", 123000.123);
+    testToNumber("0123000.0123000", 123000.0123);
+    testToNumber("00123000.00123000", 123000.00123);
+    testToNumber("000123000.000123000", 123000.000123);
+
+    testToNumber("000.", 0.0);
+    testToNumber("00.0", 0.0);
+    testToNumber("0.00", 0.0);
+    testToNumber(".000", 0.0);
+    testToNumber("0.000", 0.0);
+    testToNumber("00.000", 0.0);
+    testToNumber("000.000", 0.0);
+
+    testToNumber("100.", 100.0);
+    testToNumber("100.0", 100.0);
+    testToNumber("10.00", 10.0);
+    testToNumber("1.000", 1.0);
+    testToNumber("10.000", 10.0);
+    testToNumber("100.000", 100.0);
+    testToNumber("1000.000", 1000.0);
+
+    testToNumber(".0", 0);
+    testToNumber("0.", 0);
+    testToNumber(".0123", 0.0123);
+    testToNumber("1230.", 1230);
+
+    testToNumber("+.0", 0);
+    testToNumber("+0.", 0);
+    testToNumber("+.0123", 0.0123);
+    testToNumber("+1230.", 1230);
+
+    testToNumber("-.0", 0);
+    testToNumber("-0.", 0);
+    testToNumber("-.0123", -0.0123);
+    testToNumber("-1230.", -1230);
+
+    // messy leading plus sign cases (some should work)
+    testToNumber(" +\t++ 0", 0);
+    testToNumber(" +\t++ -0", 0);
+
+    testToNumberWillFail(" +\t++ --0");
+
+    testToNumber(" +\t++0", 0);
+    testToNumber(" +\t++-0", 0);
+
+    testToNumberWillFail(" +\t++--0");
+
+    testToNumber(" +\t++ .0", 0.0);
+    testToNumber(" +\t++ -.0", -0.0);
+
+    testToNumberWillFail(" +\t++ --.0");
+
+    testToNumber(" +\t++.0", 0.0);
+    testToNumber(" +\t++-.0", -0.0);
+    testToNumberWillFail(" +\t++--.0");
+
+    // messy leading plus and minus sign cases (all should fail)
+    testToNumberWillFail(" +\t+-+ 0");
+    testToNumberWillFail(" +\t+-+ -0");
+
+    testToNumberWillFail(" +\t+-+ --0");
+
+    testToNumberWillFail(" +\t+-+0");
+    testToNumberWillFail(" +\t+-+-0");
+
+    testToNumberWillFail(" +\t+-+--0");
+
+    testToNumberWillFail(" +\t+-+ .0");
+    testToNumberWillFail(" +\t+-+ -.0");
+
+    testToNumberWillFail(" +\t+-+ --.0");
+
+    testToNumberWillFail(" +\t+-+.0");
+    testToNumberWillFail(" +\t+-+-.0");
+    testToNumberWillFail(" +\t+-+--.0");
+
+    //
+
+    // invalid
+    testToNumberWillFail("");
+    testToNumberWillFail(" ");
+    testToNumberWillFail("  ");
+    testToNumberWillFail("   ");
+    testToNumberWillFail("\t");
+    testToNumberWillFail("\t\t");
+    testToNumberWillFail(" \t  \t ");
+
+    testToNumberWillFail("a");
+    testToNumberWillFail("ab");
+    testToNumberWillFail("abc");
+
+    testToNumberWillFail(" a\tb  c  ");
+
+    testToNumberWillFail("a1");
+    testToNumberWillFail("a12");
+    testToNumberWillFail("a123");
+
+    testToNumberWillFail("1a");
+    testToNumberWillFail("12a");
+    testToNumberWillFail("123a");
+    testToNumberWillFail("1a23");
+    testToNumberWillFail("12a3");
+    testToNumberWillFail("1a23");
+    testToNumberWillFail("1aa23");
+    testToNumberWillFail("12a3");
+    testToNumberWillFail("12aa3");
+
+    testToNumberWillFail("1+");
+    testToNumberWillFail("12-");
+    testToNumberWillFail("123+");
+    testToNumberWillFail("1+23");
+    testToNumberWillFail("12-3");
+    testToNumberWillFail("1-+23");
+    testToNumberWillFail("1+-23");
+    testToNumberWillFail("12--3");
+    testToNumberWillFail("12++3");
+
+    testToNumberWillFail(".");
+    testToNumberWillFail(" .");
+    testToNumberWillFail(". ");
+    testToNumberWillFail(" . ");
+
+    testToNumberWillFail("..");
+    testToNumberWillFail(" ..");
+    testToNumberWillFail(".. ");
+    testToNumberWillFail(" .. ");
+
+    testToNumberWillFail("-");
+    testToNumberWillFail(" -");
+    testToNumberWillFail("- ");
+    testToNumberWillFail(" - ");
+
+    testToNumberWillFail("--");
+    testToNumberWillFail(" --");
+    testToNumberWillFail("-- ");
+    testToNumberWillFail(" -- ");
+
+    testToNumberWillFail("+");
+    testToNumberWillFail(" +");
+    testToNumberWillFail("+ ");
+    testToNumberWillFail(" + ");
+
+    testToNumberWillFail("++");
+    testToNumberWillFail(" ++");
+    testToNumberWillFail("++ ");
+    testToNumberWillFail(" ++ ");
+
+    testToNumberWillFail("-.");
+    testToNumberWillFail(".-");
+    testToNumberWillFail("-.-");
+    testToNumberWillFail(".-.");
+
+    testToNumberWillFail("-..");
+    testToNumberWillFail("..-");
+    testToNumberWillFail("-..-");
+    testToNumberWillFail("..-..");
+
+    testToNumberWillFail("--.");
+    testToNumberWillFail(".--");
+    testToNumberWillFail("--.--");
+    testToNumberWillFail(".--.");
+
+    testToNumberWillFail("+.");
+    testToNumberWillFail(".+");
+    testToNumberWillFail("+.+");
+    testToNumberWillFail(".+.");
+
+    testToNumberWillFail("+..");
+    testToNumberWillFail("..+");
+    testToNumberWillFail("+..+");
+    testToNumberWillFail("..+..");
+
+    testToNumberWillFail("++.");
+    testToNumberWillFail(".++");
+    testToNumberWillFail("++.++");
+    testToNumberWillFail(".++.");
+
+    testToNumberWillFail("++---+-++-+-");
+    testToNumberWillFail("+2+345662-357-3467-3674+-267+358+649-4i+-");
+    testToNumberWillFail("+ + - - -+ - + +-+-");
+    testToNumberWillFail("+ 236+ - -327 37-38+489 49- 3+ 839+-3+3-3");
+
+    testToNumberWillFail("-");
+    testToNumberWillFail("-.");
+    testToNumberWillFail("0-");
+    testToNumberWillFail("1--");
+    testToNumberWillFail("0--0");
+    testToNumberWillFail("1--0");
+
+    testToNumberWillFail("0 0");
+    testToNumberWillFail("1 0");
+    testToNumberWillFail("0 1");
+
+    testToNumberWillFail(" 0 0");
+    testToNumberWillFail("1 0 ");
+    testToNumberWillFail(" 0 1 ");
+
+    testToNumberWillFail("0\t0");
+    testToNumberWillFail("1\t0");
+    testToNumberWillFail("0\t1");
+
+    testToNumberWillFail("0..0");
+    testToNumberWillFail("..0");
+    testToNumberWillFail("0..");
+
+    testToNumberWillFail("0...0");
+    testToNumberWillFail("...0");
+    testToNumberWillFail("0...");
+
+    testToNumberWillFail("-0..0");
+    testToNumberWillFail("-..0");
+    testToNumberWillFail("-0..");
+
+    testToNumberWillFail("+0..0");
+    testToNumberWillFail("+..0");
+    testToNumberWillFail("+0..");
+
+    testToNumberWillFail("000..");
+    testToNumberWillFail("00..0");
+    testToNumberWillFail("0..00");
+    testToNumberWillFail("..000");
+    testToNumberWillFail("0..000");
+    testToNumberWillFail("00..000");
+    testToNumberWillFail("000..000");
+
+    testToNumberWillFail("123..");
+    testToNumberWillFail("12..3");
+    testToNumberWillFail("1..23");
+    testToNumberWillFail("..321");
+    testToNumberWillFail("1..234");
+    testToNumberWillFail("12..345");
+    testToNumberWillFail("123..456");
+
+    testToNumberWillFail(".000.000");
+    testToNumberWillFail("0.00.000");
+    testToNumberWillFail("00.0.000");
+    testToNumberWillFail("000.0.00");
+    testToNumberWillFail("000.00.0");
+    testToNumberWillFail("000.000.");
+
+    testToNumberWillFail(".123.456");
+    testToNumberWillFail("1.23.456");
+    testToNumberWillFail("12.3.456");
+    testToNumberWillFail("123.4.56");
+    testToNumberWillFail("123.45.6");
+    testToNumberWillFail("123.456.");
+
+    testToNumberWillFail("1.23.4..567...8.9.....0.");
+
+    testToNumberWillFail("cat");
+    testToNumberWillFail("cat and dog");
+    testToNumberWillFail("This looks like a typical sentence.");
+    testToNumberWillFail("../../src/dir/thing/text.txt");
+    testToNumberWillFail("C:\\Program Files\\SomeApp\\SomeApp.exe");
 }
 
 BOOST_AUTO_TEST_CASE(misc_strings__NumberToStringWithOrdinalSuffix)
@@ -591,19 +1061,18 @@ BOOST_AUTO_TEST_CASE(misc_strings__ContainsAnyOf)
 
 BOOST_AUTO_TEST_CASE(misc_strings__FindNumber)
 {
-    const int ERROR_NUMBER { -1 };
+    // const int ERROR_NUMBER { -1 };
 
     // test empty input cases
     {
-        BOOST_CHECK(FindNumber(0, "", ERROR_NUMBER) == ERROR_NUMBER);
-        BOOST_CHECK(FindNumber(1, "", ERROR_NUMBER) == ERROR_NUMBER);
-        BOOST_CHECK(FindNumber(2, "", ERROR_NUMBER) == ERROR_NUMBER);
-        BOOST_CHECK(FindNumber(3, "", ERROR_NUMBER) == ERROR_NUMBER);
-        BOOST_CHECK(FindNumber(10, "", ERROR_NUMBER) == ERROR_NUMBER);
-
-        BOOST_CHECK(
-            FindNumber(static_cast<std::size_t>(std::numeric_limits<int>::max()), "", ERROR_NUMBER)
-            == ERROR_NUMBER);
+        BOOST_CHECK(FindNumber(-1, "") < 0);
+        BOOST_CHECK(FindNumber(0, "") < 0);
+        BOOST_CHECK(FindNumber(1, "") < 0);
+        BOOST_CHECK(FindNumber(2, "") < 0);
+        BOOST_CHECK(FindNumber(3, "") < 0);
+        BOOST_CHECK(FindNumber(10, "") < 0);
+        BOOST_CHECK(FindNumber(std::numeric_limits<int>::max(), "") < 0);
+        BOOST_CHECK(FindNumber(std::numeric_limits<int>::lowest(), "") < 0);
     }
 
     // strings with no numbers tests
@@ -614,27 +1083,42 @@ BOOST_AUTO_TEST_CASE(misc_strings__FindNumber)
             "."
         };
 
-        BOOST_CHECK(
-            FindNumber(0, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS, ERROR_NUMBER) == ERROR_NUMBER);
+        BOOST_CHECK_MESSAGE(
+            FindNumber(-1, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS) < 0,
+            "FindNumber(-1, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS) = " << FindNumber(
+                -1, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS));
+
+        BOOST_CHECK_MESSAGE(
+            FindNumber(0, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS) < 0,
+            "FindNumber(0, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS)  = " << FindNumber(
+                0, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS));
+
+        BOOST_CHECK_MESSAGE(
+            FindNumber(1, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS) < 0,
+            "FindNumber(1, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS)  = " << FindNumber(
+                1, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS));
+
+        BOOST_CHECK_MESSAGE(
+            FindNumber(2, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS) < 0,
+            "FindNumber(2, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS)  = " << FindNumber(
+                2, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS));
+
+        BOOST_CHECK_MESSAGE(
+            FindNumber(3, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS) < 0,
+            "FindNumber(3, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS)  = " << FindNumber(
+                3, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS));
+
+        BOOST_CHECK_MESSAGE(
+            FindNumber(10, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS) < 0,
+            "FindNumber(10, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS) = " << FindNumber(
+                10, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS));
 
         BOOST_CHECK(
-            FindNumber(1, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS, ERROR_NUMBER) == ERROR_NUMBER);
+            FindNumber(std::numeric_limits<int>::max(), TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS) < 0);
 
         BOOST_CHECK(
-            FindNumber(2, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS, ERROR_NUMBER) == ERROR_NUMBER);
-
-        BOOST_CHECK(
-            FindNumber(3, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS, ERROR_NUMBER) == ERROR_NUMBER);
-
-        BOOST_CHECK(
-            FindNumber(10, TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS, ERROR_NUMBER) == ERROR_NUMBER);
-
-        BOOST_CHECK(
-            FindNumber(
-                std::numeric_limits<int>::max(),
-                TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS,
-                ERROR_NUMBER)
-            == ERROR_NUMBER);
+            FindNumber(std::numeric_limits<int>::lowest(), TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS)
+            < 0);
     }
 
     // test cases where strings are there to be found
@@ -645,29 +1129,23 @@ BOOST_AUTO_TEST_CASE(misc_strings__FindNumber)
             "123456789."
         };
 
-        BOOST_CHECK(FindNumber(0, TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == 0);
-        BOOST_CHECK(FindNumber(1, TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == 1);
-        BOOST_CHECK(FindNumber(2, TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == 234);
+        BOOST_CHECK_EQUAL(FindNumber(0, TEST_STRING_TO_SEARCH_WITH_NUMBERS), 0);
+        BOOST_CHECK_EQUAL(FindNumber(1, TEST_STRING_TO_SEARCH_WITH_NUMBERS), 1);
+        BOOST_CHECK_EQUAL(FindNumber(2, TEST_STRING_TO_SEARCH_WITH_NUMBERS), 234);
+        BOOST_CHECK(FindNumber(3, TEST_STRING_TO_SEARCH_WITH_NUMBERS) < 0);
+        BOOST_CHECK_EQUAL(FindNumber(4, TEST_STRING_TO_SEARCH_WITH_NUMBERS), 123456789);
+        BOOST_CHECK(FindNumber(5, TEST_STRING_TO_SEARCH_WITH_NUMBERS) < 0);
+        BOOST_CHECK(FindNumber(6, TEST_STRING_TO_SEARCH_WITH_NUMBERS) < 0);
+        BOOST_CHECK(FindNumber(7, TEST_STRING_TO_SEARCH_WITH_NUMBERS) < 0);
+        BOOST_CHECK(FindNumber(8, TEST_STRING_TO_SEARCH_WITH_NUMBERS) < 0);
 
         BOOST_CHECK(
-            FindNumber(3, TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == ERROR_NUMBER);
-
-        BOOST_CHECK(FindNumber(4, TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == 123456789);
-
-        BOOST_CHECK(
-            FindNumber(5, TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == ERROR_NUMBER);
-
-        BOOST_CHECK(
-            FindNumber(10, TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == ERROR_NUMBER);
-
-        BOOST_CHECK(
-            FindNumber(
-                std::numeric_limits<int>::max(), TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER)
-            == ERROR_NUMBER);
+            FindNumber(std::numeric_limits<int>::max(), TEST_STRING_TO_SEARCH_WITH_NUMBERS) < 0);
 
         // test helper functions
-        BOOST_CHECK(FindFirstNumber(TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == 0);
-        BOOST_CHECK(FindLastNumber(TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == 123456789);
+        BOOST_CHECK_EQUAL(FindNumberFirst(TEST_STRING_TO_SEARCH_WITH_NUMBERS), 0);
+
+        BOOST_CHECK_EQUAL(FindNumberLast(TEST_STRING_TO_SEARCH_WITH_NUMBERS), 123456789);
     }
 }
 
@@ -769,32 +1247,32 @@ BOOST_AUTO_TEST_CASE(join_when_empty_tests)
     {
         const auto SIZET_VALUE { static_cast<std::size_t>(VALUE) };
 
-        const auto EMPTY_RESULT_1 { Join(EMPTY, SIZET_VALUE) };
+        const auto EMPTY_RESULT_1 { Join(EMPTY, JoinHow(JoinOpt::Nothing, SIZET_VALUE)) };
 
         BOOST_CHECK_MESSAGE(
             (EMPTY_RESULT_1 == ""),
             "Join(empty, " << VALUE << ") result=\"" << EMPTY_RESULT_1 << "\"");
 
-        const auto EMPTY_RESULT_2 { Join(EMPTY, SIZET_VALUE, Wrap) };
+        const auto EMPTY_RESULT_2 { Join(EMPTY, JoinHow(JoinOpt::Wrap, SIZET_VALUE)) };
 
         BOOST_CHECK_MESSAGE(
             (EMPTY_RESULT_2 == ""),
             "Join(empty, " << VALUE << ", Wrap) result=\"" << EMPTY_RESULT_2 << "\"");
 
-        const auto EMPTY_RESULT_3 { Join(EMPTY, SIZET_VALUE, And) };
+        const auto EMPTY_RESULT_3 { Join(EMPTY, JoinHow(JoinOpt::And, SIZET_VALUE)) };
 
         BOOST_CHECK_MESSAGE(
             (EMPTY_RESULT_3 == ""),
             "Join(empty, " << VALUE << ", And) result=\"" << EMPTY_RESULT_3 << "\"");
 
-        const auto EMPTY_RESULT_4 { Join(EMPTY, SIZET_VALUE, Ellipsis) };
+        const auto EMPTY_RESULT_4 { Join(EMPTY, JoinHow(JoinOpt::Ellipsis, SIZET_VALUE)) };
 
         BOOST_CHECK_MESSAGE(
             (EMPTY_RESULT_4 == ""),
             "Join(empty, " << VALUE << ", Ellipsis) result=\"" << EMPTY_RESULT_4 << "\"");
 
         const auto EMPTY_RESULT_5 { Join(
-            EMPTY, SIZET_VALUE, static_cast<JoinOpt>(Wrap | And | Ellipsis)) };
+            EMPTY, JoinHow((JoinOpt::Wrap | JoinOpt::And | JoinOpt::Ellipsis), SIZET_VALUE)) };
 
         BOOST_CHECK_MESSAGE(
             (EMPTY_RESULT_5 == ""),
@@ -802,26 +1280,41 @@ BOOST_AUTO_TEST_CASE(join_when_empty_tests)
     }
 }
 
+#define M_TEST_JOIN(vec, join_options, max_count, expected_str)                                    \
+    BOOST_CHECK_MESSAGE(                                                                           \
+        (Join(vec, JoinHow(join_options, max_count, ", ")) == expected_str),                       \
+        "MACRO_TEST_JOIN(" #vec ", " #join_options ", max_count=" #max_count                       \
+        ") expected=\"" #expected_str "\", actual=\""                                              \
+            << Join(vec, JoinHow(join_options, max_count, ", ")) << "\"");
+
 BOOST_AUTO_TEST_CASE(join_123_tests)
 {
-    namespace ts = test_stuff;
-    const ts::IntVec_t A = { 1, 2, 3 };
+    const std::vector<std::string> NUM_STR_VEC { "1", "2", "3" };
 
-    BOOST_CHECK(Join(A, 0) == "1, 2, 3");
-    BOOST_CHECK(Join(A, 9) == "1, 2, 3");
-    BOOST_CHECK(Join(A, 3) == "1, 2, 3");
-    BOOST_CHECK(Join(A, 2) == "1, 2");
-    BOOST_CHECK(Join(A, 1) == "1");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Nothing, 0, "1, 2, 3");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Nothing, 1, "1");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Nothing, 2, "1, 2");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Nothing, 3, "1, 2, 3");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Nothing, 4, "1, 2, 3");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Nothing, 5, "1, 2, 3");
 
-    BOOST_CHECK(Join(A, 0, Wrap) == "(1, 2, 3)");
-    BOOST_CHECK(Join(A, 2, Wrap) == "(1, 2)");
-    BOOST_CHECK(Join(A, 1, Wrap) == "(1)");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Wrap, 0, "(1, 2, 3)");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Wrap, 1, "(1)");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Wrap, 2, "(1, 2)");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Wrap, 3, "(1, 2, 3)");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Wrap, 4, "(1, 2, 3)");
 
-    BOOST_CHECK(Join(A, 0, And) == "1, 2, and 3");
-    BOOST_CHECK(Join(A, 2, And) == "1, 2");
-    BOOST_CHECK(Join(A, 1, And) == "1");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Ellipsis, 0, "1, 2, 3");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Ellipsis, 1, "1...");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Ellipsis, 2, "1, 2...");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Ellipsis, 3, "1, 2, 3");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Ellipsis, 4, "1, 2, 3");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::Ellipsis, 5, "1, 2, 3");
 
-    BOOST_CHECK(Join(A, 0, Ellipsis) == "1, 2, 3");
-    BOOST_CHECK(Join(A, 2, Ellipsis) == "1, 2...");
-    BOOST_CHECK(Join(A, 1, Ellipsis) == "1...");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::And, 0, "1, 2, and 3");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::And, 1, "1");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::And, 2, "1, 2");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::And, 3, "1, 2, and 3");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::And, 4, "1, 2, and 3");
+    M_TEST_JOIN(NUM_STR_VEC, JoinOpt::And, 5, "1, 2, and 3");
 }

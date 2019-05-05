@@ -209,12 +209,9 @@ namespace interact
             }
             else if (CREATURE_PTR->CanTakeAction() == false)
             {
-                std::ostringstream ss;
-
-                ss << creature::sex::HeSheIt(CREATURE_PTR->Sex(), true) << " is "
-                   << CREATURE_PTR->CanTakeActionStr(false) << ".";
-
-                invalidMsgsVec[i] = ss.str();
+                invalidMsgsVec[i]
+                    = (creature::sex::HeSheIt(CREATURE_PTR->Sex(), true) + " is "
+                       + CREATURE_PTR->CanTakeActionStr(false) + ".");
             }
             else
             {

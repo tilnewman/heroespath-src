@@ -92,7 +92,10 @@ namespace stage
 
         const std::string ToString() const
         {
-            std::string str("stage_setup=" + stage::Stage::ToString(stage));
+            std::string str;
+            str.reserve(128);
+
+            str += ("stage_setup=" + stage::Stage::ToString(stage));
 
             if (will_advance_turn)
             {

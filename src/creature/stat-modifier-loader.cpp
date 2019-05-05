@@ -14,8 +14,6 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/strings.hpp"
 
-#include "boost/lexical_cast.hpp"
-
 #include <vector>
 
 namespace heroespath
@@ -27,7 +25,7 @@ namespace creature
         StatModifierLoader::ConvertStringToStatSet(const std::string & DATA_FILE_VALUE_STR)
     {
         const std::vector<std::string> STAT_VALUES_STR_VEC { misc::SplitByChars(
-            DATA_FILE_VALUE_STR, misc::SplitHow(',')) };
+            DATA_FILE_VALUE_STR, misc::SplitHow(",")) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (STAT_VALUES_STR_VEC.size() == 6),
@@ -40,15 +38,7 @@ namespace creature
         StatSet statSet;
         for (std::size_t i(0); i < STAT_VALUES_STR_VEC.size(); ++i)
         {
-            Trait_t nextValue { ERROR_VALUE };
-            try
-            {
-                nextValue = boost::lexical_cast<Trait_t>(STAT_VALUES_STR_VEC.at(i));
-            }
-            catch (...)
-            {
-                nextValue = ERROR_VALUE;
-            }
+            Trait_t nextValue = misc::ToNumberOr(STAT_VALUES_STR_VEC.at(i), ERROR_VALUE);
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (nextValue != ERROR_VALUE),

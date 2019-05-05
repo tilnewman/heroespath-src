@@ -71,7 +71,7 @@ namespace combat
                 misc::VectorMap<EnumType, float> & OutParam_EnumChanceMap) const
             {
                 const std::vector<std::string> ENUM_CHANCE_STR_VEC { misc::SplitByChars(
-                    SUB_STR, misc::SplitHow(':')) };
+                    SUB_STR, misc::SplitHow(":")) };
 
                 if (ENUM_CHANCE_STR_VEC.size() != 2)
                 {

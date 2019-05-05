@@ -10,13 +10,13 @@
 // text.hpp
 //
 #include "gui/font-enum.hpp"
-#include "misc/enum-common.hpp"
+#include "misc/enum-util.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-#include <ostream>
+#include <iosfwd>
 #include <string>
 
 namespace heroespath
@@ -77,12 +77,17 @@ namespace gui
         void draw(sf::RenderTarget & target, sf::RenderStates states) const final;
 
         // returns true if size and font are valid and if text is not empty
-        bool IsValid() const;
+        bool IsValid() const
+        {
+            return !(
+                text_.empty() || !EnumUtil<GuiFont>::IsValid(font_) || (getCharacterSize() == 0));
+        }
 
         // returns true if IsValid() and color is not transparent
         bool WillDraw() const { return (IsValid() && (getFillColor().a > 0)); }
 
         std::size_t size() const { return text_.size(); }
+
         bool empty() const { return text_.empty(); }
 
         const sf::Vector2f findCharacterPos(const std::size_t INDEX) const
@@ -184,11 +189,7 @@ namespace gui
 
 } // namespace gui
 
-inline std::ostream & operator<<(std::ostream & os, const gui::Text & TEXT)
-{
-    os << TEXT.ToString();
-    return os;
-}
+std::ostream & operator<<(std::ostream & os, const gui::Text & TEXT);
 
 } // namespace heroespath
 

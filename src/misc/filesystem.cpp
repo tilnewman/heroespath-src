@@ -16,7 +16,6 @@
 #include "misc/vector-map.hpp"
 
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <algorithm>
 #include <sstream>
@@ -370,7 +369,7 @@ namespace misc
                 continue;
             }
 
-            const auto LAST_NUMBER_IN_FILE_NAME { misc::FindLastNumber(Filename(PATH)) };
+            const auto LAST_NUMBER_IN_FILE_NAME { misc::FindNumberLast(Filename(PATH)) };
 
             if (LAST_NUMBER_IN_FILE_NAME < 0)
             {
@@ -500,6 +499,8 @@ namespace misc
         }
 
         std::string finalPathStr;
+        finalPathStr.reserve(pathPartStrings.size() * 32);
+
         for (const auto & PATH_PART_STRING : pathPartStrings)
         {
             finalPathStr += PATH_PART_STRING;
@@ -645,6 +646,7 @@ namespace misc
         }();
 
         std::string finalStr;
+        finalStr.reserve(256);
 
         if (MESSAGE.empty() == false)
         {

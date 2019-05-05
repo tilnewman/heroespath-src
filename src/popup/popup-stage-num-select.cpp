@@ -45,9 +45,9 @@ namespace popup
 
         const auto CURR_VAL { popupInfo_.NumberSelMin()
                               + static_cast<std::size_t>(
-                                  CURR_RATIO
-                                  * static_cast<float>(
-                                      popupInfo_.NumberSelMax() - popupInfo_.NumberSelMin())) };
+                                    CURR_RATIO
+                                    * static_cast<float>(
+                                          popupInfo_.NumberSelMax() - popupInfo_.NumberSelMin())) };
 
         selection_ = static_cast<int>(CURR_VAL);
 
@@ -107,11 +107,10 @@ namespace popup
             TEXTENTRY_BOX_WIDTH,
             TEXTENTRY_BOX_HEIGHT);
 
-        std::ostringstream minNumSS;
-        minNumSS << popupInfo_.NumberSelMin();
+        const auto NUMBER_SEL_MIN_STR(std::to_string(popupInfo_.NumberSelMin()));
 
         const gui::TextInfo TEXTENTRY_TEXT_INFO(
-            minNumSS.str(),
+            NUMBER_SEL_MIN_STR,
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Large(),
             sf::Color::White,
@@ -130,7 +129,7 @@ namespace popup
             sfutil::color::Light,
             boxInfo);
 
-        textEntryBoxUPtr_->SetText(minNumSS.str());
+        textEntryBoxUPtr_->SetText(NUMBER_SEL_MIN_STR);
         EntityAdd(textEntryBoxUPtr_);
     }
 
@@ -199,18 +198,7 @@ namespace popup
         }
 
         const auto TEXT { misc::TrimWhitespaceCopy(textEntryBoxUPtr_->GetText()) };
-
-        int num(NUMBER_SELECT_INVALID_);
-        try
-        {
-            num = boost::lexical_cast<int>(TEXT);
-        }
-        catch (...)
-        {
-            num = NUMBER_SELECT_INVALID_;
-        }
-
-        return num;
+        return misc::ToNumberOr(TEXT, NUMBER_SELECT_INVALID_);
     }
 
     bool PopupStageNumberSelect::ProcessSelectNumber()
@@ -221,32 +209,31 @@ namespace popup
         if (ORIG_SELECTION_NUM < 0)
         {
             selection_ = NUMBER_SELECT_INVALID_;
-            std::ostringstream ss;
 
-            ss << "(invalid, type a number between " << popupInfo_.NumberSelMin() << " and "
-               << popupInfo_.NumberSelMax() << ")";
+            SetupMessageText(
+                "(invalid, type a number between " + std::to_string(popupInfo_.NumberSelMin())
+                + " and " + std::to_string(popupInfo_.NumberSelMax()) + ")");
 
-            SetupMessageText(ss.str());
             return false;
         }
         else if (ORIG_SELECTION_NUM < static_cast<int>(popupInfo_.NumberSelMin()))
         {
             selection_ = NUMBER_SELECT_INVALID_;
-            std::ostringstream ss;
 
-            ss << "(the number is too small, the minimum is " << popupInfo_.NumberSelMin() << ")";
+            SetupMessageText(
+                "(the number is too small, the minimum is "
+                + std::to_string(popupInfo_.NumberSelMin()) + ")");
 
-            SetupMessageText(ss.str());
             return false;
         }
         else if (ORIG_SELECTION_NUM > static_cast<int>(popupInfo_.NumberSelMax()))
         {
             selection_ = NUMBER_SELECT_INVALID_;
-            std::ostringstream ss;
 
-            ss << "(the number is too large, the maximum is " << popupInfo_.NumberSelMax() << ")";
+            SetupMessageText(
+                "(the number is too large, the maximum is "
+                + std::to_string(popupInfo_.NumberSelMax()) + ")");
 
-            SetupMessageText(ss.str());
             return false;
         }
         else

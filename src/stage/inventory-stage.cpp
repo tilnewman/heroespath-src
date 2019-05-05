@@ -1122,11 +1122,15 @@ namespace stage
 
     void InventoryStage::Setup_CreatureDetails(const bool WILL_UPDATE_POSITION)
     {
-        std::string str(
-            "Character # "
-            + std::to_string(game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1)
-            + "\n" + creaturePtr_->Name() + "\n" + creaturePtr_->SexName() + "\n"
-            + creaturePtr_->RaceName());
+        std::string str;
+        str.reserve(256);
+
+        str
+            += ("Character # "
+                + std::to_string(
+                      game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1)
+                + "\n" + creaturePtr_->Name() + "\n" + creaturePtr_->SexName() + "\n"
+                + creaturePtr_->RaceName());
 
         if (creaturePtr_->IsBeast())
         {

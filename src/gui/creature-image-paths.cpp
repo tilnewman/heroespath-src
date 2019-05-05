@@ -121,12 +121,10 @@ namespace gui
                                     allPaths.erase(imagePathFoundIter);
                                 }
 
-                                std::ostringstream ss;
-                                ss << " CreatureImagePaths Tested race=" << RACE_STR
-                                   << " role=" << ROLE_STR << " sex=" << SEX_STR
-                                   << " wolfen_class=" << CLASS_STR << " filename=" << FILENAME;
-
-                                iStagePtr->TestingStrAppend(ss.str());
+                                iStagePtr->TestingStrAppend(
+                                    (" CreatureImagePaths Tested race=" + RACE_STR
+                                     + " role=" + ROLE_STR + " sex=" + SEX_STR
+                                     + " wolfen_class=" + CLASS_STR + " filename=" + FILENAME));
 
                                 allPaths.erase(
                                     std::remove(std::begin(allPaths), std::end(allPaths), PATH),
@@ -179,12 +177,10 @@ namespace gui
                                     allPaths.erase(imagePathFoundIter);
                                 }
 
-                                std::ostringstream ss;
-                                ss << " CreatureImagePaths Tested race=" << RACE_STR
-                                   << " role=" << ROLE_STR << " sex=" << SEX_STR
-                                   << " dragon_class=" << CLASS_STR << " filename=" << FILENAME;
-
-                                iStagePtr->TestingStrAppend(ss.str());
+                                iStagePtr->TestingStrAppend(
+                                    " CreatureImagePaths Tested race=" + RACE_STR
+                                    + " role=" + ROLE_STR + " sex=" + SEX_STR
+                                    + " dragon_cla+=" + CLASS_STR + " filename=" + FILENAME);
 
                                 allPaths.erase(
                                     std::remove(std::begin(allPaths), std::end(allPaths), PATH),
@@ -229,12 +225,9 @@ namespace gui
                                 allPaths.erase(imagePathFoundIter);
                             }
 
-                            std::ostringstream ss;
-                            ss << " CreatureImagePaths Tested race=" << RACE_STR
-                               << " role=" << ROLE_STR << " sex=" << SEX_STR
-                               << " filename=" << FILENAME;
-
-                            iStagePtr->TestingStrAppend(ss.str());
+                            iStagePtr->TestingStrAppend(
+                                " CreatureImagePaths Tested race=" + RACE_STR + " role=" + ROLE_STR
+                                + " sex=" + SEX_STR + " filename=" + FILENAME);
 
                             allPaths.erase(
                                 std::remove(std::begin(allPaths), std::end(allPaths), PATH),
@@ -402,12 +395,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
+                const std::size_t COUNT(13);
                 std::vector<std::string> filenames;
-                for (std::size_t i(1); i <= 13; ++i)
+                filenames.reserve(COUNT + 1);
+                for (std::size_t i(1); i <= COUNT; ++i)
                 {
-                    std::ostringstream ss;
-                    ss << "orc-grunt-" << i << ".png";
-                    filenames.emplace_back(ss.str());
+                    filenames.emplace_back("orc-grunt-" + std::to_string(i) + ".png");
                 }
 
                 return filenames;
@@ -463,12 +456,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
+                const std::size_t COUNT(6);
                 std::vector<std::string> filenames;
-                for (std::size_t i(1); i <= 6; ++i)
+                filenames.reserve(COUNT + 1);
+                for (std::size_t i(1); i <= COUNT; ++i)
                 {
-                    std::ostringstream ss;
-                    ss << "newt-" << i << ".png";
-                    filenames.emplace_back(ss.str());
+                    filenames.emplace_back("newt-" + std::to_string(i) + ".png");
                 }
                 return filenames;
             }
@@ -479,9 +472,7 @@ namespace gui
             std::vector<std::string> filenames;
             for (std::size_t i(1); i <= 9; ++i)
             {
-                std::ostringstream ss;
-                ss << "spider-giant-" << i << ".png";
-                filenames.emplace_back(ss.str());
+                filenames.emplace_back("spider-giant-" + std::to_string(i) + ".png");
             }
             return filenames;
         }
@@ -592,12 +583,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
+                const std::size_t COUNT(12);
                 std::vector<std::string> filenames;
-                for (std::size_t i(1); i <= 12; ++i)
+                filenames.reserve(COUNT + 1);
+                for (std::size_t i(1); i <= COUNT; ++i)
                 {
-                    std::ostringstream ss;
-                    ss << "lizard-walker-" << i << ".png";
-                    filenames.emplace_back(ss.str());
+                    filenames.emplace_back("lizard-walker-" + std::to_string(i) + ".png");
                 }
                 return filenames;
             }
@@ -743,12 +734,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
+                const std::size_t COUNT(8);
                 std::vector<std::string> filenames;
-                for (std::size_t i(1); i <= 8; ++i)
+                filenames.reserve(COUNT + 1);
+                for (std::size_t i(1); i <= COUNT; ++i)
                 {
-                    std::ostringstream ss;
-                    ss << "skeleton-" << i << ".png";
-                    filenames.emplace_back(ss.str());
+                    filenames.emplace_back("skeleton-" + std::to_string(i) + ".png");
                 }
                 return filenames;
             }
@@ -801,12 +792,12 @@ namespace gui
 
             if (ROLE == creature::role::Whelp)
             {
+                const std::size_t COUNT(4);
                 std::vector<std::string> filenames;
-                for (std::size_t i(1); i <= 4; ++i)
+                filenames.reserve(COUNT + 1);
+                for (std::size_t i(1); i <= COUNT; ++i)
                 {
-                    std::ostringstream ss;
-                    ss << "demon-whelp-" << i << ".png";
-                    filenames.emplace_back(ss.str());
+                    filenames.emplace_back("demon-whelp-" + std::to_string(i) + ".png");
                 }
                 return filenames;
             }
@@ -818,12 +809,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
+                const std::size_t COUNT(9);
                 std::vector<std::string> filenames;
-                for (std::size_t i(1); i <= 9; ++i)
+                filenames.reserve(COUNT + 1);
+                for (std::size_t i(1); i <= COUNT; ++i)
                 {
-                    std::ostringstream ss;
-                    ss << "demon-" << i << ".png";
-                    filenames.emplace_back(ss.str());
+                    filenames.emplace_back("demon-" + std::to_string(i) + ".png");
                 }
                 return filenames;
             }
@@ -962,12 +953,12 @@ namespace gui
                 }
                 else
                 {
+                    const std::size_t COUNT(13);
                     std::vector<std::string> filenames;
-                    for (std::size_t i(1); i <= 13; ++i)
+                    filenames.reserve(COUNT + 1);
+                    for (std::size_t i(1); i <= COUNT; ++i)
                     {
-                        std::ostringstream ss;
-                        ss << "goblin-grunt-" << i << ".png";
-                        filenames.emplace_back(ss.str());
+                        filenames.emplace_back("goblin-grunt-" + std::to_string(i) + ".png");
                     }
                     return filenames;
                 }
@@ -980,42 +971,24 @@ namespace gui
             {
                 switch (DRAGON_CLASS)
                 {
-                    case creature::dragon_class::Hatchling:
-                    {
-                        return { "dragon-fb-hatchling.png" };
+                    case creature::dragon_class::Hatchling: { return { "dragon-fb-hatchling.png" };
                     }
-                    case creature::dragon_class::Whelp:
-                    {
-                        return { "dragon-fb-whelp.png" };
+                    case creature::dragon_class::Whelp: { return { "dragon-fb-whelp.png" };
                     }
-                    case creature::dragon_class::Fledgling:
-                    {
-                        return { "dragon-fb-fledgling.png" };
+                    case creature::dragon_class::Fledgling: { return { "dragon-fb-fledgling.png" };
                     }
-                    case creature::dragon_class::Juvenile:
-                    {
-                        return { "dragon-fb-juvenile.png" };
+                    case creature::dragon_class::Juvenile: { return { "dragon-fb-juvenile.png" };
                     }
-                    case creature::dragon_class::Adult:
-                    {
-                        return { "dragon-fb-adult.png" };
+                    case creature::dragon_class::Adult: { return { "dragon-fb-adult.png" };
                     }
-                    case creature::dragon_class::Wyrm:
-                    {
-                        return { "dragon-fb-wyrm.png" };
+                    case creature::dragon_class::Wyrm: { return { "dragon-fb-wyrm.png" };
                     }
-                    case creature::dragon_class::Skycaster:
-                    {
-                        return { "dragon-fb-skycaster.png" };
+                    case creature::dragon_class::Skycaster: { return { "dragon-fb-skycaster.png" };
                     }
-                    case creature::dragon_class::Elder:
-                    {
-                        return { "dragon-fb-elder.png" };
+                    case creature::dragon_class::Elder: { return { "dragon-fb-elder.png" };
                     }
                     case creature::dragon_class::Count:
-                    default:
-                    {
-                        break;
+                    default: { break;
                     }
                 }
             }
@@ -1024,42 +997,24 @@ namespace gui
             {
                 switch (DRAGON_CLASS)
                 {
-                    case creature::dragon_class::Hatchling:
-                    {
-                        return { "dragon-syl-hatchling.png" };
+                    case creature::dragon_class::Hatchling: { return { "dragon-syl-hatchling.png" };
                     }
-                    case creature::dragon_class::Whelp:
-                    {
-                        return { "dragon-syl-whelp.png" };
+                    case creature::dragon_class::Whelp: { return { "dragon-syl-whelp.png" };
                     }
-                    case creature::dragon_class::Fledgling:
-                    {
-                        return { "dragon-syl-fledgling.png" };
+                    case creature::dragon_class::Fledgling: { return { "dragon-syl-fledgling.png" };
                     }
-                    case creature::dragon_class::Juvenile:
-                    {
-                        return { "dragon-syl-juvenile.png" };
+                    case creature::dragon_class::Juvenile: { return { "dragon-syl-juvenile.png" };
                     }
-                    case creature::dragon_class::Adult:
-                    {
-                        return { "dragon-syl-adult.png" };
+                    case creature::dragon_class::Adult: { return { "dragon-syl-adult.png" };
                     }
-                    case creature::dragon_class::Wyrm:
-                    {
-                        return { "dragon-syl-wyrm.png" };
+                    case creature::dragon_class::Wyrm: { return { "dragon-syl-wyrm.png" };
                     }
-                    case creature::dragon_class::Skycaster:
-                    {
-                        return { "dragon-syl-skycaster.png" };
+                    case creature::dragon_class::Skycaster: { return { "dragon-syl-skycaster.png" };
                     }
-                    case creature::dragon_class::Elder:
-                    {
-                        return { "dragon-syl-elder.png" };
+                    case creature::dragon_class::Elder: { return { "dragon-syl-elder.png" };
                     }
                     case creature::dragon_class::Count:
-                    default:
-                    {
-                        break;
+                    default: { break;
                     }
                 }
             }
@@ -1467,34 +1422,20 @@ namespace gui
             {
                 switch (WOLFEN_CLASS)
                 {
-                    case creature::wolfen_class::Pup:
-                    {
-                        return { "wolfen-pup.png" };
+                    case creature::wolfen_class::Pup: { return { "wolfen-pup.png" };
                     }
-                    case creature::wolfen_class::Juvenile:
-                    {
-                        return { "wolfen-juvenile.png" };
+                    case creature::wolfen_class::Juvenile: { return { "wolfen-juvenile.png" };
                     }
-                    case creature::wolfen_class::Adult:
-                    {
-                        return { "wolfen-adult.png" };
+                    case creature::wolfen_class::Adult: { return { "wolfen-adult.png" };
                     }
-                    case creature::wolfen_class::Noble:
-                    {
-                        return { "wolfen-noble.png" };
+                    case creature::wolfen_class::Noble: { return { "wolfen-noble.png" };
                     }
-                    case creature::wolfen_class::Highborn:
-                    {
-                        return { "wolfen-highborn.png" };
+                    case creature::wolfen_class::Highborn: { return { "wolfen-highborn.png" };
                     }
-                    case creature::wolfen_class::Elder:
-                    {
-                        return { "wolfen-elder.png" };
+                    case creature::wolfen_class::Elder: { return { "wolfen-elder.png" };
                     }
                     case creature::wolfen_class::Count:
-                    default:
-                    {
-                        break;
+                    default: { break;
                     }
                 }
             }

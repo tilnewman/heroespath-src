@@ -121,26 +121,28 @@ namespace gui
 
         const std::string RenderedLine::ToString() const
         {
-            std::ostringstream ss;
-            ss << "{[";
+            std::string str;
+            str.reserve(64 + (texts.size() * 128));
+
+            str += "{[";
 
             if (texts.empty())
             {
-                ss << "EMPTY";
+                str += "EMPTY";
             }
             else
             {
                 for (const auto & TEXT : texts)
                 {
-                    ss << ((TEXT.IsValid()) ? "" : "I")
-                       << EnumUtil<GuiFont>::ToUnderlyingType(TEXT.getFont()) << "("
-                       << TEXT.getGlobalBounds() << ")\"" << TEXT.getString()
-                       << "\"dsfch=" << calcDownShiftForCharHeight(TEXT) << "   ";
+                    str += ((TEXT.IsValid()) ? "" : "I")
+                        + EnumUtil<GuiFont>::ToString(TEXT.getFont()) + "("
+                        + sfutil::RectToString(TEXT.getGlobalBounds()) + ")\"" + TEXT.getString()
+                        + "\"dsfch=" + std::to_string(calcDownShiftForCharHeight(TEXT)) + "   ";
                 }
             }
 
-            ss << "]gap=" << topGap() << region << "}";
-            return ss.str();
+            str += "]gap=" + std::to_string(topGap()) + sfutil::RectToString(region) + "}";
+            return str;
         }
 
         // distance between the line top (region.top) and the tallest char top

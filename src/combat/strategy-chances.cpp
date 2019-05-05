@@ -193,8 +193,10 @@ namespace combat
 
         const std::string Chances::ToString() const
         {
-            std::string result(
-                "StrategyChances:   Select="
+            std::string result;
+            result.reserve(1024 + (outnumberRetreatChanceMap_.Size() * 16));
+
+            result = "StrategyChances:   Select="
                 + ChanceMapToString<SelectType, SelectType::Enum>(selectChanceMap_, true)
                 + "  |  Refine="
                 + ChanceMapToString<RefineType, RefineType::Enum>(refineChanceMap_, true)
@@ -210,11 +212,11 @@ namespace combat
                 + ChanceMapToString<FrequencyType, FrequencyType::Enum>(flyFreqChanceMap_, false)
                 + "  |  FlyPounce="
                 + ChanceMapToString<FrequencyType, FrequencyType::Enum>(
-                      flyPounceFreqChanceMap_, false)
+                         flyPounceFreqChanceMap_, false)
                 + "  |  StandPounce="
                 + ChanceMapToString<FrequencyType, FrequencyType::Enum>(
-                      standPounceFreqChanceMap_, false)
-                + "  |  RetreatCounts=(");
+                         standPounceFreqChanceMap_, false)
+                + "  |  RetreatCounts=(";
 
             auto count { outnumberRetreatChanceMap_.Size() };
 

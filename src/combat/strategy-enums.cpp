@@ -29,6 +29,7 @@ namespace combat
             const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
             std::string str;
+            str.reserve(128);
             AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Pixie, "Pixie", SEPARATOR);
             AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Dragon, "Dragon", SEPARATOR);
             AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Human, "Human", SEPARATOR);
@@ -64,6 +65,7 @@ namespace combat
             const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
             std::string str;
+            str.reserve(64);
             AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::Murderer, "Murderer", SEPARATOR);
 
             AppendNameIfBitIsSet(

@@ -408,8 +408,7 @@ namespace combat
                         ss << "s";
                     }
 
-                    ss << " to "
-                       << item::Algorithms::Names(HELD_WEAPONS_PVEC, 0, misc::JoinOpt::And);
+                    ss << " to " << item::Algorithms::Names(HELD_WEAPONS_PVEC, misc::JoinOpt::And);
                 }
 
                 break;
@@ -1356,7 +1355,8 @@ namespace combat
         {
             ss << ", causing "
                << creature::condition::Algorithms::Names(
-                      ADDED_CONDS_EXCLUDING_DEAD_VEC, NUM_CONDS_TO_LIST, misc::JoinOpt::And);
+                      ADDED_CONDS_EXCLUDING_DEAD_VEC,
+                      misc::JoinHow(misc::JoinOpt::And, NUM_CONDS_TO_LIST));
 
             if (NUM_ADDED_CONDS > NUM_CONDS_TO_LIST)
             {
@@ -1371,7 +1371,7 @@ namespace combat
         {
             ss << ", and eliminating "
                << creature::condition::Algorithms::Names(
-                      REMOVED_CONDS_SVEC, NUM_CONDS_TO_LIST, misc::JoinOpt::And);
+                      REMOVED_CONDS_SVEC, misc::JoinHow(misc::JoinOpt::And, NUM_CONDS_TO_LIST));
 
             if (NUM_REMOVED_CONDS > NUM_CONDS_TO_LIST)
             {

@@ -95,6 +95,8 @@ namespace misc
             Clear();
 
             std::string line;
+            line.reserve(1024);
+
             while (getline(fileStream, line))
             {
                 boost::algorithm::erase_all(line, "\n");
@@ -465,6 +467,7 @@ namespace misc
     const std::string KeyValueFile::MakeStreamErrorString(const std::ios & STREAM) const
     {
         std::string errorMessage;
+        errorMessage.reserve(128);
 
         auto appendFlagToErrorMessageIfSet
             = [&](const bool IS_FLAG_SET, const std::string & FLAG_NAME) {

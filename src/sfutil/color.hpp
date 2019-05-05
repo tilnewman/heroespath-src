@@ -11,7 +11,8 @@
 //
 #include <SFML/Graphics/Color.hpp>
 
-#include <ostream>
+#include <iosfwd>
+#include <string>
 #include <tuple>
 
 namespace sf
@@ -36,6 +37,8 @@ namespace heroespath
 {
 namespace sfutil
 {
+
+    const std::string ColorToString(const sf::Color & C);
 
     namespace color
     {

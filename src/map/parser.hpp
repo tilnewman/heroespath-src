@@ -18,8 +18,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 
 #include <string>
 #include <vector>
@@ -47,7 +46,7 @@ namespace map
     private:
         void Parse_Implementation(ParsePacket &) const;
 
-        const boost::property_tree::ptree Parse_XML(const std::string & MAP_FILE_PATH_STR) const;
+        void Parse_XML(const std::string & MAP_FILE_PATH_STR, boost::property_tree::ptree &) const;
 
         void Parse_MapSizes(const boost::property_tree::ptree &, Layout &) const;
 
@@ -61,7 +60,7 @@ namespace map
         void Prase_Layer_Generic(
             const boost::property_tree::ptree &, Layout &, const LayerType::Enum) const;
 
-        void Parse_Layer_Generic_Tiles(std::vector<int> &, std::stringstream &) const;
+        void Parse_Layer_Generic_Tiles(std::vector<int> &, const std::string &) const;
 
         void Parse_Layer_WalkBounds(const boost::property_tree::ptree &, WalkRectMap_t &) const;
 
@@ -81,14 +80,25 @@ namespace map
 
         void Parse_WalkSfx(const boost::property_tree::ptree &, WalkSfxRegionLayers &) const;
 
-        template <typename T>
-        T FetchXMLAttribute(
-            const boost::property_tree::ptree & PTREE, const std::string & NAME) const
-        {
-            return PTREE.get<T>(XML_ATTRIB_FETCH_PREFIX_ + NAME);
-        }
+        const sf::FloatRect FetchXMLAttributeFloatRect(const boost::property_tree::ptree &) const;
 
-        const std::string FetchXMLAttributeName(const boost::property_tree::ptree &) const;
+        const std::string FetchXMLAttributeString(
+            const boost::property_tree::ptree & PTREE,
+            const std::string & ATTRIB_NAME_POSTFIX) const;
+
+        int FetchXMLAttributeInt(
+            const boost::property_tree::ptree & PTREE,
+            const std::string & ATTRIB_NAME_POSTFIX) const;
+
+        float FetchXMLAttributeFloat(
+            const boost::property_tree::ptree & PTREE,
+            const std::string & ATTRIB_NAME_POSTFIX) const;
+
+        inline const std::string
+            FetchXMLAttributeName(const boost::property_tree::ptree & PTREE) const
+        {
+            return FetchXMLAttributeString(PTREE, XML_ATTRIB_NAME_NAME_);
+        }
 
         void Parse_Rects(
             const boost::property_tree::ptree &,

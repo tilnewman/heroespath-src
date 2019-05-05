@@ -11,7 +11,7 @@
 //
 #include "blend-mode.hpp"
 
-#include <sstream>
+#include <ostream>
 #include <tuple>
 
 namespace sf
@@ -58,40 +58,27 @@ std::ostream & operator<<(std::ostream & os, const sf::BlendMode & BM)
         auto blendModeEquationToString = [](const sf::BlendMode::Equation EQUATION) {
             switch (EQUATION)
             {
-                case sf::BlendMode::Equation::Add: { return "Add";
-                }
-                case sf::BlendMode::Equation::Subtract: { return "Subtract";
-                }
+                case sf::BlendMode::Equation::Add: return "Add";
+                case sf::BlendMode::Equation::Subtract: return "Subtract";
                 default:
-                case sf::BlendMode::Equation::ReverseSubtract: { return "ReverseSubtract";
-                }
+                case sf::BlendMode::Equation::ReverseSubtract: return "ReverseSubtract";
             }
         };
 
         auto blendModeFactorToString = [](const sf::BlendMode::Factor FACTOR) {
             switch (FACTOR)
             {
-                case sf::BlendMode::Factor::Zero: { return "Zero";
-                }
-                case sf::BlendMode::Factor::One: { return "One";
-                }
-                case sf::BlendMode::Factor::SrcColor: { return "SrcColor";
-                }
-                case sf::BlendMode::Factor::OneMinusSrcColor: { return "OneMinusSrcColor";
-                }
-                case sf::BlendMode::Factor::DstColor: { return "DstColor";
-                }
-                case sf::BlendMode::Factor::OneMinusDstColor: { return "OneMinusDstColor";
-                }
-                case sf::BlendMode::Factor::SrcAlpha: { return "SrcAlpha";
-                }
-                case sf::BlendMode::Factor::OneMinusSrcAlpha: { return "OneMinusSrcAlpha";
-                }
-                case sf::BlendMode::Factor::DstAlpha: { return "DstAlpha";
-                }
+                case sf::BlendMode::Factor::Zero: return "Zero";
+                case sf::BlendMode::Factor::One: return "One";
+                case sf::BlendMode::Factor::SrcColor: return "SrcColor";
+                case sf::BlendMode::Factor::OneMinusSrcColor: return "OneMinusSrcColor";
+                case sf::BlendMode::Factor::DstColor: return "DstColor";
+                case sf::BlendMode::Factor::OneMinusDstColor: return "OneMinusDstColor";
+                case sf::BlendMode::Factor::SrcAlpha: return "SrcAlpha";
+                case sf::BlendMode::Factor::OneMinusSrcAlpha: return "OneMinusSrcAlpha";
+                case sf::BlendMode::Factor::DstAlpha: return "DstAlpha";
                 default:
-                case sf::BlendMode::Factor::OneMinusDstAlpha: { return "OneMinusDstAlpha";
-                }
+                case sf::BlendMode::Factor::OneMinusDstAlpha: return "OneMinusDstAlpha";
             }
         };
 

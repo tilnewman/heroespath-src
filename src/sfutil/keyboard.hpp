@@ -129,8 +129,8 @@ namespace sfutil
         }
     }
 
-    inline char
-        sfKeyToNameValidCharacterNameChar(const sf::Keyboard::Key & KEY, const bool IS_UPPER_CASE)
+    inline char sfKeyToNameValidCharacterNameCharOrZero(
+        const sf::Keyboard::Key & KEY, const bool IS_UPPER_CASE)
     {
         if ((KEY >= sf::Keyboard::A) && (KEY <= sf::Keyboard::Z))
         {

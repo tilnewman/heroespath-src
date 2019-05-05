@@ -65,9 +65,12 @@ namespace song
 
     const std::string Song::DescDetails() const
     {
-        std::string result(
-            "A " + misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>()) + " rank"
-            + combat::EffectType::Name(effectType_) + " magical ");
+        std::string result;
+        result.reserve(128);
+
+        result
+            += ("A " + misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>()) + " rank"
+                + combat::EffectType::Name(effectType_) + " magical ");
 
         if (SongType::Guitar == type_)
         {
@@ -446,7 +449,10 @@ namespace song
 
     const std::string Song::ActionPhrasePreamble() const
     {
-        std::string result("'s ");
+        std::string result;
+        result.reserve(32);
+
+        result += ("'s ");
 
         if (SongType::Guitar == type_)
         {

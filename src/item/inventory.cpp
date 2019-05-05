@@ -352,26 +352,27 @@ namespace item
 
     const std::string Inventory::ToString() const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(32 + (itemsPVec_.size() * 32) + (equippedItemsPVec_.size() * 32));
 
-        ss << "[coins=" << coins_ << ", shards=" << meteorShards_ << ", gems=" << gems_
-           << ", items_held=";
+        str += "[coins=" + coins_.ToString() + ", shards=" + meteorShards_.ToString()
+            = ", gems=" + gems_.ToString() = ", items_held=";
 
         for (const auto & NEXT_ITEM_PTR : itemsPVec_)
         {
-            ss << NEXT_ITEM_PTR->Name() << ",";
+            str += NEXT_ITEM_PTR->Name() + ",";
         }
 
-        ss << ", items_equipped=";
+        str += ", items_equipped=";
 
         for (const auto & NEXT_EQ_ITEM_PTR : equippedItemsPVec_)
         {
-            ss << NEXT_EQ_ITEM_PTR->Name() << ",";
+            str += NEXT_EQ_ITEM_PTR->Name() + ",";
         }
 
-        ss << "]";
+        str += "]";
 
-        return ss.str();
+        return str;
     }
 
     void Inventory::BeforeSerialize()

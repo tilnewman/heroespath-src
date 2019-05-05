@@ -36,24 +36,19 @@ namespace gui
         const float LABEL_POS_OFFSET_LEFT,
         const float LABEL_POS_OFFSET_TOP)
         : SliderBar(
-            std::string(NAME).append("_SliderBarLabeled"),
-            POS_LEFT,
-            POS_TOP,
-            LENGTH,
-            STYLE,
-            boost::none,
-            INITIAL_VALUE,
-            true)
+              std::string(NAME).append("_SliderBarLabeled"),
+              POS_LEFT,
+              POS_TOP,
+              LENGTH,
+              STYLE,
+              boost::none,
+              INITIAL_VALUE,
+              true)
         , threeTextInfosHolder_(THREE_TEXT_INFOS_HOLDER)
         , textRegionUPtr_(std::make_unique<TextRegion>("SliderBarLabeled's"))
-    //, labelOffsetX_(LABEL_POS_OFFSET_LEFT)
-    //, labelOffsetY_(LABEL_POS_OFFSET_TOP)
     {
-        std::ostringstream ss;
-        ss << static_cast<int>(PositionRatio());
-
         TextInfo textInfo(THREE_TEXT_INFOS_HOLDER.up);
-        textInfo.text = ss.str();
+        textInfo.text = std::to_string(static_cast<int>(PositionRatio()));
 
         const sf::FloatRect R(
             POS_LEFT + LABEL_POS_OFFSET_LEFT, POS_TOP + LABEL_POS_OFFSET_TOP, 0.0f, 0.0f);
@@ -108,13 +103,8 @@ namespace gui
     const TextInfo SliderBarLabeled::CreateTextToDisplay(const float CURRENT_POS_RATIO)
     {
         const auto CURRENT_POS_PERCENT { static_cast<int>(CURRENT_POS_RATIO * 100.0f) };
-
         TextInfo textInfo { TextInfoFromCurrentPositionPercent(CURRENT_POS_PERCENT) };
-
-        std::ostringstream newValueIntSS;
-        newValueIntSS << CURRENT_POS_PERCENT;
-        textInfo.text = newValueIntSS.str();
-
+        textInfo.text = std::to_string(CURRENT_POS_PERCENT);
         return textInfo;
     }
 

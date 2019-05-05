@@ -596,6 +596,7 @@ namespace stage
         const auto MUSIC_INFO_VEC { gui::SoundManager::Instance()->MusicInfoSet() };
 
         std::string str;
+        str.reserve(128);
         for (const auto & MUSIC_INFO : MUSIC_INFO_VEC)
         {
             str += "\"" + MUSIC_INFO.SongName() + "\"\nby " + MUSIC_INFO.ArtistName()

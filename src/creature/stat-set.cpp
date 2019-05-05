@@ -106,46 +106,34 @@ namespace creature
 
     const std::string StatSet::ToString(const bool WILL_WRAP) const
     {
-        std::ostringstream ss;
-
-        if (!str_.IsZero())
-        {
-            ss << "Str " << ((str_ > 0_str) ? "+" : "") << str_;
-        }
-
-        if (!acc_.IsZero())
-        {
-            ss << "Acc " << ((acc_ > 0_acc) ? "+" : "") << acc_;
-        }
-
-        if (!cha_.IsZero())
-        {
-            ss << "Cha " << ((cha_ > 0_cha) ? "+" : "") << cha_;
-        }
-
-        if (!lck_.IsZero())
-        {
-            ss << "Lck " << ((lck_ > 0_lck) ? "+" : "") << lck_;
-        }
-
-        if (!spd_.IsZero())
-        {
-            ss << "Spd " << ((spd_ > 0_spd) ? "+" : "") << spd_;
-        }
-
-        if (!int_.IsZero())
-        {
-            ss << "Int " << ((int_ > 0_int) ? "+" : "") << int_;
-        }
+        std::string str;
+        str.reserve(16);
 
         if (WILL_WRAP)
         {
-            return "(" + ss.str() + ")";
+            str += "(";
         }
-        else
+
+        auto appendStatIfNeeded = [&](const auto & STAT, const std::string & NAME) {
+            if (!STAT.IsZero())
+            {
+                str += NAME + ((STAT.Get() > 0) ? " +" : " ") + STAT.ToString();
+            }
+        };
+
+        appendStatIfNeeded(str_, "Str");
+        appendStatIfNeeded(acc_, "Acc");
+        appendStatIfNeeded(cha_, "Cha");
+        appendStatIfNeeded(lck_, "Lck");
+        appendStatIfNeeded(spd_, "Spd");
+        appendStatIfNeeded(int_, "Int");
+
+        if (WILL_WRAP)
         {
-            return ss.str();
+            str += ")";
         }
+
+        return str;
     }
 
 } // namespace creature

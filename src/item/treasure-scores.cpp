@@ -28,19 +28,23 @@ namespace item
 
     const std::string TreasureScores::ToString(const bool WILL_WRAP) const
     {
-        std::ostringstream ss;
-
-        ss << "Coin=" << coin_ << ", Gem=" << gem_ << ", Magic=" << magic_
-           << ", Religious=" << religious_;
+        std::string str;
+        str.reserve(32);
 
         if (WILL_WRAP)
         {
-            return "(" + ss.str() + ")";
+            str += "(";
         }
-        else
+
+        str += "Coin=" + coin_.ToString() + ", Gem=" + gem_.ToString()
+            + ", Magic=" + magic_.ToString() + ", Religious=" + religious_.ToString();
+
+        if (WILL_WRAP)
         {
-            return ss.str();
+            str += ")";
         }
+
+        return str;
     }
 
     TreasureScores & TreasureScores::operator+=(const TreasureScores & RHS)

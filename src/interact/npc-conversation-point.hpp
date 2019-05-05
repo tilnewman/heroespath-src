@@ -62,7 +62,10 @@ namespace interact
 
         const std::string ToString() const
         {
-            std::string str("NpcConversationPoint: \"" + text_ + "\", buttons=(");
+            std::string str;
+            str.reserve(128);
+
+            str += ("NpcConversationPoint: \"" + text_ + "\", buttons=(");
 
             for (const auto BUTTON : buttons_)
             {

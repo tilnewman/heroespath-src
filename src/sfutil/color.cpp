@@ -11,58 +11,78 @@
 //
 #include "color.hpp"
 
+#include <ostream>
+#include <string>
+
+namespace heroespath
+{
+namespace sfutil
+{
+    const std::string ColorToString(const sf::Color & C)
+    {
+        std::string str;
+        str.reserve(32);
+
+        str += ("(");
+
+        if (sf::Color::Black == C)
+        {
+            str += "Black";
+        }
+        else if (sf::Color::White == C)
+        {
+            str += "White";
+        }
+        else if (sf::Color::Red == C)
+        {
+            str += "Red";
+        }
+        else if (sf::Color::Green == C)
+        {
+            str += "Green";
+        }
+        else if (sf::Color::Blue == C)
+        {
+            str += "Blue";
+        }
+        else if (sf::Color::Yellow == C)
+        {
+            str += "Yellow";
+        }
+        else if (sf::Color::Magenta == C)
+        {
+            str += "Magenta";
+        }
+        else if (sf::Color::Cyan == C)
+        {
+            str += "Cyan";
+        }
+        else
+        {
+            str += std::to_string(static_cast<unsigned>(C.r)) + ","
+                + std::to_string(static_cast<unsigned>(C.g)) + ","
+                + std::to_string(static_cast<unsigned>(C.b));
+
+            if (C.a != 255)
+            {
+                str += "," + std::to_string(static_cast<unsigned>(C.a));
+            }
+        }
+
+        str += ")";
+
+        return str;
+    }
+
+} // namespace sfutil
+} // namespace heroespath
+
 namespace sf
 {
 
 std::ostream & operator<<(std::ostream & os, const sf::Color & C)
 {
-    os << "(";
-
-    if (sf::Color::Black == C)
-    {
-        os << "Black";
-    }
-    else if (sf::Color::White == C)
-    {
-        os << "White";
-    }
-    else if (sf::Color::Red == C)
-    {
-        os << "Red";
-    }
-    else if (sf::Color::Green == C)
-    {
-        os << "Green";
-    }
-    else if (sf::Color::Blue == C)
-    {
-        os << "Blue";
-    }
-    else if (sf::Color::Yellow == C)
-    {
-        os << "Yellow";
-    }
-    else if (sf::Color::Magenta == C)
-    {
-        os << "Magenta";
-    }
-    else if (sf::Color::Cyan == C)
-    {
-        os << "Cyan";
-    }
-    else
-    {
-        os << static_cast<unsigned>(C.r) << "," << static_cast<unsigned>(C.g) << ","
-           << static_cast<unsigned>(C.b);
-
-        if (C.a != 255)
-        {
-            os << "," << static_cast<unsigned>(C.a);
-        }
-    }
-
-    os << ")";
-
+    os << heroespath::sfutil::ColorToString(C);
     return os;
 }
 

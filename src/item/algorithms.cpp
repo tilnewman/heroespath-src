@@ -12,20 +12,16 @@
 #include "algorithms.hpp"
 
 #include "item/item.hpp"
-#include "misc/random.hpp"
 
 namespace heroespath
 {
 namespace item
 {
 
-    const std::string Algorithms::Names(
-        const ItemPVec_t & ITEM_PVEC, const std::size_t MAX_COUNT, const misc::JoinOpt OPTIONS)
+    const std::string Algorithms::Names(const ItemPVec_t & ITEM_PVEC, const misc::JoinHow JOIN_HOW)
     {
-        return misc::Join<ItemPtr_t>(
-            ITEM_PVEC, MAX_COUNT, OPTIONS, [](const auto & ITEM_PTR) -> const std::string {
-                return ITEM_PTR->Name();
-            });
+        return misc::Join(
+            ITEM_PVEC, JOIN_HOW, [](const auto & ITEM_PTR) { return ITEM_PTR->Name(); });
     }
 
     const ItemPVec_t Algorithms::FindByCategory(
@@ -35,17 +31,21 @@ namespace item
     {
         ItemPVec_t resultSVec;
 
-        if (ITEM_PVEC.empty() == false)
+        if (ITEM_PVEC.empty())
         {
-            std::copy_if(
-                ITEM_PVEC.begin(),
-                ITEM_PVEC.end(),
-                back_inserter(resultSVec),
-                [CATEGORY_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
-                    return ((ITEM_PTR->Category() & CATEGORY_TYPE) != 0)
-                        == (MATCH_OPTION == MatchOpt::Equal);
-                });
+            return resultSVec;
         }
+
+        resultSVec.reserve(ITEM_PVEC.size());
+
+        std::copy_if(
+            ITEM_PVEC.begin(),
+            ITEM_PVEC.end(),
+            back_inserter(resultSVec),
+            [CATEGORY_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
+                return ((ITEM_PTR->Category() & CATEGORY_TYPE) != 0)
+                    == (MATCH_OPTION == MatchOpt::Equal);
+            });
 
         return resultSVec;
     }
@@ -57,18 +57,22 @@ namespace item
     {
         ItemPVec_t resultSVec;
 
-        if (ITEM_PVEC.empty() == false)
+        if (ITEM_PVEC.empty())
         {
-            std::copy_if(
-                ITEM_PVEC.begin(),
-                ITEM_PVEC.end(),
-                back_inserter(resultSVec),
-                [WEAPON_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
-                    return (
-                        ((ITEM_PTR->WeaponType() & WEAPON_TYPE) != 0)
-                        == (MATCH_OPTION == MatchOpt::Equal));
-                });
+            return resultSVec;
         }
+
+        resultSVec.reserve(ITEM_PVEC.size());
+
+        std::copy_if(
+            ITEM_PVEC.begin(),
+            ITEM_PVEC.end(),
+            back_inserter(resultSVec),
+            [WEAPON_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
+                return (
+                    ((ITEM_PTR->WeaponType() & WEAPON_TYPE) != 0)
+                    == (MATCH_OPTION == MatchOpt::Equal));
+            });
 
         return resultSVec;
     }
@@ -80,17 +84,20 @@ namespace item
     {
         ItemPVec_t resultSVec;
 
-        if (ITEM_PVEC.empty() == false)
+        if (ITEM_PVEC.empty())
         {
-            std::copy_if(
-                ITEM_PVEC.begin(),
-                ITEM_PVEC.end(),
-                back_inserter(resultSVec),
-                [ARMOR_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
-                    return (
-                        (ITEM_PTR->ArmorType() == ARMOR_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
-                });
+            return resultSVec;
         }
+
+        resultSVec.reserve(ITEM_PVEC.size());
+
+        std::copy_if(
+            ITEM_PVEC.begin(),
+            ITEM_PVEC.end(),
+            back_inserter(resultSVec),
+            [ARMOR_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
+                return ((ITEM_PTR->ArmorType() == ARMOR_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
+            });
 
         return resultSVec;
     }
@@ -100,17 +107,20 @@ namespace item
     {
         ItemPVec_t resultSVec;
 
-        if (ITEM_PVEC.empty() == false)
+        if (ITEM_PVEC.empty())
         {
-            std::copy_if(
-                ITEM_PVEC.begin(),
-                ITEM_PVEC.end(),
-                back_inserter(resultSVec),
-                [MISC_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
-                    return (
-                        (ITEM_PTR->MiscType() == MISC_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
-                });
+            return resultSVec;
         }
+
+        resultSVec.reserve(ITEM_PVEC.size());
+
+        std::copy_if(
+            ITEM_PVEC.begin(),
+            ITEM_PVEC.end(),
+            back_inserter(resultSVec),
+            [MISC_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
+                return ((ITEM_PTR->MiscType() == MISC_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
+            });
 
         return resultSVec;
     }
@@ -120,16 +130,20 @@ namespace item
     {
         ItemPVec_t resultSVec;
 
-        if (ITEM_PVEC.empty() == false)
+        if (ITEM_PVEC.empty())
         {
-            std::copy_if(
-                ITEM_PVEC.begin(),
-                ITEM_PVEC.end(),
-                back_inserter(resultSVec),
-                [MATCH_OPTION](const auto & ITEM_PTR) {
-                    return (ITEM_PTR->IsPixie() == (MATCH_OPTION == MatchOpt::Equal));
-                });
+            return resultSVec;
         }
+
+        resultSVec.reserve(ITEM_PVEC.size());
+
+        std::copy_if(
+            ITEM_PVEC.begin(),
+            ITEM_PVEC.end(),
+            back_inserter(resultSVec),
+            [MATCH_OPTION](const auto & ITEM_PTR) {
+                return (ITEM_PTR->IsPixie() == (MATCH_OPTION == MatchOpt::Equal));
+            });
 
         return resultSVec;
     }
@@ -139,16 +153,20 @@ namespace item
     {
         ItemPVec_t resultSVec;
 
-        if (ITEM_PVEC.empty() == false)
+        if (ITEM_PVEC.empty())
         {
-            std::copy_if(
-                ITEM_PVEC.begin(),
-                ITEM_PVEC.end(),
-                back_inserter(resultSVec),
-                [BROKEN_OPTION](const auto & ITEM_PTR) {
-                    return (ITEM_PTR->IsBroken() == (BROKEN_OPTION == BrokenOpt::Keep));
-                });
+            return resultSVec;
         }
+
+        resultSVec.reserve(ITEM_PVEC.size());
+
+        std::copy_if(
+            ITEM_PVEC.begin(),
+            ITEM_PVEC.end(),
+            back_inserter(resultSVec),
+            [BROKEN_OPTION](const auto & ITEM_PTR) {
+                return (ITEM_PTR->IsBroken() == (BROKEN_OPTION == BrokenOpt::Keep));
+            });
 
         return resultSVec;
     }

@@ -1248,7 +1248,10 @@ namespace stage
             StrSizePairVec_t::const_reverse_iterator rItr { testingBlurbsVec_.crbegin() };
             for (; rItr != testingBlurbsVec_.rend(); ++rItr)
             {
-                std::string str(rItr->first);
+                std::string str;
+                str.reserve(rItr->first.size() + rItr->second);
+
+                str += (rItr->first);
 
                 if (rItr->second > 0)
                 {

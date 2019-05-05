@@ -28,6 +28,8 @@ namespace gui
         GuiEvent::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(128);
+
         AppendNameIfBitIsSet(str, ENUM_VALUE, GuiEvent::Click, "Click", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, GuiEvent::DoubleClick, "DoubleClick", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, GuiEvent::MouseWheel, "MouseWheel", SEPARATOR);

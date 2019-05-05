@@ -11,7 +11,7 @@
 //
 #include <SFML/Graphics/BlendMode.hpp>
 
-#include <ostream>
+#include <iosfwd>
 
 namespace sf
 {

@@ -23,81 +23,43 @@ namespace gui
     {
         switch (ENUM)
         {
-            case Back:
-            {
-                return "Back";
+            case Back: { return "Back";
             }
-            case New:
-            {
-                return "New";
+            case New: { return "New";
             }
-            case StartGame:
-            {
-                return "Start-Game";
+            case StartGame: { return "Start-Game";
             }
-            case Delete:
-            {
-                return "Delete";
+            case Delete: { return "Delete";
             }
-            case Save:
-            {
-                return "Save";
+            case Save: { return "Save";
             }
-            case Help:
-            {
-                return "Help";
+            case Help: { return "Help";
             }
-            case Next:
-            {
-                return "Next";
+            case Next: { return "Next";
             }
-            case CreateCharacters:
-            {
-                return "Create-Characters";
+            case CreateCharacters: { return "Create-Characters";
             }
-            case Exit:
-            {
-                return "Exit";
+            case Exit: { return "Exit";
             }
-            case Credits:
-            {
-                return "Credits";
+            case Credits: { return "Credits";
             }
-            case Settings:
-            {
-                return "Settings";
+            case Settings: { return "Settings";
             }
-            case Resume:
-            {
-                return "Resume";
+            case Resume: { return "Resume";
             }
-            case CreateParty:
-            {
-                return "Create-Party";
+            case CreateParty: { return "Create-Party";
             }
-            case Inventory:
-            {
-                return "Inventory";
+            case Inventory: { return "Inventory";
             }
-            case Treasure:
-            {
-                return "Treasure";
+            case Treasure: { return "Treasure";
             }
-            case Title:
-            {
-                return "Title";
+            case Title: { return "Title";
             }
-            case SymbolTop:
-            {
-                return "Symbol-Top";
+            case SymbolTop: { return "Symbol-Top";
             }
-            case SymbolBottom:
-            {
-                return "Symbol-Bottom";
+            case SymbolBottom: { return "Symbol-Bottom";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -125,9 +87,7 @@ namespace gui
             case Credits:
             case Settings:
             case Resume:
-            case CreateParty:
-            {
-                return false;
+            case CreateParty: { return false;
             }
             case CreateCharacters:
             case Inventory:
@@ -136,16 +96,17 @@ namespace gui
             case SymbolTop:
             case SymbolBottom:
             case Count:
-            default:
-            {
-                return true;
+            default: { return true;
             }
         }
     }
 
     const std::string MenuImage::ConfigFileKey(const Enum ENUM, const bool IS_LIT)
     {
-        std::string name { "media-image-misc-menu-" };
+        std::string name;
+        name.reserve(64);
+
+        name += "media-image-misc-menu-";
         name += misc::ToLowerCopy(ToString(ENUM));
 
         if (IsTitleOnly(ENUM) == false)

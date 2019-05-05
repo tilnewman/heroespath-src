@@ -126,13 +126,18 @@ namespace gui
 
         const std::string RenderedLines::ToString() const
         {
-            std::ostringstream ss;
-            ss << "\nRender (" << lines.size() << ")  region=" << region << "\n\t";
+            std::string str;
+            str.reserve(lines.size() * 1024);
+
+            str += "\nRender (" + std::to_string(lines.size())
+                + ")  region=" + sfutil::RectToString(region) + "\n\t";
+
             for (const auto & LINE : lines)
             {
-                ss << LINE.ToString() << "\n\t";
+                str += LINE.ToString() + "\n\t";
             }
-            return ss.str();
+
+            return str;
         }
 
         RenderedLine & RenderedLines::CurrentLine()

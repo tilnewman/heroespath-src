@@ -45,7 +45,7 @@ namespace item
     const std::string ItemProfileThin::ToString() const
     {
         std::string str;
-
+        str.reserve(1024);
         if (weapon::WeaponTypeWrapper() != weaponInfo_)
         {
             str += "weapon_info=" + weaponInfo_.ToString() + ", ";
@@ -65,6 +65,7 @@ namespace item
     const std::string ItemProfileThin::ReadableName() const
     {
         std::string name;
+        name.reserve(1024);
 
         if (IsMisc())
         {

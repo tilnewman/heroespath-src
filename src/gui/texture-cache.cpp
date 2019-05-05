@@ -17,8 +17,6 @@
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 
-#include <boost/lexical_cast.hpp>
-
 #include <algorithm>
 #include <sstream>
 #include <utility>
@@ -709,24 +707,28 @@ namespace gui
 
     const std::string TextureCache::BytesToString(const long long BYTES) const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(16);
+
         const long long MB { 1 << 20 };
         const long long KB { 1 << 10 };
 
         if (BYTES >= MB)
         {
-            ss << static_cast<long double>(BYTES) / static_cast<long double>(MB) << "MB";
+            str += std::to_string(static_cast<long double>(BYTES) / static_cast<long double>(MB))
+                + "MB";
         }
         else if (BYTES >= KB)
         {
-            ss << static_cast<long double>(BYTES) / static_cast<long double>(KB) << "KB";
+            str += std::to_string(static_cast<long double>(BYTES) / static_cast<long double>(KB))
+                + "KB";
         }
         else
         {
-            ss << BYTES << "B";
+            str += std::to_string(BYTES) + "B";
         }
 
-        return ss.str();
+        return str;
     }
 
 } // namespace gui

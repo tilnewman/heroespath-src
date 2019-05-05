@@ -121,24 +121,30 @@ namespace gui
     const std::string MouseTextInfo::ToString(
         const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        std::ostringstream ss;
-
-        ss << "Up=" << up.ToString(false, Wrap::Yes) << SEPARATOR
-           << "Down=" << down.ToString(false, Wrap::Yes) << SEPARATOR
-           << "Over=" << over.ToString(false, Wrap::Yes) << SEPARATOR
-           << "Disabled=" << disabled.ToString(false, Wrap::Yes);
-
-        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+        std::string str;
+        str.reserve(1024);
 
         if (WILL_PREFIX)
         {
-            return std::string("MouseTextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
-                + PARTS_STR;
+            str += std::string("MouseTextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=");
         }
-        else
+
+        if (WILL_WRAP == Wrap::Yes)
         {
-            return PARTS_STR;
+            str += "(";
         }
+
+        str += "Up=" + up.ToString(false, Wrap::Yes) + SEPARATOR
+            + "Down=" + down.ToString(false, Wrap::Yes) + SEPARATOR
+            + "Over=" + over.ToString(false, Wrap::Yes) + SEPARATOR
+            + "Disabled=" + disabled.ToString(false, Wrap::Yes);
+
+        if (WILL_WRAP == Wrap::Yes)
+        {
+            str += ")";
+        }
+
+        return str;
     }
 
     bool operator<(const MouseTextInfo & L, const MouseTextInfo & R)

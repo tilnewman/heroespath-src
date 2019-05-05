@@ -33,15 +33,15 @@ namespace gui
         const float RELATIVE_LABEL_POS_LEFT,
         const float RELATIVE_LABEL_POS_TOP)
         : SliderBarLabeled(
-            std::string(NAME).append("_SliderBarMusic"),
-            POS_LEFT,
-            POS_TOP,
-            LENGTH,
-            STYLE,
-            THREE_TEXT_INFOS,
-            INITIAL_VALUE,
-            RELATIVE_LABEL_POS_LEFT,
-            RELATIVE_LABEL_POS_TOP)
+              std::string(NAME).append("_SliderBarMusic"),
+              POS_LEFT,
+              POS_TOP,
+              LENGTH,
+              STYLE,
+              THREE_TEXT_INFOS,
+              INITIAL_VALUE,
+              RELATIVE_LABEL_POS_LEFT,
+              RELATIVE_LABEL_POS_TOP)
     {
         PositionRatio((gui::SoundManager::Instance()->MusicVolume() / 100.0f));
     }
@@ -60,20 +60,19 @@ namespace gui
         const auto CURRENT_POS_PERCENT { static_cast<int>(CURRENT_POS_RATIO * 100.0f) };
         TextInfo textInfo { TextInfoFromCurrentPositionPercent(CURRENT_POS_PERCENT) };
 
-        std::ostringstream ss;
+        textInfo.text.reserve(8);
 
         if (CURRENT_POS_PERCENT == 0)
         {
-            ss << "MUTE";
+            textInfo.text += "MUTE";
             textInfo.font_letters = gui::GuiFont::SystemCondensed;
         }
         else
         {
-            ss << CURRENT_POS_PERCENT;
+            textInfo.text += std::to_string(CURRENT_POS_PERCENT);
             textInfo.font_letters = gui::GuiFont::Number;
         }
 
-        textInfo.text = ss.str();
         return textInfo;
     }
 

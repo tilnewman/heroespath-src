@@ -1053,9 +1053,12 @@ namespace gui
 
         const std::string MakeTypeString(const std::string & ENTITY_NAME = "") const
         {
-            std::string str(
-                "ListBox<" + std::string(NAMEOF_TYPE_T(Stage_t)) + ", "
-                + std::string(NAMEOF_TYPE_T(Element_t)) + ">(entity_name=\"");
+            std::string str;
+            str.reserve(128);
+
+            str
+                += ("ListBox<" + std::string(NAMEOF_TYPE_T(Stage_t)) + ", "
+                    + std::string(NAMEOF_TYPE_T(Element_t)) + ">(entity_name=\"");
 
             if (ENTITY_NAME.empty())
             {

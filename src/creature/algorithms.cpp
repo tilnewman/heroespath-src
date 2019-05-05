@@ -16,8 +16,6 @@
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "misc/random.hpp"
-#include "misc/vectors.hpp"
 
 #include <algorithm>
 
@@ -139,28 +137,19 @@ namespace creature
 
     const std::string Algorithms::Names(
         const CreaturePVec_t & CREATURE_PVEC,
-        const std::size_t MAX_COUNT,
-        const misc::JoinOpt JOIN_OPTIONS,
-        const NamesOpt NAMES_OPTIONS)
+        const misc::JoinHow & JOIN_HOW,
+        const NamesOpt NAME_OPTION)
     {
-        if (NAMES_OPTIONS == NamesOpt::WithRaceAndRole)
-        {
-            return misc::Join<CreaturePtr_t>(
-                CREATURE_PVEC,
-                MAX_COUNT,
-                JOIN_OPTIONS,
-                [](const CreaturePtr_t & CPTR) -> const std::string {
-                    return CPTR->NameAndRaceAndRole();
-                });
-        }
-        else
-        {
-            return misc::Join<CreaturePtr_t>(
-                CREATURE_PVEC,
-                MAX_COUNT,
-                JOIN_OPTIONS,
-                [](const CreaturePtr_t & CPTR) -> const std::string { return CPTR->Name(); });
-        }
+        return misc::Join(CREATURE_PVEC, JOIN_HOW, [NAME_OPTION](const auto & PTR) {
+            if (NAME_OPTION == NamesOpt::NameOnly)
+            {
+                return PTR->Name();
+            }
+            else
+            {
+                return PTR->NameAndRaceAndRole();
+            }
+        });
     }
 
     const CreaturePVec_t Algorithms::FindByAlive(
@@ -172,6 +161,8 @@ namespace creature
         {
             return tempPVec;
         }
+
+        tempPVec.reserve(CREATURE_PVEC.size());
 
         std::copy_if(
             CREATURE_PVEC.begin(),
@@ -186,29 +177,32 @@ namespace creature
 
     void Algorithms::SortByLowestHealthNormal(CreaturePVec_t & pVec_OutParam)
     {
-        if (pVec_OutParam.empty() == false)
+        if (pVec_OutParam.empty())
         {
-            std::sort(
-                pVec_OutParam.begin(),
-                pVec_OutParam.end(),
-                [](const auto & A_PTR, const auto & B_PTR) {
-                    return A_PTR->HealthNormal() < B_PTR->HealthNormal();
-                });
+            return;
         }
+
+        std::sort(
+            pVec_OutParam.begin(), pVec_OutParam.end(), [](const auto & A_PTR, const auto & B_PTR) {
+                return A_PTR->HealthNormal() < B_PTR->HealthNormal();
+            });
     }
 
     const CreaturePVec_t Algorithms::FindLowestHealthNormal(const CreaturePVec_t & CREATURE_PVEC)
     {
+        CreaturePVec_t lowestHealthNormalVec;
+
         if (CREATURE_PVEC.empty())
         {
-            return CreaturePVec_t();
+            return lowestHealthNormalVec;
         }
 
         CreaturePVec_t tempPVec(CREATURE_PVEC);
         SortByLowestHealthNormal(tempPVec);
         const auto LOWEST_HEALTH_NORMAL(tempPVec[0]->HealthNormal());
 
-        CreaturePVec_t lowestHealthNormalVec;
+        lowestHealthNormalVec.reserve(tempPVec.size());
+
         std::copy_if(
             tempPVec.begin(),
             tempPVec.end(),
@@ -222,27 +216,32 @@ namespace creature
 
     void Algorithms::SortByLowestHealth(CreaturePVec_t & pVec_OutParam)
     {
-        if (pVec_OutParam.empty() == false)
+        if (pVec_OutParam.empty())
         {
-            std::sort(
-                pVec_OutParam.begin(),
-                pVec_OutParam.end(),
-                [](const auto & A_PTR, const auto & B_PTR) {
-                    return A_PTR->HealthCurrent() < B_PTR->HealthCurrent();
-                });
+            return;
         }
+
+        std::sort(
+            pVec_OutParam.begin(), pVec_OutParam.end(), [](const auto & A_PTR, const auto & B_PTR) {
+                return A_PTR->HealthCurrent() < B_PTR->HealthCurrent();
+            });
     }
 
     const CreaturePVec_t Algorithms::FindLowestHealth(const CreaturePVec_t & CREATURE_PVEC)
     {
+        CreaturePVec_t lowestHealthCurrVec;
+
         if (CREATURE_PVEC.empty())
-            return CreaturePVec_t();
+        {
+            return lowestHealthCurrVec;
+        }
 
         CreaturePVec_t tempPVec(CREATURE_PVEC);
         SortByLowestHealth(tempPVec);
         const auto LOWEST_HEALTH_CURR(tempPVec[0]->HealthCurrent());
 
-        CreaturePVec_t lowestHealthCurrVec;
+        lowestHealthCurrVec.reserve(tempPVec.size());
+
         std::copy_if(
             tempPVec.begin(),
             tempPVec.end(),
@@ -256,29 +255,32 @@ namespace creature
 
     void Algorithms::SortByLowestHealthRatio(CreaturePVec_t & pVec_OutParam)
     {
-        if (pVec_OutParam.empty() == false)
+        if (pVec_OutParam.empty())
         {
-            std::sort(
-                pVec_OutParam.begin(),
-                pVec_OutParam.end(),
-                [](const auto & A_PTR, const auto & B_PTR) {
-                    return A_PTR->HealthRatio() < B_PTR->HealthRatio();
-                });
+            return;
         }
+
+        std::sort(
+            pVec_OutParam.begin(), pVec_OutParam.end(), [](const auto & A_PTR, const auto & B_PTR) {
+                return A_PTR->HealthRatio() < B_PTR->HealthRatio();
+            });
     }
 
     const CreaturePVec_t Algorithms::FindLowestHealthRatio(const CreaturePVec_t & CREATURE_PVEC)
     {
+        CreaturePVec_t lowestHealthRatioVec;
+
         if (CREATURE_PVEC.empty())
         {
-            return CreaturePVec_t();
+            return lowestHealthRatioVec;
         }
 
         CreaturePVec_t tempPVec(CREATURE_PVEC);
         SortByLowestHealthRatio(tempPVec);
         const auto LOWEST_HEALTH_RATIO(tempPVec[0]->HealthRatio());
 
-        CreaturePVec_t lowestHealthRatioVec;
+        lowestHealthRatioVec.reserve(tempPVec.size());
+
         std::copy_if(
             tempPVec.begin(),
             tempPVec.end(),
@@ -302,6 +304,8 @@ namespace creature
             return creaturesThatAreStillAThreatVec;
         }
 
+        creaturesThatAreStillAThreatVec.reserve(CREATURE_PVEC.size());
+
         std::copy_if(
             CREATURE_PVEC.begin(),
             CREATURE_PVEC.end(),
@@ -318,6 +322,13 @@ namespace creature
         const CreaturePVec_t & CREATURE_PVEC, const CondSingleOpt CONDITION_OPTION)
     {
         CreaturePVec_t creaturesWithCondsButAreStillAThreatVec;
+
+        if (CREATURE_PVEC.empty())
+        {
+            return creaturesWithCondsButAreStillAThreatVec;
+        }
+
+        creaturesWithCondsButAreStillAThreatVec.reserve(CREATURE_PVEC.size());
 
         if (CREATURE_PVEC.empty() == false)
         {
@@ -341,16 +352,20 @@ namespace creature
     {
         CreaturePVec_t byRacePVec;
 
-        if (CREATURE_PVEC.empty() == false)
+        if (CREATURE_PVEC.empty())
         {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(byRacePVec),
-                [RACE_ENUM, CRITERIA_OPTION](const auto & PTR) {
-                    return (PTR->Race() == RACE_ENUM) == (CRITERIA_OPTION == CriteriaOpt::Meets);
-                });
+            return byRacePVec;
         }
+
+        byRacePVec.reserve(CREATURE_PVEC.size());
+
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(byRacePVec),
+            [RACE_ENUM, CRITERIA_OPTION](const auto & PTR) {
+                return (PTR->Race() == RACE_ENUM) == (CRITERIA_OPTION == CriteriaOpt::Meets);
+            });
 
         return byRacePVec;
     }
@@ -362,16 +377,20 @@ namespace creature
     {
         CreaturePVec_t byRolePVec;
 
-        if (CREATURE_PVEC.empty() == false)
+        if (CREATURE_PVEC.empty())
         {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(byRolePVec),
-                [ROLE_ENUM, CRITERIA_OPTION](const auto & PTR) {
-                    return (PTR->Role() == ROLE_ENUM) == (CRITERIA_OPTION == CriteriaOpt::Meets);
-                });
+            return byRolePVec;
         }
+
+        byRolePVec.reserve(CREATURE_PVEC.size());
+
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(byRolePVec),
+            [ROLE_ENUM, CRITERIA_OPTION](const auto & PTR) {
+                return (PTR->Role() == ROLE_ENUM) == (CRITERIA_OPTION == CriteriaOpt::Meets);
+            });
 
         return byRolePVec;
     }
@@ -381,16 +400,20 @@ namespace creature
     {
         CreaturePVec_t canCastPVec;
 
-        if (CREATURE_PVEC.empty() == false)
+        if (CREATURE_PVEC.empty())
         {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(canCastPVec),
-                [CRITERIA_OPTION](const auto & PTR) {
-                    return (PTR->CanCastSpells() == (CRITERIA_OPTION == CriteriaOpt::Meets));
-                });
+            return canCastPVec;
         }
+
+        canCastPVec.reserve(CREATURE_PVEC.size());
+
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(canCastPVec),
+            [CRITERIA_OPTION](const auto & PTR) {
+                return (PTR->CanCastSpells() == (CRITERIA_OPTION == CriteriaOpt::Meets));
+            });
 
         return canCastPVec;
     }
@@ -400,16 +423,20 @@ namespace creature
     {
         CreaturePVec_t byBeastPVec;
 
-        if (CREATURE_PVEC.empty() == false)
+        if (CREATURE_PVEC.empty())
         {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(byBeastPVec),
-                [CRITERIA_OPTION](const auto & PTR) {
-                    return (PTR->IsBeast() == (CRITERIA_OPTION == CriteriaOpt::Meets));
-                });
+            return byBeastPVec;
         }
+
+        byBeastPVec.reserve(CREATURE_PVEC.size());
+
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(byBeastPVec),
+            [CRITERIA_OPTION](const auto & PTR) {
+                return (PTR->IsBeast() == (CRITERIA_OPTION == CriteriaOpt::Meets));
+            });
 
         return byBeastPVec;
     }
@@ -419,18 +446,21 @@ namespace creature
     {
         CreaturePVec_t byProjectileWeaponPVec;
 
-        if (CREATURE_PVEC.empty() == false)
+        if (CREATURE_PVEC.empty())
         {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(byProjectileWeaponPVec),
-                [CRITERIA_OPTION](const auto & PTR) {
-                    return (
-                        PTR->IsHoldingProjectileWeapon()
-                        == (CRITERIA_OPTION == CriteriaOpt::Meets));
-                });
+            return byProjectileWeaponPVec;
         }
+
+        byProjectileWeaponPVec.reserve(CREATURE_PVEC.size());
+
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(byProjectileWeaponPVec),
+            [CRITERIA_OPTION](const auto & PTR) {
+                return (
+                    PTR->IsHoldingProjectileWeapon() == (CRITERIA_OPTION == CriteriaOpt::Meets));
+            });
 
         return byProjectileWeaponPVec;
     }
@@ -440,16 +470,20 @@ namespace creature
     {
         CreaturePVec_t canFlyPVec;
 
-        if (CREATURE_PVEC.empty() == false)
+        if (CREATURE_PVEC.empty())
         {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(canFlyPVec),
-                [CRITERIA_OPTION](const auto & PTR) {
-                    return (PTR->CanFly() == (CRITERIA_OPTION == CriteriaOpt::Meets));
-                });
+            return canFlyPVec;
         }
+
+        canFlyPVec.reserve(CREATURE_PVEC.size());
+
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(canFlyPVec),
+            [CRITERIA_OPTION](const auto & PTR) {
+                return (PTR->CanFly() == (CRITERIA_OPTION == CriteriaOpt::Meets));
+            });
 
         return canFlyPVec;
     }
@@ -459,18 +493,22 @@ namespace creature
     {
         CreaturePVec_t isFlyinfPVec;
 
-        if (CREATURE_PVEC.empty() == false)
+        if (CREATURE_PVEC.empty())
         {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(isFlyinfPVec),
-                [CRITERIA_OPTION](const auto & PTR) {
-                    return (
-                        combat::Encounter::Instance()->GetTurnInfoCopy(PTR).GetIsFlying()
-                        == (CRITERIA_OPTION == CriteriaOpt::Meets));
-                });
+            return isFlyinfPVec;
         }
+
+        isFlyinfPVec.reserve(CREATURE_PVEC.size());
+
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(isFlyinfPVec),
+            [CRITERIA_OPTION](const auto & PTR) {
+                return (
+                    combat::Encounter::Instance()->GetTurnInfoCopy(PTR).GetIsFlying()
+                    == (CRITERIA_OPTION == CriteriaOpt::Meets));
+            });
 
         return isFlyinfPVec;
     }
@@ -480,16 +518,20 @@ namespace creature
     {
         CreaturePVec_t canTakeActionPVec;
 
-        if (CREATURE_PVEC.empty() == false)
+        if (CREATURE_PVEC.empty())
         {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(canTakeActionPVec),
-                [CRITERIA_OPTION](const auto & PTR) {
-                    return (PTR->CanTakeAction() == (CRITERIA_OPTION == CriteriaOpt::Meets));
-                });
+            return canTakeActionPVec;
         }
+
+        canTakeActionPVec.reserve(CREATURE_PVEC.size());
+
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(canTakeActionPVec),
+            [CRITERIA_OPTION](const auto & PTR) {
+                return (PTR->CanTakeAction() == (CRITERIA_OPTION == CriteriaOpt::Meets));
+            });
 
         return canTakeActionPVec;
     }
@@ -512,41 +554,45 @@ namespace creature
     {
         CreaturePVec_t havingConditionPVec;
 
-        if (CREATURE_PVEC.empty() == false)
+        if (CREATURE_PVEC.empty())
         {
-            std::copy_if(
-                CREATURE_PVEC.begin(),
-                CREATURE_PVEC.end(),
-                back_inserter(havingConditionPVec),
-                [&](const auto & PTR) {
-                    if (COND_ALL_OPTION == CondAllOpt::HasAll)
-                    {
-                        auto hasAll { true };
-                        for (const auto NEXT_COND_ENUM : CONDS_VEC)
-                        {
-                            if (PTR->HasCondition(NEXT_COND_ENUM)
-                                != (COND_SINGLE_OPTION == CondSingleOpt::Has))
-                            {
-                                hasAll = false;
-                                break;
-                            }
-                        }
-                        return hasAll;
-                    }
-                    else
-                    {
-                        for (const auto NEXT_COND_ENUM : CONDS_VEC)
-                        {
-                            if (PTR->HasCondition(NEXT_COND_ENUM)
-                                == (COND_SINGLE_OPTION == CondSingleOpt::Has))
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                });
+            return havingConditionPVec;
         }
+
+        havingConditionPVec.reserve(CREATURE_PVEC.size());
+
+        std::copy_if(
+            CREATURE_PVEC.begin(),
+            CREATURE_PVEC.end(),
+            back_inserter(havingConditionPVec),
+            [&](const auto & PTR) {
+                if (COND_ALL_OPTION == CondAllOpt::HasAll)
+                {
+                    auto hasAll { true };
+                    for (const auto NEXT_COND_ENUM : CONDS_VEC)
+                    {
+                        if (PTR->HasCondition(NEXT_COND_ENUM)
+                            != (COND_SINGLE_OPTION == CondSingleOpt::Has))
+                        {
+                            hasAll = false;
+                            break;
+                        }
+                    }
+                    return hasAll;
+                }
+                else
+                {
+                    for (const auto NEXT_COND_ENUM : CONDS_VEC)
+                    {
+                        if (PTR->HasCondition(NEXT_COND_ENUM)
+                            == (COND_SINGLE_OPTION == CondSingleOpt::Has))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
 
         return havingConditionPVec;
     }

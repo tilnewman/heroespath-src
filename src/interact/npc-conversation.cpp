@@ -12,8 +12,7 @@
 #include "npc-conversation.hpp"
 
 #include "misc/assertlogandthrow.hpp"
-
-#include <sstream>
+#include "misc/strings.hpp"
 
 namespace heroespath
 {
@@ -69,18 +68,19 @@ namespace interact
 
     const std::string NpcConversation::ToString() const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(128 + (convPoints_.size() * 128));
 
-        ss << "NpcConversation: index=" << convPointsIndex_ << ", is_random=" << std::boolalpha
-           << isRandom_;
+        str += "NpcConversation: index=" + std::to_string(convPointsIndex_)
+            + ", is_random=" + misc::ToString(isRandom_);
 
         std::size_t index { 0 };
         for (const auto & NPC_CONVERSATION_POINT : convPoints_)
         {
-            ss << "\n[" << index++ << "]\t" << NPC_CONVERSATION_POINT.ToString();
+            str += "\n[" + std::to_string(index++) + "]\t" + NPC_CONVERSATION_POINT.ToString();
         }
 
-        return ss.str();
+        return str;
     }
 
     void NpcConversation::LogIfInvalid() const

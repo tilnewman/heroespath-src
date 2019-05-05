@@ -137,7 +137,7 @@ namespace item
                 const std::size_t WIDTH = 0) const
             {
                 std::string str;
-
+                str.reserve(255);
                 const auto WIDTH_INT { static_cast<int>(WIDTH) };
 
                 if (WILL_INCLUDE_COUNT)
@@ -331,7 +331,10 @@ namespace item
         static const std::string
             CountPhrase(const std::string & NAME, const T COUNT, const U COUNT_COMPARED_WITH)
         {
-            std::string str(", " + NAME + "_count=" + std::to_string(COUNT));
+            std::string str;
+            str.reserve(64);
+
+            str += (", " + NAME + "_count=" + std::to_string(COUNT));
 
             if (COUNT_COMPARED_WITH > 0)
             {

@@ -49,10 +49,7 @@ namespace popup
                 {
                     gui::TextInfo textInfo(popupInfo_.TextInfo());
 
-                    std::ostringstream ss;
-                    ss << textInfo.text << "\n" << secondCounter_;
-
-                    textInfo.text = ss.str();
+                    textInfo.text = textInfo.text + "\n" + std::to_string(secondCounter_);
 
                     textRegionUPtr_->Setup(
                         textInfo, ContentRegion(), gui::BoxEntityInfo(), stage::IStagePtr_t(this));

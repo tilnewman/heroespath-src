@@ -11,6 +11,18 @@
 
 #include <SFML/Graphics/Text.hpp>
 
+#include <ostream>
+
+namespace sf
+{
+
+std::ostream & operator<<(std::ostream & os, const sf::Font & F)
+{
+    os << "(\"" << F.getInfo().family << "\")";
+    return os;
+}
+} // namespace sf
+
 namespace heroespath
 {
 namespace sfutil
@@ -19,7 +31,7 @@ namespace sfutil
     const std::string TextStyleToString(const sf::Uint32 TEXT_STYLE)
     {
         std::string result;
-
+        result.reserve(64);
         if (TEXT_STYLE == sf::Text::Style::Regular)
         {
             result = "Regular";

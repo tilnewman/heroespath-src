@@ -16,6 +16,8 @@
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 
+#include <sstream>
+
 namespace heroespath
 {
 namespace gui
@@ -54,11 +56,17 @@ namespace gui
                                          << ", last=" << sound_effect::ToString(LAST_ENUM)
                                          << ") first and last were the same.");
 
-        const auto FIRST { static_cast<int>(FIRST_ENUM) };
-        const auto LAST { static_cast<int>(LAST_ENUM) };
-        sfxEnums_.reserve(static_cast<std::size_t>((LAST - FIRST) + 1));
+        const int FIRST_INT { static_cast<int>(FIRST_ENUM) };
+        const int LAST_INT { static_cast<int>(LAST_ENUM) };
 
-        for (int i(FIRST); i <= LAST; ++i)
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (FIRST_INT < LAST_INT),
+            "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM) << ", last="
+                                         << sound_effect::ToString(LAST_ENUM) << ") first>last.");
+
+        sfxEnums_.reserve(static_cast<std::size_t>((LAST_INT - FIRST_INT) + 1));
+
+        for (int i(FIRST_INT); i <= LAST_INT; ++i)
         {
             sfxEnums_.emplace_back(static_cast<sound_effect::Enum>(i));
         }

@@ -16,6 +16,8 @@
 
 #include <SFML/Window/Event.hpp>
 
+#include <ostream>
+
 namespace heroespath
 {
 namespace sfutil

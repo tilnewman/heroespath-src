@@ -625,19 +625,23 @@ namespace map
 
         auto makePercentString
             = [&](const auto NUMBER_A, const auto NUMBER_B, const std::string & DESCRIPTION) {
-                  std::ostringstream pss;
+                  std::string str;
+                  str.reserve(32);
+
                   const auto NUMBER_A_D { static_cast<double>(NUMBER_A) };
                   const auto NUMBER_B_D { static_cast<double>(NUMBER_B) };
+
                   if (misc::IsRealZero(NUMBER_B_D))
                   {
-                      pss << "(div_by_zero_error%)";
+                      str += "(div_by_zero_error%)";
                   }
                   else
                   {
                       const auto PERCENT { static_cast<int>((NUMBER_A_D / NUMBER_B_D) * 100.0) };
-                      pss << "(" << PERCENT << "% " << DESCRIPTION << ")";
+                      str += "(" + std::to_string(PERCENT) + "% " + DESCRIPTION + ")";
                   }
-                  return pss.str();
+
+                  return str;
               };
 
         const auto LAYER_COUNT { uniqueLayerCountMapper.Size() };

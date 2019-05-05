@@ -25,33 +25,19 @@ namespace song
     {
         switch (ENUM)
         {
-            case RallyDrum:
-            {
-                return "RallyDrum";
+            case RallyDrum: { return "RallyDrum";
             }
-            case SpiritResonance:
-            {
-                return "SpiritResonance";
+            case SpiritResonance: { return "SpiritResonance";
             }
-            case RousingRhythm:
-            {
-                return "RousingRhythm";
+            case RousingRhythm: { return "RousingRhythm";
             }
-            case TripBeat:
-            {
-                return "TripBeat";
+            case TripBeat: { return "TripBeat";
             }
-            case PanicStrings:
-            {
-                return "PanicStrings";
+            case PanicStrings: { return "PanicStrings";
             }
-            case Lullaby:
-            {
-                return "Lullaby";
+            case Lullaby: { return "Lullaby";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -68,33 +54,19 @@ namespace song
     {
         switch (ENUM)
         {
-            case RallyDrum:
-            {
-                return "Rally Drum";
+            case RallyDrum: { return "Rally Drum";
             }
-            case SpiritResonance:
-            {
-                return "Spirit Resonance";
+            case SpiritResonance: { return "Spirit Resonance";
             }
-            case RousingRhythm:
-            {
-                return "Rousing Rhythm";
+            case RousingRhythm: { return "Rousing Rhythm";
             }
-            case TripBeat:
-            {
-                return "Trip Beat";
+            case TripBeat: { return "Trip Beat";
             }
-            case PanicStrings:
-            {
-                return "Panic Strings";
+            case PanicStrings: { return "Panic Strings";
             }
-            case Lullaby:
-            {
-                return "Lullaby";
+            case Lullaby: { return "Lullaby";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -109,16 +81,12 @@ namespace song
 
     const std::string Songs::ShortDesc(const Songs::Enum ENUM)
     {
-        std::ostringstream keySS;
-        keySS << "song-" << ToString(ENUM) << "-short-desc";
-        return misc::ConfigFile::Instance()->Value(keySS.str());
+        return misc::ConfigFile::Instance()->Value("song-" + ToString(ENUM) + "-short-desc");
     }
 
     const std::string Songs::ExtraDesc(const Songs::Enum ENUM)
     {
-        std::ostringstream keySS;
-        keySS << "song-" << ToString(ENUM) << "-extra-desc";
-        return misc::ConfigFile::Instance()->Value(keySS.str());
+        return misc::ConfigFile::Instance()->Value("song-" + ToString(ENUM) + "-extra-desc");
     }
 
     const std::string Songs::ImageFilename(const Songs::Enum ENUM)

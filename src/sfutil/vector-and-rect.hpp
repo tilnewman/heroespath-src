@@ -9,10 +9,33 @@
 //
 // vector-and-rect.hpp
 //
+#include "misc/strings.hpp"
+
 #include <SFML/Graphics/Rect.hpp>
 
 #include <ostream>
 #include <tuple>
+
+namespace heroespath
+{
+namespace sfutil
+{
+
+    template <typename T>
+    const std::string VectorToString(const sf::Vector2<T> & V)
+    {
+        return "(" + misc::ToString(V.x) + "," + misc::ToString(V.y) + ")";
+    }
+
+    template <typename T>
+    const std::string RectToString(const sf::Rect<T> & R)
+    {
+        return "(" + misc::ToString(R.left) + "," + misc::ToString(R.top) + "/"
+            + misc::ToString(R.width) + "x" + misc::ToString(R.height) + ")";
+    }
+
+} // namespace sfutil
+} // namespace heroespath
 
 namespace sf
 {
@@ -79,14 +102,14 @@ bool operator>=(const sf::Rect<T1> & L, const sf::Rect<T2> & R)
 template <typename T>
 std::ostream & operator<<(std::ostream & os, const sf::Vector2<T> & V)
 {
-    os << "(" << V.x << "," << V.y << ")";
+    os << heroespath::sfutil::VectorToString(V);
     return os;
 }
 
 template <typename T>
 std::ostream & operator<<(std::ostream & os, const sf::Rect<T> & R)
 {
-    os << "(" << R.left << "," << R.top << "/" << R.width << "x" << R.height << ")";
+    os << heroespath::sfutil::RectToString(R);
     return os;
 }
 

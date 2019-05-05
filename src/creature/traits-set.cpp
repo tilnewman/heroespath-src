@@ -14,7 +14,6 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/enum-util.hpp"
 
-#include <sstream>
 #include <string>
 
 namespace heroespath
@@ -58,7 +57,8 @@ namespace creature
         const bool WILL_PREVENT_NEGATIVE,
         const bool WILL_PREFIX_PERCENT) const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(128);
 
         for (EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
@@ -72,80 +72,82 @@ namespace creature
                     continue;
                 }
 
-                if (ss.str().empty() == false)
+                if (!str.empty())
                 {
-                    ss << ", ";
+                    str += ", ";
                 }
 
                 if (WILL_ABBR)
                 {
-                    ss << Traits::Abbr(NEXT_ENUM);
+                    str += Traits::Abbr(NEXT_ENUM);
                 }
                 else
                 {
-                    ss << Traits::Name(NEXT_ENUM);
+                    str += Traits::Name(NEXT_ENUM);
                 }
 
-                ss << " " << NEXT_CURR;
+                str += " " + std::to_string(NEXT_CURR);
 
                 if (WILL_PREFIX_PERCENT)
                 {
-                    ss << "%";
+                    str += "%";
                 }
             }
         }
 
-        const auto RESULT_STR { ss.str() };
-        if ((RESULT_STR.empty() == false) && WILL_WRAP)
+        if (!str.empty() && WILL_WRAP)
         {
-            return "(" + RESULT_STR + ")";
+            str = "(" + str + ")";
         }
-        else
-        {
-            return RESULT_STR;
-        }
+
+        return str;
     }
 
     const std::string TraitSet::StatsString(const bool WILL_WRAP) const
     {
-        std::ostringstream ss;
-
-        ss << StatStringHelper(Traits::Strength, false) << StatStringHelper(Traits::Accuracy)
-           << StatStringHelper(Traits::Charm) << StatStringHelper(Traits::Luck)
-           << StatStringHelper(Traits::Speed) << StatStringHelper(Traits::Intelligence);
+        std::string str;
+        str.reserve(128);
 
         if (WILL_WRAP)
         {
-            return "(" + ss.str() + ")";
+            str += "(";
         }
-        else
+
+        str += StatStringHelper(Traits::Strength, false) + StatStringHelper(Traits::Accuracy)
+            + StatStringHelper(Traits::Charm) + StatStringHelper(Traits::Luck)
+            + StatStringHelper(Traits::Speed) + StatStringHelper(Traits::Intelligence);
+
+        if (WILL_WRAP)
         {
-            return ss.str();
+            str += ")";
         }
+
+        return str;
     }
 
     const std::string
         TraitSet::StatStringHelper(const Traits::Enum ENUM, const bool WILL_PREFIX) const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(8);
 
         if (WILL_PREFIX)
         {
-            ss << ", ";
+            str += ", ";
         }
 
-        const auto TRAIT { traitVec_[static_cast<std::size_t>(ENUM)] };
+        str += Traits::Abbr(ENUM) + "=";
 
-        ss << Traits::Abbr(ENUM) << "=";
+        const auto & TRAIT { traitVec_[static_cast<std::size_t>(ENUM)] };
 
         if (TRAIT.Current() != TRAIT.Normal())
         {
-            ss << TRAIT.Current() << "/";
+            str += std::to_string(TRAIT.Current()) + "/";
         }
 
-        ss << TRAIT.Normal();
+        str += std::to_string(TRAIT.Normal());
 
-        return ss.str();
+        return str;
     }
 
 } // namespace creature

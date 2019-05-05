@@ -27,6 +27,7 @@ namespace gui
         Side::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(16);
         AppendNameIfBitIsSet(str, ENUM_VALUE, Side::Top, "Top", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, Side::Bottom, "Bottom", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, Side::Left, "Left", SEPARATOR);

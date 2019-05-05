@@ -299,10 +299,11 @@ namespace gui
 
         const Callback_t::Packet_t EVENT_PACKET(misc::MakeNotNull(this), INDEX);
 
-        std::ostringstream ss;
-        ss << "RadioOrCheckSet(" << GetEntityName() << "\", index-changed=" << INDEX << ")";
-
-        Callback_t::HandleAndLog(*callbackHandlerPtr_, EVENT_PACKET, ss.str());
+        Callback_t::HandleAndLog(
+            *callbackHandlerPtr_,
+            EVENT_PACKET,
+            ("RadioOrCheckSet(" + GetEntityName() + "\", index-changed=" + std::to_string(INDEX)
+             + ")"));
     }
 
     void RadioOrCheckSet::Setup(

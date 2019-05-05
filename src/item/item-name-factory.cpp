@@ -37,7 +37,10 @@ namespace item
     const std::string ItemNameFactory::MakeArmorBodyPartName(
         const MaterialPair_t & MATERIALS_PAIR, const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        std::string name(CREATURE_PTR->RaceName() + "'s ");
+        std::string name;
+        name.reserve(128);
+
+        name += (CREATURE_PTR->RaceName() + "'s ");
 
         if (MATERIALS_PAIR.second != material::Nothing)
         {
@@ -52,7 +55,10 @@ namespace item
     const std::string
         ItemNameFactory::MakeArmorBodyPartDescription(const MaterialPair_t & MATERIALS_PAIR) const
     {
-        std::string desc("tough skin made of " + material::Name(MATERIALS_PAIR.first));
+        std::string desc;
+        desc.reserve(64);
+
+        desc += ("tough skin made of " + material::Name(MATERIALS_PAIR.first));
 
         if (MATERIALS_PAIR.second != material::Nothing)
         {
@@ -65,6 +71,7 @@ namespace item
     const std::string ItemNameFactory::MakeNonBodyPartName(const ItemProfile & PROFILE) const
     {
         std::string name;
+        name.reserve(64);
 
         name = BlessedOrCursed(PROFILE);
 
@@ -147,6 +154,7 @@ namespace item
         const ItemProfile & PROFILE, const std::string & BASE_DESC) const
     {
         std::string desc;
+        desc.reserve(128);
 
         // If non-body_part and non-misc_type, then BASE_DESC comes either from
         // WeaponDetails.description or ArmorDetails.description, which needs an "A " put in

@@ -20,6 +20,7 @@ namespace gui
         ImageOpt::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(32);
         AppendNameIfBitIsSet(str, ENUM_VALUE, ImageOpt::Smooth, "Smooth", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, ImageOpt::FlipHoriz, "FlipHoriz", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, ImageOpt::FlipVert, "FlipVert", SEPARATOR);

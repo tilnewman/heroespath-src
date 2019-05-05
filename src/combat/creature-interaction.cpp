@@ -426,8 +426,7 @@ namespace combat
                   << ", creatures_cast_upon=\""
                   << creature::Algorithms::Names(
                          creaturesCastUponPVec,
-                         0,
-                         misc::JoinOpt::None,
+                         misc::JoinOpt::Nothing,
                          creature::Algorithms::NamesOpt::WithRaceAndRole)
                   << "\") spell target_type=" << TargetType::ToString(SPELL_PTR->Target())
                   << " but there were " << creaturesCastUponPVec.size()
@@ -564,8 +563,7 @@ namespace combat
                   << ", creatures_listening=\""
                   << creature::Algorithms::Names(
                          CREATURES_LISTENING_PVEC,
-                         0,
-                         misc::JoinOpt::None,
+                         misc::JoinOpt::Nothing,
                          creature::Algorithms::NamesOpt::WithRaceAndRole)
                   << "\") song target_type=" << TargetType::ToString(SONG_PTR->Target())
                   << " but there were " << CREATURES_LISTENING_PVEC.size()

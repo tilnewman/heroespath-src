@@ -84,21 +84,22 @@ namespace item
 
     const std::string Item::Desc() const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(desc_.size() + 16);
 
-        ss << "A ";
+        str += "A ";
 
         if (IsMagical())
         {
-            ss << "magical ";
+            str += "magical ";
         }
         else if (IsBroken())
         {
-            ss << "broken ";
+            str += "broken ";
         }
 
-        ss << desc_ << ".";
-        return ss.str();
+        str += desc_ + ".";
+        return str;
     }
 
     const std::string Item::ImagePath() const
@@ -152,98 +153,99 @@ namespace item
 
     const std::string Item::ToString() const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(2048);
 
-        ss << "name=" << std::quoted(Name()) << ", desc=" << std::quoted(Desc());
+        str += "name=" + misc::Quoted(Name()) + ", desc=" + misc::Quoted(Desc());
 
         if (category::None != category_)
         {
-            ss << ", category=" << category::ToString(category_, EnumStringHow(Wrap::Yes));
+            str += ", category=" + category::ToString(category_, EnumStringHow(Wrap::Yes));
         }
 
         if (IsUnique())
         {
-            ss << ", unique";
+            str += ", unique";
         }
 
         if (IsQuestItem())
         {
-            ss << ", quest";
+            str += ", quest";
         }
 
         if (armor::ArmorTypeWrapper() != armorInfo_)
         {
-            ss << ", armor_info=" << armorInfo_.ToString();
+            str += ", armor_info=" + armorInfo_.ToString();
         }
 
         if (weapon::WeaponTypeWrapper() != weaponInfo_)
         {
-            ss << ", weapon_info=" << weaponInfo_.ToString();
+            str += ", weapon_info=" + weaponInfo_.ToString();
         }
 
         if (misc_type::Not != miscType_)
         {
-            ss << ", misc_type="
-               << ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
+            str += ", misc_type="
+                + ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
         }
 
         if (isPixie_)
         {
-            ss << ", is_pixie=" << std::boolalpha << isPixie_;
+            str += ", is_pixie=" + misc::ToString(isPixie_);
         }
 
         if (creature::role::Count != exclusiveToRole_)
         {
-            ss << ", role_restriction=" << creature::role::ToString(exclusiveToRole_);
+            str += ", role_restriction=" + creature::role::ToString(exclusiveToRole_);
         }
 
-        ss << ", mat_pri=" << material::ToString(materialPri_);
+        str += ", mat_pri=" + material::ToString(materialPri_);
 
         if (material::Nothing != materialSec_)
         {
-            ss << ", mat_sec=" << material::ToString(materialSec_);
+            str += ", mat_sec=" + material::ToString(materialSec_);
         }
 
         if (set_type::Not != setType_)
         {
-            ss << ", set_type="
-               << ((set_type::Count == setType_) ? "Count" : set_type::ToString(setType_));
+            str += ", set_type="
+                + ((set_type::Count == setType_) ? "Count" : set_type::ToString(setType_));
         }
 
         if (named_type::Not != namedType_)
         {
-            ss << ", named_type="
-               << ((named_type::Count == namedType_) ? "Count" : named_type::ToString(namedType_));
+            str += ", named_type="
+                + ((named_type::Count == namedType_) ? "Count" : named_type::ToString(namedType_));
         }
 
         if (element_type::None != elementType_)
         {
-            ss << ", element_type="
-               << element_type::ToString(elementType_, EnumStringHow(Wrap::Yes));
+            str += ", element_type="
+                + element_type::ToString(elementType_, EnumStringHow(Wrap::Yes));
         }
 
         if (summonInfo_.CanSummon())
         {
-            ss << ", summonInfo=" << summonInfo_.ToString();
+            str += ", summonInfo=" + summonInfo_.ToString();
         }
         else if (summonInfo_.IsDefaultAndCompletelyInvalid() == false)
         {
-            ss << ", summonInfo=" << summonInfo_.ToString() << "(but CanSummon()=false?)";
+            str += ", summonInfo=" + summonInfo_.ToString() + "(but CanSummon()=false?)";
         }
 
         if (enchantmentsPVec_.empty() == false)
         {
-            ss << ", enchantments={";
+            str += ", enchantments={";
 
             for (const auto & ENCHANTMENT_PTR : enchantmentsPVec_)
             {
-                ss << ENCHANTMENT_PTR->ToString() << " | ";
+                str += ENCHANTMENT_PTR->ToString() + " | ";
             }
 
-            ss << "}";
+            str += "}";
         }
 
-        return ss.str();
+        return str;
     }
 
     void Item::BeforeSerialize()
@@ -287,21 +289,22 @@ namespace item
 
     const std::string Item::ComposeName(const std::string & ROOT_NAME) const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(16 + ROOT_NAME.size());
 
         if (IsBroken())
         {
-            ss << "broken ";
+            str += "broken ";
         }
 
-        ss << ROOT_NAME;
+        str += ROOT_NAME;
 
         if (IsMagical())
         {
-            ss << " *";
+            str += " *";
         }
 
-        return ss.str();
+        return str;
     }
 
     bool operator<(const Item & L, const Item & R)
@@ -328,23 +331,23 @@ namespace item
                 L.summonInfo_,
                 L.elementType_)
             < std::tie(
-                R.price_,
-                R.weight_,
-                R.damageMin_,
-                R.damageMax_,
-                R.armorRating_,
-                R.exclusiveToRole_,
-                R.category_,
-                R.miscType_,
-                R.materialPri_,
-                R.materialSec_,
-                R.weaponInfo_,
-                R.armorInfo_,
-                R.isPixie_,
-                R.setType_,
-                R.namedType_,
-                R.summonInfo_,
-                R.elementType_))
+                  R.price_,
+                  R.weight_,
+                  R.damageMin_,
+                  R.damageMax_,
+                  R.armorRating_,
+                  R.exclusiveToRole_,
+                  R.category_,
+                  R.miscType_,
+                  R.materialPri_,
+                  R.materialSec_,
+                  R.weaponInfo_,
+                  R.armorInfo_,
+                  R.isPixie_,
+                  R.setType_,
+                  R.namedType_,
+                  R.summonInfo_,
+                  R.elementType_))
         {
             return true;
         }
@@ -376,23 +379,23 @@ namespace item
                 L.summonInfo_,
                 L.elementType_)
             != std::tie(
-                R.price_,
-                R.weight_,
-                R.damageMin_,
-                R.damageMax_,
-                R.armorRating_,
-                R.exclusiveToRole_,
-                R.category_,
-                R.miscType_,
-                R.materialPri_,
-                R.materialSec_,
-                R.weaponInfo_,
-                R.armorInfo_,
-                R.isPixie_,
-                R.setType_,
-                R.namedType_,
-                R.summonInfo_,
-                R.elementType_))
+                   R.price_,
+                   R.weight_,
+                   R.damageMin_,
+                   R.damageMax_,
+                   R.armorRating_,
+                   R.exclusiveToRole_,
+                   R.category_,
+                   R.miscType_,
+                   R.materialPri_,
+                   R.materialSec_,
+                   R.weaponInfo_,
+                   R.armorInfo_,
+                   R.isPixie_,
+                   R.setType_,
+                   R.namedType_,
+                   R.summonInfo_,
+                   R.elementType_))
         {
             return false;
         }

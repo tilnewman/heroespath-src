@@ -27,6 +27,7 @@ namespace gui
         Corner::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(32);
         AppendNameIfBitIsSet(str, ENUM_VALUE, Corner::TopLeft, "TopLeft", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, Corner::TopRight, "TopRight", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, Corner::BottomLeft, "BottomLeft", SEPARATOR);

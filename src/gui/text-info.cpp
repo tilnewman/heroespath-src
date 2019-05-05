@@ -99,20 +99,31 @@ namespace gui
     const std::string TextInfo::ToString(
         const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve(128);
 
-        auto appendWithSeparator = [&](const auto & THING) {
-            if (ss.str().empty() == false)
+        auto appendWithSeparator = [&](const std::string & STR) {
+            if (!str.empty())
             {
-                ss << SEPARATOR;
+                str += SEPARATOR;
             }
 
-            ss << THING;
+            str += STR;
         };
+
+        if (WILL_PREFIX)
+        {
+            str += std::string("TextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=");
+        }
+
+        if (WILL_WRAP == Wrap::Yes)
+        {
+            str += "(";
+        }
 
         if (*this == TextInfo())
         {
-            ss << "default";
+            str += "default";
         }
         else
         {
@@ -128,24 +139,17 @@ namespace gui
             appendWithSeparator(misc::Quoted(misc::MakeLoggableString(text)));
             appendWithSeparator("font=" + GuiFont::ToString(font_letters));
             appendWithSeparator("num_font=" + GuiFont::ToString(font_numbers));
-            appendWithSeparator(color);
+            appendWithSeparator(sfutil::ColorToString(color));
             appendWithSeparator(gui::Justified::ToString(justified));
             appendWithSeparator(sfutil::TextStyleToString(style));
         }
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            ss.str("(" + ss.str() + ")");
+            str += ")";
         }
 
-        if (WILL_PREFIX)
-        {
-            return std::string("TextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=") + ss.str();
-        }
-        else
-        {
-            return ss.str();
-        }
+        return str;
     }
 
     bool operator<(const TextInfo & L, const TextInfo & R)

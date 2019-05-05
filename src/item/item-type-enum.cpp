@@ -32,6 +32,7 @@ namespace item
         category::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(64);
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::Broken, "broken", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::Useable, "useable", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::BodyPart, "bodypart", SEPARATOR);
@@ -58,6 +59,7 @@ namespace item
         const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(32);
         AppendNameIfBitIsSet(str, ENUM_VALUE, element_type::Fire, "Fire", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, element_type::Frost, "Frost", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, element_type::Honor, "Honor", SEPARATOR);
@@ -67,24 +69,25 @@ namespace item
 
     const std::string element_type::Name(const Enum ELEMENT_TYPE, const bool INCLUDE_OF)
     {
-        std::ostringstream ss;
+        std::string str;
+        str.reserve();
 
         auto appendIfBitIsSet { [&](const element_type::Enum BIT) {
             if (ELEMENT_TYPE & BIT)
             {
-                if (ss.str().empty())
+                if (str.empty())
                 {
                     if (INCLUDE_OF)
                     {
-                        ss << "of ";
+                        str += "of ";
                     }
                 }
                 else
                 {
-                    ss << " and ";
+                    str += " and ";
                 }
 
-                ss << element_type::ToString(BIT);
+                str += element_type::ToString(BIT);
             }
         } };
 
@@ -93,7 +96,7 @@ namespace item
         appendIfBitIsSet(element_type::Honor);
         appendIfBitIsSet(element_type::Shadow);
 
-        return ss.str();
+        return str;
     }
 
     bool element_type::IsValid(const element_type::Enum ENUM)
@@ -2967,6 +2970,7 @@ namespace item
         const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
+        str.reserve(64);
         AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::BodyPart, "BodyPart", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Sword, "Sword", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Axe, "Axe", SEPARATOR);

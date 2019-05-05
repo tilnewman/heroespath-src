@@ -52,6 +52,7 @@ namespace game
         const std::string AllStageNames() const
         {
             std::string namesStr;
+            namesStr.reserve(64);
 
             if (popupUPtr_)
             {

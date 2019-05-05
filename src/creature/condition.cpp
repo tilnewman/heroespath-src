@@ -34,7 +34,10 @@ namespace creature
 
     const std::string Condition::ToString() const
     {
-        std::string str(Conditions::Name(type_));
+        std::string str;
+        str.reserve(128);
+
+        str += Conditions::Name(type_);
 
         if (isMagical_)
         {
@@ -54,7 +57,10 @@ namespace creature
 
     const std::string Condition::LongDesc() const
     {
-        std::string str(Conditions::Desc(type_));
+        std::string str;
+        str.reserve(128);
+
+        str += Conditions::Desc(type_);
 
         if (isMagical_)
         {

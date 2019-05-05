@@ -205,11 +205,10 @@ namespace gui
                             << "\", filename #" << fileIndex << ", is_jeweled=" << std::boolalpha
                             << IS_JEWELED << ", found an empty filename string.");
 
-                    std::ostringstream ss;
-                    ss << "ItemImagePaths Testing \"" << ENUM_STR << "\", file_index=" << fileIndex
-                       << " (" << ((IS_JEWELED) ? "jeweled" : "not-jeweled") << ")";
-
-                    iStagePtr->TestingStrIncrement(ss.str());
+                    iStagePtr->TestingStrIncrement(
+                        "ItemImagePaths Testing \"" + ENUM_STR
+                        + "\", file_index=" + std::to_string(fileIndex) + " ("
+                        + ((IS_JEWELED) ? "jeweled" : "not-jeweled") + ")");
 
                     const auto IMAGE_PATH_STR { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
 
@@ -347,9 +346,7 @@ namespace gui
 
                 // these misc_types have specific filenames
             case item::misc_type::ManaAmulet:
-            case item::misc_type::Pendant:
-            {
-                return MakeFilenames("amulet", 23);
+            case item::misc_type::Pendant: { return MakeFilenames("amulet", 23);
             }
             case item::misc_type::CapeCommanders:
             case item::misc_type::CapeGenerals:
@@ -365,29 +362,17 @@ namespace gui
             {
                 return { ("robe" + ContentImage::FilenameExtension()) };
             }
-            case item::misc_type::Goblet:
-            {
-                return MakeFilenames("goblet", 8);
+            case item::misc_type::Goblet: { return MakeFilenames("goblet", 8);
             }
-            case item::misc_type::Key:
-            {
-                return MakeFilenames("key", 11);
+            case item::misc_type::Key: { return MakeFilenames("key", 11);
             }
-            case item::misc_type::LockPicks:
-            {
-                return MakeFilenames("lockpicks", 6);
+            case item::misc_type::LockPicks: { return MakeFilenames("lockpicks", 6);
             }
-            case item::misc_type::Mirror:
-            {
-                return MakeFilenames("mirror", 10);
+            case item::misc_type::Mirror: { return MakeFilenames("mirror", 10);
             }
-            case item::misc_type::DrumLute:
-            {
-                return MakeFilenames("drumlute", 13);
+            case item::misc_type::DrumLute: { return MakeFilenames("drumlute", 13);
             }
-            case item::misc_type::Orb:
-            {
-                return MakeFilenames("orb", 9);
+            case item::misc_type::Orb: { return MakeFilenames("orb", 9);
             }
             case item::misc_type::Ring:
             {
@@ -404,49 +389,27 @@ namespace gui
                     return { "ring" + ContentImage::FilenameExtension() };
                 }
             }
-            case item::misc_type::RingHobo:
-            {
-                return { "ring" + ContentImage::FilenameExtension() };
+            case item::misc_type::RingHobo: { return { "ring" + ContentImage::FilenameExtension() };
             }
-            case item::misc_type::Shard:
-            {
-                return MakeFilenames("shard", 7);
+            case item::misc_type::Shard: { return MakeFilenames("shard", 7);
             }
-            case item::misc_type::Wand:
-            {
-                return MakeFilenames("wand", 11);
+            case item::misc_type::Wand: { return MakeFilenames("wand", 11);
             }
-            case item::misc_type::Scepter:
-            {
-                return MakeFilenames("scepter", 26);
+            case item::misc_type::Scepter: { return MakeFilenames("scepter", 26);
             }
-            case item::misc_type::DollBlessed:
-            {
-                return MakeFilenames("doll", 4, 2);
+            case item::misc_type::DollBlessed: { return MakeFilenames("doll", 4, 2);
             }
-            case item::misc_type::DollCursed:
-            {
-                return MakeFilenames("doll", 10, 5);
+            case item::misc_type::DollCursed: { return MakeFilenames("doll", 10, 5);
             }
-            case item::misc_type::Doll:
-            {
-                return { "doll-1" + ContentImage::FilenameExtension() };
+            case item::misc_type::Doll: { return { "doll-1" + ContentImage::FilenameExtension() };
             }
-            case item::misc_type::FigurineBlessed:
-            {
-                return MakeFilenames("figurine", 6);
+            case item::misc_type::FigurineBlessed: { return MakeFilenames("figurine", 6);
             }
-            case item::misc_type::FigurineCursed:
-            {
-                return MakeFilenames("figurine-evil", 6);
+            case item::misc_type::FigurineCursed: { return MakeFilenames("figurine-evil", 6);
             }
-            case item::misc_type::Staff:
-            {
-                return MakeFilenames("staff", 21);
+            case item::misc_type::Staff: { return MakeFilenames("staff", 21);
             }
-            case item::misc_type::SummoningStatue:
-            {
-                return MakeFilenames("summoning-statue", 3);
+            case item::misc_type::SummoningStatue: { return MakeFilenames("summoning-statue", 3);
             }
             case item::misc_type::BloodyDragonScale:
             {
@@ -687,12 +650,9 @@ namespace gui
 
         for (int i(FIRST_NUMBER); i <= LAST_NUMBER; ++i)
         {
-            std::ostringstream ss;
-
-            ss << PREFIX << ContentImage::FilenameSeparator() << i
-               << ContentImage::FilenameExtension();
-
-            filenames.emplace_back(ss.str());
+            filenames.emplace_back(
+                PREFIX + ContentImage::FilenameSeparator() + std::to_string(i)
+                + ContentImage::FilenameExtension());
         }
 
         return filenames;

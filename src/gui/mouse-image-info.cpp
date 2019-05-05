@@ -131,25 +131,31 @@ namespace gui
     const std::string MouseImageInfo::ToString(
         const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        std::ostringstream ss;
-
-        ss << "Up=" << up.ToString(false, Wrap::Yes) << SEPARATOR
-           << "Down=" << down.ToString(false, Wrap::Yes) << SEPARATOR
-           << "Over=" << over.ToString(false, Wrap::Yes) << SEPARATOR
-           << "Disabled=" << disabled.ToString(false, Wrap::Yes) << SEPARATOR
-           << "will_draw_up_if_missing=" << std::boolalpha << will_draw_up_if_missing;
-
-        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+        std::string str;
+        str.reserve(1024);
 
         if (WILL_PREFIX)
         {
-            return std::string("MouseImageInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
-                + PARTS_STR;
+            str += std::string("MouseImageInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=");
         }
-        else
+
+        if (WILL_WRAP == Wrap::Yes)
         {
-            return PARTS_STR;
+            str += "(";
         }
+
+        str += "Up=" + up.ToString(false, Wrap::Yes) + SEPARATOR
+            + "Down=" + down.ToString(false, Wrap::Yes) + SEPARATOR
+            + "Over=" + over.ToString(false, Wrap::Yes) + SEPARATOR
+            + "Disabled=" + disabled.ToString(false, Wrap::Yes) + SEPARATOR
+            + "will_draw_up_if_missing=" + misc::ToString(will_draw_up_if_missing);
+
+        if (WILL_WRAP == Wrap::Yes)
+        {
+            str += ")";
+        }
+
+        return str;
     }
 
     void MouseImageInfo::SetRegion(const sf::FloatRect & NEW_GLOBAL_BOUNDS)
