@@ -1,27 +1,9 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-// Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
-// Copyright (C) 2017 Ziesche Til Newman (tilnewman@gmail.com)
-//
-// This software is provided 'as-is', without any express or implied warranty.
-// In no event will the authors be held liable for any damages arising from
-// the use of this software.
-//
-// Permission is granted to anyone to use this software for any purpose,
-// including commercial applications, and to alter it and redistribute it
-// freely, subject to the following restrictions:
-//
-//  1. The origin of this software must not be misrepresented; you must not
-//     claim that you wrote the original software.  If you use this software
-//     in a product, an acknowledgment in the product documentation would be
-//     appreciated but is not required.
-//
-//  2. Altered source versions must be plainly marked as such, and must not
-//     be misrepresented as being the original software.
-//
-//  3. This notice may not be removed or altered from any source distribution.
-//
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
+// "THE BEER-WARE LICENSE" (Revision 42):
+// <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
+// can do whatever you want with this stuff. If we meet some day, and you think
+// this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
+// ----------------------------------------------------------------------------
 #ifndef TEST_TESTSTUFF_INCLUDED
 #define TEST_TESTSTUFF_INCLUDED
 //
@@ -98,14 +80,14 @@ bool isUnique(const std::vector<T> & VEC)
 template <typename T>
 bool isSortedDescending(const std::vector<T> & VEC)
 {
-    auto const VEC_SIZE{ VEC.size() };
+    auto const VEC_SIZE { VEC.size() };
 
     if (VEC_SIZE < 2)
     {
         return true;
     }
 
-    for (std::size_t i{ 1 }; i < VEC_SIZE; ++i)
+    for (std::size_t i { 1 }; i < VEC_SIZE; ++i)
     {
         if (VEC[i] < VEC[i - 1])
         {
