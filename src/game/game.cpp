@@ -18,9 +18,9 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 
-#include <exception>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 
 namespace heroespath
 {

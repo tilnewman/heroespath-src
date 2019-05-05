@@ -15,9 +15,9 @@
 #include "misc/timing.hpp"
 
 #include <chrono>
-#include <exception>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 namespace heroespath
 {

@@ -15,7 +15,7 @@
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/nameof.hpp"
 
-#include <exception>
+#include <stdexcept>
 #include <string>
 #include <tuple>
 #include <type_traits>

@@ -46,8 +46,8 @@
 #include "stage/treasure-display-stage.hpp"
 #include "stage/treasure-stage.hpp"
 
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 
 namespace heroespath
 {

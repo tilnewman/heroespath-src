@@ -15,8 +15,8 @@
 #include "creature/title-holder.hpp"
 #include "misc/assertlogandthrow.hpp"
 
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 
 namespace heroespath
 {

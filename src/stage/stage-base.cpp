@@ -27,8 +27,8 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include <algorithm>
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 
 namespace heroespath
 {

@@ -25,9 +25,9 @@
 #include "misc/nameof.hpp"
 #include "misc/real.hpp"
 
-#include <exception>
 #include <iostream>
 #include <numeric>
+#include <stdexcept>
 
 #include "unit-test-test-stuff.hpp"
 

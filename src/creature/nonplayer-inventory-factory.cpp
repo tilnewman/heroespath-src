@@ -20,9 +20,9 @@
 #include "misc/random.hpp"
 
 #include <algorithm>
-#include <exception>
 #include <iterator>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 namespace heroespath

@@ -18,8 +18,8 @@
 #include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <vector>
 
 namespace heroespath

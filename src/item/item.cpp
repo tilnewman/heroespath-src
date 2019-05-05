@@ -18,9 +18,9 @@
 #include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
 
-#include <exception>
 #include <iomanip>
 #include <sstream>
+#include <stdexcept>
 #include <tuple>
 
 namespace heroespath

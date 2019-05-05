@@ -32,8 +32,8 @@
 #include "game/game-controller.hpp"
 
 #include <algorithm>
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <utility>
 
 namespace heroespath

@@ -17,9 +17,9 @@
 #include "misc/enum-util.hpp"
 #include "stage/i-stage.hpp"
 
-#include <exception>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 
 namespace heroespath
 {
@@ -1919,8 +1919,9 @@ namespace creature
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->ImageFilename().empty() == false),
-                    "creature::Titles::Holder::Test(\"" << Titles::ToString(
-                        NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
+                    "creature::Titles::Holder::Test(\""
+                        << Titles::ToString(NEXT_ENUM)
+                        << "\") resulted in an empty ImageFilename().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->RolesCopy().empty() == false),

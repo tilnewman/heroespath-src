@@ -15,7 +15,7 @@
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 
-#include <exception>
+#include <stdexcept>
 
 namespace heroespath
 {

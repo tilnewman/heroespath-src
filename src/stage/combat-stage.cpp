@@ -60,8 +60,8 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 

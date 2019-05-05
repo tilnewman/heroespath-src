@@ -24,7 +24,7 @@
 #include "misc/strings.hpp"
 
 #include <algorithm>
-#include <exception>
+#include <stdexcept>
 #include <utility>
 
 namespace heroespath

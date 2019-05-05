@@ -14,8 +14,8 @@
 #include "misc/nameof.hpp"
 #include "misc/not-null.hpp"
 
-#include <exception>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
 

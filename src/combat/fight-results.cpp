@@ -20,8 +20,8 @@
 #include "spell/spell.hpp"
 
 #include <algorithm>
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 namespace heroespath

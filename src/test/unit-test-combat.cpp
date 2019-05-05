@@ -32,7 +32,7 @@
 #include "game/game-state-factory.hpp"
 #include "game/startup-shutdown.hpp"
 
-#include <exception>
+#include <stdexcept>
 
 using namespace heroespath;
 using namespace heroespath::game;

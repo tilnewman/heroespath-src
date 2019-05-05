@@ -28,7 +28,7 @@
 #include "misc/log-macros.hpp"
 
 #include <cstdlib>
-#include <exception>
+#include <stdexcept>
 
 using namespace heroespath;
 using namespace heroespath::gui;

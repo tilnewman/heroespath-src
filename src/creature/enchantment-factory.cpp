@@ -18,9 +18,9 @@
 #include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 
-#include <exception>
 #include <numeric>
 #include <sstream>
+#include <stdexcept>
 
 namespace heroespath
 {
@@ -1596,9 +1596,7 @@ namespace creature
 
             case item::misc_type::Not:
             case item::misc_type::Count:
-            default:
-            {
-                return {};
+            default: { return {};
             }
         }
     }

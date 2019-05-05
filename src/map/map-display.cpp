@@ -30,8 +30,8 @@
 #include "sfutil/vertex.hpp"
 
 #include <algorithm>
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 
 namespace heroespath
 {

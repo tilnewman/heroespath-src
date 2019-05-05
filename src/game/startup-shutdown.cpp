@@ -50,8 +50,8 @@
 
 #include <SFML/Window/WindowStyle.hpp>
 
-#include <exception>
 #include <iostream>
+#include <stdexcept>
 
 namespace heroespath
 {

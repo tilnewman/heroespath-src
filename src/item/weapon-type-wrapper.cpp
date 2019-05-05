@@ -16,8 +16,8 @@
 #include "misc/strings.hpp"
 #include "misc/vector-map.hpp"
 
-#include <exception>
 #include <numeric>
+#include <stdexcept>
 #include <vector>
 
 namespace heroespath

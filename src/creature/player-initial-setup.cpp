@@ -21,8 +21,8 @@
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
 
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 namespace heroespath

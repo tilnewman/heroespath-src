@@ -29,8 +29,8 @@
 #include "sfutil/overlap.hpp"
 #include "sfutil/scale.hpp"
 
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <utility>
 
 namespace heroespath

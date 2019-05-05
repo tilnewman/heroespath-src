@@ -21,8 +21,8 @@
 #include <SFML/System/Clock.hpp>
 
 #include <algorithm>
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 

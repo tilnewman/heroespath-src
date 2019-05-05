@@ -17,11 +17,11 @@
 #include <boost/algorithm/string/join.hpp>
 
 #include <algorithm>
-#include <exception>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 namespace heroespath
 {

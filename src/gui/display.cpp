@@ -24,8 +24,8 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Mouse.hpp>
 
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 

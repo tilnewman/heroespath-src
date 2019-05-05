@@ -32,8 +32,8 @@
 
 #include <SFML/Graphics/Texture.hpp>
 
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <vector>
 
 namespace heroespath

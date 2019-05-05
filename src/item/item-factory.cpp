@@ -29,8 +29,8 @@
 #include "stage/i-stage.hpp"
 
 #include <algorithm>
-#include <exception>
 #include <sstream>
+#include <stdexcept>
 #include <utility>
 
 namespace heroespath
