@@ -37,8 +37,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::ProtectorOfThornberry,
                 AchievementType::None,
-                1_index,
-                1_count,
+                1,
+                1,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(),
                 0_rank,
@@ -48,136 +48,136 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Dodger,
                 AchievementType::DodgedStanding,
-                1_index,
-                50_count,
+                1,
+                50,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 0_lck, 1_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::FastFoot,
                 AchievementType::DodgedStanding,
-                2_index,
-                100_count,
+                2,
+                100,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 0_lck, 2_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::NimbleFoot,
                 AchievementType::DodgedStanding,
-                3_index,
-                200_count,
+                3,
+                200,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 0_lck, 3_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SwiftFoot,
                 AchievementType::DodgedStanding,
-                4_index,
-                500_count,
+                4,
+                500,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 1_lck, 4_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MeleeMover,
                 AchievementType::DodgedStanding,
-                5_index,
-                1000_count,
+                5,
+                1000,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 2_lck, 5_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MeleeGrace,
                 AchievementType::DodgedStanding,
-                6_index,
-                2000_count,
+                6,
+                2000,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 3_lck, 6_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MeleeDancer,
                 AchievementType::DodgedStanding,
-                7_index,
-                5000_count,
+                7,
+                5000,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 4_lck, 7_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MeleeShadow,
                 AchievementType::DodgedStanding,
-                8_index,
-                10000_count,
+                8,
+                10000,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 7_lck, 10_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkyDodger,
                 AchievementType::DodgedFlying,
-                1_index,
-                20_count,
+                1,
+                20,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 0_lck, 1_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::FastWing,
                 AchievementType::DodgedFlying,
-                2_index,
-                40_count,
+                2,
+                40,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 0_lck, 2_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::NimbleWing,
                 AchievementType::DodgedFlying,
-                3_index,
-                80_count,
+                3,
+                80,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 0_lck, 3_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SwiftWing,
                 AchievementType::DodgedFlying,
-                4_index,
-                120_count,
+                4,
+                120,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 1_lck, 4_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkyMover,
                 AchievementType::DodgedFlying,
-                5_index,
-                200_count,
+                5,
+                200,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 2_lck, 5_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::GraceWing,
                 AchievementType::DodgedFlying,
-                6_index,
-                300_count,
+                6,
+                300,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 3_lck, 6_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkyDancer,
                 AchievementType::DodgedFlying,
-                7_index,
-                450_count,
+                7,
+                450,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 4_lck, 7_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkyShadow,
                 AchievementType::DodgedFlying,
-                8_index,
-                650_count,
+                8,
+                650,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
                 StatSet(0_str, 0_acc, 0_cha, 7_lck, 10_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Sneak,
-                AchievementType::BackstabsHits,
-                1_index,
-                10_count,
+                AchievementType::BackstabHits,
+                1,
+                10,
                 RoleVec_t { role::Thief },
                 StatSet(0_str, 1_acc, 0_cha, 1_lck, 0_spd, 0_int),
                 0_rank,
@@ -186,9 +186,9 @@ namespace creature
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Stalker,
-                AchievementType::BackstabsHits,
-                2_index,
-                50_count,
+                AchievementType::BackstabHits,
+                2,
+                50,
                 RoleVec_t { role::Thief },
                 StatSet(0_str, 2_acc, 0_cha, 2_lck, 0_spd, 0_int),
                 0_rank,
@@ -197,9 +197,9 @@ namespace creature
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Creeper,
-                AchievementType::BackstabsHits,
-                3_index,
-                100_count,
+                AchievementType::BackstabHits,
+                3,
+                100,
                 RoleVec_t { role::Thief },
                 StatSet(0_str, 3_acc, 0_cha, 3_lck, 0_spd, 0_int),
                 0_rank,
@@ -208,9 +208,9 @@ namespace creature
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Savage,
-                AchievementType::BackstabsHits,
-                4_index,
-                200_count,
+                AchievementType::BackstabHits,
+                4,
+                200,
                 RoleVec_t { role::Thief },
                 StatSet(0_str, 4_acc, 0_cha, 4_lck, 0_spd, 0_int),
                 0_rank,
@@ -219,9 +219,9 @@ namespace creature
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Homicidal,
-                AchievementType::BackstabsHits,
-                5_index,
-                300_count,
+                AchievementType::BackstabHits,
+                5,
+                300,
                 RoleVec_t { role::Thief },
                 StatSet(0_str, 5_acc, 0_cha, 5_lck, 0_spd, 0_int),
                 0_rank,
@@ -230,9 +230,9 @@ namespace creature
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Bloodthirsty,
-                AchievementType::BackstabsHits,
-                6_index,
-                400_count,
+                AchievementType::BackstabHits,
+                6,
+                400,
                 RoleVec_t { role::Thief },
                 StatSet(0_str, 6_acc, 0_cha, 6_lck, 0_spd, 0_int),
                 0_rank,
@@ -241,9 +241,9 @@ namespace creature
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::ShadowWalker,
-                AchievementType::BackstabsHits,
-                7_index,
-                500_count,
+                AchievementType::BackstabHits,
+                7,
+                500,
                 RoleVec_t { role::Thief },
                 StatSet(0_str, 7_acc, 0_cha, 7_lck, 0_spd, 0_int),
                 1_rank,
@@ -252,9 +252,9 @@ namespace creature
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Assassin,
-                AchievementType::BackstabsHits,
-                8_index,
-                1000_count,
+                AchievementType::BackstabHits,
+                8,
+                1000,
                 RoleVec_t { role::Thief },
                 StatSet(0_str, 10_acc, 0_cha, 10_lck, 0_spd, 0_int),
                 2_rank,
@@ -264,8 +264,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::KnightOfTheClashingBlade,
                 AchievementType::BattlesSurvived,
-                1_index,
-                10_count,
+                1,
+                10,
                 RoleVec_t { role::Knight },
                 StatSet(1_str, 1_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -275,8 +275,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::KnightOfAHundredBattles,
                 AchievementType::BattlesSurvived,
-                2_index,
-                100_count,
+                2,
+                100,
                 RoleVec_t { role::Knight },
                 StatSet(2_str, 2_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -286,8 +286,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::KnightOfThePiercingBlade,
                 AchievementType::BattlesSurvived,
-                3_index,
-                200_count,
+                3,
+                200,
                 RoleVec_t { role::Knight },
                 StatSet(3_str, 3_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -297,8 +297,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::KnightOfTheUndauntedBlade,
                 AchievementType::BattlesSurvived,
-                4_index,
-                500_count,
+                4,
+                500,
                 RoleVec_t { role::Knight },
                 StatSet(4_str, 4_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -308,8 +308,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::KnightOfAThousandBattles,
                 AchievementType::BattlesSurvived,
-                5_index,
-                1000_count,
+                5,
+                1000,
                 RoleVec_t { role::Knight },
                 StatSet(5_str, 5_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
@@ -319,8 +319,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::KnightOfTheFearedBlade,
                 AchievementType::BattlesSurvived,
-                6_index,
-                2000_count,
+                6,
+                2000,
                 RoleVec_t { role::Knight },
                 StatSet(6_str, 6_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
@@ -330,8 +330,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::KnightOfTheRealm,
                 AchievementType::BattlesSurvived,
-                7_index,
-                3000_count,
+                7,
+                3000,
                 RoleVec_t { role::Knight },
                 StatSet(7_str, 7_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
@@ -341,8 +341,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::KnightOfEtan,
                 AchievementType::BattlesSurvived,
-                8_index,
-                5000_count,
+                8,
+                5000,
                 RoleVec_t { role::Knight },
                 StatSet(10_str, 10_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 2_rank,
@@ -352,8 +352,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Mender,
                 AchievementType::HealthGiven,
-                1_index,
-                50_count,
+                1,
+                50,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 1_cha, 0_lck, 0_spd, 1_int),
                 0_rank,
@@ -363,8 +363,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Healer,
                 AchievementType::HealthGiven,
-                2_index,
-                200_count,
+                2,
+                200,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 2_cha, 0_lck, 0_spd, 2_int),
                 0_rank,
@@ -374,8 +374,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BlessedHands,
                 AchievementType::HealthGiven,
-                3_index,
-                500_count,
+                3,
+                500,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 3_cha, 0_lck, 0_spd, 3_int),
                 0_rank,
@@ -385,8 +385,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::WitchDoctor,
                 AchievementType::HealthGiven,
-                4_index,
-                1000_count,
+                4,
+                1000,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 4_cha, 0_lck, 0_spd, 4_int),
                 1_rank,
@@ -396,8 +396,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::LightOfTheCure,
                 AchievementType::HealthGiven,
-                5_index,
-                2000_count,
+                5,
+                2000,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 5_cha, 0_lck, 0_spd, 5_int),
                 1_rank,
@@ -407,8 +407,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DivineTouch,
                 AchievementType::HealthGiven,
-                6_index,
-                3000_count,
+                6,
+                3000,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 6_cha, 0_lck, 0_spd, 6_int),
                 1_rank,
@@ -418,8 +418,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::OrderOfTheWhiteSage,
                 AchievementType::HealthGiven,
-                7_index,
-                5000_count,
+                7,
+                5000,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 8_cha, 0_lck, 0_spd, 8_int),
                 1_rank,
@@ -429,8 +429,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::ClericOfTheCovenant,
                 AchievementType::HealthGiven,
-                8_index,
-                10000_count,
+                8,
+                10000,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 10_cha, 0_lck, 0_spd, 10_int),
                 2_rank,
@@ -440,8 +440,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::HandsOfCharity,
                 AchievementType::HealthTraded,
-                1_index,
-                50_count,
+                1,
+                50,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 1_cha, 0_lck, 0_spd, 1_int),
                 0_rank,
@@ -451,8 +451,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::HandsOfLove,
                 AchievementType::HealthTraded,
-                2_index,
-                100_count,
+                2,
+                100,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 2_cha, 0_lck, 0_spd, 2_int),
                 0_rank,
@@ -462,8 +462,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::HandsOfDevotion,
                 AchievementType::HealthTraded,
-                3_index,
-                200_count,
+                3,
+                200,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 3_cha, 0_lck, 0_spd, 3_int),
                 0_rank,
@@ -473,8 +473,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::HandsOfNobility,
                 AchievementType::HealthTraded,
-                4_index,
-                400_count,
+                4,
+                400,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 4_cha, 0_lck, 0_spd, 4_int),
                 0_rank,
@@ -484,8 +484,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::HandsOfSacrifice,
                 AchievementType::HealthTraded,
-                5_index,
-                800_count,
+                5,
+                800,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 5_cha, 0_lck, 0_spd, 5_int),
                 0_rank,
@@ -495,8 +495,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::TheSelflessHand,
                 AchievementType::HealthTraded,
-                6_index,
-                1000_count,
+                6,
+                1000,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 6_cha, 0_lck, 0_spd, 6_int),
                 1_rank,
@@ -506,8 +506,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::TheIncorruptibleHand,
                 AchievementType::HealthTraded,
-                7_index,
-                2500_count,
+                7,
+                2500,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 7_cha, 0_lck, 0_spd, 7_int),
                 1_rank,
@@ -517,8 +517,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::OrderOfTheBleedingPalm,
                 AchievementType::HealthTraded,
-                8_index,
-                4000_count,
+                8,
+                4000,
                 RoleVec_t { role::Cleric },
                 StatSet(0_str, 0_acc, 10_cha, 0_lck, 0_spd, 10_int),
                 2_rank,
@@ -528,8 +528,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::HowlingStray,
                 AchievementType::BeastRoars,
-                1_index,
-                10_count,
+                1,
+                10,
                 RoleVec_t { role::Wolfen, role::Firebrand, role::Sylavin },
                 StatSet(1_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -539,8 +539,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::HowlingBully,
                 AchievementType::BeastRoars,
-                2_index,
-                30_count,
+                2,
+                30,
                 RoleVec_t { role::Wolfen, role::Firebrand, role::Sylavin },
                 StatSet(2_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -550,8 +550,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::HowlingWildling,
                 AchievementType::BeastRoars,
-                3_index,
-                50_count,
+                3,
+                50,
                 RoleVec_t { role::Wolfen, role::Firebrand, role::Sylavin },
                 StatSet(3_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -561,8 +561,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SnarlingCreature,
                 AchievementType::BeastRoars,
-                4_index,
-                100_count,
+                4,
+                100,
                 RoleVec_t { role::Wolfen, role::Firebrand, role::Sylavin },
                 StatSet(4_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -572,8 +572,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SnarlingBeast,
                 AchievementType::BeastRoars,
-                5_index,
-                200_count,
+                5,
+                200,
                 RoleVec_t { role::Wolfen, role::Firebrand, role::Sylavin },
                 StatSet(5_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -583,8 +583,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SnarlingFiend,
                 AchievementType::BeastRoars,
-                6_index,
-                400_count,
+                6,
+                400,
                 RoleVec_t { role::Wolfen, role::Firebrand, role::Sylavin },
                 StatSet(6_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -594,8 +594,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::RagingMonster,
                 AchievementType::BeastRoars,
-                7_index,
-                1000_count,
+                7,
+                1000,
                 RoleVec_t { role::Wolfen, role::Firebrand, role::Sylavin },
                 StatSet(8_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
@@ -605,8 +605,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::RagingHorror,
                 AchievementType::BeastRoars,
-                8_index,
-                2000_count,
+                8,
+                2000,
                 RoleVec_t { role::Wolfen, role::Firebrand, role::Sylavin },
                 StatSet(10_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 2_rank,
@@ -616,8 +616,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Prowler,
                 AchievementType::LocksPicked,
-                1_index,
-                10_count,
+                1,
+                10,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -633,8 +633,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PickPocket,
                 AchievementType::LocksPicked,
-                2_index,
-                50_count,
+                2,
+                50,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -650,8 +650,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::CatBurglar,
                 AchievementType::LocksPicked,
-                3_index,
-                100_count,
+                3,
+                100,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -667,8 +667,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Clincher,
                 AchievementType::LocksPicked,
-                4_index,
-                200_count,
+                4,
+                200,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -684,8 +684,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Picker,
                 AchievementType::LocksPicked,
-                5_index,
-                500_count,
+                5,
+                500,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -701,8 +701,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SafeCracker,
                 AchievementType::LocksPicked,
-                6_index,
-                1000_count,
+                6,
+                1000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -718,8 +718,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::LockTickler,
                 AchievementType::LocksPicked,
-                7_index,
-                2000_count,
+                7,
+                2000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -735,8 +735,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::LockBane,
                 AchievementType::LocksPicked,
-                8_index,
-                5000_count,
+                8,
+                5000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -752,8 +752,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Versifier,
                 AchievementType::SongsPlayed,
-                1_index,
-                10_count,
+                1,
+                10,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 1_cha, 1_lck, 0_spd, 1_int),
                 0_rank,
@@ -763,8 +763,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Player,
                 AchievementType::SongsPlayed,
-                2_index,
-                50_count,
+                2,
+                50,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 2_cha, 1_lck, 0_spd, 2_int),
                 0_rank,
@@ -774,8 +774,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Balladeer,
                 AchievementType::SongsPlayed,
-                3_index,
-                100_count,
+                3,
+                100,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 3_cha, 2_lck, 0_spd, 3_int),
                 0_rank,
@@ -785,8 +785,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Minstrel,
                 AchievementType::SongsPlayed,
-                4_index,
-                200_count,
+                4,
+                200,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 4_cha, 2_lck, 0_spd, 4_int),
                 0_rank,
@@ -796,8 +796,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Instrumentalist,
                 AchievementType::SongsPlayed,
-                5_index,
-                500_count,
+                5,
+                500,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 5_cha, 3_lck, 0_spd, 5_int),
                 0_rank,
@@ -807,8 +807,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Soloist,
                 AchievementType::SongsPlayed,
-                6_index,
-                1000_count,
+                6,
+                1000,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 6_cha, 3_lck, 0_spd, 6_int),
                 1_rank,
@@ -818,8 +818,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Artiste,
                 AchievementType::SongsPlayed,
-                7_index,
-                2000_count,
+                7,
+                2000,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 8_cha, 5_lck, 0_spd, 8_int),
                 1_rank,
@@ -829,8 +829,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Virtuoso,
                 AchievementType::SongsPlayed,
-                8_index,
-                5000_count,
+                8,
+                5000,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 10_cha, 10_lck, 0_spd, 10_int),
                 2_rank,
@@ -840,8 +840,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BardOfTheTrippingToes,
                 AchievementType::SpiritsLifted,
-                1_index,
-                50_count,
+                1,
+                50,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 1_cha, 0_lck, 0_spd, 1_int),
                 0_rank,
@@ -851,8 +851,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BardOfTheMerryMelody,
                 AchievementType::SpiritsLifted,
-                2_index,
-                100_count,
+                2,
+                100,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 2_cha, 0_lck, 0_spd, 2_int),
                 0_rank,
@@ -862,8 +862,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BardOfTheWhimsicalWord,
                 AchievementType::SpiritsLifted,
-                3_index,
-                200_count,
+                3,
+                200,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 3_cha, 1_lck, 0_spd, 3_int),
                 0_rank,
@@ -873,8 +873,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BardOfTheCarolingChorus,
                 AchievementType::SpiritsLifted,
-                4_index,
-                500_count,
+                4,
+                500,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 4_cha, 1_lck, 0_spd, 4_int),
                 0_rank,
@@ -884,8 +884,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BardOfTheBouncingBallad,
                 AchievementType::SpiritsLifted,
-                5_index,
-                1000_count,
+                5,
+                1000,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 5_cha, 2_lck, 0_spd, 5_int),
                 0_rank,
@@ -895,8 +895,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BardOfTheDancingDitty,
                 AchievementType::SpiritsLifted,
-                6_index,
-                2000_count,
+                6,
+                2000,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 6_cha, 2_lck, 0_spd, 6_int),
                 0_rank,
@@ -906,8 +906,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BardOfTheEnchantedEar,
                 AchievementType::SpiritsLifted,
-                7_index,
-                3000_count,
+                7,
+                3000,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 7_cha, 3_lck, 0_spd, 7_int),
                 1_rank,
@@ -917,8 +917,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BardOfTheAracneAria,
                 AchievementType::SpiritsLifted,
-                8_index,
-                5000_count,
+                8,
+                5000,
                 RoleVec_t { role::Bard },
                 StatSet(0_str, 0_acc, 10_cha, 5_lck, 0_spd, 10_int),
                 2_rank,
@@ -928,8 +928,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Targeter,
                 AchievementType::ProjectileHits,
-                1_index,
-                20_count,
+                1,
+                20,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -943,8 +943,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SteadfastFlyer,
                 AchievementType::ProjectileHits,
-                2_index,
-                50_count,
+                2,
+                50,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -958,8 +958,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DeadEye,
                 AchievementType::ProjectileHits,
-                3_index,
-                100_count,
+                3,
+                100,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -973,8 +973,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DeadCenter,
                 AchievementType::ProjectileHits,
-                4_index,
-                500_count,
+                4,
+                500,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -988,8 +988,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SureSail,
                 AchievementType::ProjectileHits,
-                5_index,
-                1000_count,
+                5,
+                1000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1003,8 +1003,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SureShot,
                 AchievementType::ProjectileHits,
-                6_index,
-                2000_count,
+                6,
+                2000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1018,8 +1018,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PerfectHit,
                 AchievementType::ProjectileHits,
-                7_index,
-                3000_count,
+                7,
+                3000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1033,8 +1033,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::EnchantedAim,
                 AchievementType::ProjectileHits,
-                8_index,
-                5000_count,
+                8,
+                5000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1048,8 +1048,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Magus,
                 AchievementType::SpellsCast,
-                1_index,
-                20_count,
+                1,
+                20,
                 RoleVec_t { role::Sylavin,
                             role::Firebrand,
                             role::Archer,
@@ -1066,8 +1066,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Charmer,
                 AchievementType::SpellsCast,
-                2_index,
-                50_count,
+                2,
+                50,
                 RoleVec_t { role::Sylavin,
                             role::Firebrand,
                             role::Archer,
@@ -1084,8 +1084,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Diviner,
                 AchievementType::SpellsCast,
-                3_index,
-                100_count,
+                3,
+                100,
                 RoleVec_t { role::Sylavin,
                             role::Firebrand,
                             role::Archer,
@@ -1102,8 +1102,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Enchanter,
                 AchievementType::SpellsCast,
-                4_index,
-                200_count,
+                4,
+                200,
                 RoleVec_t { role::Sylavin,
                             role::Firebrand,
                             role::Archer,
@@ -1120,8 +1120,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Conjurer,
                 AchievementType::SpellsCast,
-                5_index,
-                500_count,
+                5,
+                500,
                 RoleVec_t { role::Sylavin,
                             role::Firebrand,
                             role::Archer,
@@ -1138,8 +1138,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Shaman,
                 AchievementType::SpellsCast,
-                6_index,
-                1000_count,
+                6,
+                1000,
                 RoleVec_t { role::Sylavin,
                             role::Firebrand,
                             role::Archer,
@@ -1156,8 +1156,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Wizard,
                 AchievementType::SpellsCast,
-                7_index,
-                2000_count,
+                7,
+                2000,
                 RoleVec_t { role::Sylavin,
                             role::Firebrand,
                             role::Archer,
@@ -1174,8 +1174,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Warlock,
                 AchievementType::SpellsCast,
-                8_index,
-                5000_count,
+                8,
+                5000,
                 RoleVec_t { role::Sylavin,
                             role::Firebrand,
                             role::Archer,
@@ -1192,8 +1192,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Undaunted,
                 AchievementType::EnemiesFaced,
-                1_index,
-                20_count,
+                1,
+                20,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(0_str, 0_acc, 0_cha, 1_lck, 0_spd, 0_int),
                 0_rank,
@@ -1203,8 +1203,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Daring,
                 AchievementType::EnemiesFaced,
-                2_index,
-                50_count,
+                2,
+                50,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(1_str, 0_acc, 0_cha, 2_lck, 0_spd, 1_int),
                 0_rank,
@@ -1214,8 +1214,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Bold,
                 AchievementType::EnemiesFaced,
-                3_index,
-                100_count,
+                3,
+                100,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(2_str, 0_acc, 0_cha, 3_lck, 0_spd, 2_int),
                 0_rank,
@@ -1225,8 +1225,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Brave,
                 AchievementType::EnemiesFaced,
-                4_index,
-                200_count,
+                4,
+                200,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(3_str, 0_acc, 0_cha, 4_lck, 0_spd, 3_int),
                 0_rank,
@@ -1236,8 +1236,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Valorous,
                 AchievementType::EnemiesFaced,
-                5_index,
-                500_count,
+                5,
+                500,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(4_str, 0_acc, 0_cha, 5_lck, 0_spd, 4_int),
                 0_rank,
@@ -1247,8 +1247,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Valiant,
                 AchievementType::EnemiesFaced,
-                6_index,
-                1000_count,
+                6,
+                1000,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(5_str, 0_acc, 0_cha, 6_lck, 0_spd, 5_int),
                 0_rank,
@@ -1258,8 +1258,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Lionhearted,
                 AchievementType::EnemiesFaced,
-                7_index,
-                2000_count,
+                7,
+                2000,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(6_str, 0_acc, 0_cha, 7_lck, 0_spd, 6_int),
                 0_rank,
@@ -1269,8 +1269,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Heroic,
                 AchievementType::EnemiesFaced,
-                8_index,
-                3000_count,
+                8,
+                3000,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(8_str, 0_acc, 0_cha, 8_lck, 0_spd, 8_int),
                 1_rank,
@@ -1280,8 +1280,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Fearless,
                 AchievementType::EnemiesFaced,
-                9_index,
-                5000_count,
+                9,
+                5000,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(10_str, 0_acc, 0_cha, 10_lck, 0_spd, 10_int),
                 2_rank,
@@ -1291,8 +1291,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PawOfTheLunarPup,
                 AchievementType::MoonHowls,
-                1_index,
-                10_count,
+                1,
+                10,
                 RoleVec_t { role::Wolfen },
                 StatSet(1_str, 0_acc, 0_cha, 1_lck, 0_spd, 0_int),
                 0_rank,
@@ -1302,8 +1302,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PawOfTheYoungHowler,
                 AchievementType::MoonHowls,
-                2_index,
-                20_count,
+                2,
+                20,
                 RoleVec_t { role::Wolfen },
                 StatSet(2_str, 0_acc, 0_cha, 2_lck, 0_spd, 0_int),
                 0_rank,
@@ -1313,8 +1313,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PawOfTheNightSky,
                 AchievementType::MoonHowls,
-                3_index,
-                50_count,
+                3,
+                50,
                 RoleVec_t { role::Wolfen },
                 StatSet(3_str, 0_acc, 0_cha, 3_lck, 0_spd, 0_int),
                 0_rank,
@@ -1324,8 +1324,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PawOfTheMidnightWail,
                 AchievementType::MoonHowls,
-                4_index,
-                100_count,
+                4,
+                100,
                 RoleVec_t { role::Wolfen },
                 StatSet(4_str, 0_acc, 0_cha, 4_lck, 0_spd, 0_int),
                 0_rank,
@@ -1335,8 +1335,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PawOfTheTwilightMoon,
                 AchievementType::MoonHowls,
-                5_index,
-                200_count,
+                5,
+                200,
                 RoleVec_t { role::Wolfen },
                 StatSet(5_str, 0_acc, 0_cha, 5_lck, 0_spd, 0_int),
                 1_rank,
@@ -1346,8 +1346,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PawOfTheCelestialCry,
                 AchievementType::MoonHowls,
-                6_index,
-                300_count,
+                6,
+                300,
                 RoleVec_t { role::Wolfen },
                 StatSet(6_str, 0_acc, 0_cha, 6_lck, 0_spd, 0_int),
                 1_rank,
@@ -1357,8 +1357,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PawOfTheGlowingOrb,
                 AchievementType::MoonHowls,
-                7_index,
-                500_count,
+                7,
+                500,
                 RoleVec_t { role::Wolfen },
                 StatSet(8_str, 0_acc, 0_cha, 8_lck, 0_spd, 0_int),
                 1_rank,
@@ -1368,8 +1368,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PawOfTheCrescentLegion,
                 AchievementType::MoonHowls,
-                8_index,
-                800_count,
+                8,
+                800,
                 RoleVec_t { role::Wolfen },
                 StatSet(10_str, 0_acc, 0_cha, 10_lck, 0_spd, 0_int),
                 2_rank,
@@ -1379,8 +1379,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::WindGlider,
                 AchievementType::TurnsInFlight,
-                1_index,
-                50_count,
+                1,
+                50,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(0_str, 0_acc, 0_cha, 1_lck, 1_spd, 0_int),
                 0_rank));
@@ -1388,8 +1388,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::LightFeather,
                 AchievementType::TurnsInFlight,
-                2_index,
-                100_count,
+                2,
+                100,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(0_str, 0_acc, 0_cha, 2_lck, 2_spd, 0_int),
                 0_rank));
@@ -1397,8 +1397,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::FreeFlyer,
                 AchievementType::TurnsInFlight,
-                3_index,
-                200_count,
+                3,
+                200,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(0_str, 0_acc, 0_cha, 3_lck, 3_spd, 0_int),
                 0_rank));
@@ -1406,8 +1406,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SteadyWing,
                 AchievementType::TurnsInFlight,
-                4_index,
-                500_count,
+                4,
+                500,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(0_str, 0_acc, 0_cha, 4_lck, 4_spd, 0_int),
                 0_rank));
@@ -1415,8 +1415,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::EverSoar,
                 AchievementType::TurnsInFlight,
-                5_index,
-                1000_count,
+                5,
+                1000,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(0_str, 0_acc, 0_cha, 5_lck, 5_spd, 0_int),
                 0_rank));
@@ -1424,8 +1424,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkySail,
                 AchievementType::TurnsInFlight,
-                6_index,
-                2000_count,
+                6,
+                2000,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(0_str, 0_acc, 0_cha, 6_lck, 6_spd, 0_int),
                 1_rank));
@@ -1433,8 +1433,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Aerialist,
                 AchievementType::TurnsInFlight,
-                7_index,
-                3000_count,
+                7,
+                3000,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(0_str, 0_acc, 0_cha, 8_lck, 8_spd, 0_int),
                 1_rank));
@@ -1442,8 +1442,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::FeatherDancer,
                 AchievementType::TurnsInFlight,
-                8_index,
-                5000_count,
+                8,
+                5000,
                 RoleVec_t { Title::ROLEVEC_ALL_PLAYER_ROLES_ },
                 StatSet(0_str, 0_acc, 0_cha, 10_lck, 10_spd, 0_int),
                 2_rank));
@@ -1451,8 +1451,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PackFollower,
                 AchievementType::PackActions,
-                1_index,
-                20_count,
+                1,
+                20,
                 RoleVec_t { role::Wolfen },
                 StatSet(1_str, 1_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -1462,8 +1462,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PackMember,
                 AchievementType::PackActions,
-                2_index,
-                50_count,
+                2,
+                50,
                 RoleVec_t { role::Wolfen },
                 StatSet(2_str, 2_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -1473,8 +1473,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PackTasker,
                 AchievementType::PackActions,
-                3_index,
-                100_count,
+                3,
+                100,
                 RoleVec_t { role::Wolfen },
                 StatSet(3_str, 3_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -1484,8 +1484,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PackCharger,
                 AchievementType::PackActions,
-                4_index,
-                200_count,
+                4,
+                200,
                 RoleVec_t { role::Wolfen },
                 StatSet(4_str, 4_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -1495,8 +1495,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PackNobel,
                 AchievementType::PackActions,
-                5_index,
-                300_count,
+                5,
+                300,
                 RoleVec_t { role::Wolfen },
                 StatSet(5_str, 5_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -1506,8 +1506,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PackLeader,
                 AchievementType::PackActions,
-                6_index,
-                400_count,
+                6,
+                400,
                 RoleVec_t { role::Wolfen },
                 StatSet(6_str, 6_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
@@ -1517,8 +1517,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PackAlpha,
                 AchievementType::PackActions,
-                7_index,
-                500_count,
+                7,
+                500,
                 RoleVec_t { role::Wolfen },
                 StatSet(8_str, 8_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
@@ -1528,8 +1528,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PackElder,
                 AchievementType::PackActions,
-                8_index,
-                1000_count,
+                8,
+                1000,
                 RoleVec_t { role::Wolfen },
                 StatSet(10_str, 10_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 2_rank,
@@ -1539,8 +1539,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::CritterClairvoyant,
                 AchievementType::BeastMindLinks,
-                1_index,
-                20_count,
+                1,
+                20,
                 RoleVec_t { role::Beastmaster },
                 StatSet(1_str, 0_acc, 0_cha, 1_lck, 0_spd, 1_int),
                 0_rank,
@@ -1550,8 +1550,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::AnimalAnimator,
                 AchievementType::BeastMindLinks,
-                2_index,
-                50_count,
+                2,
+                50,
                 RoleVec_t { role::Beastmaster },
                 StatSet(2_str, 0_acc, 0_cha, 2_lck, 0_spd, 2_int),
                 0_rank,
@@ -1561,8 +1561,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::FriendOfTheFeral,
                 AchievementType::BeastMindLinks,
-                3_index,
-                100_count,
+                3,
+                100,
                 RoleVec_t { role::Beastmaster },
                 StatSet(3_str, 0_acc, 0_cha, 3_lck, 0_spd, 3_int),
                 0_rank,
@@ -1572,8 +1572,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::WillOfTheWild,
                 AchievementType::BeastMindLinks,
-                4_index,
-                200_count,
+                4,
+                200,
                 RoleVec_t { role::Beastmaster },
                 StatSet(4_str, 0_acc, 0_cha, 4_lck, 0_spd, 4_int),
                 0_rank,
@@ -1583,8 +1583,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::CreatureChanneler,
                 AchievementType::BeastMindLinks,
-                5_index,
-                300_count,
+                5,
+                300,
                 RoleVec_t { role::Beastmaster },
                 StatSet(5_str, 0_acc, 0_cha, 5_lck, 0_spd, 5_int),
                 0_rank,
@@ -1594,8 +1594,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::BeastTaskmaster,
                 AchievementType::BeastMindLinks,
-                6_index,
-                400_count,
+                6,
+                400,
                 RoleVec_t { role::Beastmaster },
                 StatSet(6_str, 0_acc, 0_cha, 6_lck, 0_spd, 6_int),
                 1_rank,
@@ -1605,8 +1605,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MonsterManipulator,
                 AchievementType::BeastMindLinks,
-                7_index,
-                500_count,
+                7,
+                500,
                 RoleVec_t { role::Beastmaster },
                 StatSet(8_str, 0_acc, 0_cha, 8_lck, 0_spd, 8_int),
                 1_rank,
@@ -1616,8 +1616,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MammalianMaster,
                 AchievementType::BeastMindLinks,
-                8_index,
-                1000_count,
+                8,
+                1000,
                 RoleVec_t { role::Beastmaster },
                 StatSet(10_str, 0_acc, 0_cha, 10_lck, 0_spd, 10_int),
                 2_rank,
@@ -1627,8 +1627,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Brawler,
                 AchievementType::MeleeHits,
-                1_index,
-                20_count,
+                1,
+                20,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1644,8 +1644,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::WildSwing,
                 AchievementType::MeleeHits,
-                2_index,
-                50_count,
+                2,
+                50,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1661,8 +1661,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::HavocSmasher,
                 AchievementType::MeleeHits,
-                3_index,
-                100_count,
+                3,
+                100,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1678,8 +1678,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SureStroke,
                 AchievementType::MeleeHits,
-                4_index,
-                200_count,
+                4,
+                200,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1695,8 +1695,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Warrior,
                 AchievementType::MeleeHits,
-                5_index,
-                500_count,
+                5,
+                500,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1712,8 +1712,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::EverMark,
                 AchievementType::MeleeHits,
-                6_index,
-                1000_count,
+                6,
+                1000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1729,8 +1729,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MeleeMaster,
                 AchievementType::MeleeHits,
-                7_index,
-                2000_count,
+                7,
+                2000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1746,8 +1746,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SteadyStriker,
                 AchievementType::MeleeHits,
-                8_index,
-                3000_count,
+                8,
+                3000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1763,8 +1763,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::OrderOfTheEverWarrior,
                 AchievementType::MeleeHits,
-                9_index,
-                5000_count,
+                9,
+                5000,
                 RoleVec_t { role::Knight,
                             role::Archer,
                             role::Beastmaster,
@@ -1780,8 +1780,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DragonOfTheUnblinkingEye,
                 AchievementType::FlyingAttackHits,
-                1_index,
-                20_count,
+                1,
+                20,
                 RoleVec_t { role::Firebrand, role::Sylavin },
                 StatSet(1_str, 1_acc, 0_cha, 0_lck, 1_spd, 0_int),
                 0_rank,
@@ -1791,8 +1791,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DragonOfTheCurlingClaw,
                 AchievementType::FlyingAttackHits,
-                2_index,
-                50_count,
+                2,
+                50,
                 RoleVec_t { role::Firebrand, role::Sylavin },
                 StatSet(2_str, 2_acc, 0_cha, 0_lck, 2_spd, 1_int),
                 0_rank,
@@ -1802,8 +1802,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DragonOfTheDaggerTooth,
                 AchievementType::FlyingAttackHits,
-                3_index,
-                100_count,
+                3,
+                100,
                 RoleVec_t { role::Firebrand, role::Sylavin },
                 StatSet(3_str, 3_acc, 0_cha, 0_lck, 3_spd, 2_int),
                 0_rank,
@@ -1813,8 +1813,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DragonOfTheForebodingGaze,
                 AchievementType::FlyingAttackHits,
-                4_index,
-                200_count,
+                4,
+                200,
                 RoleVec_t { role::Firebrand, role::Sylavin },
                 StatSet(4_str, 4_acc, 0_cha, 0_lck, 4_spd, 3_int),
                 0_rank,
@@ -1824,8 +1824,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DragonOfTheUnbreakableScale,
                 AchievementType::FlyingAttackHits,
-                5_index,
-                500_count,
+                5,
+                500,
                 RoleVec_t { role::Firebrand, role::Sylavin },
                 StatSet(5_str, 5_acc, 0_cha, 0_lck, 5_spd, 4_int),
                 0_rank,
@@ -1835,8 +1835,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DragonOfTheDreadedBreath,
                 AchievementType::FlyingAttackHits,
-                6_index,
-                1000_count,
+                6,
+                1000,
                 RoleVec_t { role::Firebrand, role::Sylavin },
                 StatSet(6_str, 6_acc, 0_cha, 0_lck, 6_spd, 5_int),
                 0_rank,
@@ -1846,8 +1846,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DragonOfTheArcaneWing,
                 AchievementType::FlyingAttackHits,
-                7_index,
-                2000_count,
+                7,
+                2000,
                 RoleVec_t { role::Firebrand, role::Sylavin },
                 StatSet(8_str, 8_acc, 0_cha, 0_lck, 8_spd, 8_int),
                 0_rank,
@@ -1857,8 +1857,8 @@ namespace creature
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DragonOfTheNightmareSky,
                 AchievementType::FlyingAttackHits,
-                8_index,
-                5000_count,
+                8,
+                5000,
                 RoleVec_t { role::Firebrand, role::Sylavin },
                 StatSet(10_str, 10_acc, 0_cha, 0_lck, 10_spd, 10_int),
                 0_rank,

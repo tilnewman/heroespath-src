@@ -87,6 +87,7 @@ namespace item
             std::tie(L.coin_, L.gem_, L.magic_, L.religious_)
             < std::tie(R.coin_, R.gem_, R.magic_, R.religious_));
     }
+
 } // namespace item
 } // namespace heroespath
 

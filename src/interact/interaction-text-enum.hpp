@@ -11,7 +11,6 @@
 //
 #include "gui/font-enum.hpp"
 #include "misc/enum-common.hpp"
-#include "misc/not-null.hpp"
 
 #include <string>
 

@@ -11,6 +11,7 @@
 //  A collection of types that define chances to items that might be
 //  owned/carried/worn by non-player characters.
 //
+#include "creature/rank-class.hpp"
 #include "creature/trait.hpp"
 #include "game/strong-types.hpp"
 #include "item/armor-types.hpp"

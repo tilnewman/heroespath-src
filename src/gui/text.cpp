@@ -254,7 +254,7 @@ namespace gui
         }
 
         str += SEPARATOR + GuiFont::ToString(font_) + SEPARATOR + std::to_string(size()) + SEPARATOR
-            + sfutil::ColorToString(getFillColor()) + SEPARATOR;
+            + misc::ToString(getFillColor()) + SEPARATOR;
 
         const auto STYLE { getStyle() };
         if (0 != STYLE)

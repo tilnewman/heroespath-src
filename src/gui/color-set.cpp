@@ -78,10 +78,9 @@ namespace gui
             str += "(";
         }
 
-        str += "fg_wf=" + sfutil::ColorToString(foreground_with)
-            + ", fg_wof=" + sfutil::ColorToString(foreground_without)
-            + ", bg_wf=" + sfutil::ColorToString(background_with)
-            + ", bg_wof=" + sfutil::ColorToString(background_without);
+        str += "fg_wf=" + misc::ToString(foreground_with) + ", fg_wof="
+            + misc::ToString(foreground_without) + ", bg_wf=" + misc::ToString(background_with)
+            + ", bg_wof=" + misc::ToString(background_without);
 
         if (WILL_WRAP)
         {

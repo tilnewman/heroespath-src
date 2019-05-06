@@ -16,9 +16,9 @@
 
 namespace heroespath
 {
-namespace sfutil
+namespace misc
 {
-    const std::string ColorToString(const sf::Color & C)
+    const std::string ToString(const sf::Color & C)
     {
         std::string str;
         str.reserve(32);
@@ -74,7 +74,7 @@ namespace sfutil
         return str;
     }
 
-} // namespace sfutil
+} // namespace misc
 } // namespace heroespath
 
 namespace sf
@@ -82,7 +82,7 @@ namespace sf
 
 std::ostream & operator<<(std::ostream & os, const sf::Color & C)
 {
-    os << heroespath::sfutil::ColorToString(C);
+    os << heroespath::misc::ToString(C);
     return os;
 }
 

@@ -165,15 +165,6 @@ namespace misc
 
         // returns RETURN_IF_NOT_FOUND if KEY is empty
         template <typename V, typename P>
-        const StrongType<V, P>
-            ValueAs(const std::string & KEY, const StrongType<V, P> & RETURN_IF_NOT_FOUND) const
-        {
-            return StrongType<V, P>::Make(
-                ValueAs(KEY, RETURN_IF_NOT_FOUND.Get(), RETURN_IF_NOT_FOUND.Get()));
-        }
-
-        // returns RETURN_IF_NOT_FOUND if KEY is empty
-        template <typename V, typename P>
         const StrongNumericType<V, P> ValueAs(
             const std::string & KEY, const StrongNumericType<V, P> & RETURN_IF_NOT_FOUND) const
         {
@@ -185,13 +176,6 @@ namespace misc
         T ValueOrDefault(const std::string & KEY) const
         {
             return ValueAs(KEY, T());
-        }
-
-        template <typename S, typename V, typename P>
-        std::enable_if_t<are_same_v<S, StrongType<V, P>>, const StrongType<V, P>>
-            ValueAs(const std::string & KEY) const
-        {
-            return ValueAs(KEY, S());
         }
 
         template <typename S, typename V, typename P>

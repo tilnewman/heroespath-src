@@ -968,76 +968,6 @@ BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
     BOOST_CHECK(optExtra == thingPtr1);
 }
 
-BOOST_AUTO_TEST_CASE(strong_type_tests)
-{
-    Name_t a;
-    BOOST_CHECK_EQUAL(a.Get(), std::string());
-
-    Name_t b(a);
-    BOOST_CHECK_EQUAL(a.Get(), b.Get());
-
-    Name_t c = a;
-    BOOST_CHECK_EQUAL(a.Get(), c.Get());
-
-    const auto ABC_STR = "abc";
-    Name_t d = Name_t::Make(std::string(ABC_STR));
-    BOOST_CHECK_EQUAL(d.Get(), ABC_STR);
-
-    const auto XYZ_STR = "xyz";
-    Name_t e = Name_t::Make(Name_t::value_type(XYZ_STR));
-    BOOST_CHECK_EQUAL(e.Get(), XYZ_STR);
-
-    std::ostringstream ss;
-    ss << e;
-    BOOST_CHECK_EQUAL(ss.str(), XYZ_STR);
-
-    BOOST_CHECK(a == b);
-    BOOST_CHECK(!(a != b));
-    BOOST_CHECK(!(a < b));
-    BOOST_CHECK(a <= b);
-    BOOST_CHECK(!(a > b));
-    BOOST_CHECK(a >= b);
-
-    BOOST_CHECK(!(d == e));
-    BOOST_CHECK(d != e);
-    BOOST_CHECK(d < e);
-    BOOST_CHECK(d <= e);
-    BOOST_CHECK(!(d > e));
-    BOOST_CHECK(!(d >= e));
-
-    //
-    // none of these should compile
-    //
-    // Health_t h;
-    // auto m1 = (a + a);
-    // auto m2 = (a - a);
-    // auto m3 = (a / a);
-    // auto m4 = (a * a);
-    //++a;
-    // a++;
-    //--a;
-    // a--;
-    // a += b;
-    // a -= b;
-    // a *= b;
-    // a /= b;
-    // Name_t d1(std::string("asdf"));
-    // Name_t d2(Name_t::value_type("1234"));
-    // Name_t e1 = std::string("asdf");
-    // Name_t e2 = Name_t::value_type();
-    // Name_t g(h);
-    // a = h;
-    // a += h;
-    // auto cc1 = (a + a);
-    // auto cc2 = (a + h);
-    // auto b3 = (a == h);
-    // auto b4 = (a != h);
-    // auto b5 = (a == std::string("asdf"));
-    // auto b6 = (a == std::string());
-    // auto b7 = (a == Name_t::value_type());
-    // auto b8 = (a == Name_t::value_type("1234"));
-}
-
 BOOST_AUTO_TEST_CASE(strong_numeric_type_tests)
 {
     // using Health_t as a test because it's value_type is int...less typing
@@ -1201,13 +1131,13 @@ BOOST_AUTO_TEST_CASE(strong_numeric_type_tests)
     BOOST_CHECK_EQUAL(Max(-321_health, -123_health, 0_health, 123_health, 321_health), 321_health);
     BOOST_CHECK_EQUAL(Min(-321_health, -123_health, 0_health, 123_health, 321_health), -321_health);
 
-    BOOST_CHECK_EQUAL(++a.Get(), 1);
+    BOOST_CHECK_EQUAL((++a).Get(), 1);
     BOOST_CHECK_EQUAL(a.Get(), 1);
 
     BOOST_CHECK_EQUAL((a++).Get(), 1);
     BOOST_CHECK_EQUAL(a.Get(), 2);
 
-    BOOST_CHECK_EQUAL(--a.Get(), 1);
+    BOOST_CHECK_EQUAL((--a).Get(), 1);
     BOOST_CHECK_EQUAL(a.Get(), 1);
 
     BOOST_CHECK_EQUAL((a--).Get(), 1);

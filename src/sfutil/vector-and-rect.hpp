@@ -18,23 +18,23 @@
 
 namespace heroespath
 {
-namespace sfutil
+namespace misc
 {
 
     template <typename T>
-    const std::string VectorToString(const sf::Vector2<T> & V)
+    const std::string ToString(const sf::Vector2<T> & V)
     {
-        return "(" + misc::ToString(V.x) + "," + misc::ToString(V.y) + ")";
+        return "(" + ToString(V.x) + "," + ToString(V.y) + ")";
     }
 
     template <typename T>
-    const std::string RectToString(const sf::Rect<T> & R)
+    const std::string ToString(const sf::Rect<T> & R)
     {
-        return "(" + misc::ToString(R.left) + "," + misc::ToString(R.top) + "/"
-            + misc::ToString(R.width) + "x" + misc::ToString(R.height) + ")";
+        return "(" + ToString(R.left) + "," + ToString(R.top) + "/" + ToString(R.width) + "x"
+            + ToString(R.height) + ")";
     }
 
-} // namespace sfutil
+} // namespace misc
 } // namespace heroespath
 
 namespace sf
@@ -102,14 +102,14 @@ bool operator>=(const sf::Rect<T1> & L, const sf::Rect<T2> & R)
 template <typename T>
 std::ostream & operator<<(std::ostream & os, const sf::Vector2<T> & V)
 {
-    os << heroespath::sfutil::VectorToString(V);
+    os << heroespath::misc::ToString(V);
     return os;
 }
 
 template <typename T>
 std::ostream & operator<<(std::ostream & os, const sf::Rect<T> & R)
 {
-    os << heroespath::sfutil::RectToString(R);
+    os << heroespath::misc::ToString(R);
     return os;
 }
 

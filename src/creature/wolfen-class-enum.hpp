@@ -10,7 +10,7 @@
 // wolfen-class-enum.hpp
 //  An enumeration of all Wolfen classes as determined by Rank.
 //
-#include "game/strong-types.hpp"
+#include "creature/rank-class.hpp"
 #include "misc/enum-common.hpp"
 
 #include <string>

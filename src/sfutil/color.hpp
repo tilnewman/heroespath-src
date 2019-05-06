@@ -35,10 +35,14 @@ std::ostream & operator<<(std::ostream & os, const sf::Color & C);
 
 namespace heroespath
 {
+
+namespace misc
+{
+    const std::string ToString(const sf::Color & C);
+}
+
 namespace sfutil
 {
-
-    const std::string ColorToString(const sf::Color & C);
 
     namespace color
     {

@@ -4210,7 +4210,7 @@ namespace stage
 
         // HealthGiven
         // HealthTraded
-        // BackstabsHits
+        // BackstabHits
         // SpiritsLifted
         // TODO -these achievements still need to be implemented
 

@@ -46,8 +46,8 @@ namespace combat
 
     ID_t CombatTree::NextAvailableId() const
     {
-        const auto NUM_VERTEXES { ID_t::Make(vertexes_.size()) };
-        for (auto id(0_id); id < NUM_VERTEXES; ++id)
+        const auto NUM_VERTEXES { vertexes_.size() };
+        for (ID_t id(0); id < NUM_VERTEXES; ++id)
         {
             if (false == DoesVertexExist(id))
             {
@@ -69,7 +69,8 @@ namespace combat
         }
 
         throw std::invalid_argument(
-            "CombatTree::GetNodePtr(id=" + ID.ToString() + ") -but that vertex does not exist.");
+            "CombatTree::GetNodePtr(id=" + std::to_string(ID)
+            + ") -but that vertex does not exist.");
     }
 
     CombatNodePtr_t CombatTree::GetNodePtr(const creature::CreaturePtr_t CREATURE_PTR) const
@@ -156,7 +157,7 @@ namespace combat
 
         for (const auto & VERTEX : vertexes_)
         {
-            result += VERTEX.id.ToString() + ":" + VERTEX.node_sptr->ToString() + ", ";
+            result += std::to_string(VERTEX.id) + ":" + VERTEX.node_sptr->ToString() + ", ";
         }
 
         if (WILL_WRAP)
@@ -293,7 +294,7 @@ namespace combat
 
         for (const auto & EDGE : edges_)
         {
-            result += EDGE.a.ToString() + "-" + EDGE.b.ToString() + ":"
+            result += std::to_string(EDGE.a) + "-" + std::to_string(EDGE.b) + ":"
                 + EdgeType::ToString(EDGE.type) + ", ";
         }
 
@@ -472,7 +473,7 @@ namespace combat
     bool CombatTree::FindAdjacentByEdgeType(
         const ID_t & ID, IDVec_t & idVec_OutParam, const EdgeType::Enum TYPE) const
     {
-        const auto ORIG_SIZE = ID_t::Make(idVec_OutParam.size());
+        const auto ORIG_SIZE = idVec_OutParam.size();
 
         for (const auto & EDGE : edges_)
         {
@@ -506,7 +507,7 @@ namespace combat
             }
         }
 
-        const auto FINAL_SIZE = ID_t::Make(idVec_OutParam.size());
+        const auto FINAL_SIZE = idVec_OutParam.size();
         return (ORIG_SIZE != FINAL_SIZE);
     }
 
@@ -892,7 +893,7 @@ namespace combat
 
         std::ostringstream ss;
         ss << "combat::CombatTree::ChangeBlockingPositionAndUpdateTree(id="
-           << ID_OF_VERTEX_TO_CHANGE << ", new_blocking_id=" << NEW_BLOCKING_POS
+           << ID_OF_VERTEX_TO_CHANGE << ", new_blocking=" << NEW_BLOCKING_POS
            << ") was unable to find a vertex with that id.";
 
         throw std::runtime_error(ss.str());

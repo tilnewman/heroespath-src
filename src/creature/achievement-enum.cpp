@@ -22,89 +22,47 @@ namespace creature
     {
         switch (ENUM)
         {
-            case None:
-            {
-                return "(None)";
+            case None: { return "None";
             }
-            case EnemiesFaced:
-            {
-                return "EnemiesFaced";
+            case EnemiesFaced: { return "EnemiesFaced";
             }
-            case MeleeHits:
-            {
-                return "MeleeHits";
+            case MeleeHits: { return "MeleeHits";
             }
-            case BattlesSurvived:
-            {
-                return "BattlesSurvived";
+            case BattlesSurvived: { return "BattlesSurvived";
             }
-            case ProjectileHits:
-            {
-                return "ProjectileHits";
+            case ProjectileHits: { return "ProjectileHits";
             }
-            case BeastMindLinks:
-            {
-                return "BeastMindLinks";
+            case BeastMindLinks: { return "BeastMindLinks";
             }
-            case DodgedStanding:
-            {
-                return "DodgedStanding";
+            case DodgedStanding: { return "DodgedStanding";
             }
-            case DodgedFlying:
-            {
-                return "DodgedFlying";
+            case DodgedFlying: { return "DodgedFlying";
             }
-            case LocksPicked:
-            {
-                return "LocksPicked";
+            case LocksPicked: { return "LocksPicked";
             }
-            case BackstabsHits:
-            {
-                return "BackstabHits";
+            case BackstabHits: { return "BackstabHits";
             }
-            case SongsPlayed:
-            {
-                return "SongsPlayed";
+            case SongsPlayed: { return "SongsPlayed";
             }
-            case SpiritsLifted:
-            {
-                return "SpiritsLifted";
+            case SpiritsLifted: { return "SpiritsLifted";
             }
-            case BeastRoars:
-            {
-                return "BeastRoars";
+            case BeastRoars: { return "BeastRoars";
             }
-            case MoonHowls:
-            {
-                return "MoonHowls";
+            case MoonHowls: { return "MoonHowls";
             }
-            case PackActions:
-            {
-                return "PackActions";
+            case PackActions: { return "PackActions";
             }
-            case FlyingAttackHits:
-            {
-                return "FlyingAttackHits";
+            case FlyingAttackHits: { return "FlyingAttackHits";
             }
-            case TurnsInFlight:
-            {
-                return "TurnsInFlight";
+            case TurnsInFlight: { return "TurnsInFlight";
             }
-            case SpellsCast:
-            {
-                return "SpellsCast";
+            case SpellsCast: { return "SpellsCast";
             }
-            case HealthGiven:
-            {
-                return "HealthGiven";
+            case HealthGiven: { return "HealthGiven";
             }
-            case HealthTraded:
-            {
-                return "HealthTraded";
+            case HealthTraded: { return "HealthTraded";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {
@@ -121,89 +79,47 @@ namespace creature
     {
         switch (ENUM)
         {
-            case None:
-            {
-                return "(None)";
+            case None: { return "(None)";
             }
-            case EnemiesFaced:
-            {
-                return "Enemies Faced";
+            case EnemiesFaced: { return "Enemies Faced";
             }
-            case MeleeHits:
-            {
-                return "Melee Hits";
+            case MeleeHits: { return "Melee Hits";
             }
-            case BattlesSurvived:
-            {
-                return "Battles Survived";
+            case BattlesSurvived: { return "Battles Survived";
             }
-            case ProjectileHits:
-            {
-                return "Projectile Hits";
+            case ProjectileHits: { return "Projectile Hits";
             }
-            case BeastMindLinks:
-            {
-                return "Beast Mind-Links";
+            case BeastMindLinks: { return "Beast Mind-Links";
             }
-            case DodgedStanding:
-            {
-                return "Dodges While Standing";
+            case DodgedStanding: { return "Dodges While Standing";
             }
-            case DodgedFlying:
-            {
-                return "Dodges While Flying";
+            case DodgedFlying: { return "Dodges While Flying";
             }
-            case LocksPicked:
-            {
-                return "Locks Picked";
+            case LocksPicked: { return "Locks Picked";
             }
-            case BackstabsHits:
-            {
-                return "Backstab Hits";
+            case BackstabHits: { return "Backstab Hits";
             }
-            case SongsPlayed:
-            {
-                return "Songs Played";
+            case SongsPlayed: { return "Songs Played";
             }
-            case SpiritsLifted:
-            {
-                return "Spirits Lifted";
+            case SpiritsLifted: { return "Spirits Lifted";
             }
-            case BeastRoars:
-            {
-                return "Beast Roars";
+            case BeastRoars: { return "Beast Roars";
             }
-            case MoonHowls:
-            {
-                return "Moon Howls";
+            case MoonHowls: { return "Moon Howls";
             }
-            case PackActions:
-            {
-                return "Pack Actions";
+            case PackActions: { return "Pack Actions";
             }
-            case FlyingAttackHits:
-            {
-                return "Flying Attack Hits";
+            case FlyingAttackHits: { return "Flying Attack Hits";
             }
-            case TurnsInFlight:
-            {
-                return "Turns In Flight";
+            case TurnsInFlight: { return "Turns In Flight";
             }
-            case SpellsCast:
-            {
-                return "Spells Cast";
+            case SpellsCast: { return "Spells Cast";
             }
-            case HealthGiven:
-            {
-                return "Health Given";
+            case HealthGiven: { return "Health Given";
             }
-            case HealthTraded:
-            {
-                return "Health Traded";
+            case HealthTraded: { return "Health Traded";
             }
-            case Count:
-            {
-                return "(Count)";
+            case Count: { return "(Count)";
             }
             default:
             {

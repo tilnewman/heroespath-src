@@ -11,9 +11,11 @@
 //
 #include "creature/trait-type.hpp"
 #include "misc/real.hpp"
-#include "misc/strong-type.hpp"
+#include "misc/type-helpers.hpp"
 
-#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/serialization.hpp>
+
+#include <iostream>
 
 namespace heroespath
 {
@@ -25,30 +27,20 @@ namespace misc
         typename Value_t,
         typename Parameter_t,
         typename = std::enable_if_t<are_integral_nobool_v<Value_t>>>
-    class StrongNumericType : public StrongType<Value_t, Parameter_t>
+    class StrongNumericType
     {
-    protected:
-        explicit StrongNumericType(const Value_t & X)
-            : StrongType<Value_t, Parameter_t>(X)
+        explicit StrongNumericType(const Value_t NUMBER)
+            : m_value(NUMBER)
         {}
 
     public:
+        using value_type = Value_t;
+
         StrongNumericType()
-            : StrongType<Value_t, Parameter_t>(Value_t(0))
+            : m_value(Value_t(0))
         {}
 
-        virtual ~StrongNumericType() = default;
-
-        const std::string ToString() const { return std::to_string(this->m_value); }
-
-        template <typename Prop_t>
-        static std::enable_if_t<
-            (are_arithmetic_nobool_v<Prop_t> || are_enum_v<Prop_t>),
-            const StrongNumericType<Value_t, Parameter_t>>
-            Make(const Prop_t X)
-        {
-            return StrongNumericType<Value_t, Parameter_t>(static_cast<Value_t>(X));
-        }
+        const Value_t Get() const { return m_value; }
 
         template <typename New_t>
         std::enable_if_t<(are_arithmetic_nobool_v<New_t> || are_enum_v<New_t>), const New_t>
@@ -66,30 +58,27 @@ namespace misc
         bool IsPositive() const { return (this->m_value >= 0); }
         bool IsNegative() const { return (this->m_value < 0); }
 
+        const std::string ToString() const { return std::to_string(this->m_value); }
+
+        template <typename Prop_t>
+        static std::enable_if_t<
+            (are_arithmetic_nobool_v<Prop_t> || are_enum_v<Prop_t>),
+            const StrongNumericType<Value_t, Parameter_t>>
+            Make(const Prop_t X)
+        {
+            return StrongNumericType<Value_t, Parameter_t>(static_cast<Value_t>(X));
+        }
+
         StrongNumericType<Value_t, Parameter_t> MakePositiveCopy() const
         {
-            if (IsNegative())
-            {
-                return StrongNumericType<Value_t, Parameter_t>(-(this->m_value));
-            }
-            else
-            {
-                return *this;
-            }
+            return StrongNumericType<Value_t, Parameter_t>(Abs(this->m_value));
         }
 
         StrongNumericType<Value_t, Parameter_t> MakeNegativeCopy() const
         {
             static_assert(are_signed_v<Value_t>, "unsigned types forbidden");
 
-            if (IsNegative())
-            {
-                return *this;
-            }
-            else
-            {
-                return StrongNumericType<Value_t, Parameter_t>(-(this->m_value));
-            }
+            return StrongNumericType<Value_t, Parameter_t>(-Abs(this->m_value));
         }
 
         void MakePositive() { this->m_value = MakePositiveCopy().Get(); }
@@ -177,14 +166,85 @@ namespace misc
             return temp;
         }
 
+        template <typename V, typename P>
+        friend std::ostream & operator<<(std::ostream & os, const StrongNumericType<V, P> & R);
+
+        template <typename V, typename P>
+        friend bool
+            operator==(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R);
+
+        template <typename V, typename P>
+        friend bool operator<(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R);
+
+        template <typename V, typename P>
+        friend StrongNumericType<V, P>
+            Max(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R);
+
+        template <typename V, typename P>
+        friend StrongNumericType<V, P>
+            Min(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R);
+
+        template <typename V, typename P>
+        friend StrongNumericType<V, P>
+            Random(const StrongNumericType<V, P> & MIN, const StrongNumericType<V, P> & MAX);
+
+        template <typename V, typename P>
+        friend StrongNumericType<V, P> Random(const StrongNumericType<V, P> & MAX);
+
+    private:
+        Value_t m_value;
+
     private:
         friend class boost::serialization::access;
         template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
-            ar & boost::serialization::base_object<StrongType<Value_t, Parameter_t>>(*this);
+            ar & m_value;
         }
     };
+
+    template <typename V, typename P>
+    std::ostream & operator<<(std::ostream & os, const StrongNumericType<V, P> & R)
+    {
+        os << R.m_value;
+        return os;
+    }
+
+    template <typename V, typename P>
+    bool operator==(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R)
+    {
+        return (L.m_value == R.m_value);
+    }
+
+    template <typename V, typename P>
+    bool operator!=(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R)
+    {
+        return !(L == R);
+    }
+
+    template <typename V, typename P>
+    bool operator<(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R)
+    {
+        return (L.m_value < R.m_value);
+    }
+
+    template <typename V, typename P>
+    bool operator>(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R)
+    {
+        return (R < L);
+    }
+
+    template <typename V, typename P>
+    bool operator<=(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R)
+    {
+        return !(L > R);
+    }
+
+    template <typename V, typename P>
+    bool operator>=(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R)
+    {
+        return !(L < R);
+    }
 
     template <typename V, typename P>
     StrongNumericType<V, P>
@@ -248,9 +308,9 @@ namespace misc
 
     template <typename V, typename P>
     StrongNumericType<V, P>
-        Max(const StrongNumericType<V, P> & A, const StrongNumericType<V, P> & B)
+        Max(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R)
     {
-        return StrongNumericType<V, P>::Make(Max(A.Get(), B.Get()));
+        return StrongNumericType<V, P>::Make(Max(L.m_value, R.m_value));
     }
 
     template <typename V, typename P, typename... Ts>
@@ -261,9 +321,9 @@ namespace misc
 
     template <typename V, typename P>
     StrongNumericType<V, P>
-        Min(const StrongNumericType<V, P> & A, const StrongNumericType<V, P> & B)
+        Min(const StrongNumericType<V, P> & L, const StrongNumericType<V, P> & R)
     {
-        return StrongNumericType<V, P>::Make(Min(A.Get(), B.Get()));
+        return StrongNumericType<V, P>::Make(Min(L.m_value, R.m_value));
     }
 
     template <typename V, typename P, typename... Ts>
@@ -282,13 +342,14 @@ namespace misc
         Random(const StrongNumericType<V, P> & MIN, const StrongNumericType<V, P> & MAX)
     {
         return StrongNumericType<V, P>::Make(helpers::strongTypeRandom(
-            static_cast<long long>(MIN.Get()), static_cast<long long>(MAX.Get())));
+            static_cast<long long>(MIN.m_value), static_cast<long long>(MAX.m_value)));
     }
 
     template <typename V, typename P>
     StrongNumericType<V, P> Random(const StrongNumericType<V, P> & MAX)
     {
-        return Random(StrongNumericType<V, P>(), MAX);
+        return StrongNumericType<V, P>::Make(helpers::strongTypeRandom(
+            static_cast<long long>(0), static_cast<long long>(MAX.m_value)));
     }
 
 } // namespace misc

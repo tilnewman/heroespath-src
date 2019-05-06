@@ -9,7 +9,7 @@
 //
 // dragon-class-enum.hpp
 //
-#include "game/strong-types.hpp"
+#include "creature/rank-class.hpp"
 #include "misc/enum-common.hpp"
 
 #include <string>

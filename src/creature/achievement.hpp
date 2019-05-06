@@ -29,7 +29,7 @@ namespace creature
 
     // Note:  Must store Titles::Enums and not TitlePtr_ts here because
     //       Achievements are serialized, and Titles cannot be serialized.
-    using TitleCountMap_t = misc::VectorMap<Count_t, Titles::Enum>;
+    using TitleCountMap_t = misc::VectorMap<std::size_t, Titles::Enum>;
 
     // Responsible for storing all the information about an achievement.
     // An Achievement is a re-occurring event that is summed up until a
@@ -42,7 +42,7 @@ namespace creature
             const TitleCountMap_t & TITLE_COUNT_MAP = TitleCountMap_t());
 
         AchievementType::Enum Which() const { return which_; }
-        Count_t Count() const { return count_; }
+        std::size_t Count() const { return count_; }
         const std::string Name() const { return AchievementType::Name(which_); }
         const TitleCountMap_t & TitleCountMap() const { return titleCountMap_; }
 
@@ -61,7 +61,7 @@ namespace creature
 
     private:
         AchievementType::Enum which_;
-        Count_t count_;
+        std::size_t count_;
         TitleCountMap_t titleCountMap_;
 
     private:

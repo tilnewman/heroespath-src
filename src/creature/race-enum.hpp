@@ -9,20 +9,21 @@
 //
 // race-enum.hpp
 //
-#include "misc/boost-serialize-includes.hpp"
-
 #include "creature/rank-class.hpp"
 #include "creature/role-enum.hpp"
-#include "creature/trait.hpp"
-#include "item/treasure-scores.hpp"
 #include "misc/enum-common.hpp"
 
 #include <string>
-#include <tuple>
 #include <vector>
 
 namespace heroespath
 {
+
+namespace item
+{
+    class TreasureScores;
+}
+
 namespace creature
 {
 

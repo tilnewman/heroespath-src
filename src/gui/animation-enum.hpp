@@ -17,7 +17,6 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <string>
-#include <utility> //for std::pair
 
 namespace heroespath
 {

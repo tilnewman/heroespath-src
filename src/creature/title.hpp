@@ -49,8 +49,8 @@ namespace creature
         explicit Title(
             const Titles::Enum TITLE = Titles::Count,
             const AchievementType::Enum ACHIEVEMENT_TYPE = AchievementType::None,
-            const Index_t & ACHIEVEMENT_INDEX = 0_index, // 0 is invalid
-            const Count_t & ACHIEVEMENT_COUNT = 0_count,
+            const std::size_t & ACHIEVEMENT_INDEX = 0, // 0 is invalid
+            const std::size_t & ACHIEVEMENT_COUNT = 0,
             const RoleVec_t & ROLES_VEC = RoleVec_t(),
             const StatSet & STATS_BONUS = StatSet(),
             const Rank_t & RANK_BONUS = 0_rank,
@@ -62,8 +62,8 @@ namespace creature
         Titles::Enum Which() const { return title_; }
         const StatSet StatBonus() const { return statBonus_; }
         AchievementType::Enum GetAchievementType() const { return achievementType_; }
-        Count_t AchievementCount() const { return achievementCount_; }
-        Index_t AchievementIndex() const { return achievementIndex_; }
+        std::size_t AchievementCount() const { return achievementCount_; }
+        std::size_t AchievementIndex() const { return achievementIndex_; }
         void Roles(RoleVec_t & rolesVec_OutParam) const { rolesVec_OutParam = rolesVec_; }
         const RoleVec_t RolesCopy() const { return rolesVec_; }
 
@@ -92,8 +92,8 @@ namespace creature
     protected:
         Titles::Enum title_;
         AchievementType::Enum achievementType_;
-        Count_t achievementCount_;
-        Index_t achievementIndex_;
+        std::size_t achievementCount_;
+        std::size_t achievementIndex_;
         RoleVec_t rolesVec_;
         Rank_t rankBonus_;
         Experience_t expBonus_;

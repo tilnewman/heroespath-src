@@ -116,8 +116,8 @@ namespace gui
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<GuiFont>::IsValid(FONT)),
-            "FONT_ENUM is invalid.  (gui_font_enum_count=" << misc::ToString(FONT)
-                    + ")(font_enum=" + GuiFont::ToString(FONT) + ")");
+            "FONT_ENUM is invalid.  (gui_font_enum_count=" << misc::ToString(FONT) << ")(font_enum="
+                                                           << GuiFont::ToString(FONT) << ")");
 
         if (IsLoaded(FONT))
         {

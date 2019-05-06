@@ -11,8 +11,10 @@
 //
 #include "entity-image-info.hpp"
 
+#include "misc/strings.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <string>
 
@@ -153,9 +155,9 @@ namespace gui
             str += "no_image";
         }
 
-        str += "_region" + sfutil::RectToString(sprite.getGlobalBounds()) + "_"
-            + sfutil::ColorToString(sprite.getColor()) + "_scale"
-            + sfutil::VectorToString(sprite.getScale()) + ", will_";
+        str += "_region" + misc::ToString(sprite.getGlobalBounds()) + "_"
+            + misc::ToString(sprite.getColor()) + "_scale" + misc::ToString(sprite.getScale())
+            + ", will_";
 
         if (will_resize_instead_of_fit)
         {

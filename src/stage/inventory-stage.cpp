@@ -3776,7 +3776,7 @@ namespace stage
             + MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedStanding)
             + MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedFlying)
             + MakeTitleString(CREATURE_PTR, creature::AchievementType::LocksPicked)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BackstabsHits)
+            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BackstabHits)
             + MakeTitleString(CREATURE_PTR, creature::AchievementType::SongsPlayed)
             + MakeTitleString(CREATURE_PTR, creature::AchievementType::SpiritsLifted)
             + MakeTitleString(CREATURE_PTR, creature::AchievementType::BeastRoars)
@@ -3816,7 +3816,7 @@ namespace stage
         if (ACHIEVEMENT.IsRoleInList(CREATURE_PTR->Role()))
         {
             return "\n" + ACHIEVEMENT.Name() + MakeTitleSeparatorString(WHICH_ACHV)
-                + ACHIEVEMENT.Count().ToString()
+                + std::to_string(ACHIEVEMENT.Count())
                 + MakeTitleCountNeededString(CREATURE_PTR, WHICH_ACHV);
         }
         else
@@ -3838,7 +3838,7 @@ namespace stage
             const auto ACHV_COUNT_CURRENT { ACHIEVEMENTS.Get(WHICH_ACHV).Count() };
             const auto NEEDED_COUNT { ACHV_COUNT_REQUIRED - ACHV_COUNT_CURRENT };
 
-            return ", need  " + NEEDED_COUNT.ToString() + " more to achieve \""
+            return ", need  " + std::to_string(NEEDED_COUNT) + " more to achieve \""
                 + TITLE_PTR_OPT.value()->Name() + "\"";
         }
         else
@@ -3868,7 +3868,7 @@ namespace stage
             }
             case creature::AchievementType::LocksPicked: { return ":                  ";
             }
-            case creature::AchievementType::BackstabsHits: { return ":                ";
+            case creature::AchievementType::BackstabHits: { return ":                ";
             }
             case creature::AchievementType::SongsPlayed: { return ":                 ";
             }

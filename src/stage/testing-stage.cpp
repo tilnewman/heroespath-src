@@ -127,7 +127,7 @@ namespace stage
         , isInspectingImages_(false)
         , imageInspectIndex_(0)
         , waitingForKeyOrClickId_(0)
-        , waitingForKeyOrClickMaxTimeSec_(30.0f)
+        , waitingForKeyOrClickMaxTimeSec_(2.0f)
         , waitingForKeyOrClickElapsedTimeSec_(0.0f)
         , isWaitingForKeyOrClickPaused_(false)
         , waitingForKeyOrClick_CachedTextures_()

@@ -139,7 +139,7 @@ namespace gui
             appendWithSeparator(misc::Quoted(misc::MakeLoggableString(text)));
             appendWithSeparator("font=" + GuiFont::ToString(font_letters));
             appendWithSeparator("num_font=" + GuiFont::ToString(font_numbers));
-            appendWithSeparator(sfutil::ColorToString(color));
+            appendWithSeparator(misc::ToString(color));
             appendWithSeparator(gui::Justified::ToString(justified));
             appendWithSeparator(sfutil::TextStyleToString(style));
         }

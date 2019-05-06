@@ -17,69 +17,60 @@
 namespace heroespath
 {
 
-// phantom type tags
-struct NameTag
-{};
-struct CoinTag
-{};
-struct GemTag
-{};
-struct ShardTag
-{};
-struct ExperienceTag
-{};
-struct HealthTag
-{};
-struct RankTag
-{};
-struct ManaTag
-{};
-struct WeightTag
-{};
-struct ArmorTag
-{};
-struct ScoreTag
-{};
-struct StrengthTag
-{};
-struct AccuracyTag
-{};
-struct CharmTag
-{};
-struct LuckTag
-{};
-struct SpeedTag
-{};
-struct IntellTag
-{};
-struct IDTag
-{};
-struct IndexTag
-{};
-struct CountTag
-{};
+namespace helpers
+{
+    // phantom type tags
+    struct CoinTag
+    {};
+    struct GemTag
+    {};
+    struct ShardTag
+    {};
+    struct ExperienceTag
+    {};
+    struct HealthTag
+    {};
+    struct RankTag
+    {};
+    struct ManaTag
+    {};
+    struct WeightTag
+    {};
+    struct ArmorTag
+    {};
+    struct ScoreTag
+    {};
+    struct StrengthTag
+    {};
+    struct AccuracyTag
+    {};
+    struct CharmTag
+    {};
+    struct LuckTag
+    {};
+    struct SpeedTag
+    {};
+    struct IntellTag
+    {};
+} // namespace helpers
 
 // strong types
-using Name_t = misc::StrongType<std::string, NameTag>;
-using Coin_t = misc::StrongNumericType<int, CoinTag>;
-using Gem_t = misc::StrongNumericType<int, GemTag>;
-using Shard_t = misc::StrongNumericType<int, ShardTag>;
-using Experience_t = misc::StrongNumericType<int, ExperienceTag>;
-using Health_t = misc::StrongNumericType<int, HealthTag>;
-using Rank_t = misc::StrongNumericType<int, RankTag>;
-using Mana_t = misc::StrongNumericType<int, ManaTag>;
-using Weight_t = misc::StrongNumericType<int, WeightTag>;
-using Armor_t = misc::StrongNumericType<int, ArmorTag>;
-using Score_t = misc::StrongNumericType<int, ScoreTag>;
-using Strength_t = misc::StrongNumericType<creature::Trait_t, StrengthTag>;
-using Accuracy_t = misc::StrongNumericType<creature::Trait_t, AccuracyTag>;
-using Charm_t = misc::StrongNumericType<creature::Trait_t, CharmTag>;
-using Luck_t = misc::StrongNumericType<creature::Trait_t, LuckTag>;
-using Speed_t = misc::StrongNumericType<creature::Trait_t, SpeedTag>;
-using Intel_t = misc::StrongNumericType<creature::Trait_t, IntellTag>;
-using ID_t = misc::StrongNumericType<std::size_t, IDTag>;
-using Index_t = misc::StrongNumericType<std::size_t, IndexTag>;
-using Count_t = misc::StrongNumericType<std::size_t, CountTag>;
+using Coin_t = misc::StrongNumericType<int, helpers::CoinTag>;
+using Gem_t = misc::StrongNumericType<int, helpers::GemTag>;
+using Shard_t = misc::StrongNumericType<int, helpers::ShardTag>;
+using Experience_t = misc::StrongNumericType<int, helpers::ExperienceTag>;
+using Health_t = misc::StrongNumericType<int, helpers::HealthTag>;
+using Rank_t = misc::StrongNumericType<int, helpers::RankTag>;
+using Mana_t = misc::StrongNumericType<int, helpers::ManaTag>;
+using Weight_t = misc::StrongNumericType<int, helpers::WeightTag>;
+using Armor_t = misc::StrongNumericType<int, helpers::ArmorTag>;
+using Score_t = misc::StrongNumericType<int, helpers::ScoreTag>;
+using Strength_t = misc::StrongNumericType<creature::Trait_t, helpers::StrengthTag>;
+using Accuracy_t = misc::StrongNumericType<creature::Trait_t, helpers::AccuracyTag>;
+using Charm_t = misc::StrongNumericType<creature::Trait_t, helpers::CharmTag>;
+using Luck_t = misc::StrongNumericType<creature::Trait_t, helpers::LuckTag>;
+using Speed_t = misc::StrongNumericType<creature::Trait_t, helpers::SpeedTag>;
+using Intel_t = misc::StrongNumericType<creature::Trait_t, helpers::IntellTag>;
 
 // user defined literals
 inline const Coin_t operator"" _coin(unsigned long long coins)
@@ -160,21 +151,6 @@ inline const Speed_t operator"" _spd(unsigned long long speed)
 inline const Intel_t operator"" _int(unsigned long long intell)
 {
     return Intel_t::Make(static_cast<Intel_t::value_type>(intell));
-}
-
-inline const ID_t operator"" _id(unsigned long long id)
-{
-    return ID_t::Make(static_cast<ID_t::value_type>(id));
-}
-
-inline const Index_t operator"" _index(unsigned long long index)
-{
-    return Index_t::Make(static_cast<Index_t::value_type>(index));
-}
-
-inline const Count_t operator"" _count(unsigned long long count)
-{
-    return Count_t::Make(static_cast<Count_t::value_type>(count));
 }
 
 } // namespace heroespath

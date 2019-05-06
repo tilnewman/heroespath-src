@@ -9,7 +9,6 @@
 //
 // avatar_enum.hpp
 //
-#include "interact/statement.hpp"
 #include "misc/enum-common.hpp"
 
 #include <string>
@@ -17,6 +16,16 @@
 
 namespace heroespath
 {
+
+// all of this just to forward declare an enum...
+namespace interact
+{
+    namespace talk
+    {
+        enum class Category;
+    }
+} // namespace interact
+
 namespace avatar
 {
 
@@ -515,7 +524,7 @@ namespace avatar
         static bool IsPlayer(const NameEnum);
         static const std::vector<Enum> Avatars(const NameEnum);
         static float Scale(const NameEnum);
-        static heroespath::interact::talk::Category TalkCategory(const NameEnum);
+        static interact::talk::Category TalkCategory(const NameEnum);
 
         static const std::string ToString(const Enum);
         static bool IsPlayer(const Enum);

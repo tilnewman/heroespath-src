@@ -32,7 +32,7 @@ namespace creature
             DodgedStanding,
             DodgedFlying,
             LocksPicked,
-            BackstabsHits,
+            BackstabHits,
             SongsPlayed,
             SpiritsLifted,
             BeastRoars,

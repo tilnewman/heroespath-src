@@ -11,6 +11,7 @@
 //
 #include "avatar-enum.hpp"
 
+#include "interact/statement.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"

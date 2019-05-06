@@ -10,11 +10,13 @@
 // strings.hpp
 //
 #include "misc/enum-common.hpp"
+#include "misc/nameof.hpp"
 #include "misc/string-stream-holder.hpp"
 #include "misc/type-helpers.hpp"
 
 #include <algorithm>
 #include <iomanip>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -502,17 +504,97 @@ namespace misc
     }
 
     template <typename T>
-    [[nodiscard]] const std::string ToString(const T & THING)
+    typename std::enable_if_t<
+        ((!std::is_array_v<
+              T> && !std::is_pointer_v<T> && !are_enum_v<T> && !are_arithmetic_nobool_v<T> && !are_any_v<T, char, bool, std::string>)),
+        const std::string>
+        ToString(const T & UNKNOWN_THING)
     {
-        try
+        static bool isStringStreamSetup(false);
+        static std::ostringstream ss;
+
+        if (!isStringStreamSetup)
         {
-            stringStreamHolder::ostreamer() << THING;
-            return stringStreamHolder::toString();
+            ss.imbue(std::locale::classic());
+            ss << std::boolalpha;
+            isStringStreamSetup = true;
         }
-        catch (...)
+
+        ss.clear();
+        ss.str("");
+        ss << UNKNOWN_THING;
+        return ss.str();
+    }
+
+    template <typename T>
+    typename std::enable_if_t<
+        (are_arithmetic_nobool_v<T> && !are_enum_v<T> && !are_same_v<T, char>),
+        const std::string>
+        ToString(const T NUMBER)
+    {
+        std::string str = std::to_string(NUMBER);
+
+        if constexpr (are_floating_point_v<T>)
         {
-            return "";
+            const auto REV_BEGIN_ITER = std::rbegin(str);
+            const auto REV_END_ITER = std::rend(str);
+
+            auto revIterPeriod = std::find_if_not(REV_BEGIN_ITER, REV_END_ITER, [
+            ](const char CH) constexpr noexcept { return (CH == '0'); });
+
+            if ((revIterPeriod != REV_BEGIN_ITER) && (revIterPeriod != REV_END_ITER))
+            {
+                if (*revIterPeriod == '.')
+                {
+                    ++revIterPeriod;
+                }
+
+                str.erase(revIterPeriod.base(), std::end(str));
+            }
         }
+
+        return str;
+    }
+
+    template <typename T>
+    typename std::enable_if_t<are_same_v<T, std::string>, const std::string>
+        ToString(T && STD_STRING) noexcept
+    {
+        return std::move(STD_STRING);
+    }
+
+    template <typename T>
+    typename std::enable_if_t<are_same_v<T, std::string>, const std::string>
+        ToString(const T & STD_STRING) noexcept
+    {
+        return STD_STRING;
+    }
+
+    template <typename T>
+    constexpr typename std::enable_if_t<are_any_v<T, char, char *, const char *>, T>
+        ToString(T CHARS) noexcept
+    {
+        return CHARS;
+    }
+
+    template <typename T>
+    constexpr typename std::enable_if_t<are_same_v<T, bool>, const char * const>
+        ToString(const T BOOL_THING) noexcept
+    {
+        return ((BOOL_THING) ? "true" : "false");
+    }
+
+    template <typename T>
+    constexpr typename std::enable_if_t<are_enum_v<T>, std::string_view>
+        ToString(const T ENUM) noexcept
+    {
+        return NAMEOF_ENUM(ENUM);
+    }
+
+    template <typename T>
+    const std::string ToStringForce(const T & X)
+    {
+        return std::string(ToString(X));
     }
 
     [[nodiscard]] inline const std::string Quoted(const std::string & STR)
@@ -737,12 +819,12 @@ namespace misc
     template <typename Container_t>
     const std::string Join(const Container_t & CONTAINER, const JoinHow & HOW = JoinHow())
     {
-        return Join(CONTAINER, HOW, ToString<typename Container_t::value_type>);
+        return Join(CONTAINER, HOW, [](const auto & X) { return ToString(X); });
     }
 
 } // namespace misc
 
-#define M_HP_VAR_STR(var) ("(" #var "=" + heroespath::misc::ToString(var) + ")")
+#define M_HP_VAR_STR(var) ("(" #var "=" + heroespath::misc::ToStringForce(var) + ")")
 
 } // namespace heroespath
 

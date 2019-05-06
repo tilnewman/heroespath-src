@@ -139,12 +139,12 @@ namespace gui
                 {
                     str += ((TEXT.IsValid()) ? "" : "I")
                         + EnumUtil<GuiFont>::ToString(TEXT.getFont()) + "("
-                        + sfutil::RectToString(TEXT.getGlobalBounds()) + ")\"" + TEXT.getString()
+                        + misc::ToString(TEXT.getGlobalBounds()) + ")\"" + TEXT.getString()
                         + "\"dsfch=" + std::to_string(calcDownShiftForCharHeight(TEXT)) + "   ";
                 }
             }
 
-            str += "]gap=" + std::to_string(topGap()) + sfutil::RectToString(region) + "}";
+            str += "]gap=" + std::to_string(topGap()) + misc::ToString(region) + "}";
             return str;
         }
 

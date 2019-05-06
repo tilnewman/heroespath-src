@@ -9,8 +9,6 @@
 //
 // trap.hpp
 //
-#include <algorithm>
-
 namespace heroespath
 {
 namespace misc
@@ -32,8 +30,8 @@ namespace misc
         constexpr T From() const { return a_; }
         constexpr T To() const { return b_; }
 
-        constexpr T Min() const { return misc::Min(a_, b_); }
-        constexpr T Max() const { return misc::Max(a_, b_); }
+        constexpr T Min() const { return ((a_ < b_) ? a_ : b_); }
+        constexpr T Max() const { return ((b_ < a_) ? a_ : a_); }
 
         constexpr T Diff() const { return Max() - Min(); }
 

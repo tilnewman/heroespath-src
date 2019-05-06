@@ -11,6 +11,7 @@
 //
 #include "race-enum.hpp"
 
+#include "item/treasure-scores.hpp"
 #include "misc/config-file.hpp"
 
 #include <algorithm>

@@ -118,7 +118,8 @@ namespace item
 
         if (isPixie_)
         {
-            str += ", is_pixie=" + misc::ToString(isPixie_);
+            str += ", is_pixie=";
+            str += misc::ToString(isPixie_);
         }
 
         const auto ROLE_RESTRICTION { RoleRestriction() };

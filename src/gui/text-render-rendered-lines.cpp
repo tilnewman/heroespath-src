@@ -132,7 +132,7 @@ namespace gui
             str.reserve(lines.size() * 1024);
 
             str += "\nRender (" + std::to_string(lines.size())
-                + ")  region=" + sfutil::RectToString(region) + "\n\t";
+                + ")  region=" + misc::ToString(region) + "\n\t";
 
             for (const auto & LINE : lines)
             {

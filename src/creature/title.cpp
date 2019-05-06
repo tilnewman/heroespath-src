@@ -33,8 +33,8 @@ namespace creature
     Title::Title(
         const Titles::Enum TITLE,
         const AchievementType::Enum ACHIEVEMENT_TYPE,
-        const Index_t & ACHIEVEMENT_INDEX,
-        const Count_t & ACHIEVEMENT_COUNT,
+        const std::size_t & ACHIEVEMENT_INDEX,
+        const std::size_t & ACHIEVEMENT_COUNT,
         const RoleVec_t & ROLES_VEC,
         const StatSet & STATS_BONUS,
         const Rank_t & RANK_BONUS,
@@ -81,7 +81,7 @@ namespace creature
                                             << ") was given an AchievementType of 'Count'.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (((ACHIEVEMENT_TYPE != AchievementType::None) && ACHIEVEMENT_COUNT.IsZero()) == false),
+            (!((ACHIEVEMENT_TYPE != AchievementType::None) && (ACHIEVEMENT_COUNT == 0))),
             "creature::Title::Title(title="
                 << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
                 << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
@@ -98,9 +98,9 @@ namespace creature
         {
             fileName_ += AchievementType::ToString(ACHIEVEMENT_TYPE);
 
-            if (ACHIEVEMENT_INDEX > 0_index)
+            if (ACHIEVEMENT_INDEX > 0)
             {
-                fileName_ += ACHIEVEMENT_INDEX.ToString();
+                fileName_ += std::to_string(ACHIEVEMENT_INDEX);
             }
         }
 
@@ -133,7 +133,7 @@ namespace creature
 
         if (AchievementType::None != achievementType_)
         {
-            str += "granted after " + achievementCount_.ToString() + " "
+            str += "granted after " + std::to_string(achievementCount_) + " "
                 + AchievementType::Name(achievementType_) + SEP_STR;
         }
 
@@ -187,7 +187,7 @@ namespace creature
 
         if (AchievementType::None != achievementType_)
         {
-            str += "and is granted after " + achievementCount_.ToString() + " "
+            str += "and is granted after " + std::to_string(achievementCount_) + " "
                 + AchievementType::Name(achievementType_);
         }
 

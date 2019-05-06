@@ -110,16 +110,16 @@ void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STR
     {
         const auto FLAG_VALUE_TO_TEST_AND_REPORT { flagValue++ };
 
-        if (EnumUtil<EnumWrapper_t>::IsValid(
-                static_cast<typename EnumWrapper_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT))
-            == false)
+        const auto ENUM { static_cast<typename EnumWrapper_t::Enum>(
+            FLAG_VALUE_TO_TEST_AND_REPORT) };
+
+        if (EnumUtil<EnumWrapper_t>::IsValid(ENUM) == false)
         {
             M_HP_LOG(msgSS.str() << " skipping invalid value=" << FLAG_VALUE_TO_TEST_AND_REPORT);
             continue;
         }
 
-        const auto STRING { EnumUtil<EnumWrapper_t>::ToString(
-            static_cast<typename EnumWrapper_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT)) };
+        const auto STRING { EnumUtil<EnumWrapper_t>::ToString(ENUM) };
 
         if ((FLAG_VALUE_TO_TEST_AND_REPORT == 0) && MUST_FIRST_STRING_TO_BE_EMPTY)
         {
@@ -264,6 +264,51 @@ void TestCountingEnum()
              static_cast<typename EnumWrapper_t::Enum>(EnumWrapper_t::Count + 10))
              .empty()),
         NAMEOF_TYPE_T(EnumWrapper_t) << "::ToString(Count+10) != \"\"");
+
+    std::vector<std::string> notEqualCS;
+    notEqualCS.reserve(1024);
+
+    std::vector<std::string> notEqualCI;
+    notEqualCI.reserve(1024);
+
+    bool didAllStringsMatchCS(true);
+    bool didAllStringsMatchCI(true);
+
+    for (EnumUnderlying_t i(0); i < EnumWrapper_t::Count; ++i)
+    {
+        const auto ENUM = static_cast<typename EnumWrapper_t::Enum>(i);
+        const std::string TO_STRING { EnumUtil<EnumWrapper_t>::ToString(ENUM) };
+        const std::string NAMEOF_STRING { NAMEOF_ENUM(ENUM) };
+        const std::string COMPARE_STRING { "#" + std::to_string(i) + "=\"" + TO_STRING + "\" vs \""
+                                           + NAMEOF_STRING + "\"" };
+
+        if (TO_STRING != NAMEOF_STRING)
+        {
+            didAllStringsMatchCS = false;
+            notEqualCS.emplace_back(COMPARE_STRING);
+        }
+
+        if (!heroespath::misc::AreEqualCaseInsensitive(TO_STRING, NAMEOF_STRING))
+        {
+            didAllStringsMatchCI = false;
+            notEqualCI.emplace_back(COMPARE_STRING);
+        }
+    }
+
+    std::ostringstream ss;
+
+    ss << "NAMEOF_ENUM WITHOUT COUNT ***\tCS=" << std::setw(6) << std::left << notEqualCS.size()
+       << ", CI=" << std::setw(6) << std::left << notEqualCI.size() << "\t"
+       << NAMEOF_TYPE_T(EnumWrapper_t) << "::Enum with total of " << EnumWrapper_t::Count;
+
+    if ((notEqualCS.size() <= 10) && (notEqualCI.size() <= 10))
+    {
+        ss << "\t\t" << Join(notEqualCS) << "\t\t" << Join(notEqualCI);
+    }
+
+    M_HP_LOG_WRN(ss.str());
+
+    M_HP_LOG("\n\n" << Join(notEqualCS) << "\n\n" << Join(notEqualCI));
 }
 
 // a counting enum to test with

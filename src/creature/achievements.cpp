@@ -37,7 +37,7 @@ namespace creature
         AchievementMapInsertPair(
             AchievementType::DodgedFlying, Titles::SkyDodger, Titles::SkyShadow);
 
-        AchievementMapInsertPair(AchievementType::BackstabsHits, Titles::Sneak, Titles::Assassin);
+        AchievementMapInsertPair(AchievementType::BackstabHits, Titles::Sneak, Titles::Assassin);
 
         AchievementMapInsertPair(
             AchievementType::BattlesSurvived,

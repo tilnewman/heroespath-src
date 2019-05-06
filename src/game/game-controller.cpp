@@ -20,6 +20,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfutil/display.hpp"
