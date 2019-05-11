@@ -30,9 +30,14 @@ namespace popup
 
         const std::string ToString() const
         {
-            std::string str(
-                "PopupResonse(\"" + curently_open_popup_name + "\", "
-                + popup::PopupButtons::ToString(type) + ", selected_index=");
+            std::string str;
+            str.reserve(32);
+
+            str += "PopupResonse(\"";
+            str += curently_open_popup_name;
+            str += "\", ";
+            str += NAMEOF_ENUM_STR(type);
+            str += ", selected_index=";
 
             if (selection_opt)
             {
@@ -43,7 +48,7 @@ namespace popup
                 str += "(none)";
             }
 
-            str += ")";
+            str += ')';
 
             return str;
         }

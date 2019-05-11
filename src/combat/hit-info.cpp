@@ -26,37 +26,6 @@ namespace heroespath
 namespace combat
 {
 
-    const std::string HitType::ToString(const Enum ENUM)
-    {
-        switch (ENUM)
-        {
-            case Weapon: { return "Weapon";
-            }
-            case Spell: { return "Spell";
-            }
-            case Song: { return "Song";
-            }
-            case Pounce: { return "Pounce";
-            }
-            case Roar: { return "Roar";
-            }
-            case Condition: { return "Condition";
-            }
-            case Trap: { return "Trap";
-            }
-            case Count: { return "(Count)";
-            }
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
-                                  << static_cast<EnumUnderlying_t>(Count) << ")");
-
-                return "";
-            }
-        }
-    }
-
     HitInfo::HitInfo()
         : wasHit_(false)
         , hitType_(HitType::Count)
@@ -380,7 +349,7 @@ namespace combat
 
         std::ostringstream ss;
 
-        ss << "{" << HitType::ToString(hitType_);
+        ss << "{" << NAMEOF_ENUM(hitType_);
 
         switch (hitType_)
         {
@@ -419,14 +388,14 @@ namespace combat
 
         for (const auto NEXT_COND_ENUM : condsAddedVec_)
         {
-            ss << creature::Conditions::ToString(NEXT_COND_ENUM) << ",";
+            ss << NAMEOF_ENUM(NEXT_COND_ENUM) << ",";
         }
 
         ss << "], conds_removed=[";
 
         for (const auto NEXT_COND_ENUM : condsRemovedVec_)
         {
-            ss << creature::Conditions::ToString(NEXT_COND_ENUM) << ",";
+            ss << NAMEOF_ENUM(NEXT_COND_ENUM) << ",";
         }
 
         ss << "]}";

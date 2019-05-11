@@ -30,7 +30,7 @@ namespace creature
             for (EnumUnderlying_t i(0); i < role::PlayerRoleCount; ++i)
             {
                 const auto NEXT_ENUM { static_cast<role::Enum>(i) };
-                const auto NEXT_ENUM_STR { role::ToString(NEXT_ENUM) };
+                const auto NEXT_ENUM_STR { NAMEOF_ENUM_STR(NEXT_ENUM) };
 
                 const auto NEXT_KEY_STR { "creature-role-stat-modifiers-" + NEXT_ENUM_STR };
 

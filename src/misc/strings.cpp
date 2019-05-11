@@ -20,209 +20,38 @@ namespace heroespath
 namespace misc
 {
 
-    bool AreEqualCaseInsensitive(const std::string & A, const std::string & B)
-    {
-        if (A.size() != B.size())
-        {
-            return false;
-        }
-
-        auto iterA = std::begin(A);
-        auto iterB = std::begin(B);
-        const auto END_A = std::end(A);
-
-        while (iterA != END_A)
-        {
-            const char CHAR_A = *(iterA++);
-            const char CHAR_B = *(iterB++);
-
-            if (CHAR_A != CHAR_B)
-            {
-                if (IsUpper(CHAR_A))
-                {
-                    if (!IsLower(CHAR_B))
-                    {
-                        return false;
-                    }
-                }
-                else if (IsLower(CHAR_A))
-                {
-                    if (!IsUpper(CHAR_B))
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    namespace helpers
-    {
-        const std::tuple<bool, Str2NumInteger_t> ToNumber_ParseInteger(
-            std::string::const_iterator iter, const std::string::const_iterator END)
-        {
-            Str2NumInteger_t integer = 0;
-
-            while (iter != END)
-            {
-                const auto PREV = integer;
-
-                integer *= 10;
-                integer += static_cast<Str2NumInteger_t>(*(iter++) - '0');
-
-                if (integer < PREV)
-                {
-                    return { false, 0 };
-                }
-            }
-
-            return { true, integer };
-        }
-
-        const std::tuple<bool, Str2NumReal_t> ToNumber_ParseFraction(
-            std::string::const_iterator iter, const std::string::const_iterator END)
-        {
-            Str2NumInteger_t numerator = 0;
-            Str2NumInteger_t denominator = 1;
-
-            while (iter != END)
-            {
-                const auto PREV = numerator;
-
-                numerator *= 10;
-                numerator += static_cast<Str2NumInteger_t>(*(iter++) - '0');
-
-                if (numerator < PREV)
-                {
-                    return { false, Str2NumReal_t(0) };
-                }
-
-                denominator *= 10;
-            }
-
-            return { true,
-                     static_cast<Str2NumReal_t>(
-                         static_cast<long double>(numerator)
-                         / static_cast<long double>(denominator)) };
-        }
-
-        // returns iters such that there are only isDigit() between begin and end
-        const PreParseResult ToNumber_PreParse(
-            const std::string::const_iterator FIRST, const std::string::const_iterator LAST)
-        {
-            PreParseResult parse(LAST);
-
-            if (FIRST == LAST)
-            {
-                return parse;
-            }
-
-            // skip past leading whitespaces or '+'
-            parse.integer_begin_iter = std::find_if_not(FIRST, LAST, IsWhitespaceOrPlus);
-
-            // is all whitespace or plus signs
-            if (parse.integer_begin_iter == LAST)
-            {
-                return parse;
-            }
-
-            if (*parse.integer_begin_iter == '-')
-            {
-                parse.is_negative = true;
-                ++parse.integer_begin_iter;
-            }
-
-            parse.integer_end_iter = std::find_if_not(parse.integer_begin_iter, LAST, IsDigit);
-
-            // integer digits continue until the end of STR
-            if (parse.integer_end_iter == LAST)
-            {
-                // this is fine as long as there were some integer digits
-                parse.success = (parse.integer_begin_iter != parse.integer_end_iter);
-                return parse;
-            }
-
-            const auto HAS_INTEGER_DIGITS { (parse.integer_begin_iter != parse.integer_end_iter) };
-
-            // integer digits end with whitespace
-            if (IsWhitespace(*parse.integer_end_iter))
-            {
-                // this is fine if: there were some integer digits AND only whitespace remains
-                parse.success
-                    = (HAS_INTEGER_DIGITS
-                       && (std::find_if_not((parse.integer_end_iter + 1), LAST, IsWhitespace)
-                           == LAST));
-
-                return parse;
-            }
-
-            // integer digits do not extend to the end of the STR, do not end in whitespace, or
-            // period
-            if (*parse.integer_end_iter != '.')
-            {
-                return parse;
-            }
-
-            parse.fraction_begin_iter = (parse.integer_end_iter + 1);
-
-            parse.fraction_end_iter = std::find_if_not(parse.fraction_begin_iter, LAST, IsDigit);
-
-            const auto HAS_FRACTION_DIGITS { (
-                parse.fraction_begin_iter != parse.fraction_end_iter) };
-
-            // always fail if there were no fraction or integer digits
-            if (!HAS_FRACTION_DIGITS && !HAS_INTEGER_DIGITS)
-            {
-                return parse;
-            }
-
-            // always fail if there is anything other than whitespace after the fraction digits
-            if (parse.fraction_end_iter != LAST)
-            {
-                if (std::find_if_not(parse.fraction_end_iter, LAST, IsWhitespace) != LAST)
-                {
-                    return parse;
-                }
-            }
-
-            // Move the fraction_end_iter backward until all trailing zeros are eliminated.
-            // Testing revealed it is faster to eliminate trailing zeros here than it is to
-            // handle them in ToNumber_Custom_ParseFraction().
-            {
-                auto revIter = std::string::const_reverse_iterator(parse.fraction_end_iter);
-
-                if (*revIter == '0')
-                {
-                    parse.fraction_end_iter
-                        = std::find_if(
-                              revIter,
-                              std::string::const_reverse_iterator(parse.fraction_begin_iter),
-                              [](const char C) { return (C != '0'); })
-                              .base();
-                }
-            }
-
-            parse.success = true;
-            return parse;
-        }
-
-    } // namespace helpers
-
     const std::string CamelTo(
-        const std::string & STR_ORIG, const std::string & SEPARATOR, const CaseChange CASE_CHANGES)
+        const std::string_view STR, const std::string_view SEPARATOR, const CaseChange CASE_CHANGES)
     {
-        char prevChar { 0 };
         std::string result;
-        result.reserve(STR_ORIG.size() * 2);
 
-        for (const char CURR_CHAR : STR_ORIG)
+        if (STR.size() <= 1)
         {
-            if (IsAlpha(prevChar) && IsAlpha(CURR_CHAR))
+            result = STR;
+            return result;
+        }
+
+        result.reserve(STR.size() * 2);
+
+        auto iter = std::begin(STR);
+        const auto endIter = std::end(STR);
+
+        while (iter != endIter)
+        {
+            const char PREV = *(iter++);
+            result += PREV;
+
+            if (iter == endIter)
             {
-                const auto IS_PREV_UPPER = IsUpper(prevChar);
-                const auto IS_CURR_UPPER = IsUpper(CURR_CHAR);
+                break;
+            }
+
+            const char CURR = *iter;
+
+            if (IsAlpha(PREV) && IsAlpha(CURR))
+            {
+                const auto IS_PREV_UPPER = IsUpper(PREV);
+                const auto IS_CURR_UPPER = IsUpper(CURR);
 
                 if (IS_PREV_UPPER != IS_CURR_UPPER)
                 {
@@ -234,18 +63,15 @@ namespace misc
                     }
                 }
             }
-
-            result += CURR_CHAR;
-            prevChar = CURR_CHAR;
         }
 
         return result;
     }
 
     const std::string MakeLoggableString(
-        const std::string & ORIG_STR, const std::size_t MAX_SIZE, const bool WILL_ADD_ELIPSIS)
+        const std::string_view ORIG_STR, const std::size_t MAX_SIZE, const bool WILL_ADD_ELIPSIS)
     {
-        auto newString { ORIG_STR };
+        std::string newString { ORIG_STR };
 
         boost::algorithm::replace_all(newString, "\n", "\\n");
 
@@ -265,7 +91,7 @@ namespace misc
     }
 
     bool ContainsAnyOf(
-        const std::string & STR_TO_SEARCH,
+        const std::string_view STR_TO_SEARCH,
         const std::vector<std::string> & STRS_TO_FIND,
         const bool IS_CASE_SENSITIVE)
     {
@@ -302,7 +128,7 @@ namespace misc
         return false;
     }
 
-    int FindNumber(const int NTH_NUMBER, const std::string & STR)
+    int FindNumber(const int NTH_NUMBER, const std::string_view STR)
     {
         const int ERROR_RESULT(-1);
         int result(ERROR_RESULT);
@@ -339,7 +165,7 @@ namespace misc
         return result;
     }
 
-    const std::vector<std::string> SplitByChars(const std::string & TO_SPLIT, const SplitHow HOW)
+    const std::vector<std::string> SplitByChars(const std::string_view TO_SPLIT, const SplitHow HOW)
     {
         std::vector<std::string> results;
 
@@ -350,7 +176,7 @@ namespace misc
 
         if (HOW.separator_chars.empty())
         {
-            results = { TO_SPLIT };
+            results = { std::string(TO_SPLIT) };
             return results;
         }
 

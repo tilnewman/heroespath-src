@@ -88,12 +88,12 @@ namespace creature
         // Note:  This constructor will add the default 'Good' status if CONDITIONS is empty.
         explicit Creature(
             const bool IS_PLAYER = false,
-            const std::string & NAME = "no_name_error",
+            const std::string_view NAME = "no_name_error",
             const sex::Enum SEX = creature::sex::Unknown,
             const race::Enum & RACE = race::Human,
             const role::Enum & ROLE = role::Archer,
             const StatSet & STATS = StatSet(),
-            const std::string & IMAGE_FILENAME = "",
+            const std::string_view IMAGE_FILENAME = "",
             const Health_t & HEALTH = 0_health,
             const Rank_t & RANK = 1_rank,
             const Experience_t & EXPERIENCE = 0_exp,
@@ -118,10 +118,12 @@ namespace creature
 
         sex::Enum Sex() const { return sex_; }
 
-        const std::string SexName() const { return creature::sex::ToString(sex_); }
+        const std::string SexName() const { return NAMEOF_ENUM_STR(sex_); }
 
         race::Enum Race() const { return race_; }
-        const std::string RaceName() const { return race::Name(race_); }
+        constexpr std::string_view RaceName() const noexcept { return race::Name(race_); }
+        const std::string RaceNameForced() const { return std::string(RaceName()); }
+
         bool IsPixie() const { return (race_ == race::Pixie); }
 
         bool IsBeast() const
@@ -155,7 +157,8 @@ namespace creature
         Health_t HealthNormalAdj(const Health_t &);
 
         role::Enum Role() const { return role_; }
-        const std::string RoleName() const { return role::Name(role_); }
+        const std::string RoleName() const { return std::string(role::Name(role_)); }
+        const std::string RoleNameForced() const { return RoleName(); }
 
         void TitleAdd(const Titles::Enum ENUM, const bool ALLOW_CHANGES = true);
         const TitleEnumVec_t Titles() const { return titlesVec_; }

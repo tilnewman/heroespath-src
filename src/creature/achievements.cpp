@@ -23,10 +23,8 @@ namespace heroespath
 namespace creature
 {
 
-    Achievements::Achievements(
-        const std::string & OWNING_CREATURE_NAME, const creature::role::Enum & OWNING_CREATURE_ROLE)
-        : name_(OWNING_CREATURE_NAME)
-        , role_(OWNING_CREATURE_ROLE)
+    Achievements::Achievements(const creature::role::Enum & OWNING_CREATURE_ROLE)
+        : role_(OWNING_CREATURE_ROLE)
         , map_()
     {
         map_.Reserve(64);
@@ -113,7 +111,6 @@ namespace creature
         {
             std::ostringstream ss;
             ss << "creature::Achievements::Increment(which_enum=" << ENUM
-               << ", creature_name=" << name_
                << ") was given an AchievementType::Enum that was not found in the map.";
 
             throw std::runtime_error(ss.str());

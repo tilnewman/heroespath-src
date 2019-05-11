@@ -11,6 +11,7 @@
 //  An enum defining the various background music files
 //
 #include "misc/enum-common.hpp"
+#include "misc/strings.hpp"
 
 #include <string>
 #include <vector>
@@ -39,15 +40,134 @@ namespace gui
             All
         };
 
-        static const std::string FileExt() { return ".ogg"; }
+        static constexpr std::string_view FileExt { ".ogg" };
 
-        static const std::string ToString(const music::Enum);
-        static const std::string Filename(const music::Enum);
-        static const std::string Directory(const music::Enum);
-        static const std::string ArtistName(const music::Enum);
-        static const std::string LicenseTitle(const music::Enum);
-        static const std::string SongName(const music::Enum);
-        static bool IsLooped(const music::Enum);
+        static inline const std::string Filename(const music::Enum MUSIC)
+        {
+            std::string str(NAMEOF_ENUM(MUSIC));
+            misc::ToLower(str);
+            str += FileExt;
+            return str;
+        }
+
+        static constexpr std::string_view Directory(const music::Enum MUSIC) noexcept
+        {
+            switch (MUSIC)
+            {
+                case Theme: return "theme";
+                case Wind: return "wind";
+
+                case FireIndoorSmall:
+                case FireIndoorLarge:
+                case FireOutdoor1:
+                case FireOutdoor2: return "fire";
+
+                case CombatIntro: return "combat-intro";
+                case PartyCreation: return "party-creation";
+                case Credits: return "credits";
+                case Inventory: return "inventory";
+                case All: return "All";
+                case None: return "";
+                case Count: return "Count";
+                default: return "gui::music::Directory(ENUM=out_of_range)";
+            }
+        }
+
+        static constexpr std::string_view ArtistName(const music::Enum MUSIC) noexcept
+        {
+            switch (MUSIC)
+            {
+                case Wind: return "Luke @RUST LTD";
+                case FireIndoorSmall: return "Inchadney";
+
+                case Theme:
+                case FireIndoorLarge:
+                case FireOutdoor1:
+                case FireOutdoor2: return "(unknown)";
+
+                case CombatIntro: return "(various)";
+
+                case Credits:
+                case Inventory: return "Janne Hanhisuanto";
+
+                case PartyCreation: return "Marcelo Fernandez";
+
+                case All:
+                case None:
+                case Count:
+                default: return "gui::music::ArtistName(ENUM=out_of_range)";
+            }
+        }
+
+        static constexpr std::string_view LicenseTitle(const music::Enum MUSIC) noexcept
+        {
+            switch (MUSIC)
+            {
+                case FireIndoorSmall: return "CC-BY 3.0";
+                case FireIndoorLarge: return "Inchadney";
+
+                case Theme:
+                case Wind:
+                case FireOutdoor1:
+                case FireOutdoor2: return "CC0 1.0";
+
+                case CombatIntro: return "(various)";
+
+                case Credits:
+                case Inventory: return "CC-BY-SA 3.0";
+
+                case PartyCreation: return "CC-BY 4.0";
+
+                case All:
+                case None:
+                case Count: return "";
+
+                default: return "gui::music::LicenseTitle(ENUM=out_of_range)";
+            }
+        }
+
+        static constexpr std::string_view SongName(const music::Enum MUSIC) noexcept
+        {
+            switch (MUSIC)
+            {
+                case Theme: return "Heroes' Path Theme";
+                case Wind: return "Wind";
+                case FireIndoorSmall: return "Fireplace Small";
+                case FireIndoorLarge: return "Fireplace Large";
+                case FireOutdoor1: return "Campfire1";
+                case FireOutdoor2: return "Campfire2";
+                case CombatIntro: return "(various)";
+                case PartyCreation: return "Intro of Dragons";
+                case Credits: return "Radakan Menu";
+                case Inventory: return "PYC";
+                case Count: return "Count";
+                case None: return "None";
+                case All: return "All";
+                default: return "gui::music::SongName(ENUM=out_of_range)";
+            }
+        }
+
+        static constexpr bool IsLooped(const music::Enum MUSIC) noexcept
+        {
+            switch (MUSIC)
+            {
+                case Theme:
+                case Wind:
+                case FireIndoorSmall:
+                case FireIndoorLarge:
+                case FireOutdoor1:
+                case FireOutdoor2:
+                case PartyCreation:
+                case Credits:
+                case Inventory: return true;
+
+                case CombatIntro:
+                case All:
+                case None:
+                case Count:
+                default: return false;
+            }
+        }
     };
 
     using MusicEnumVec_t = std::vector<music::Enum>;

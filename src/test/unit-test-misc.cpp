@@ -88,11 +88,19 @@ void isRealTestIdentity(const std::vector<T> & VALUES)
         BOOST_CHECK(IsRealLessOrClose(VALUE, VALUE));
         BOOST_CHECK(IsRealGreaterOrClose(VALUE, VALUE));
 
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable : 4146)
+#endif
+
         BOOST_CHECK(
             IsRealZero(VALUE)
             == !((VALUE < -std::numeric_limits<T>::epsilon())
                  || (VALUE > std::numeric_limits<T>::epsilon())));
 
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
         BOOST_CHECK(
             IsRealOne(VALUE)
             == !((VALUE < (T(1) - std::numeric_limits<T>::epsilon()))

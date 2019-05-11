@@ -11,8 +11,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace item
@@ -28,8 +26,6 @@ namespace item
             HeldAndLockbox,
             Count
         };
-
-        static const std::string ToString(const Enum);
     };
 
 } // namespace item

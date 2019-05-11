@@ -624,7 +624,7 @@ namespace creature
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << item::weapon::axe_type::ToString(AXE_TYPE)
+                            << "\" and kind=\"" << NAMEOF_ENUM(AXE_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -662,8 +662,7 @@ namespace creature
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\""
-                            << item::weapon::bladedstaff_type::ToString(BLADEDSTAFF_TYPE)
+                            << "\" and kind=\"" << NAMEOF_ENUM(BLADEDSTAFF_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -700,7 +699,7 @@ namespace creature
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << item::weapon::club_type::ToString(CLUB_TYPE)
+                            << "\" and kind=\"" << NAMEOF_ENUM(CLUB_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -737,8 +736,7 @@ namespace creature
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\""
-                            << item::weapon::projectile_type::ToString(PROJECTILE_TYPE)
+                            << "\" and kind=\"" << NAMEOF_ENUM(PROJECTILE_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -769,7 +767,7 @@ namespace creature
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << item::weapon::sword_type::ToString(SWORD_TYPE)
+                            << "\" and kind=\"" << NAMEOF_ENUM(SWORD_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -800,7 +798,7 @@ namespace creature
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << item::weapon::whip_type::ToString(WHIP_TYPE)
+                            << "\" and kind=\"" << NAMEOF_ENUM(WHIP_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -1035,7 +1033,7 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomCover() returned \""
-                            << item::armor::cover_type::ToString(COVER_PAIR.first)
+                            << NAMEOF_ENUM(COVER_PAIR.first)
                             << "\", but that item was not found in the "
                                "ARMOR_CHANCES.cover_map.");
 
@@ -1080,7 +1078,7 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomHelm() returned \""
-                            << item::armor::helm_type::ToString(HELM_PAIR.first)
+                            << NAMEOF_ENUM(HELM_PAIR.first)
                             << "\", but that item was not found in the "
                                "ARMOR_CHANCES.helm_map.");
 
@@ -1121,7 +1119,7 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomShield() returned \""
-                            << item::armor::shield_type::ToString(SHIELD_PAIR.first)
+                            << NAMEOF_ENUM(SHIELD_PAIR.first)
                             << "\", but that item was not found in the "
                                "ARMOR_CHANCES.shield_map.");
 

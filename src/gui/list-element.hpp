@@ -65,7 +65,7 @@ namespace gui
             {
                 const auto GUI_NAME(
                     LE.textRegionUPtr_->GetEntityName() + "CopyMadeBy_ListElement<"
-                    + NAMEOF_TYPE_T(Element_t) + ">::CopyConstructor(MakingCopyOf_" + LE.ToString()
+                    + NAMEOF_TYPE(Element_t) + ">::CopyConstructor(MakingCopyOf_" + LE.ToString()
                     + ")_");
 
                 textRegionUPtr_
@@ -303,7 +303,7 @@ namespace gui
 
         const std::string ToString() const
         {
-            return "ListElement<" + std::string(NAMEOF_TYPE_T(Element_t))
+            return "ListElement<" + std::string(NAMEOF_TYPE(Element_t))
                 + ((HasElement()) ? ">(HasElement)(" : ">(NoElement)(")
                 + std::string(
                       (cachedTextureOpt_) ? cachedTextureOpt_->Path() : std::string("NoImage"))

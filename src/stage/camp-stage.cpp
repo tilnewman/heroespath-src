@@ -261,7 +261,8 @@ namespace stage
             result += " such as " + creature::Algorithms::Names(pixiesAndBeastmastersPVec) + ",";
         }
 
-        result += " " + misc::ConfigFile::Instance()->Value("intro-text4");
+        result += ' ';
+        result += misc::ConfigFile::Instance()->Value("intro-text4");
         return result;
     }
 
@@ -384,7 +385,7 @@ namespace stage
 
                 if (NEXT_BEAST_PTR->Race() == creature::race::Dragon)
                 {
-                    ss << "the " << creature::role::ToString(NEXT_BEAST_PTR->Role()) << " Dragon";
+                    ss << "the " << NAMEOF_ENUM(NEXT_BEAST_PTR->Role()) << " Dragon";
                 }
                 else
                 {
@@ -407,9 +408,8 @@ namespace stage
                         && ((NONLOAD_NONBEAST_PVEC.size() - 1) == i++))
                            ? "and "
                            : "")
-                   << NEXT_CHAR_PTR->Name() << " the "
-                   << creature::race::ToString(NEXT_CHAR_PTR->Race()) << " "
-                   << creature::role::ToString(NEXT_CHAR_PTR->Role());
+                   << NEXT_CHAR_PTR->Name() << " the " << NAMEOF_ENUM(NEXT_CHAR_PTR->Race()) << " "
+                   << NAMEOF_ENUM(NEXT_CHAR_PTR->Role());
 
                 appendedFirstName = true;
             }
@@ -429,8 +429,7 @@ namespace stage
 
                     if (NEXT_BEAST_PTR->Race() == creature::race::Dragon)
                     {
-                        ss << "the " << creature::role::ToString(NEXT_BEAST_PTR->Role())
-                           << " Dragon";
+                        ss << "the " << NAMEOF_ENUM(NEXT_BEAST_PTR->Role()) << " Dragon";
                     }
                     else
                     {

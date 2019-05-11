@@ -42,8 +42,6 @@ namespace gui
             FadedIn,
             Count
         };
-
-        static const std::string ToString(const Enum);
     };
 
     // Responsible for storing sf::Music objects, information about them,
@@ -133,10 +131,10 @@ namespace gui
         friend bool operator==(const MusicOperator & L, const MusicOperator & R);
 
     public:
-        static const float VOLUME_USE_GLOBAL_;
-        static const float FADE_MULT_IMMEDIATE_;
-        static const float FADE_MULT_DEFAULT_IN_;
-        static const float FADE_MULT_DEFAULT_OUT_;
+        static constexpr float VOLUME_USE_GLOBAL_ { -1.0f }; // any negative value will work here
+        static constexpr float FADE_MULT_IMMEDIATE_ { -1.0f }; //""
+        static constexpr float FADE_MULT_DEFAULT_IN_ { 50.0f };
+        static constexpr float FADE_MULT_DEFAULT_OUT_ { 30.0f };
 
     private:
         MusicInfo info_;
@@ -150,6 +148,7 @@ namespace gui
     bool operator==(const MusicOperator & L, const MusicOperator & R);
 
     inline bool operator!=(const MusicOperator & L, const MusicOperator & R) { return !(L == R); }
+
 } // namespace gui
 } // namespace heroespath
 

@@ -65,22 +65,27 @@ namespace interact
             std::string str;
             str.reserve(128);
 
-            str += ("NpcConversationPoint: \"" + text_ + "\", buttons=(");
+            str += "NpcConversationPoint: \"";
+            str += text_;
+            str += "\", buttons=(";
 
             for (const auto BUTTON : buttons_)
             {
-                str += Buttons::ToString(BUTTON) + ",";
+                str += NAMEOF_ENUM(BUTTON);
+                str += ',';
             }
 
             str += "), transition_map=(";
 
             for (const auto & BUTTON_INDEX_PAIR : transitionMap_)
             {
-                str += Buttons::ToString(BUTTON_INDEX_PAIR.first) + "="
-                    + std::to_string(BUTTON_INDEX_PAIR.second) + ",";
+                str += NAMEOF_ENUM(BUTTON_INDEX_PAIR.first);
+                str += '=';
+                str += std::to_string(BUTTON_INDEX_PAIR.second);
+                str += ',';
             }
 
-            str += ")";
+            str += ')';
 
             return str;
         }

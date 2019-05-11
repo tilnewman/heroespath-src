@@ -38,9 +38,8 @@ namespace creature
         {
             std::ostringstream ss;
 
-            ss << "SummonInfo{type=" << origin_type::ToString(type_)
-               << ", race=" << race::ToString(race_) << ", role=" << role::ToString(role_)
-               << ", charges_remaining=" << count_ << "}";
+            ss << "SummonInfo{type=" << NAMEOF_ENUM(type_) << ", race=" << NAMEOF_ENUM(race_)
+               << ", role=" << NAMEOF_ENUM(role_) << ", charges_remaining=" << count_ << "}";
 
             return ss.str();
         }

@@ -153,8 +153,7 @@ namespace creature
         void ChanceFactory::Make_Coins(
             const Profile & PROFILE, Coin_t & coinsMin_OutParam, Coin_t & coinsMax_OutParam) const
         {
-            const auto KEY_STR { "nonplayer-coins-bounds-"
-                                 + wealth_type::ToString(PROFILE.wealthType) };
+            const auto KEY_STR { "nonplayer-coins-bounds-" + NAMEOF_ENUM_STR(PROFILE.wealthType) };
 
             const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
@@ -948,7 +947,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (WAS_FOUND),
                 "nonplayerChanceFactory::LookupPossibleWeaponsByRole(role="
-                    << role::ToString(ROLE) << ") was unable to find that role in the map.");
+                    << NAMEOF_ENUM(ROLE) << ") was unable to find that role in the map.");
         }
 
         float ChanceFactory::GetFloatFromGameDataFile(
@@ -993,9 +992,8 @@ namespace creature
             float & leatherChance,
             float & silkChance) const
         {
-            const auto WEARABLE_STR_BASE {
-                "inventory-clothing-" + wealth_type::ToString(PROFILE.wealthType) + "-chances"
-            };
+            const auto WEARABLE_STR_BASE { "inventory-clothing-"
+                                           + NAMEOF_ENUM_STR(PROFILE.wealthType) + "-chances" };
 
             // find the chance-subtotal and the material that will have the remaining chance
             auto chanceSubTotal(0.0f);
@@ -1141,8 +1139,7 @@ namespace creature
             // adjustments that make more wealth equal better chances for special materials
             const auto WEALTH_CHANCE_ADJUSTMENT {
                 misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                    "material-wealth-chance-base-adjustment-"
-                    + wealth_type::ToString(PROFILE.wealthType))
+                    "material-wealth-chance-base-adjustment-" + NAMEOF_ENUM_STR(PROFILE.wealthType))
             };
 
             chanceCool += WEALTH_CHANCE_ADJUSTMENT;
@@ -1292,8 +1289,7 @@ namespace creature
 
             // adjustments that make more wealth equal better chances for special materials
             const auto WEALTH_CHANCE_ADJUSTMENT(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                "material-wealth-chance-base-adjustment-"
-                + wealth_type::ToString(PROFILE.wealthType)));
+                "material-wealth-chance-base-adjustment-" + NAMEOF_ENUM_STR(PROFILE.wealthType)));
 
             chanceCool += WEALTH_CHANCE_ADJUSTMENT;
             chanceMetal += WEALTH_CHANCE_ADJUSTMENT;
@@ -1399,7 +1395,7 @@ namespace creature
             for (const auto NEXT_MATERIAL : MATERIALS_VEC)
             {
                 const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(
-                    (PREFIX + item::material::ToString(NEXT_MATERIAL)).append(POSTFIX)) };
+                    (PREFIX + NAMEOF_ENUM_STR(NEXT_MATERIAL)).append(POSTFIX)) };
 
                 if (NEXT_VALUE_STR == "remaining")
                 {
@@ -1409,7 +1405,7 @@ namespace creature
                 {
                     const auto NEXT_VALUE_FLOAT {
                         misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                            (PREFIX + item::material::ToString(NEXT_MATERIAL)).append(POSTFIX))
+                            (PREFIX + NAMEOF_ENUM_STR(NEXT_MATERIAL)).append(POSTFIX))
                     };
 
                     if (false == misc::IsRealClose(0.0f, NEXT_VALUE_FLOAT))
@@ -1470,9 +1466,8 @@ namespace creature
             ;
             const std::string KEY_BASE { "inventory-clothing-" };
 
-            const std::string WEARABLE_STR_BASE {
-                KEY_BASE + wealth_type::ToString(PROFILE.wealthType) + "-chances-"
-            };
+            const std::string WEARABLE_STR_BASE { KEY_BASE + NAMEOF_ENUM_STR(PROFILE.wealthType)
+                                                  + "-chances-" };
 
             const auto MIN_VAL { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 KEY_BASE + "chance-min") };
@@ -1707,7 +1702,7 @@ namespace creature
             {
                 const auto ROLE { static_cast<role::Enum>(i) };
 
-                const auto ROLE_STR { role::ToString(ROLE) };
+                const auto ROLE_STR { NAMEOF_ENUM_STR(ROLE) };
                 const auto KEY_STR { "nonplayer-armor-chances-role-" + ROLE_STR };
                 const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
@@ -1816,7 +1811,7 @@ namespace creature
 
             namespace ba = boost::algorithm;
 
-            const auto ROLE_STR { role::ToString(ROLE) };
+            const auto ROLE_STR { NAMEOF_ENUM_STR(ROLE) };
             const std::string KEY_STR("nonplayer-weapon-chances-role-" + ROLE_STR);
 
             const auto VALUE_STR_LOWER { misc::ToLowerCopy(

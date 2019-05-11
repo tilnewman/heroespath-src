@@ -31,7 +31,7 @@ namespace creature
 
         if (WILL_PREPEND_PLUS && (current_ > 0))
         {
-            str += "+";
+            str += '+';
         }
 
         str += std::to_string(current_);

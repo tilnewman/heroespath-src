@@ -13,6 +13,7 @@
 
 #include <SFML/System/Clock.hpp>
 
+#include "misc/nameof.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/strings.hpp"
@@ -42,6 +43,208 @@ struct NumStr
     Number_t num;
     std::string str;
 };
+
+BOOST_AUTO_TEST_CASE(misc_strings__AreSameOrOnlyDifferByCase)
+{
+    BOOST_CHECK(AreSameOrOnlyDifferByCase('1', '1'));
+
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('1', '2'));
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('1', 'a'));
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('1', 'A'));
+
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('2', '1'));
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('a', '1'));
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('A', '1'));
+
+    BOOST_CHECK(AreSameOrOnlyDifferByCase('a', 'a'));
+    BOOST_CHECK(AreSameOrOnlyDifferByCase('A', 'A'));
+
+    BOOST_CHECK(AreSameOrOnlyDifferByCase('x', 'x'));
+    BOOST_CHECK(AreSameOrOnlyDifferByCase('X', 'X'));
+
+    BOOST_CHECK(AreSameOrOnlyDifferByCase('a', 'A'));
+    BOOST_CHECK(AreSameOrOnlyDifferByCase('A', 'a'));
+
+    BOOST_CHECK(AreSameOrOnlyDifferByCase('x', 'X'));
+    BOOST_CHECK(AreSameOrOnlyDifferByCase('X', 'x'));
+
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('a', 'X'));
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('X', 'a'));
+
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('A', 'X'));
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('X', 'A'));
+
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('a', 'x'));
+    BOOST_CHECK(!AreSameOrOnlyDifferByCase('x', 'a'));
+}
+
+BOOST_AUTO_TEST_CASE(misc_strings__ConstexprEqual_and_AreEqualCaseInsensitive)
+{
+    auto testAreEqualCaseInsensitive = [](const auto & A, const auto & B, const bool EXPECTED) {
+        {
+            const auto ACTUAL
+                = AreEqualCaseInsensitive(std::begin(A), std::end(A), std::begin(B), std::end(B));
+
+            BOOST_CHECK_MESSAGE(
+                (ACTUAL == EXPECTED),
+                "AreEqualCaseInsensitive<"
+                    << NAMEOF_VAR_TYPE(A) << ", " << NAMEOF_VAR_TYPE(B) << ">(A=\"" << Join(A)
+                    << "\", B=\"" << Join(B) << "\", BIN_PRED=(X==Y), EXP=" << std::boolalpha
+                    << EXPECTED << ")[ia,ia,ib,ib] but = " << ACTUAL << " instead.");
+        }
+
+        {
+            const auto ACTUAL = AreEqualCaseInsensitive(std::begin(A), std::end(A), B);
+
+            BOOST_CHECK_MESSAGE(
+                (ACTUAL == EXPECTED),
+                "AreEqualCaseInsensitive<"
+                    << NAMEOF_VAR_TYPE(A) << ", " << NAMEOF_VAR_TYPE(B) << ">(A=\"" << Join(A)
+                    << "\", B=\"" << Join(B) << "\", BIN_PRED=(X==Y), EXP=" << std::boolalpha
+                    << EXPECTED << ")[ia,ia,b] but = " << ACTUAL << " instead.");
+        }
+
+        {
+            const auto ACTUAL = AreEqualCaseInsensitive(A, B);
+
+            BOOST_CHECK_MESSAGE(
+                (ACTUAL == EXPECTED),
+                "AreEqualCaseInsensitive<" << NAMEOF_VAR_TYPE(A) << ", " << NAMEOF_VAR_TYPE(B)
+                                           << ">(A=\"" << Join(A) << "\", B=\"" << Join(B)
+                                           << "\", BIN_PRED=(X==Y), EXP=" << std::boolalpha
+                                           << EXPECTED << ")[a,b] but = " << ACTUAL << " instead.");
+        }
+    };
+
+    auto testAreEqualCaseInsensitiveAllVariations
+        = [&](const std::string & A, const std::string & B, const bool EXPECTED) {
+              testAreEqualCaseInsensitive(A, B, EXPECTED);
+              testAreEqualCaseInsensitive(std::string_view(A), std::string_view(B), EXPECTED);
+              testAreEqualCaseInsensitive(A, std::string_view(B), EXPECTED);
+              testAreEqualCaseInsensitive(std::string_view(A), B, EXPECTED);
+          };
+
+    auto testConstexprEqualAny = [](const auto & A, const auto & B, const bool EXPECTED) {
+        {
+            const auto ACTUAL = ConstexprEqual(
+                std::begin(A),
+                std::end(A),
+                std::begin(B),
+                std::end(B),
+                [](const auto & X, const auto & Y) { return (X == Y); });
+
+            BOOST_CHECK_MESSAGE(
+                (ACTUAL == EXPECTED),
+                "testConstexprEqualAny<" << NAMEOF_VAR_TYPE(A) << ", " << NAMEOF_VAR_TYPE(B)
+                                         << ">(A=\"" << Join(A) << "\", B=\"" << Join(B)
+                                         << "\", BIN_PRED=(X==Y), EXP=" << std::boolalpha
+                                         << EXPECTED << ") but = " << ACTUAL << " instead.");
+        }
+
+        {
+            const auto ACTUAL
+                = ConstexprEqual(std::begin(A), std::end(A), std::begin(B), std::end(B));
+
+            BOOST_CHECK_MESSAGE(
+                (ACTUAL == EXPECTED),
+                "testConstexprEqualAny<" << NAMEOF_VAR_TYPE(A) << ", " << NAMEOF_VAR_TYPE(B)
+                                         << ">(A=\"" << Join(A) << "\", B=\"" << Join(B)
+                                         << "\", BIN_PRED=default, EXP=" << std::boolalpha
+                                         << EXPECTED << ") but = " << ACTUAL << " instead.");
+        }
+    };
+
+    auto testConstexprEqualForStrings
+        = [&](const std::string & A, const std::string & B, const bool EXPECTED) {
+              testConstexprEqualAny(A, B, EXPECTED);
+              testConstexprEqualAny(std::string_view(A), std::string_view(B), EXPECTED);
+              testConstexprEqualAny(A, std::string_view(B), EXPECTED);
+              testConstexprEqualAny(std::string_view(A), B, EXPECTED);
+              //
+              testAreEqualCaseInsensitiveAllVariations(A, B, EXPECTED);
+          };
+
+    testConstexprEqualForStrings("", "", true);
+    testConstexprEqualForStrings(" ", " ", true);
+
+    testConstexprEqualForStrings("", " ", false);
+    testConstexprEqualForStrings(" ", "", false);
+
+    const std::string STR_J { "\t!@#$%^&*12 345 6789]{}\\|;':\",.<_()_+-=[>\r\n?/`~"
+
+    };
+
+    const std::string STR_M { "This StrinG is just a stupid sentence OF characters." };
+
+    testConstexprEqualForStrings(STR_J, STR_J, true);
+    testConstexprEqualForStrings(STR_J, "", false);
+    testConstexprEqualForStrings("", STR_J, false);
+    testConstexprEqualForStrings(STR_J, " ", false);
+    testConstexprEqualForStrings(" ", STR_J, false);
+
+    testConstexprEqualForStrings(STR_M, STR_M, true);
+    testConstexprEqualForStrings(STR_M, "", false);
+    testConstexprEqualForStrings("", STR_M, false);
+    testConstexprEqualForStrings(STR_M, " ", false);
+    testConstexprEqualForStrings(" ", STR_M, false);
+
+    testConstexprEqualForStrings(STR_J, STR_M, false);
+    testConstexprEqualForStrings(STR_M, STR_J, false);
+
+    const std::vector<int> CONTAINER_A = { 1, 2, 3, 4 };
+    const std::array<int, 5> CONTAINER_B = { 1, 2, 3, 4, 5 };
+    const std::list<int> CONTAINER_C = { 1, 2, 33, 4 };
+
+    testConstexprEqualAny(CONTAINER_A, CONTAINER_A, true);
+    testConstexprEqualAny(CONTAINER_B, CONTAINER_B, true);
+    testConstexprEqualAny(CONTAINER_C, CONTAINER_C, true);
+
+    testConstexprEqualAny(CONTAINER_A, CONTAINER_B, false);
+    testConstexprEqualAny(CONTAINER_A, CONTAINER_C, false);
+    testConstexprEqualAny(CONTAINER_B, CONTAINER_A, false);
+    testConstexprEqualAny(CONTAINER_B, CONTAINER_C, false);
+    testConstexprEqualAny(CONTAINER_C, CONTAINER_A, false);
+    testConstexprEqualAny(CONTAINER_C, CONTAINER_B, false);
+
+    const std::vector<int> CONTAINER_EMPTY_A;
+    const std::list<int> CONTAINER_EMPTY_B;
+
+    testConstexprEqualAny(CONTAINER_EMPTY_A, CONTAINER_EMPTY_A, true);
+    testConstexprEqualAny(CONTAINER_EMPTY_A, CONTAINER_EMPTY_B, true);
+    testConstexprEqualAny(CONTAINER_EMPTY_B, CONTAINER_EMPTY_A, true);
+    testConstexprEqualAny(CONTAINER_EMPTY_B, CONTAINER_EMPTY_B, true);
+
+    const std::string STR_U { "THIS STRING IS JUST A STUPID SENTENCE OF CHARACTERS." };
+    const std::string STR_L { "this string is just a stupid sentence of characters." };
+
+    testAreEqualCaseInsensitiveAllVariations(STR_J, STR_J, true);
+    testAreEqualCaseInsensitiveAllVariations(STR_M, STR_M, true);
+    testAreEqualCaseInsensitiveAllVariations(STR_U, STR_U, true);
+    testAreEqualCaseInsensitiveAllVariations(STR_L, STR_L, true);
+
+    testAreEqualCaseInsensitiveAllVariations(STR_M, STR_U, true);
+    testAreEqualCaseInsensitiveAllVariations(STR_M, STR_L, true);
+    testAreEqualCaseInsensitiveAllVariations(STR_U, STR_M, true);
+    testAreEqualCaseInsensitiveAllVariations(STR_U, STR_L, true);
+    testAreEqualCaseInsensitiveAllVariations(STR_L, STR_M, true);
+    testAreEqualCaseInsensitiveAllVariations(STR_L, STR_U, true);
+
+    testAreEqualCaseInsensitiveAllVariations(STR_J, STR_U, false);
+    testAreEqualCaseInsensitiveAllVariations(STR_J, STR_L, false);
+    testAreEqualCaseInsensitiveAllVariations(STR_J, STR_M, false);
+    testAreEqualCaseInsensitiveAllVariations(STR_L, STR_J, false);
+    testAreEqualCaseInsensitiveAllVariations(STR_M, STR_J, false);
+    testAreEqualCaseInsensitiveAllVariations(STR_U, STR_J, false);
+}
+
+BOOST_AUTO_TEST_CASE(misc_strings__ConstexprEqual)
+{
+    const std::string STR_J {
+        "\t \r\n 0 12 345 6789 \t \r [ ] - _ !@#$%^&*(())_+-=[]{}\\|;':\",.<> / ? `~  \n \n\r"
+    };
+
+    const std::string STR_M { "This StrinG has A mix of UPPER and lower case characters." };
+}
 
 BOOST_AUTO_TEST_CASE(misc_strings__Case)
 {
@@ -114,7 +317,8 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case)
 
     BOOST_CHECK(AreEqualCaseInsensitive(
         NON_LETTER_STR,
-        "\t \r\n 0 12 345 6789 \t \r [ ] - _ !@#$%^&*(())_+-=[]{}\\|;':\",.<> / ? `~  \n \n\r"));
+        "\t \r\n 0 12 345 6789 \t \r [ ] - _ !@#$%^&*(())_+-=[]{}\\|;':\",.<> / ? `~  \n "
+        "\n\r"));
 
     BOOST_CHECK(!AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, ""));
     BOOST_CHECK(!AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, " "));
@@ -134,6 +338,9 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case)
     BOOST_CHECK(AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, UPPER_CASE_TEST_STR));
     BOOST_CHECK(AreEqualCaseInsensitive(MIXED_CASE_TEST_STR, LOWER_CASE_TEST_STR));
     BOOST_CHECK(AreEqualCaseInsensitive(UPPER_CASE_TEST_STR, LOWER_CASE_TEST_STR));
+
+    BOOST_CHECK(AreEqualCaseInsensitive("a-b", "A-B"));
+    BOOST_CHECK(!AreEqualCaseInsensitive("a_b", "A-B"));
 }
 
 /*
@@ -238,10 +445,8 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
     for (const auto & TEST_RESULT : testResults)
     {
         auto makeTestReportString =
-            [&](const std::string & WHICH_RESULTS, const std::vector<float> & TIMES, float & sum) {
-                auto min { TIMES.at(0) };
-                auto max { 0.0f };
-                sum = 0.0f;
+            [&](const std::string & WHICH_RESULTS, const std::vector<float> & TIMES, float &
+sum) { auto min { TIMES.at(0) }; auto max { 0.0f }; sum = 0.0f;
 
                 for (const float TIME_MS : TIMES)
                 {
@@ -265,7 +470,8 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 
                 std::ostringstream ssReport;
 
-                ssReport << "\n\t\t" << WHICH_RESULTS << "\tx" << TIMES.size() << "\tsum=" << sum
+                ssReport << "\n\t\t" << WHICH_RESULTS << "\tx" << TIMES.size() << "\tsum=" <<
+sum
                          << "\t[" << min << ", " << AVERAGE << ", " << max << "] ("
                          << STANDARD_DEVIATION << ")";
 
@@ -274,9 +480,8 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 
         float sum { 0.0f };
 
-        const auto BOOST_TEST_STR { makeTestReportString("boost", TEST_RESULT.boost_times, sum) };
-        const auto BOOST_TEST_SUM { sum };
-        boostTotalTimeMS += BOOST_TEST_SUM;
+        const auto BOOST_TEST_STR { makeTestReportString("boost", TEST_RESULT.boost_times, sum)
+}; const auto BOOST_TEST_SUM { sum }; boostTotalTimeMS += BOOST_TEST_SUM;
 
         const auto MY_TEST_STR { makeTestReportString(" mine", TEST_RESULT.my_times, sum) };
         const auto MY_TEST_SUM { sum };
@@ -589,7 +794,8 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
 
         BOOST_CHECK_MESSAGE(
             !IsRealClose(EXPECTED, VALUE_IF_ERROR),
-            "Tried to test misc::ToNumber() but the default value to use on error was equal to the "
+            "Tried to test misc::ToNumber() but the default value to use on error was equal to "
+            "the "
             "expected!  *** SANITY CHECK FAIL");
 
         const auto ACTUAL(ToNumberOr(STR, VALUE_IF_ERROR));
@@ -597,7 +803,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
         std::ostringstream sss;
         sss << "STR=\"" << STR << "\", VALUE_IF_ERROR=" << VALUE_IF_ERROR
             << ", EXPECTED=" << EXPECTED << ", ACTUAL=" << ACTUAL << "IsRealClose<"
-            << NAMEOF_TYPE_T(decltype(VALUE_IF_ERROR)) << ">(\"" << ACTUAL << "\", \"" << EXPECTED
+            << NAMEOF_TYPE(decltype(VALUE_IF_ERROR)) << ">(\"" << ACTUAL << "\", \"" << EXPECTED
             << "\") != \"" << EXPECTED << "\"";
 
         BOOST_CHECK_MESSAGE(IsRealClose(ACTUAL, EXPECTED), sss.str());
@@ -618,12 +824,20 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
     testToNumber("2147483647.0000", std::int32_t(2147483647));
     testToNumber("2147483647.999", std::int32_t(2147483647));
 
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable : 4146)
+#endif
+
     testToNumber("-2147483648", std::int32_t(-2147483648));
     testToNumber("-2147483648.", std::int32_t(-2147483648));
     testToNumber("-2147483648.0", std::int32_t(-2147483648));
     testToNumber("-2147483648.0000", std::int32_t(-2147483648));
     testToNumber("-2147483648.999", std::int32_t(-2147483648));
 
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
     // sign mismatches
     testToNumberWillFailWith("-1", 1u);
     testToNumberWillFailWith("-10", 10u);

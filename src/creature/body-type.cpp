@@ -56,7 +56,7 @@ namespace creature
 
         if (cachedStr.empty())
         {
-            cachedStr += "A";
+            cachedStr += 'A';
 
             if (0 == num_heads_)
             {
@@ -66,7 +66,9 @@ namespace creature
             {
                 if (num_heads_ > 1)
                 {
-                    cachedStr += " " + std::to_string(num_heads_) + "-headed";
+                    cachedStr += ' ';
+                    cachedStr += std::to_string(num_heads_);
+                    cachedStr += "-headed";
 
                     if (0 == num_eyes_)
                     {
@@ -74,7 +76,9 @@ namespace creature
                     }
                     else if (num_eyes_ != 2)
                     {
-                        cachedStr += " each with" + std::to_string(num_eyes_) + " eyes";
+                        cachedStr += " each with";
+                        cachedStr += std::to_string(num_eyes_);
+                        cachedStr += " eyes";
                     }
                 }
                 else
@@ -85,7 +89,9 @@ namespace creature
                     }
                     else if (num_eyes_ != 2)
                     {
-                        cachedStr += " " + std::to_string(num_eyes_) + "-eyed";
+                        cachedStr += ' ';
+                        cachedStr += std::to_string(num_eyes_);
+                        cachedStr += "-eyed";
                     }
                 }
             }
@@ -96,7 +102,9 @@ namespace creature
             }
             else if (2 != num_arms_)
             {
-                cachedStr += " " + std::to_string(num_arms_) + "-armed";
+                cachedStr += ' ';
+                cachedStr += std::to_string(num_arms_);
+                cachedStr += "-armed";
             }
 
             if (has_spikes_)
@@ -142,7 +150,9 @@ namespace creature
                     }
                     else
                     {
-                        cachedStr += " " + std::to_string(num_legs_) + "-legged creature";
+                        cachedStr += ' ';
+                        cachedStr += std::to_string(num_legs_);
+                        cachedStr += "-legged creature";
                     }
                 }
             }
@@ -159,10 +169,12 @@ namespace creature
 
             if (num_tentacles_ > 0)
             {
-                cachedStr += " with " + std::to_string(num_tentacles_) + " tentacles";
+                cachedStr += " with ";
+                cachedStr += std::to_string(num_tentacles_);
+                cachedStr += " tentacles";
             }
 
-            cachedStr += ".";
+            cachedStr += '.';
         }
 
         return cachedStr;

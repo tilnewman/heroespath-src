@@ -50,7 +50,7 @@ namespace misc
             const auto SIZE { Size() };
 
             std::string str(
-                "misc::NotNullWarehouse<" + std::string(NAMEOF_TYPE_T(T)) + "> destructing, ");
+                "misc::NotNullWarehouse<" + std::string(NAMEOF_TYPE(T)) + "> destructing, ");
 
             if (SIZE != 0)
             {
@@ -73,7 +73,7 @@ namespace misc
                     {
                         M_HP_LOG_ERR(
                             "misc::NotNullWarehouse<"
-                            << NAMEOF_TYPE_T(T)
+                            << NAMEOF_TYPE(T)
                             << ">::Destructor found an object that was not free'd: "
                             << uPtr->ToString());
                     }
@@ -138,7 +138,7 @@ namespace misc
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptrToStore != nullptr),
-                "misc::NotNullWarehouse<" << NAMEOF_TYPE_T(T) << ">::StoreImpl() given a nullptr.");
+                "misc::NotNullWarehouse<" << NAMEOF_TYPE(T) << ">::StoreImpl() given a nullptr.");
 
             const auto NUM_SLOTS { uPtrVec_.size() };
             std::size_t indexToSaveAt { NUM_SLOTS };
@@ -151,7 +151,7 @@ namespace misc
                 if (STORED_PTR == ptrToStore)
                 {
                     throw std::runtime_error(
-                        "misc::Warehouse<" + std::string(NAMEOF_TYPE_T(T)) + ">::StoreImpl("
+                        "misc::Warehouse<" + std::string(NAMEOF_TYPE(T)) + ">::StoreImpl("
                         + ptrToStore->ToString() + ") was already stored.");
                 }
                 else if (STORED_PTR == nullptr)
@@ -177,7 +177,7 @@ namespace misc
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptrToFree != nullptr),
-                "misc::NotNullWarehouse<" << NAMEOF_TYPE_T(T) << ">::FreeImpl() given a nullptr.");
+                "misc::NotNullWarehouse<" << NAMEOF_TYPE(T) << ">::FreeImpl() given a nullptr.");
 
             for (auto & uPtr : uPtrVec_)
             {
@@ -191,7 +191,7 @@ namespace misc
 
             M_HP_LOG_ERR(
                 "misc::NotNullWarehouse<"
-                << NAMEOF_TYPE_T(T) << ">::FreeImpl(ptrToFree=\""
+                << NAMEOF_TYPE(T) << ">::FreeImpl(ptrToFree=\""
                 << ((ptrToFree != nullptr) ? ptrToFree->ToString() : std::string("nullptr"))
                 << "\") not found.  Will delete manually.  Cross your fingers...");
 

@@ -142,16 +142,26 @@ namespace item
 
                 if (WILL_INCLUDE_COUNT)
                 {
-                    str += "x" + toNumberSpecial(count, WIDTH_INT) + " ";
+                    str += 'x';
+                    str += toNumberSpecial(count, WIDTH_INT);
+                    str += ' ';
                 }
 
-                str += "[" + toNumberSpecial(min, WIDTH_INT) + ", "
-                    + toNumberSpecial(avg, WIDTH_INT) + ", " + toNumberSpecial(max, WIDTH_INT)
-                    + "] (" + toNumberSpecial(stddev, WIDTH_INT) + ")";
+                str += '[';
+                str += toNumberSpecial(min, WIDTH_INT);
+                str += ", ";
+                str += toNumberSpecial(avg, WIDTH_INT);
+                str += ", ";
+                str += toNumberSpecial(max, WIDTH_INT);
+                str += "] (";
+                str += toNumberSpecial(stddev, WIDTH_INT);
+                str += ')';
 
                 if (WILL_INCLUDE_SUM)
                 {
-                    str += " (sum=" + std::to_string(sum) + ")";
+                    str += " (sum=";
+                    str += std::to_string(sum);
+                    str += ')';
                 }
 
                 return str;
@@ -334,7 +344,10 @@ namespace item
             std::string str;
             str.reserve(64);
 
-            str += (", " + NAME + "_count=" + std::to_string(COUNT));
+            str += ", ";
+            str += NAME;
+            str += "_count=";
+            str += std::to_string(COUNT);
 
             if (COUNT_COMPARED_WITH > 0)
             {

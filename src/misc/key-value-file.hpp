@@ -15,6 +15,7 @@
 #include "misc/strong-numeric-type.hpp"
 #include "misc/type-helpers.hpp"
 
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -148,7 +149,7 @@ namespace misc
                 else
                 {
                     M_HP_LOG_ERR(
-                        "With T=" << NAMEOF_TYPE_T(T) << ", key=\"" << KEY
+                        "With T=" << NAMEOF_TYPE(T) << ", key=\"" << KEY
                                   << "\", failed to parse as that type.");
 
                     return RETURN_IF_CONVERSION_ERROR;
@@ -205,26 +206,32 @@ namespace misc
         template <typename T>
         bool SetAs(const std::string & KEY, const T & VALUE)
         {
-            return Set(KEY, misc::ToString(VALUE));
+            std::ostringstream ss;
+            ss << std::boolalpha << VALUE;
+            return Set(KEY, ss.str());
         }
 
         template <typename T>
         bool AppendAs(const std::string & KEY, const T & VALUE)
         {
-            return Append(KEY, misc::ToString(VALUE));
+            std::ostringstream ss;
+            ss << std::boolalpha << VALUE;
+            return Append(KEY, ss.str());
         }
 
         template <typename T>
         bool SetOrAppendAs(const std::string & KEY, const T & VALUE)
         {
-            return SetOrAppend(KEY, misc::ToString(VALUE));
+            std::ostringstream ss;
+            ss << std::boolalpha << VALUE;
+            return SetOrAppend(KEY, ss.str());
         }
 
-        template <typename T>
-        bool AppendCommentAs(const std::string & KEY, const T & VALUE)
-        {
-            return AppendComment(KEY, misc::ToString(VALUE));
-        }
+        // template <typename T>
+        // bool AppendCommentAs(const std::string & KEY, const T & VALUE)
+        //{
+        //    return AppendComment(KEY, misc::ToString(VALUE));
+        //}
 
         void AppendBlankLine() { lines_.emplace_back(KeyValueLine()); }
 

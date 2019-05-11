@@ -71,13 +71,18 @@ namespace interact
         std::string str;
         str.reserve(128 + (convPoints_.size() * 128));
 
-        str += "NpcConversation: index=" + std::to_string(convPointsIndex_)
-            + ", is_random=" + misc::ToString(isRandom_);
+        str += "NpcConversation: index=";
+        str += std::to_string(convPointsIndex_);
+        str += ", is_random=";
+        str += misc::ToString(isRandom_);
 
         std::size_t index { 0 };
         for (const auto & NPC_CONVERSATION_POINT : convPoints_)
         {
-            str += "\n[" + std::to_string(index++) + "]\t" + NPC_CONVERSATION_POINT.ToString();
+            str += "\n[";
+            str += std::to_string(index++);
+            str += "]\t";
+            str += NPC_CONVERSATION_POINT.ToString();
         }
 
         return str;

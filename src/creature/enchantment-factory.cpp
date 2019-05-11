@@ -220,7 +220,7 @@ namespace creature
             ((MATERIAL_PRIMARY != item::material::Count)
              && (MATERIAL_PRIMARY != item::material::Nothing)),
             "creature::EnchantmentFactory::MakeFromMiscType(misc_type="
-                << item::misc_type::ToString(MISC_TYPE) << ") given an invalid primary material="
+                << NAMEOF_ENUM(MISC_TYPE) << ") given an invalid primary material="
                 << ((MATERIAL_PRIMARY == item::material::Count) ? "Count" : "Nothing"));
 
         if ((MATERIAL_SECONDARY != item::material::Count)
@@ -2477,13 +2477,11 @@ namespace creature
             std::ostringstream ss;
             ss << "creature::EnchantmentFactory::NewFromElementType(element_type=" << ENUM
                << ", is_weapon=" << std::boolalpha << IS_WEAPON << ", mat_pri="
-               << ((MATERIAL_PRIMARY == item::material::Count)
-                       ? "Count"
-                       : item::material::ToString(MATERIAL_PRIMARY))
+               << ((MATERIAL_PRIMARY == item::material::Count) ? "Count"
+                                                               : NAMEOF_ENUM(MATERIAL_PRIMARY))
                << ", mat_sec="
-               << ((MATERIAL_SECONDARY == item::material::Count)
-                       ? "Count"
-                       : item::material::ToString(MATERIAL_SECONDARY))
+               << ((MATERIAL_SECONDARY == item::material::Count) ? "Count"
+                                                                 : NAMEOF_ENUM(MATERIAL_SECONDARY))
                << ") was given an element_type of NONE.";
 
             throw std::runtime_error(ss.str());
@@ -2849,8 +2847,8 @@ namespace creature
                 std::ostringstream ss;
                 ss << "creature::EnchantmentFactory::NewFromNamedType(named_type=Soldiers, "
                       "is_weapon=false, is_armor=false, mat_pri = "
-                   << item::material::ToString(MATERIAL_PRIMARY)
-                   << ", mat_sec=" << item::material::ToString(MATERIAL_SECONDARY)
+                   << NAMEOF_ENUM(MATERIAL_PRIMARY)
+                   << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SECONDARY)
                    << ") failed because for that named_type must be weapon or armor.";
 
                 throw std::runtime_error(ss.str());
@@ -2930,8 +2928,8 @@ namespace creature
                 std::ostringstream ss;
                 ss << "creature::EnchantmentFactory::NewFromNamedType(named_type=Nile, "
                       "is_weapon=false, is_armor=false, mat_pri = "
-                   << item::material::ToString(MATERIAL_PRIMARY)
-                   << ", mat_sec=" << item::material::ToString(MATERIAL_SECONDARY)
+                   << NAMEOF_ENUM(MATERIAL_PRIMARY)
+                   << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SECONDARY)
                    << ") failed because for that named_type must be weapon or armor.";
 
                 throw std::runtime_error(ss.str());
@@ -3258,8 +3256,8 @@ namespace creature
                 std::ostringstream ss;
                 ss << "creature::EnchantmentFactory::NewFromNamedType(named_type=" << NAMED_ENUM
                    << ", is_weapon=" << std::boolalpha << IS_WEAPON << ", is_armor=" << IS_ARMOR
-                   << ", mat_pri=" << item::material::ToString(MATERIAL_PRIMARY)
-                   << ", mat_sec=" << item::material::ToString(MATERIAL_SECONDARY)
+                   << ", mat_pri=" << NAMEOF_ENUM(MATERIAL_PRIMARY)
+                   << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SECONDARY)
                    << ") failed to find a matching named_type.";
 
                 throw std::runtime_error(ss.str());

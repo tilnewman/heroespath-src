@@ -75,7 +75,7 @@ namespace game
     {
         std::ostringstream ss;
 
-        ss << "Npc={avatar=" << avatar::Avatar::ToString(avatar_) << ", conv_mood="
+        ss << "Npc={avatar=" << NAMEOF_ENUM(avatar_) << ", conv_mood="
            << ((conversationMood_ == interact::talk::Mood::Kind) ? "kind" : "mean")
            << ", walk_bounds_set_index=" << walkBoundsSetIndex_ << ", conv_categories=";
 

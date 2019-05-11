@@ -1106,7 +1106,7 @@ namespace combat
             sf::Color endColor(255, 0, 0, 0);
             if (NEXT_DAMAGE_VALUE > 0_health)
             {
-                result += "+";
+                result += '+';
                 startColor.g = 232;
                 startColor.b = 232;
                 endColor.g = 232;

@@ -184,7 +184,7 @@ namespace gui
                 const auto IS_JEWELED { ((1 == extrasIndex) || (3 == extrasIndex)) };
                 const auto IS_BONE { (extrasIndex >= 2) };
                 const auto ENUM { static_cast<item::misc_type::Enum>(miscIndex) };
-                const auto ENUM_STR { item::misc_type::ToString(ENUM) };
+                const auto ENUM_STR { NAMEOF_ENUM(ENUM) };
                 const auto FILENAMES_VEC { Filenames(ENUM, IS_JEWELED, IS_BONE) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -205,10 +205,17 @@ namespace gui
                             << "\", filename #" << fileIndex << ", is_jeweled=" << std::boolalpha
                             << IS_JEWELED << ", found an empty filename string.");
 
-                    iStagePtr->TestingStrIncrement(
-                        "ItemImagePaths Testing \"" + ENUM_STR
-                        + "\", file_index=" + std::to_string(fileIndex) + " ("
-                        + ((IS_JEWELED) ? "jeweled" : "not-jeweled") + ")");
+                    std::string str;
+                    str.reserve(128);
+                    str += "ItemImagePaths Testing \"";
+                    str += ENUM_STR;
+                    str += "\", file_index=";
+                    str += std::to_string(fileIndex);
+                    str += " (";
+                    str += ((IS_JEWELED) ? "jeweled" : "not-jeweled");
+                    str += ')';
+
+                    iStagePtr->TestingStrIncrement(str);
 
                     const auto IMAGE_PATH_STR { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
 
@@ -337,7 +344,7 @@ namespace gui
             case item::misc_type::Pin_Mask:
             {
                 const auto TYPE_STR { ba::replace_all_copy(
-                    misc::ToLowerCopy(item::misc_type::ToString(MISC_TYPE)),
+                    misc::ToLowerCopy(NAMEOF_ENUM(MISC_TYPE)),
                     "_",
                     ContentImage::FilenameSeparator()) };
 
@@ -525,7 +532,7 @@ namespace gui
             case item::misc_type::PuppetCursed:
             {
                 const auto SEP_STR { misc::CamelTo(
-                    item::misc_type::ToString(MISC_TYPE),
+                    NAMEOF_ENUM(MISC_TYPE),
                     ContentImage::FilenameSeparator(),
                     misc::CaseChange::LowerToUpper) };
 
@@ -543,7 +550,7 @@ namespace gui
             case item::misc_type::Embryo:
             case item::misc_type::Seeds:
             {
-                return { misc::ToLowerCopy(item::misc_type::ToString(MISC_TYPE))
+                return { misc::ToLowerCopy(NAMEOF_ENUM(MISC_TYPE))
                          + ContentImage::FilenameExtension() };
             }
 
@@ -554,9 +561,8 @@ namespace gui
                 M_HP_LOG_ERR(
                     "MISC_TYPE enum is invalid, so returning the error image filename.  "
                     "(misc_type_enum_count="
-                    << misc::ToString(item::misc_type::Count)
-                    << ")(MISC_TYPE=" << item::misc_type::ToString(MISC_TYPE)
-                    << M_HP_VAR_STR(IS_JEWELED) << M_HP_VAR_STR(IS_BONE));
+                    << EnumUnderlying_t(item::misc_type::Count) << ")(MISC_TYPE="
+                    << NAMEOF_ENUM(MISC_TYPE) << M_HP_VAR_STR(IS_JEWELED) << M_HP_VAR_STR(IS_BONE));
 
                 return { ContentImage::ErrorFilename() };
             }
@@ -577,8 +583,8 @@ namespace gui
                 "The Filenames() function returned an empty string, so returning the error image "
                 "filename."
                 "(MISC_TYPE="
-                << item::misc_type::ToString(MISC_TYPE) << M_HP_VAR_STR(IS_JEWELED)
-                << M_HP_VAR_STR(IS_BONE) << M_HP_VAR_STR(WILL_RANDOMIZE));
+                << NAMEOF_ENUM(MISC_TYPE) << M_HP_VAR_STR(IS_JEWELED) << M_HP_VAR_STR(IS_BONE)
+                << M_HP_VAR_STR(WILL_RANDOMIZE));
 
             return ContentImage::ErrorFilename();
         }
@@ -603,7 +609,7 @@ namespace gui
         }
 
         return misc::ToLowerCopy(
-            item::material::ToString(materialToUseForName) + ContentImage::FilenameExtension());
+            NAMEOF_ENUM_STR(materialToUseForName) + ContentImage::FilenameExtension());
     }
 
     const std::string ItemImagePaths::Filename(

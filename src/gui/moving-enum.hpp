@@ -11,8 +11,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace gui
@@ -28,9 +26,7 @@ namespace gui
             Count
         };
 
-        static const std::string ToString(const Moving::Enum);
-
-        static bool IsMoving(const Moving::Enum ENUM)
+        static constexpr bool IsMoving(const Moving::Enum ENUM) noexcept
         {
             return ((ENUM == Toward) || (ENUM == Away));
         }

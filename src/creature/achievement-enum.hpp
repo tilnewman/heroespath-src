@@ -46,8 +46,34 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const Enum);
-        static const std::string Name(const Enum);
+        static constexpr std::string_view Name(const AchievementType::Enum ENUM) noexcept
+        {
+            switch (ENUM)
+            {
+                case None: return "(None)";
+                case EnemiesFaced: return "Enemies Faced";
+                case MeleeHits: return "Melee Hits";
+                case BattlesSurvived: return "Battles Survived";
+                case ProjectileHits: return "Projectile Hits";
+                case BeastMindLinks: return "Beast Mind-Links";
+                case DodgedStanding: return "Dodges While Standing";
+                case DodgedFlying: return "Dodges While Flying";
+                case LocksPicked: return "Locks Picked";
+                case BackstabHits: return "Backstab Hits";
+                case SongsPlayed: return "Songs Played";
+                case SpiritsLifted: return "Spirits Lifted";
+                case BeastRoars: return "Beast Roars";
+                case MoonHowls: return "Moon Howls";
+                case PackActions: return "Pack Actions";
+                case FlyingAttackHits: return "Flying Attack Hits";
+                case TurnsInFlight: return "Turns In Flight";
+                case SpellsCast: return "Spells Cast";
+                case HealthGiven: return "Health Given";
+                case HealthTraded: return "Health Traded";
+                case Count:
+                default: return "creature::AchievementType::Name(ENUM=out_of_range)";
+            }
+        }
     };
 
     using AchievementTypeVec_t = std::vector<AchievementType::Enum>;

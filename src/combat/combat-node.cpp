@@ -141,10 +141,19 @@ namespace combat
 
     const std::string CombatNode::ToString() const
     {
-        return std::string("CombatNode ") + ((isPlayer_) ? "Player " : "NonPlayer ")
-            + creaturePtr_->RaceName() + " " + creaturePtr_->RoleName()
-            + ((isPlayer_) ? (" \"" + creaturePtr_->Name() + "\"") : std::string())
-            + " blocking_pos=" + std::to_string(blockingPos_);
+        std::string str("CombatNode ");
+        str += ((isPlayer_) ? "Player " : "NonPlayer ");
+        str += creaturePtr_->RaceName();
+        str += ' ';
+        str += creaturePtr_->RoleName();
+
+        if (isPlayer_)
+        {
+            str += " \"" + creaturePtr_->Name() + "\"";
+        }
+
+        str += " blocking_pos=" + std::to_string(blockingPos_);
+        return str;
     }
 
     void CombatNode::SetRegion(const sf::FloatRect & NEW_REGION)

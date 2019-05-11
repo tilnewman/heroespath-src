@@ -220,8 +220,8 @@ media-image-misc-menu-new-normal                image/misc/menu.png
 media-image-misc-menu-new-lit                   image/misc/menu.png
 media-image-misc-menu-back-normal               image/misc/menu.png
 media-image-misc-menu-back-lit                  image/misc/menu.png
-media-image-misc-menu-start-game-normal         image/misc/menu.png
-media-image-misc-menu-start-game-lit            image/misc/menu.png
+media-image-misc-menu-startgame-normal          image/misc/menu.png
+media-image-misc-menu-startgame-lit             image/misc/menu.png
 media-image-misc-menu-delete-normal             image/misc/menu.png
 media-image-misc-menu-delete-lit                image/misc/menu.png
 media-image-misc-menu-save-normal               image/misc/menu.png
@@ -230,7 +230,7 @@ media-image-misc-menu-help-normal               image/misc/menu.png
 media-image-misc-menu-help-lit                  image/misc/menu.png
 media-image-misc-menu-next-normal               image/misc/menu.png
 media-image-misc-menu-next-lit                  image/misc/menu.png
-media-image-misc-menu-create-characters         image/misc/menu.png
+media-image-misc-menu-createcharacters          image/misc/menu.png
 media-image-misc-menu-exit-normal               image/misc/menu.png
 media-image-misc-menu-exit-lit                  image/misc/menu.png
 media-image-misc-menu-credits-normal            image/misc/menu.png
@@ -239,20 +239,20 @@ media-image-misc-menu-settings-normal           image/misc/menu.png
 media-image-misc-menu-settings-lit              image/misc/menu.png
 media-image-misc-menu-resume-normal             image/misc/menu.png
 media-image-misc-menu-resume-lit                image/misc/menu.png
-media-image-misc-menu-create-party-normal       image/misc/menu.png
-media-image-misc-menu-create-party-lit          image/misc/menu.png
+media-image-misc-menu-createparty-normal        image/misc/menu.png
+media-image-misc-menu-createparty-lit           image/misc/menu.png
 media-image-misc-menu-inventory                 image/misc/menu.png
 media-image-misc-menu-treasure                  image/misc/menu.png
 media-image-misc-menu-title                     image/misc/menu.png
-media-image-misc-menu-symbol-top                image/misc/menu.png
-media-image-misc-menu-symbol-bottom             image/misc/menu.png
+media-image-misc-menu-symboltop                 image/misc/menu.png
+media-image-misc-menu-symbolbottom              image/misc/menu.png
 #
 media-image-misc-menu-new-normal-texture-rect           640,384,192,64
 media-image-misc-menu-new-lit-texture-rect              640,448,192,64
 media-image-misc-menu-back-normal-texture-rect          0,0,192,64
 media-image-misc-menu-back-lit-texture-rect             0,64,192,64
-media-image-misc-menu-start-game-normal-texture-rect    576,256,384,64
-media-image-misc-menu-start-game-lit-texture-rect       576,320,384,64
+media-image-misc-menu-startgame-normal-texture-rect     576,256,384,64
+media-image-misc-menu-startgame-lit-texture-rect        576,320,384,64
 media-image-misc-menu-delete-normal-texture-rect        0,256,256,64
 media-image-misc-menu-delete-lit-texture-rect           0,320,256,64
 media-image-misc-menu-save-normal-texture-rect          192,0,192,64
@@ -261,7 +261,7 @@ media-image-misc-menu-help-normal-texture-rect          386,128,192,64
 media-image-misc-menu-help-lit-texture-rect             386,192,192,64
 media-image-misc-menu-next-normal-texture-rect          0,128,192,64
 media-image-misc-menu-next-lit-texture-rect             0,192,192,64
-media-image-misc-menu-create-characters-texture-rect    0,448,640,64
+media-image-misc-menu-createcharacters-texture-rect     0,448,640,64
 media-image-misc-menu-exit-normal-texture-rect          192,128,192,64
 media-image-misc-menu-exit-lit-texture-rect             192,192,192,64
 media-image-misc-menu-credits-normal-texture-rect       768,0,256,64
@@ -270,13 +270,13 @@ media-image-misc-menu-settings-normal-texture-rect      256,256,320,64
 media-image-misc-menu-settings-lit-texture-rect         256,320,320,64
 media-image-misc-menu-resume-normal-texture-rect        512,0,256,64
 media-image-misc-menu-resume-lit-texture-rect           512,64,256,64
-media-image-misc-menu-create-party-normal-texture-rect  576,128,448,64
-media-image-misc-menu-create-party-lit-texture-rect     576,192,448,64
+media-image-misc-menu-createparty-normal-texture-rect   576,128,448,64
+media-image-misc-menu-createparty-lit-texture-rect      576,192,448,64
 media-image-misc-menu-inventory-texture-rect            320,386,320,64
 media-image-misc-menu-treasure-texture-rect             16,384,288,64
 media-image-misc-menu-title-texture-rect                0,512,1024,192
-media-image-misc-menu-symbol-top-texture-rect           0,704,1024,192
-media-image-misc-menu-symbol-bottom-texture-rect        0,896,1024,128     
+media-image-misc-menu-symboltop-texture-rect            0,704,1024,192
+media-image-misc-menu-symbolbottom-texture-rect         0,896,1024,128     
 #
 media-image-misc-chest-closed                   image/misc/treasure.png
 media-image-misc-chest-open                     image/misc/treasure.png

@@ -217,8 +217,11 @@ namespace item
 
                 if (ACTUAL_COUNT_TO_DISPLAY > 1)
                 {
-                    str += "\n~~~" + std::to_string(ACTUAL_COUNT_TO_DISPLAY) + " " + CATEGORY_NAME
-                        + ":\n";
+                    str += "\n~~~";
+                    str += std::to_string(ACTUAL_COUNT_TO_DISPLAY);
+                    str += ' ';
+                    str += CATEGORY_NAME;
+                    str += ":\n";
                 }
                 else
                 {
@@ -230,8 +233,13 @@ namespace item
                     const auto & PROFILE { misc::RandomSelect(tempProfiles) };
                     auto itemPtr { Make(PROFILE) };
 
-                    str += "\tName=\"" + itemPtr->Name() + "\"\n\tDesc=\"" + itemPtr->Desc()
-                        + "\"\n\tItem={" + itemPtr->ToString() + "}\n\n";
+                    str += "\tName=\"";
+                    str += itemPtr->Name();
+                    str += "\"\n\tDesc=\"";
+                    str += itemPtr->Desc();
+                    str += "\"\n\tItem={";
+                    str += itemPtr->ToString();
+                    str += "}\n\n";
 
                     ItemWarehouse::Access().Free(itemPtr);
                 }
@@ -540,7 +548,7 @@ namespace item
                     << "armor had invalid name_material_type="
                     << ((ARMOR_INFO.NameMaterialType() == name_material_type::Count)
                             ? "Count"
-                            : name_material_type::ToString(ARMOR_INFO.NameMaterialType()))
+                            : NAMEOF_ENUM(ARMOR_INFO.NameMaterialType()))
                     << ".");
 
             if (ITEM_PTR->ArmorType() == armor_type::Gauntlets)
@@ -551,7 +559,7 @@ namespace item
                         (ARMOR_INFO.SpecificName() == armor::ArmorTypeWrapper::GLOVES_NAME_),
                         makeErrorReportPrefix()
                             << "gauntlets with primary material "
-                            << material::ToString(ITEM_PTR->MaterialPrimary())
+                            << NAMEOF_ENUM(ITEM_PTR->MaterialPrimary())
                             << " which means gloves but all the names did not equal \""
                             << armor::ArmorTypeWrapper::GLOVES_NAME_
                             << "\".  ArmorTypeWrapper::SpecificName()=\""
@@ -562,7 +570,7 @@ namespace item
                     M_HP_ASSERT_OR_LOG_AND_THROW(
                         (ARMOR_INFO.SpecificName() != armor::ArmorTypeWrapper::GLOVES_NAME_),
                         makeErrorReportPrefix() << "gauntlets with primary material "
-                                                << material::ToString(ITEM_PTR->MaterialPrimary())
+                                                << NAMEOF_ENUM(ITEM_PTR->MaterialPrimary())
                                                 << " which means gauntlets and NOT gloves but the "
                                                    "ArmorTypeWrapper::SpecificName()=\""
                                                 << ARMOR_INFO.SpecificName() << "\".");
@@ -581,10 +589,9 @@ namespace item
                     M_HP_ASSERT_OR_LOG_AND_THROW(
                         (ARMOR_INFO.BaseType() == armor::base_type::Count),
                         makeErrorReportPrefix()
-                            << "armor is specific armor_type="
-                            << armor_type::ToString(ITEM_PTR->ArmorType())
+                            << "armor is specific armor_type=" << NAMEOF_ENUM(ITEM_PTR->ArmorType())
                             << " but had an invalid base_type="
-                            << armor::base_type::ToString(ARMOR_INFO.BaseType()) << ".");
+                            << NAMEOF_ENUM(ARMOR_INFO.BaseType()) << ".");
                 }
                 else
                 {
@@ -592,9 +599,8 @@ namespace item
                         (ARMOR_INFO.BaseType() != armor::base_type::Count),
                         makeErrorReportPrefix()
                             << "armor is non-specific armor_type="
-                            << armor_type::ToString(ITEM_PTR->ArmorType())
-                            << " but had a base_type="
-                            << armor::base_type::ToString(ARMOR_INFO.BaseType()) << ".");
+                            << NAMEOF_ENUM(ITEM_PTR->ArmorType()) << " but had a base_type="
+                            << NAMEOF_ENUM(ARMOR_INFO.BaseType()) << ".");
 
                     if (ARMOR_INFO.BaseType() == armor::base_type::Plain)
                     {
@@ -606,11 +612,11 @@ namespace item
                              || (ITEM_PTR->MaterialPrimary() == material::Hide)),
                             makeErrorReportPrefix()
                                 << "armor is non-specific armor_type="
-                                << armor_type::ToString(ITEM_PTR->ArmorType())
+                                << NAMEOF_ENUM(ITEM_PTR->ArmorType())
                                 << " with base_type=Plain but the primary material was not one of "
                                    "the "
                                    "valid 'plain' materials.  It was "
-                                << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
+                                << NAMEOF_ENUM(ITEM_PTR->MaterialPrimary()) << ".");
                     }
                     else if (
                         (ARMOR_INFO.BaseType() == armor::base_type::Mail)
@@ -620,10 +626,10 @@ namespace item
                             (material::IsMetal(ITEM_PTR->MaterialPrimary())),
                             makeErrorReportPrefix()
                                 << "armor is non-specific armor_type="
-                                << armor_type::ToString(ITEM_PTR->ArmorType()) << " with base_type="
-                                << armor::base_type::ToString(ARMOR_INFO.BaseType())
+                                << NAMEOF_ENUM(ITEM_PTR->ArmorType())
+                                << " with base_type=" << NAMEOF_ENUM(ARMOR_INFO.BaseType())
                                 << " but the primary material was not metal.  It was "
-                                << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
+                                << NAMEOF_ENUM(ITEM_PTR->MaterialPrimary()) << ".");
                     }
                     else if (ARMOR_INFO.BaseType() == armor::base_type::Scale)
                     {
@@ -631,11 +637,11 @@ namespace item
                             (ITEM_PTR->MaterialPrimary() == material::Scales),
                             makeErrorReportPrefix()
                                 << "armor is non-specific armor_type="
-                                << armor_type::ToString(ITEM_PTR->ArmorType())
+                                << NAMEOF_ENUM(ITEM_PTR->ArmorType())
                                 << " with base_type=Scale but the primary material was not Scales. "
                                    " It "
                                    "was "
-                                << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
+                                << NAMEOF_ENUM(ITEM_PTR->MaterialPrimary()) << ".");
                     }
                 }
             }
@@ -656,13 +662,12 @@ namespace item
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PROFILE.ArmorType() == ITEM_PTR->ArmorType()),
             makeErrorReportPrefix()
-                << " armor_types did not match.  profile="
-                << armor_type::ToString(ITEM_PROFILE.ArmorType())
-                << " but item=" << armor_type::ToString(ITEM_PTR->ArmorType()) << ".");
+                << " armor_types did not match.  profile=" << NAMEOF_ENUM(ITEM_PROFILE.ArmorType())
+                << " but item=" << NAMEOF_ENUM(ITEM_PTR->ArmorType()) << ".");
 
-        const bool IS_ITEM_EQUIPPABLE { (ITEM_PTR->Category() & category::Equipable) > 0 };
+        const bool IS_ITEM_EQUIPABLE { (ITEM_PTR->Category() & category::Equipable) > 0 };
 
-        if (IS_ITEM_EQUIPPABLE)
+        if (IS_ITEM_EQUIPABLE)
         {
             const auto IS_WEARABLE { (ITEM_PTR->Category() & category::Wearable) > 0 };
             const auto IS_ONE_HANDED { (ITEM_PTR->Category() & category::OneHanded) > 0 };
@@ -696,14 +701,14 @@ namespace item
 
         if (ITEM_PTR->IsMisc())
         {
-            const bool IS_MISCTYPE_EQUIPPABLE {
+            const bool IS_MISCTYPE_EQUIPABLE {
                 (misc_type::EquipCategory(ITEM_PTR->MiscType()) & category::Equipable) > 0
             };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (IS_MISCTYPE_EQUIPPABLE == IS_ITEM_EQUIPPABLE),
+                (IS_MISCTYPE_EQUIPABLE == IS_ITEM_EQUIPABLE),
                 makeErrorReportPrefix()
-                    << "equipable, but the misc_type=" << misc_type::ToString(ITEM_PTR->MiscType())
+                    << "equipable, but the misc_type=" << NAMEOF_ENUM(ITEM_PTR->MiscType())
                     << " is NOT equipable.  misc_type_equip_category="
                     << category::ToString(misc_type::EquipCategory(ITEM_PTR->MiscType())));
 
@@ -780,8 +785,7 @@ namespace item
                     << "weapon had invalid name_material_type="
                     << ((ITEM_PTR->WeaponInfo().NameMaterialType() == name_material_type::Count)
                             ? "Count"
-                            : name_material_type::ToString(
-                                  ITEM_PTR->WeaponInfo().NameMaterialType()))
+                            : NAMEOF_ENUM(ITEM_PTR->WeaponInfo().NameMaterialType()))
                     << ".");
         }
 
@@ -901,17 +905,15 @@ namespace item
             ((MATERIALS_PAIR.first != material::Count)
              && (MATERIALS_PAIR.first != material::Nothing)),
             "item::armor::ArmorFactory::Make(body_part="
-                << ((BODY_PART == body_part::Count) ? "Count" : body_part::ToString(BODY_PART))
+                << ((BODY_PART == body_part::Count) ? "Count" : NAMEOF_ENUM(BODY_PART))
                 << ", creature={" << CREATURE_PTR->ToString()
                 << "}) but that creature's skin material (material::SkinMaterial()) was "
                    "invalid: pri="
-                << ((MATERIALS_PAIR.first == material::Count)
-                        ? "Count"
-                        : material::ToString(MATERIALS_PAIR.first))
+                << ((MATERIALS_PAIR.first == material::Count) ? "Count"
+                                                              : NAMEOF_ENUM(MATERIALS_PAIR.first))
                 << ", sec="
-                << ((MATERIALS_PAIR.second == material::Count)
-                        ? "Count"
-                        : material::ToString(MATERIALS_PAIR.second))
+                << ((MATERIALS_PAIR.second == material::Count) ? "Count"
+                                                               : NAMEOF_ENUM(MATERIALS_PAIR.second))
                 << ".");
 
         const armor::ArmorTypeWrapper ARMOR_TYPE_WRAPPER { BODY_PART };
@@ -982,9 +984,9 @@ namespace item
         }
 
         const auto WEAPON_DETAILS_NAME { (
-            (body_part::Breath == BODY_PART) ? (WEAPON_TYPE_WRAPPER.DetailsKeyName()
-                                                + creature::role::ToString(CREATURE_PTR->Role()))
-                                             : WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
+            (body_part::Breath == BODY_PART)
+                ? (WEAPON_TYPE_WRAPPER.DetailsKeyName() + NAMEOF_ENUM_STR(CREATURE_PTR->Role()))
+                : WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
 
         const weapon::WeaponDetails WEAPON_DETAILS {
             weapon::WeaponDetailLoader::LookupWeaponDetails(WEAPON_DETAILS_NAME)

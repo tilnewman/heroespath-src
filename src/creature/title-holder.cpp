@@ -1872,12 +1872,12 @@ namespace creature
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (titleUVec_.empty() == false),
-                "creature::Titles::Holder::Get(\"" << Titles::ToString(ENUM)
+                "creature::Titles::Holder::Get(\"" << NAMEOF_ENUM(ENUM)
                                                    << "\") called when the Holder was empty.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (EnumUtil<Titles>::IsValid(ENUM)),
-                "creature::Titles::Holder::Get(enum=" << Titles::ToString(ENUM)
+                "creature::Titles::Holder::Get(enum=" << NAMEOF_ENUM(ENUM)
                                                       << ") but that enum value is invalid.");
 
             const auto INDEX { static_cast<std::size_t>(ENUM) };
@@ -1885,7 +1885,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < titleUVec_.size()),
                 "creature::Titles::Holder::Get(\""
-                    << Titles::ToString(ENUM) << "\") enum given was " << ENUM
+                    << NAMEOF_ENUM(ENUM) << "\") enum given was " << ENUM
                     << " but that was greater than (or equal to) "
                     << "the vec size of " << titleUVec_.size() << ".");
 
@@ -1909,35 +1909,34 @@ namespace creature
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->Desc().empty() == false),
-                    "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
+                    "creature::Titles::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                                         << "\") resulted in an empty Desc().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->LongDesc().empty() == false),
-                    "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
+                    "creature::Titles::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                                         << "\") resulted in an empty LongDesc().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->ImageFilename().empty() == false),
                     "creature::Titles::Holder::Test(\""
-                        << Titles::ToString(NEXT_ENUM)
-                        << "\") resulted in an empty ImageFilename().");
+                        << NAMEOF_ENUM(NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->RolesCopy().empty() == false),
-                    "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
+                    "creature::Titles::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                                         << "\") resulted in an empty RolesVec().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->Which() == NEXT_ENUM),
                     "creature::Titles::Holder::Test(\""
-                        << Titles::ToString(NEXT_ENUM)
+                        << NAMEOF_ENUM(NEXT_ENUM)
                         << "\") resulted in a Title with a different tile::Enum (\""
-                        << Titles::ToString(TITLE_PTR->Which()) << "\")");
+                        << NAMEOF_ENUM(TITLE_PTR->Which()) << "\")");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->Name() == Titles::Name(NEXT_ENUM)),
-                    "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
+                    "creature::Titles::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                                         << "\") Title is out of order.");
 
                 iStagePtr->TestingStrIncrement("Title Test #");

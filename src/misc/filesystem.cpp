@@ -528,15 +528,14 @@ namespace misc
             }
             else
             {
-                const auto ERROR_MESSAGE {
-                    "(Failed because something already exists at that path and it's not a "
-                    "directory)(is_regular="
-                    + misc::ToStringForce(bfs::is_regular(BOOST_PATH))
-                    + ", is_regular_file=" + misc::ToStringForce(bfs::is_regular_file(BOOST_PATH))
-                    + ", status_file_type=" + misc::ToStringForce(bfs::status(BOOST_PATH).type())
-                };
+                std::ostringstream ss;
+                ss << "(Failed because something already exists at that path and it's not a "
+                      "directory)(is_regular="
+                   << misc::ToString(bfs::is_regular(BOOST_PATH))
+                   << ", is_regular_file=" << misc::ToString(bfs::is_regular_file(BOOST_PATH))
+                   << ", status_file_type=" << bfs::status(BOOST_PATH).type();
 
-                M_HP_LOG_ERR(MakeErrorString(DIR_PATH_ORIG, ERROR_MESSAGE));
+                M_HP_LOG_ERR(MakeErrorString(DIR_PATH_ORIG, ss.str()));
                 return false;
             }
         }
@@ -555,7 +554,7 @@ namespace misc
             {
                 M_HP_LOG_ERR(MakeErrorString(
                     DIR_PATH_ORIG,
-                    "create_directory() returned " + misc::ToStringForce(WAS_CREATED),
+                    "create_directory() returned " + std::string(misc::ToString(WAS_CREATED)),
                     errorCode));
             }
         }
@@ -595,9 +594,13 @@ namespace misc
             const auto IS_DIRECTORY { bfs::is_directory(BOOST_PATH) };
             const auto IS_OTHER { bfs::is_other(BOOST_PATH) };
 
-            return "(is_regular=" + misc::ToStringForce(IS_REGULAR) + ", is_regular_file="
-                + misc::ToString(IS_REGULAR_FILE) + ", is_directory=" + misc::ToString(IS_DIRECTORY)
-                + ", is_other=" + misc::ToString(IS_OTHER) + ")";
+            std::ostringstream ss;
+            ss << "(is_regular=" << misc::ToString(IS_REGULAR)
+               << ", is_regular_file=" << misc::ToString(IS_REGULAR_FILE)
+               << ", is_directory=" << misc::ToString(IS_DIRECTORY)
+               << ", is_other=" << misc::ToString(IS_OTHER) << ")";
+
+            return ss.str();
         };
 
         try

@@ -53,9 +53,9 @@ namespace spell
     const std::string Spell::DescDetails() const
     {
         return std::string("A ") + misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>())
-            + " rank" + " " + combat::EffectType::Name(effectType_)
+            + " rank" + " " + std::string(combat::EffectType::Name(effectType_))
             + " spell that can be cast during " + game::Phase::ToString(validPhases_)
-            + ", targeting " + combat::TargetType::Name(targetType_) + ", and costing "
+            + ", targeting " + std::string(combat::TargetType::Name(targetType_)) + ", and costing "
             + manaCost_.ToString() + " mana.";
     }
 
@@ -146,7 +146,9 @@ namespace spell
                 return combat::ContentAndNamePos(
                     "",
                     "'s magic forces ",
-                    " to " + creature::sex::HisHerIts(CREATURE_CAST_UPON_PTR->Sex(), false, false)
+                    " to "
+                        + std::string(
+                              creature::sex::HisHerIts(CREATURE_CAST_UPON_PTR->Sex(), false, false))
                         + " feet.",
                     combat::NamePosition::SourceThenTarget);
             }

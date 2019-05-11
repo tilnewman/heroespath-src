@@ -52,11 +52,11 @@ namespace item
                 {
                     LoadDetailsForKey(
                         WEAPON_TYPE_WRAPPER.DetailsKeyName()
-                        + creature::role::ToString(creature::role::Firebrand));
+                        + NAMEOF_ENUM_STR(creature::role::Firebrand));
 
                     LoadDetailsForKey(
                         WEAPON_TYPE_WRAPPER.DetailsKeyName()
-                        + creature::role::ToString(creature::role::Sylavin));
+                        + NAMEOF_ENUM_STR(creature::role::Sylavin));
                 }
                 else
                 {

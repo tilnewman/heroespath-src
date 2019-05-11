@@ -203,13 +203,14 @@ namespace stage
 
         if (ITEM_PTR->Category() != item::category::None)
         {
-            str += item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n";
+            str += item::category::Name(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n";
         }
 
         if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
         {
-            str += "(can only be used by " + creature::role::ToString(ITEM_PTR->ExclusiveRole())
-                + "s)\n";
+            str += "(can only be used by ";
+            str += NAMEOF_ENUM(ITEM_PTR->ExclusiveRole());
+            str += "s)\n";
         }
 
         str += "\nweighs " + ITEM_PTR->Weight().ToString() + "\n" + "worth about "

@@ -583,7 +583,7 @@ namespace stage
     void TreasureDisplayStage::SetupAfterPleaseWait_TreasureImage(
         const item::TreasureImage::Enum WHICH_IMAGE)
     {
-        const auto PATH_CONFIG_KEY { item::TreasureImage::ImageConfigKey(WHICH_IMAGE) };
+        const std::string PATH_CONFIG_KEY { item::TreasureImage::ImageConfigKey(WHICH_IMAGE) };
         treasureCachedTextureOpt_ = gui::CachedTexture(PATH_CONFIG_KEY);
         treasureSprite_.setTexture(treasureCachedTextureOpt_->Get(), true);
 
@@ -951,7 +951,8 @@ namespace stage
             }
             else
             {
-                return "Items in the " + item::TreasureImage::ToContainerName(treasureImage_, true);
+                return "Items in the "
+                    + std::string(item::TreasureImage::ToContainerName(treasureImage_, true));
             }
         }() };
 

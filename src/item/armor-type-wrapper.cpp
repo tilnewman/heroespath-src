@@ -73,7 +73,7 @@ namespace item
                             for (EnumUnderlying_t i(0); i <= armor_type::Skin; ++i)
                             {
                                 const auto ARMOR_TYPE_ENUM { static_cast<armor_type::Enum>(i) };
-                                if (armor_type::ToString(ARMOR_TYPE_ENUM) == SYSTEM_NAME)
+                                if (NAMEOF_ENUM(ARMOR_TYPE_ENUM) == SYSTEM_NAME)
                                 {
                                     if (WILL_FORCE_PLAIN_BASE_TYPE_IF_REQUIRED
                                         && armor_type::DoesRequireBaseType(ARMOR_TYPE_ENUM)
@@ -103,9 +103,9 @@ namespace item
                 (IsValidCompleteCheck()),
                 "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(name="
                     << SYSTEM_NAME << ", orig_base_type="
-                    << ((BASE_TYPE == base_type::Count) ? "Count" : base_type::ToString(BASE_TYPE))
+                    << ((BASE_TYPE == base_type::Count) ? "Count" : NAMEOF_ENUM(BASE_TYPE))
                     << ", final_base_type="
-                    << ((base_ == base_type::Count) ? "Count" : base_type::ToString(base_))
+                    << ((base_ == base_type::Count) ? "Count" : NAMEOF_ENUM(base_))
                     << ") but IsValidCompleteCheck()=false at first step check: " << ToString());
         }
 
@@ -136,7 +136,7 @@ namespace item
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (BODY_PART == body_part::Skin),
                 "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(body_part="
-                    << ((BODY_PART == body_part::Count) ? "Count" : body_part::ToString(BODY_PART))
+                    << ((BODY_PART == body_part::Count) ? "Count" : NAMEOF_ENUM(BODY_PART))
                     << ") that body_part is not valid.");
 
             SetNamesAndVerify("after body_part constructor");
@@ -203,7 +203,7 @@ namespace item
 
             if (armor_type::DoesRequireBaseType(type_))
             {
-                return base_type::ToString(BaseType()) + SPECIFIC_NAME_WITHOUT_SPACES;
+                return NAMEOF_ENUM_STR(BaseType()) + SPECIFIC_NAME_WITHOUT_SPACES;
             }
             else
             {
@@ -231,20 +231,30 @@ namespace item
 
             for (const auto & VALUE_NAME_PAIR : namesMap)
             {
-                str += "\"" + VALUE_NAME_PAIR.first + "\"=" + VALUE_NAME_PAIR.second + ", ";
+                str += '\"';
+                str += VALUE_NAME_PAIR.first;
+                str += "\"=" + VALUE_NAME_PAIR.second;
+                str += ", ";
             }
 
-            str += "type=" + armor_type::ToString(type_)
-                + ", base=" + ((base_type::Count == base_) ? "Count" : base_type::ToString(base_))
-                + ", variant_.which()=" + std::to_string(variant_.which()) + ", type=(";
+            str += "type=";
+            str += NAMEOF_ENUM(type_);
+            str += ", base=";
+            str += ((base_type::Count == base_) ? "Count" : NAMEOF_ENUM(base_));
+            str += ", variant_.which()=";
+            str += std::to_string(variant_.which());
+            str += ", type=(";
 
             if (IsShield())
             {
-                str += shield_type::ToString(ShieldType()) + ",";
+                str += NAMEOF_ENUM(ShieldType());
+                str += ',';
             }
+
             if (IsHelm())
             {
-                str += helm_type::ToString(HelmType()) + ",";
+                str += NAMEOF_ENUM(HelmType());
+                str += ',';
             }
 
             if (IsGauntlets())
@@ -279,7 +289,8 @@ namespace item
 
             if (IsCover())
             {
-                str += cover_type::ToString(CoverType()) + ",";
+                str += NAMEOF_ENUM(CoverType());
+                str += ',';
             }
 
             if (IsSkin())
@@ -287,7 +298,7 @@ namespace item
                 str += "skin";
             }
 
-            str += ")";
+            str += ')';
 
             if ((elementTypes_.size() != 1) || (elementTypes_.at(0) != element_type::None))
             {
@@ -303,7 +314,7 @@ namespace item
                     {
                         if (i > 0)
                         {
-                            str += ",";
+                            str += ',';
                         }
 
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
@@ -313,7 +324,7 @@ namespace item
                     }
                 }
 
-                str += "}";
+                str += '}';
             }
 
             return str;
@@ -327,7 +338,7 @@ namespace item
 
             if (IsGauntlets() && (base_type::Plain == base_))
             {
-                imageFilenameStr += armor_type::ToString(armor_type::Gauntlets);
+                imageFilenameStr += NAMEOF_ENUM(armor_type::Gauntlets);
             }
             else
             {
@@ -339,13 +350,15 @@ namespace item
 
                 if (systemName_ != GENERAL_NAME_FILENAME_VERSION)
                 {
-                    imageFilenameStr += SEPARATOR + systemName_;
+                    imageFilenameStr += SEPARATOR;
+                    imageFilenameStr += systemName_;
                 }
             }
 
             if (base_type::Count != base_)
             {
-                imageFilenameStr += SEPARATOR + base_type::ToString(base_);
+                imageFilenameStr += SEPARATOR;
+                imageFilenameStr += NAMEOF_ENUM(base_);
             }
 
             imageFilenameStr += EXTENSION;
@@ -359,9 +372,8 @@ namespace item
         {
             namespace ba = boost::algorithm;
 
-            return (
-                misc::ToLowerCopy(ba::replace_all_copy(generalName_, " ", ""))
-                == misc::ToLowerCopy(specificName_));
+            return misc::AreEqualCaseInsensitive(
+                ba::replace_all_copy(generalName_, " ", ""), specificName_);
         }
 
         const std::vector<ArmorTypeWrapper> ArmorTypeWrapper::MakeCompleteSet()
@@ -437,7 +449,7 @@ namespace item
                 {
                     const auto IS_GLOVES { IsGauntlets() && (base_type::Plain == base_) };
 
-                    generalName_ = ((IS_GLOVES) ? GLOVES_NAME_ : armor_type::ToString(type_));
+                    generalName_ = ((IS_GLOVES) ? GLOVES_NAME_ : NAMEOF_ENUM(type_));
                     specificName_ = generalName_;
                     systemName_ = generalName_;
 
@@ -447,7 +459,9 @@ namespace item
                     }
                     else
                     {
-                        readableName_ = base_type::ToString(base_) + " " + generalName_;
+                        readableName_ = NAMEOF_ENUM(base_);
+                        readableName_ += ' ';
+                        readableName_ += generalName_;
                     }
 
                     break;
@@ -456,18 +470,20 @@ namespace item
                 case armor_type::Shield:
                 {
                     const auto SHIELD_TYPE { ShieldType() };
-                    generalName_ = armor_type::ToString(type_);
-                    specificName_ = shield_type::ToString(SHIELD_TYPE);
+                    generalName_ = NAMEOF_ENUM(type_);
+                    specificName_ = NAMEOF_ENUM(SHIELD_TYPE);
                     systemName_ = specificName_;
-                    readableName_ = specificName_ + " " + generalName_;
+                    readableName_ = specificName_;
+                    readableName_ += ' ';
+                    readableName_ += generalName_;
                     break;
                 }
                 case armor_type::Helm:
                 {
                     const auto HELM_TYPE { HelmType() };
-                    generalName_ = armor_type::ToString(type_);
+                    generalName_ = NAMEOF_ENUM(type_);
                     specificName_ = helm_type::Name(HELM_TYPE);
-                    systemName_ = helm_type::ToString(HELM_TYPE);
+                    systemName_ = NAMEOF_ENUM(HELM_TYPE);
 
                     if (HELM_TYPE == helm_type::MailCoif)
                     {
@@ -475,7 +491,9 @@ namespace item
                     }
                     else
                     {
-                        readableName_ = specificName_ + " " + generalName_;
+                        readableName_ = specificName_;
+                        readableName_ += ' ';
+                        readableName_ += generalName_;
                     }
 
                     break;
@@ -483,7 +501,7 @@ namespace item
                 case armor_type::Covering:
                 {
                     const auto COVER_TYPE { CoverType() };
-                    generalName_ = cover_type::ToString(COVER_TYPE);
+                    generalName_ = NAMEOF_ENUM(COVER_TYPE);
                     specificName_ = generalName_;
                     systemName_ = generalName_;
                     readableName_ = generalName_;
@@ -491,7 +509,7 @@ namespace item
                 }
                 case armor_type::Skin:
                 {
-                    generalName_ = armor_type::ToString(type_);
+                    generalName_ = NAMEOF_ENUM(type_);
                     specificName_ = generalName_;
                     systemName_ = generalName_;
                     readableName_ = generalName_;

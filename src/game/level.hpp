@@ -35,7 +35,7 @@ namespace game
 
         map::Level::Enum Which() const { return level_; }
 
-        const std::string Name() const { return map::Level::ToString(level_); }
+        const std::string Name() const { return NAMEOF_ENUM_STR(level_); }
 
         bool IsDoorLocked(const map::Level::Enum) const;
 

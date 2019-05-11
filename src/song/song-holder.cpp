@@ -117,33 +117,32 @@ namespace song
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->Name().empty() == false),
-                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                "song::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                         << "\") resulted in an empty Name().");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->Desc().empty() == false),
-                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                "song::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                         << "\") resulted in an empty Desc().");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->DescExtra().empty() == false),
-                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                "song::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                         << "\") resulted in an empty DescExtra().");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!SONG_PTR->ManaCost().IsZero()),
-                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                "song::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                         << "\") resulted in a zero Mana cost.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!SONG_PTR->Rank().IsZero()),
-                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                "song::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                         << "\") resulted in a zero Rank.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->Name() == Songs::Name(NEXT_ENUM)),
-                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
-                                        << "\") Song is out of order.");
+                "song::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM) << "\") Song is out of order.");
 
             ++songIndex;
             iStagePtr->TestingStrIncrement("Song Test \"" + SONG_PTR->Name() + "\"");
@@ -159,8 +158,7 @@ namespace song
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (songsUVec_.empty() == false),
-            "song::Holder::Get(" << Songs::ToString(ENUM)
-                                 << ") was called when the holder was empty.");
+            "song::Holder::Get(" << NAMEOF_ENUM(ENUM) << ") was called when the holder was empty.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<Songs>::IsValid(ENUM)),
@@ -171,7 +169,7 @@ namespace song
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < songsUVec_.size()),
             "song::Holder::Get("
-                << Songs::ToString(ENUM)
+                << NAMEOF_ENUM(ENUM)
                 << ") found insuff sized songsUVec_, probably from a bug in Setup().");
 
         return SongPtr_t(songsUVec_[INDEX].get());

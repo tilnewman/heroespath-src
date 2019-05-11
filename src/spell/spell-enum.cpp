@@ -20,101 +20,21 @@ namespace heroespath
 namespace spell
 {
 
-    const std::string Spells::ToString(const Spells::Enum ENUM)
-    {
-        switch (ENUM)
-        {
-            case Sparks: { return "Sparks";
-            }
-            case Bandage: { return "Bandage";
-            }
-            case Sleep: { return "Sleep";
-            }
-            case Awaken: { return "Awaken";
-            }
-            case Trip: { return "Trip";
-            }
-            case Lift: { return "Lift";
-            }
-            case Daze: { return "Daze";
-            }
-            case Panic: { return "Panic";
-            }
-            case ClearMind: { return "ClearMind";
-            }
-            case Poison: { return "Poison";
-            }
-            case Antidote: { return "Antidote";
-            }
-            case PoisonCloud: { return "PoisonCloud";
-            }
-            case Count: { return "(Count)";
-            }
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
-                                  << static_cast<EnumUnderlying_t>(Count) << ")");
-
-                return "";
-            }
-        }
-    }
-
-    const std::string Spells::Name(const Spells::Enum ENUM)
-    {
-        switch (ENUM)
-        {
-            case Sparks: { return "Sparks";
-            }
-            case Bandage: { return "Bandage";
-            }
-            case Sleep: { return "Sleep";
-            }
-            case Awaken: { return "Awaken";
-            }
-            case Trip: { return "Trip";
-            }
-            case Lift: { return "Lift";
-            }
-            case Daze: { return "Daze";
-            }
-            case Panic: { return "Panic";
-            }
-            case ClearMind: { return "Clear Mind";
-            }
-            case Poison: { return "Poison";
-            }
-            case Antidote: { return "Antidote";
-            }
-            case PoisonCloud: { return "Poison Cloud";
-            }
-            case Count: { return "(Count)";
-            }
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
-                                  << static_cast<EnumUnderlying_t>(Count) << ")");
-
-                return "";
-            }
-        }
-    }
-
     const std::string Spells::ShortDesc(const Spells::Enum ENUM)
     {
-        return misc::ConfigFile::Instance()->Value("spell-" + ToString(ENUM) + "-short-desc");
+        return misc::ConfigFile::Instance()->Value(
+            "spell-" + NAMEOF_ENUM_STR(ENUM) + "-short-desc");
     }
 
     const std::string Spells::ExtraDesc(const Spells::Enum ENUM)
     {
-        return misc::ConfigFile::Instance()->Value("spell-" + ToString(ENUM) + "-extra-desc");
+        return misc::ConfigFile::Instance()->Value(
+            "spell-" + NAMEOF_ENUM_STR(ENUM) + "-extra-desc");
     }
 
     const std::string Spells::ImageFilename(const Spells::Enum ENUM)
     {
-        return misc::ToLowerCopy(ToString(ENUM) + ".png");
+        return misc::ToLowerCopy(NAMEOF_ENUM_STR(ENUM) + ".png");
     }
 
     const std::string Spells::ImageDirectory()

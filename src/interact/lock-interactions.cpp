@@ -209,9 +209,13 @@ namespace interact
             }
             else if (CREATURE_PTR->CanTakeAction() == false)
             {
-                invalidMsgsVec[i]
-                    = (creature::sex::HeSheIt(CREATURE_PTR->Sex(), true) + " is "
-                       + CREATURE_PTR->CanTakeActionStr(false) + ".");
+                std::string str;
+                str.reserve(64);
+                str += creature::sex::HeSheIt(CREATURE_PTR->Sex(), true);
+                str += " is ";
+                str += CREATURE_PTR->CanTakeActionStr(false);
+                str += '.';
+                invalidMsgsVec[i] = str;
             }
             else
             {

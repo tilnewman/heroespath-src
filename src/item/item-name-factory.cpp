@@ -25,13 +25,17 @@ namespace item
     const std::string ItemNameFactory::MakeWeaponBodyPartName(
         const creature::CreaturePtr_t CREATURE_PTR, const std::string & READABLE_NAME) const
     {
-        return CREATURE_PTR->RaceName() + " " + READABLE_NAME;
+        std::string str(CREATURE_PTR->RaceName());
+        str.reserve(64);
+        str += ' ';
+        str += READABLE_NAME;
+        return str;
     }
 
     const std::string ItemNameFactory::MakeWeaponBodyPartDescription(
         const std::string & BASE_DESCRIPTION, const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        return BASE_DESCRIPTION + " " + creature::race::Name(CREATURE_PTR->Race());
+        return BASE_DESCRIPTION + " " + NAMEOF_ENUM_STR(CREATURE_PTR->Race());
     }
 
     const std::string ItemNameFactory::MakeArmorBodyPartName(
@@ -40,11 +44,13 @@ namespace item
         std::string name;
         name.reserve(128);
 
-        name += (CREATURE_PTR->RaceName() + "'s ");
+        name += CREATURE_PTR->RaceName();
+        name += "'s ";
 
         if (MATERIALS_PAIR.second != material::Nothing)
         {
-            name += material::Name(MATERIALS_PAIR.second) + " covered ";
+            name += material::Name(MATERIALS_PAIR.second);
+            name += " covered ";
         }
 
         name += material::Name(MATERIALS_PAIR.first);
@@ -58,11 +64,13 @@ namespace item
         std::string desc;
         desc.reserve(64);
 
-        desc += ("tough skin made of " + material::Name(MATERIALS_PAIR.first));
+        desc += "tough skin made of ";
+        desc += material::Name(MATERIALS_PAIR.first);
 
         if (MATERIALS_PAIR.second != material::Nothing)
         {
-            desc += " and " + material::Name(MATERIALS_PAIR.second);
+            desc += " and ";
+            desc += material::Name(MATERIALS_PAIR.second);
         }
 
         return desc;
@@ -79,13 +87,16 @@ namespace item
         {
             if (PROFILE.IsPixie())
             {
-                name += SpaceIfNeeded(name) + "Pixie";
+                name += SpaceIfNeeded(name);
+                name += "Pixie";
             }
         }
 
         if (PROFILE.IsSet())
         {
-            name += SpaceIfNeeded(name) + set_type::Name(PROFILE.SetType()) + " ";
+            name += SpaceIfNeeded(name);
+            name += set_type::Name(PROFILE.SetType());
+            name += ' ';
 
             if (PROFILE.IsPixie())
             {
@@ -96,7 +107,8 @@ namespace item
         }
         else if (PROFILE.IsUnique())
         {
-            name += SpaceIfNeeded(name) + misc_type::Name(PROFILE.MiscType());
+            name += SpaceIfNeeded(name);
+            name += misc_type::Name(PROFILE.MiscType());
         }
         else
         {
@@ -106,8 +118,9 @@ namespace item
 
             if (IS_COVER_ARMOR_MADE_OF_CLOTH == false)
             {
-                name += SpaceIfNeeded(name) + material::Name(PROFILE.MaterialPrimary())
-                    + ArmorBaseTypeNamePrefix(PROFILE);
+                name += SpaceIfNeeded(name);
+                name += material::Name(PROFILE.MaterialPrimary());
+                name += ArmorBaseTypeNamePrefix(PROFILE);
 
                 // prefix with the word 'handled' if it is a handled weapon
                 if (PROFILE.IsWeapon())
@@ -127,21 +140,25 @@ namespace item
             if (SECONDARY_MATERIAL_PHRASE.empty() && material::IsSolid(PROFILE.MaterialSecondary())
                 && (IS_COVER_ARMOR_MADE_OF_CLOTH == false))
             {
-                name += SpaceIfNeeded(name) + "and " + material::Name(PROFILE.MaterialSecondary());
+                name += SpaceIfNeeded(name);
+                name += "and ";
+                name += material::Name(PROFILE.MaterialSecondary());
             }
 
             name += SpaceIfNeeded(name);
 
             if (PROFILE.IsNamed())
             {
-                name += named_type::Name(PROFILE.NamedType()) + " ";
+                name += named_type::Name(PROFILE.NamedType());
+                name += ' ';
             }
 
             name += ReadableNameWithoutArmorBaseType(PROFILE);
 
             if (PROFILE.IsElemental())
             {
-                name += " " + element_type::Name(PROFILE.ElementType());
+                name += ' ';
+                name += element_type::Name(PROFILE.ElementType());
             }
 
             name += SECONDARY_MATERIAL_PHRASE;
@@ -170,25 +187,33 @@ namespace item
             desc += SpaceIfNeeded(desc) + "pixie sized";
         }
 
-        desc += SpaceIfNeeded(desc) + BASE_DESC;
+        desc += SpaceIfNeeded(desc);
+        desc += BASE_DESC;
 
         if (PROFILE.IsSet())
         {
-            desc += ", from " + set_type::Name(PROFILE.SetType()) + " Set for "
-                + creature::role::Name(set_type::Role(PROFILE.SetType())) + "s";
+            desc += ", from ";
+            desc += set_type::Name(PROFILE.SetType());
+            desc += " Set for ";
+            desc += creature::role::Name(set_type::Role(PROFILE.SetType()));
+            desc += 's';
         }
         else if (PROFILE.IsNamed())
         {
-            desc += ", known as the " + named_type::Name(PROFILE.NamedType()) + " "
-                + ReadableNameWithoutArmorBaseType(PROFILE);
+            desc += ", known as the ";
+            desc += named_type::Name(PROFILE.NamedType());
+            desc += ' ';
+            desc += ReadableNameWithoutArmorBaseType(PROFILE);
         }
         else if (PROFILE.IsUnique())
         {
-            desc += ", known as a " + misc_type::Name(PROFILE.MiscType());
+            desc += ", known as a ";
+            desc += misc_type::Name(PROFILE.MiscType());
         }
 
-        desc += ", made of " + FirstLetterLowercaseCopy(material::Name(PROFILE.MaterialPrimary()))
-            + ArmorBaseTypeNamePrefix(PROFILE);
+        desc += ", made of ";
+        desc += FirstLetterLowercaseCopy(material::Name(PROFILE.MaterialPrimary()));
+        desc += ArmorBaseTypeNamePrefix(PROFILE);
 
         const auto SECONDARY_MATERIAL_PHRASE { SeccondaryMaterialPhrase(
             PhraseType::Desc, PROFILE) };
@@ -199,21 +224,25 @@ namespace item
         }
         else if (material::IsSolid(PROFILE.MaterialSecondary()))
         {
-            desc += " and " + material::Name(PROFILE.MaterialSecondary());
+            desc += " and ";
+            desc += material::Name(PROFILE.MaterialSecondary());
         }
 
         if (PROFILE.IsElemental())
         {
-            desc += ", and pulsing with " + element_type::Name(PROFILE.ElementType(), false)
-                + " magic";
+            desc += ", and pulsing with ";
+            desc += element_type::Name(PROFILE.ElementType(), false);
+            desc += " magic";
         }
 
         const auto & SUMMON_INFO { PROFILE.SummonInfo() };
 
         if (SUMMON_INFO.CanSummon())
         {
-            desc += ", used to summon a " + creature::race::Name(SUMMON_INFO.Race()) + " "
-                + creature::role::Name(SUMMON_INFO.Role());
+            desc += ", used to summon a ";
+            desc += creature::race::Name(SUMMON_INFO.Race());
+            desc += ' ';
+            desc += creature::role::Name(SUMMON_INFO.Role());
         }
 
         return desc;
@@ -293,7 +322,8 @@ namespace item
 
             if ((BASE_TYPE == armor::base_type::Mail) || (BASE_TYPE == armor::base_type::Plate))
             {
-                str = " " + armor::base_type::ToString(BASE_TYPE);
+                str = " ";
+                str += NAMEOF_ENUM(BASE_TYPE);
             }
         }
 

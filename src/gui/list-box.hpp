@@ -1056,9 +1056,10 @@ namespace gui
             std::string str;
             str.reserve(128);
 
-            str
-                += ("ListBox<" + std::string(NAMEOF_TYPE_T(Stage_t)) + ", "
-                    + std::string(NAMEOF_TYPE_T(Element_t)) + ">(entity_name=\"");
+            str += "ListBox<" + std::string(NAMEOF_TYPE(Stage_t));
+            str += ", ";
+            str += std::string(NAMEOF_TYPE(Element_t));
+            str += ">(entity_name=\"";
 
             if (ENTITY_NAME.empty())
             {
@@ -1097,7 +1098,7 @@ namespace gui
                     *callbackHandlerPtr_,
                     EVENT_PACKET,
                     ("ListBoxEvent(" + MakeTypeString()
-                     + "\", keypress=" + sfutil::sfKeyToString(KEY_EVENT.code) + ")"));
+                     + "\", keypress=" + std::string(sfutil::sfKeyToString(KEY_EVENT.code)) + ")"));
             }
         }
 

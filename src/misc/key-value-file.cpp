@@ -53,15 +53,9 @@ namespace misc
 
     bool KeyValueFile::ContainsKey(const std::string & KEY)
     {
-        for (const auto & LINE : lines_)
-        {
-            if (LINE.key == KEY)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return std::any_of(std::begin(lines_), std::end(lines_), [&](const auto & KEY_VALUE_LINE) {
+            return (KEY == KEY_VALUE_LINE.key);
+        });
     }
 
     bool KeyValueFile::ClearAndLoad()

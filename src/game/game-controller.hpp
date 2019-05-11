@@ -66,7 +66,7 @@ namespace game
 
         const std::string GetStageName() const
         {
-            return stage::Stage::ToString(stageTracker_.GetCurrent());
+            return NAMEOF_ENUM_STR(stageTracker_.GetCurrent());
         }
 
         Phase::Enum GetPhase() const { return stageTracker_.GetPhase(); }

@@ -28,10 +28,9 @@ namespace gui
             Count
         };
 
-        static const std::string ToString(const Orientation::Enum);
-
         // if given Both and IS_OPPOSITE_OF_BOTH_COUNT==false then returns Both
-        static Enum Flip(const Enum ORIENTATION, const bool IS_OPPOSITE_OF_BOTH_COUNT = false)
+        static constexpr Enum
+            Flip(const Enum ORIENTATION, const bool IS_OPPOSITE_OF_BOTH_COUNT = false) noexcept
         {
             if (ORIENTATION == Horiz)
             {

@@ -1149,7 +1149,7 @@ namespace combat
                   << "\", most_desired_target_creature=\""
                   << MOST_DESIRED_TARGET_PTR->NameAndRaceAndRole() << "\", chosen_spell=\""
                   << SPELL_PTR->Name() << "\") had a TargetType of \""
-                  << TargetType::ToString(SPELL_PTR->Target()) << "\" -which is not yet supported.";
+                  << NAMEOF_ENUM(SPELL_PTR->Target()) << "\" -which is not yet supported.";
 
             M_HP_LOG_ERR(ssErr.str());
 
@@ -1180,9 +1180,9 @@ namespace combat
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ALL_SPELLS_PVEC.empty() == false),
             "combat::TurnDecider::PickSpell(creature_deciding="
-                << CREATURE_DECIDING_PTR->Name() << ", SPELL_EFFECTTYPE_VEC.size()="
-                << SPELL_EFFECTTYPE_VEC.size() << ", SPELL_EFFECTTYPE_VEC[0]="
-                << combat::EffectType::ToString(SPELL_EFFECTTYPE_VEC[0])
+                << CREATURE_DECIDING_PTR->Name()
+                << ", SPELL_EFFECTTYPE_VEC.size()=" << SPELL_EFFECTTYPE_VEC.size()
+                << ", SPELL_EFFECTTYPE_VEC[0]=" << NAMEOF_ENUM(SPELL_EFFECTTYPE_VEC[0])
                 << " but that creature has no spells.");
 
         spell::SpellPVec_t spellsOfTypePVec;
@@ -1208,9 +1208,9 @@ namespace combat
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (SPELL_COUNT > 0),
             "combat::TurnDecider::PickSpell(creature_deciding="
-                << CREATURE_DECIDING_PTR->Name() << ", SPELL_EFFECTTYPE_VEC.size()="
-                << SPELL_EFFECTTYPE_VEC.size() << ", SPELL_EFFECTTYPE_VEC[0]="
-                << combat::EffectType::ToString(SPELL_EFFECTTYPE_VEC[0])
+                << CREATURE_DECIDING_PTR->Name()
+                << ", SPELL_EFFECTTYPE_VEC.size()=" << SPELL_EFFECTTYPE_VEC.size()
+                << ", SPELL_EFFECTTYPE_VEC[0]=" << NAMEOF_ENUM(SPELL_EFFECTTYPE_VEC[0])
                 << " resulted in no spells.");
 
         return misc::RandomSelect(spellsOfTypePVec);

@@ -57,7 +57,7 @@ namespace spell
             const std::string & VERB_THIRD_PERSON,
             const std::string & VERB_PAST_TENSE);
 
-        const std::string Name() const { return Spells::Name(which_); }
+        const std::string Name() const { return std::string(Spells::Name(which_)); }
 
         const std::string ToString() const;
 

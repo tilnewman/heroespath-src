@@ -75,16 +75,21 @@ namespace gui
 
         if (WILL_WRAP)
         {
-            str += "(";
+            str += '(';
         }
 
-        str += "fg_wf=" + misc::ToString(foreground_with) + ", fg_wof="
-            + misc::ToString(foreground_without) + ", bg_wf=" + misc::ToString(background_with)
-            + ", bg_wof=" + misc::ToString(background_without);
+        str += "fg_wf=";
+        str += misc::ToString(foreground_with);
+        str += ", fg_wof=";
+        str += misc::ToString(foreground_without);
+        str += ", bg_wf=";
+        str += misc::ToString(background_with);
+        str += ", bg_wof=";
+        str += misc::ToString(background_without);
 
         if (WILL_WRAP)
         {
-            str += ")";
+            str += ')';
         }
 
         return str;

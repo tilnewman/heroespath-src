@@ -1125,33 +1125,53 @@ namespace stage
         std::string str;
         str.reserve(256);
 
-        str
-            += ("Character # "
-                + std::to_string(
-                      game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1)
-                + "\n" + creaturePtr_->Name() + "\n" + creaturePtr_->SexName() + "\n"
-                + creaturePtr_->RaceName());
+        str += "Character # ";
+
+        str += std::to_string(
+            game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1);
+
+        str += '\n';
+        str += creaturePtr_->Name();
+        str += '\n';
+        str += creaturePtr_->SexName();
+        str += '\n';
+
+        str += creaturePtr_->RaceName();
 
         if (creaturePtr_->IsBeast())
         {
             if (creaturePtr_->Race() != creature::race::Wolfen)
             {
-                str += ", " + creaturePtr_->RoleName();
+                str += ", ";
+                str += creaturePtr_->RoleName();
             }
 
-            str += " " + creaturePtr_->RankClassName() + "\n";
+            str += ' ';
+            str += creaturePtr_->RankClassName();
+            str += '\n';
         }
         else
         {
-            str += " " + creaturePtr_->RankClassName() + " " + creaturePtr_->RoleName() + "\n";
+            str += ' ';
+            str += creaturePtr_->RankClassName() + " " + creaturePtr_->RoleName() + "\n";
         }
 
-        str += "Rank:  " + creaturePtr_->Rank().ToString() + "\n"
-            + "Experience: " + creaturePtr_->Exp().ToString() + "\n"
-            + "Health:  " + creaturePtr_->HealthCurrent().ToString() + "/"
-            + creaturePtr_->HealthNormal().ToString() + " "
-            + std::to_string(int(creaturePtr_->HealthRatio())) + "%\n"
-            + "Condition:  " + creaturePtr_->ConditionNames(4) + "\n\n";
+        str += "Rank:  ";
+        str += creaturePtr_->Rank().ToString();
+        str += '\n';
+        str += "Experience: ";
+        str += creaturePtr_->Exp().ToString();
+        str += '\n';
+        str += "Health:  ";
+        str += creaturePtr_->HealthCurrent().ToString();
+        str += '/';
+        str += creaturePtr_->HealthNormal().ToString();
+        str += ' ';
+        str += std::to_string(int(creaturePtr_->HealthRatio()));
+        str += "%\n";
+        str += "Condition:  ";
+        str += creaturePtr_->ConditionNames(4);
+        str += "\n\n";
 
         sf::FloatRect detailsTextRect(
             CREATURE_IMAGE_POS_LEFT_ + creatureSprite_.getGlobalBounds().width
@@ -3701,12 +3721,11 @@ namespace stage
 
         std::string str(
             ITEM_PTR->Name() + "\n" + ITEM_PTR->Desc() + "\n\n"
-            + item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n");
+            + item::category::Name(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n");
 
         if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
         {
-            str += "(can only be used by " + creature::role::ToString(ITEM_PTR->ExclusiveRole())
-                + "s)\n";
+            str += "(can only be used by " + NAMEOF_ENUM_STR(ITEM_PTR->ExclusiveRole()) + "s)\n";
         }
 
         str += "\nweighs " + ITEM_PTR->Weight().ToString() + "\nworth about "
@@ -3942,7 +3961,7 @@ namespace stage
             std::ostringstream ssErr;
             ssErr << "stage::InventoryStage::HandleCast Step2 SelectTargetOrPerformOnAll"
                   << "(spell=" << SPELL_NAME << ") had a target_type of "
-                  << combat::TargetType::ToString(SPELL_TARGET)
+                  << NAMEOF_ENUM(SPELL_TARGET)
                   << " which is not yet supported while in Inventory stage.";
 
             SystemErrorPopup(
@@ -4135,7 +4154,7 @@ namespace stage
             std::ostringstream ssErr;
             ssErr << "stage::InventoryStage::HandleSong"
                   << "(song=" << SONG_PTR->Name() << ") had a target_type of "
-                  << combat::TargetType::ToString(SONG_PTR->Target())
+                  << NAMEOF_ENUM(SONG_PTR->Target())
                   << " which is not yet supported while in Inventory stage.";
 
             SystemErrorPopup(

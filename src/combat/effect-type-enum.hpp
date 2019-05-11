@@ -35,8 +35,23 @@ namespace combat
             Count
         };
 
-        static const std::string ToString(const Enum);
-        static const std::string Name(const Enum);
+        static constexpr std::string_view Name(const Enum ENUM) noexcept
+        {
+            switch (ENUM)
+            {
+                case CreatureHarmDamage: return "Creature Damage";
+                case CreatureHarmMisc: return "Creature Harm";
+                case CreatureHelpHeal: return "Creature Heal";
+                case CreatureHelpMisc: return "Creature Help";
+                case ItemHarmBreak: return "Item Break";
+                case ItemHarmMisc: return "Item Harm";
+                case ItemHelpFix: return "Item Fix";
+                case ItemHelpMisc: return "Item Help";
+                case Misc: return "Misc";
+                case Count: return "Count";
+                default: return "combat::EffectType::Name(ENUM=out_of_range)";
+            }
+        }
     };
 
     using EffectTypeVec_t = std::vector<EffectType::Enum>;

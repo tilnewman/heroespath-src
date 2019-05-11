@@ -103,7 +103,7 @@ namespace gui
         {
             M_HP_LOG_WRN(
                 "gui::FontManager::GetFont("
-                << GuiFont::ToString(FONT) << "/" << GuiFont::Name(FONT)
+                << NAMEOF_ENUM(FONT) << "/" << GuiFont::Name(FONT)
                 << ") asked to return a font that was not already loaded.  Loading now...");
 
             Load(FONT);
@@ -116,8 +116,8 @@ namespace gui
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<GuiFont>::IsValid(FONT)),
-            "FONT_ENUM is invalid.  (gui_font_enum_count=" << misc::ToString(FONT) << ")(font_enum="
-                                                           << GuiFont::ToString(FONT) << ")");
+            "FONT_ENUM is invalid.  (gui_font_enum_count=" << NAMEOF_ENUM(FONT) << ")(font_enum="
+                                                           << NAMEOF_ENUM(FONT) << ")");
 
         if (IsLoaded(FONT))
         {
@@ -129,20 +129,20 @@ namespace gui
         fontUPtr = std::make_unique<sf::Font>();
 
         const auto PATH_STR_COMPLETE { misc::filesystem::CombinePaths(
-            fontsDirPathStr_, GuiFont::Path(FONT)) };
+            fontsDirPathStr_, std::string(GuiFont::Path(FONT))) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
             "Failed because that file either does not exist or is not a regular file.  (font_enum="
-                + GuiFont::ToString(FONT) + ")" + M_HP_VAR_STR(PATH_STR_COMPLETE)
-                + M_HP_VAR_STR(fontsDirPathStr_) + M_HP_VAR_STR(GuiFont::Path(FONT)));
+                << NAMEOF_ENUM_STR(FONT) << ")" << M_HP_VAR_STR(PATH_STR_COMPLETE)
+                << M_HP_VAR_STR(fontsDirPathStr_) << GuiFont::Path(FONT));
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (fontUPtr->loadFromFile(PATH_STR_COMPLETE)),
             "sf::Font::loadFromFile(\"" + PATH_STR_COMPLETE
-                + "\") failed.  Check console output for information.  (font_enum="
-                + GuiFont::ToString(FONT) + ")" + M_HP_VAR_STR(PATH_STR_COMPLETE)
-                + M_HP_VAR_STR(fontsDirPathStr_) + M_HP_VAR_STR(GuiFont::Path(FONT)));
+                << "\") failed.  Check console output for information.  (font_enum="
+                << NAMEOF_ENUM(FONT) << ")" << M_HP_VAR_STR(PATH_STR_COMPLETE)
+                << M_HP_VAR_STR(fontsDirPathStr_) << GuiFont::Path(FONT));
     }
 
     void FontManager::Load(const FontEnumVec_t & FONT_ENUM_VEC)

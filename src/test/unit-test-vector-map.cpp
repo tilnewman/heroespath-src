@@ -99,22 +99,22 @@ template <typename T, typename U>
 void printIteratorCompareInfo(const std::string & S1, const std::string & S2)
 {
     std::cout << S1 << "\n"
-              << S2 << "\n\t" << NAMEOF_TYPE_T(T) << "\n\t" << NAMEOF_TYPE_T(U)
-              << "\n\t\titer_category=" << NAMEOF_TYPE_T(typename T::iterator_category)
-              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T(typename U::iterator_category)
-              << "\n\t\t   value_type=" << NAMEOF_TYPE_T(typename T::value_type)
-              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T(typename U::value_type)
-              << "\n\t\t,  pointer_type=" << NAMEOF_TYPE_T(typename T::pointer_type)
-              << "\n\t\t,          \"\"=" << NAMEOF_TYPE_T(typename U::pointer_type) << std::endl;
+              << S2 << "\n\t" << NAMEOF_TYPE(T) << "\n\t" << NAMEOF_TYPE(U)
+              << "\n\t\titer_category=" << NAMEOF_TYPE(typename T::iterator_category)
+              << "\n\t\t           \"\"=" << NAMEOF_TYPE(typename U::iterator_category)
+              << "\n\t\t   value_type=" << NAMEOF_TYPE(typename T::value_type)
+              << "\n\t\t           \"\"=" << NAMEOF_TYPE(typename U::value_type)
+              << "\n\t\t,  pointer_type=" << NAMEOF_TYPE(typename T::pointer_type)
+              << "\n\t\t,          \"\"=" << NAMEOF_TYPE(typename U::pointer_type) << std::endl;
 };
 
 template <typename T>
 void printIteratorInfo(const std::string & S, T)
 {
-    std::cout << S << ", " << NAMEOF_TYPE_T(T)
-              << ", \titer_category=" << NAMEOF_TYPE_T(typename T::iterator_category)
-              << ", \t   value_type=" << NAMEOF_TYPE_T(typename T::value_type)
-              << ", \t,  pointer_type=" << NAMEOF_TYPE_T(typename T::pointer_type) << std::endl;
+    std::cout << S << ", " << NAMEOF_TYPE(T)
+              << ", \titer_category=" << NAMEOF_TYPE(typename T::iterator_category)
+              << ", \t   value_type=" << NAMEOF_TYPE(typename T::value_type)
+              << ", \t,  pointer_type=" << NAMEOF_TYPE(typename T::pointer_type) << std::endl;
 };
 
 inline void testSet1(VectorMap_t & vm, const std::string & MESSAGE, const std::size_t TEST_INDEX)

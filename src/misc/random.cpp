@@ -60,9 +60,9 @@ namespace misc
 
             M_HP_LOG(
                 "Random Number Generator is "
-                << NAMEOF_TYPE_T(Engine_t) << ", " << SEED_DESCRIPTION_STR
+                << NAMEOF_TYPE(Engine_t) << ", " << SEED_DESCRIPTION_STR
                 << ", warm_up_count=" << std::to_string(WARM_UP_COUNT_) << ", first_random_number<"
-                << NAMEOF_TYPE_T(Engine_t::result_type) << ">=" << engine_());
+                << NAMEOF_TYPE(Engine_t::result_type) << ">=" << engine_());
         }
 
     } // namespace helpers

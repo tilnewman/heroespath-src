@@ -12,6 +12,7 @@
 #include "combat/strategy-enums.hpp"
 #include "combat/strategy-info.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/vector-map.hpp"
@@ -153,6 +154,11 @@ namespace combat
                 std::string result;
                 result.reserve(64);
 
+                if (WILL_WRAP)
+                {
+                    result += '(';
+                }
+
                 for (const auto & NEXT_TYPECHANCE_PAIR : CHANCE_MAP)
                 {
                     if (!result.empty())
@@ -160,13 +166,18 @@ namespace combat
                         result += ", ";
                     }
 
-                    result += StructType::ToString(NEXT_TYPECHANCE_PAIR.first) + ":"
-                        + std::to_string(NEXT_TYPECHANCE_PAIR.second);
+                    result += EnumUtil<StructType>::ToString(NEXT_TYPECHANCE_PAIR.first);
+                    result += ':';
+                    result += std::to_string(NEXT_TYPECHANCE_PAIR.second);
                 }
 
-                if (WILL_WRAP)
+                if (result.compare("(") == 0)
                 {
-                    result = "(" + result + ")";
+                    result.clear();
+                }
+                else if (WILL_WRAP)
+                {
+                    result += ')';
                 }
 
                 return result;

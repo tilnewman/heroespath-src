@@ -11,8 +11,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace gui
@@ -54,8 +52,6 @@ namespace gui
             CombatLose,
             Count
         };
-
-        static const std::string ToString(const Enum);
     };
 
 } // namespace gui

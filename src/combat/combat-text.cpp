@@ -217,7 +217,7 @@ namespace combat
 
         if (CREATURE_PTR->CanFly() == false)
         {
-            return CREATURE_PTR->RaceName() + "s cannot fly.";
+            return std::string(CREATURE_PTR->RaceName()).append("s cannot fly.");
         }
 
         return TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_;
@@ -565,7 +565,7 @@ namespace combat
         else
         {
             std::ostringstream ss;
-            ss << "(error: invalid TurnAction (" << combat::TurnAction::ToString(TURN_ACTION)
+            ss << "(error: invalid TurnAction (" << NAMEOF_ENUM(TURN_ACTION)
                << ") for indexed version of combat::Text::ActionText)";
 
             return ss.str();

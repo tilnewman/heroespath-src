@@ -44,7 +44,8 @@ namespace creature
             str += " (magical)";
         }
 
-        str += ".  " + Conditions::Desc(type_);
+        str += ".  ";
+        str += Conditions::Desc(type_);
 
         const auto TRAIT_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
@@ -73,7 +74,7 @@ namespace creature
             str += "  Traits: " + TRAIT_STR;
         }
 
-        str += ".";
+        str += '.';
         return str;
     }
 
@@ -239,8 +240,8 @@ namespace creature
                         false);
 
                     const std::string DESC_STR(
-                        " hurts " + creature::sex::HimHerIt(CREATURE_PTR->Sex(), false) + " for "
-                        + DAMAGE_FINAL.MakePositiveCopy().ToString() + " damage.");
+                        " hurts " + std::string(creature::sex::HimHerIt(CREATURE_PTR->Sex(), false))
+                        + " for " + DAMAGE_FINAL.MakePositiveCopy().ToString() + " damage.");
 
                     const combat::ContentAndNamePos CNP(
                         "The poison in ", DESC_STR, "", combat::NamePosition::TargetBefore);

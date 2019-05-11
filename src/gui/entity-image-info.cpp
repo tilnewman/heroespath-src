@@ -143,21 +143,27 @@ namespace gui
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += "(";
+            str += '(';
         }
 
         if (cached_texture_opt)
         {
-            str += "path\"" + cached_texture_opt->Path() + "\"";
+            str += "path\"";
+            str += cached_texture_opt->Path();
+            str += '\"';
         }
         else
         {
             str += "no_image";
         }
 
-        str += "_region" + misc::ToString(sprite.getGlobalBounds()) + "_"
-            + misc::ToString(sprite.getColor()) + "_scale" + misc::ToString(sprite.getScale())
-            + ", will_";
+        str += "_region";
+        str += misc::ToString(sprite.getGlobalBounds());
+        str += '_';
+        str += misc::ToString(sprite.getColor());
+        str += "_scale";
+        str += misc::ToString(sprite.getScale());
+        str += ", will_";
 
         if (will_resize_instead_of_fit)
         {
@@ -170,7 +176,7 @@ namespace gui
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += ")";
+            str += ')';
         }
 
         return str;

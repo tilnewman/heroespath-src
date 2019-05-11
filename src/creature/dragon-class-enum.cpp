@@ -18,44 +18,10 @@ namespace heroespath
 namespace creature
 {
 
-    const std::string dragon_class::ToString(const dragon_class::Enum DRAGON_CLASS_TYPE)
-    {
-        switch (DRAGON_CLASS_TYPE)
-        {
-            case Hatchling: { return "Hatchling";
-            }
-            case Whelp: { return "Whelp";
-            }
-            case Fledgling: { return "Fledgling";
-            }
-            case Juvenile: { return "Juvenile";
-            }
-            case Adult: { return "Adult";
-            }
-            case Wyrm: { return "Wyrm";
-            }
-            case Skycaster: { return "Skycaster";
-            }
-            case Elder: { return "Elder";
-            }
-            case Count: { return "(Count)";
-            }
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(DRAGON_CLASS_TYPE)
-                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
-                                  << ")");
-
-                return "";
-            }
-        }
-    }
-
     const std::string dragon_class::Desc(const dragon_class::Enum DRAGON_CLASS_TYPE)
     {
         return misc::ConfigFile::Instance()->Value(
-            "creature-race-desc-dragon-" + ToString(DRAGON_CLASS_TYPE));
+            "creature-race-desc-dragon-" + NAMEOF_ENUM_STR(DRAGON_CLASS_TYPE));
     }
 
     dragon_class::Enum dragon_class::ClassFromRank(const Rank_t & RANK)

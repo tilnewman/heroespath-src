@@ -95,7 +95,8 @@ namespace stage
             std::string str;
             str.reserve(128);
 
-            str += ("stage_setup=" + stage::Stage::ToString(stage));
+            str += "stage_setup=";
+            str += NAMEOF_ENUM(stage);
 
             if (will_advance_turn)
             {
@@ -104,7 +105,8 @@ namespace stage
 
             if (inventory_packet_opt)
             {
-                str += ", " + inventory_packet_opt->ToString();
+                str += ", ";
+                str += inventory_packet_opt->ToString();
             }
 
             return str;

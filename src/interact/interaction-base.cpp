@@ -34,7 +34,7 @@ namespace interact
         , text_(TEXT)
         , buttons_(BUTTONS)
         , subjectCachedTexture_(SUBJECT_IMAGE_KEY)
-        , contextCachedTexture_(Interact::ImageKey(INTERACTION_TYPE))
+        , contextCachedTexture_(std::string(Interact::ImageKey(INTERACTION_TYPE)))
         , sfxEnter_(SFX_ENTER)
         , sfxExit_(SFX_EXIT)
         , isLocked_(false)

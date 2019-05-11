@@ -24,36 +24,6 @@
 namespace heroespath
 {
 
-const std::string TimeRes::ToString(const Enum RES)
-{
-    switch (RES)
-    {
-        case Nano: { return "ns";
-        }
-        case Milli: { return "ms";
-        }
-        case Micro: { return "us";
-        }
-        case Second: { return "s";
-        }
-        case Count: { return "(Count)";
-        }
-        default:
-        {
-            std::ostringstream ss;
-
-            ss << "enum_value=" << static_cast<EnumUnderlying_t>(RES)
-               << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count) << ")";
-
-            // can't use log macros because they can cause endless recursion in the timing code
-            misc::Log::Instance()->Append(
-                misc::LogPriority::Error, ss.str(), __FILE__, __func__, __LINE__);
-
-            return "";
-        }
-    }
-}
-
 namespace misc
 {
 
@@ -82,7 +52,7 @@ namespace misc
                 Log::Instance()->Append(
                     LogPriority::Default,
                     ("ScopedLogTimer \"" + message_ + "\" took " + std::to_string(DURATION)
-                     + TimeRes::ToString(resolution_)),
+                     + NAMEOF_ENUM_STR(resolution_)),
                     __FILE__,
                     __func__,
                     __LINE__);

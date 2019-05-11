@@ -647,19 +647,7 @@ namespace stage
     const std::string
         AdventureCharacterList::NameButtonMouseoverText(const creature::CreaturePtr_t CHARACTER_PTR)
     {
-        const auto NAME_STR { CHARACTER_PTR->Name() };
-        const auto RACE_STR { CHARACTER_PTR->RaceName() };
-
-        std::ostringstream ss;
-        ss << NAME_STR << " the " << CHARACTER_PTR->RankClassName();
-
-        if (NAME_STR != RACE_STR)
-        {
-            ss << " " << creature::race::RaceRoleName(CHARACTER_PTR->Race(), CHARACTER_PTR->Role());
-        }
-
-        ss << " of Rank " << CHARACTER_PTR->Rank();
-        return ss.str();
+        return CHARACTER_PTR->NameAndRaceAndRole() + " of Rank " + CHARACTER_PTR->Rank().ToString();
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Line() const

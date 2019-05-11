@@ -428,7 +428,7 @@ namespace combat
                          creaturesCastUponPVec,
                          misc::JoinOpt::Nothing,
                          creature::Algorithms::NamesOpt::WithRaceAndRole)
-                  << "\") spell target_type=" << TargetType::ToString(SPELL_PTR->Target())
+                  << "\") spell target_type=" << NAMEOF_ENUM(SPELL_PTR->Target())
                   << " but there were " << creaturesCastUponPVec.size()
                   << " creatures being cast upon.  There should have been only 1.";
 
@@ -565,7 +565,7 @@ namespace combat
                          CREATURES_LISTENING_PVEC,
                          misc::JoinOpt::Nothing,
                          creature::Algorithms::NamesOpt::WithRaceAndRole)
-                  << "\") song target_type=" << TargetType::ToString(SONG_PTR->Target())
+                  << "\") song target_type=" << NAMEOF_ENUM(SONG_PTR->Target())
                   << " but there were " << CREATURES_LISTENING_PVEC.size()
                   << " creatures listening.  There should have been only 1.";
 
@@ -1032,8 +1032,7 @@ namespace combat
             const auto ARCHER_ACC_BONUS_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "fight-archer-projectile-accuracy-bonus-ratio") };
 
-            attackAccToUse
-                += Accuracy_t::Make(ATTACK_ACC_RAW.GetAs<float>() * ARCHER_ACC_BONUS_RATIO);
+            attackAccToUse += ATTACK_ACC_RAW.ScaleCopy(ARCHER_ACC_BONUS_RATIO);
 
             const auto ARCHER_RANK_BONUS_RATIO {
                 misc::ConfigFile::Instance()->ValueOrDefault<float>(

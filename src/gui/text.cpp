@@ -230,12 +230,14 @@ namespace gui
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += "(";
+            str += '(';
         }
 
         if (WillDraw() == false)
         {
-            str += "INVALID" + SEPARATOR + "WONT_DRAW";
+            str += "INVALID";
+            str += SEPARATOR;
+            str += "WONT_DRAW";
         }
         else if (IsValid() == false)
         {
@@ -253,8 +255,12 @@ namespace gui
             str += misc::MakeLoggableString(text_);
         }
 
-        str += SEPARATOR + GuiFont::ToString(font_) + SEPARATOR + std::to_string(size()) + SEPARATOR
-            + misc::ToString(getFillColor()) + SEPARATOR;
+        str += SEPARATOR;
+        str += NAMEOF_ENUM(font_);
+        str += SEPARATOR + std::to_string(size());
+        str += SEPARATOR;
+        str += misc::ToString(getFillColor());
+        str += SEPARATOR;
 
         const auto STYLE { getStyle() };
         if (0 != STYLE)
@@ -280,22 +286,27 @@ namespace gui
 
             if (STYLE & sf::Text::Style::Italic)
             {
-                styleStr += separatorIfNotEmpty(styleStr) + "Italic";
+                styleStr += separatorIfNotEmpty(styleStr);
+                styleStr += "Italic";
             }
 
             if (STYLE & sf::Text::Style::Underlined)
             {
-                styleStr += separatorIfNotEmpty(styleStr) + "Underlined";
+                styleStr += separatorIfNotEmpty(styleStr);
+                styleStr += "Underlined";
             }
 
             if (STYLE & sf::Text::Style::StrikeThrough)
             {
-                styleStr += separatorIfNotEmpty(styleStr) + "StrikeThrough";
+                styleStr += separatorIfNotEmpty(styleStr);
+                styleStr += "StrikeThrough";
             }
 
             if (styleStr.empty())
             {
-                str += "(invalid, sf::Style=" + std::to_string(STYLE) + ")";
+                str += "(invalid, sf::Style=";
+                styleStr += std::to_string(STYLE);
+                styleStr += ')';
             }
             else
             {
@@ -305,12 +316,14 @@ namespace gui
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += ")";
+            str += ')';
         }
 
         if (WILL_PREFIX)
         {
-            str = std::string("Text") + ((WILL_WRAP == Wrap::Yes) ? "" : "=") + str;
+            str = std::string("Text");
+            str += ((WILL_WRAP == Wrap::Yes) ? "" : "=");
+            str += str;
         }
 
         return str;

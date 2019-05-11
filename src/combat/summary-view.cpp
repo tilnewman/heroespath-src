@@ -262,7 +262,7 @@ namespace combat
         // name
         {
             std::string nameStr;
-            if (creaturePtr->Name() != creaturePtr->RaceName())
+            if (creaturePtr->Name() != creaturePtr->RaceNameForced())
             {
                 nameStr += creaturePtr->Name() + "\n";
             }
@@ -654,7 +654,7 @@ namespace combat
 
             if (infoStr.empty())
             {
-                infoStr += " ";
+                infoStr += ' ';
             }
 
             const gui::TextInfo INFO_TEXT_INFO(

@@ -640,7 +640,10 @@ namespace map
                   else
                   {
                       const auto PERCENT { static_cast<int>((NUMBER_A_D / NUMBER_B_D) * 100.0) };
-                      str += "(" + std::to_string(PERCENT) + "% " + DESCRIPTION + ")";
+                      str += '(';
+                      str += std::to_string(PERCENT);
+                      str += "% ";
+                      str += DESCRIPTION + ")";
                   }
 
                   return str;

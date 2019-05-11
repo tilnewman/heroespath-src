@@ -29,10 +29,8 @@ struct TimeRes : public EnumBaseCounting<EnumFirstValue::Valid>
         Milli,
         Micro,
         Second,
-        Count,
+        Count
     };
-
-    static const std::string ToString(const Enum RES);
 };
 
 namespace misc

@@ -11,8 +11,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace gui
@@ -29,8 +27,18 @@ namespace gui
             Count
         };
 
-        static const std::string ToString(const Direction::Enum);
-        static gui::Direction::Enum Opposite(const Direction::Enum);
+        static constexpr Enum Opposite(const Enum ENUM) noexcept
+        {
+            switch (ENUM)
+            {
+                case Left: return Right;
+                case Right: return Left;
+                case Up: return Down;
+                case Down: return Up;
+                case Count:
+                default: return Count;
+            }
+        }
     };
 
 } // namespace gui

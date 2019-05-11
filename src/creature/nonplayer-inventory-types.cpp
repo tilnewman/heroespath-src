@@ -321,41 +321,9 @@ namespace creature
             bladedstaff_map.Reserve(32);
         }
 
-        const std::string wealth_type::ToString(const wealth_type::Enum WEALTH_TYPE)
-        {
-            switch (WEALTH_TYPE)
-            {
-                case Destitute: { return "Destitute";
-                }
-                case Poor: { return "Poor";
-                }
-                case LowerMiddle: { return "LowerMiddle";
-                }
-                case UpperMiddle: { return "UpperMiddle";
-                }
-                case Rich: { return "Rich";
-                }
-                case Lavish: { return "Lavish";
-                }
-                case Royal: { return "Royal";
-                }
-                case Count: { return "(Count)";
-                }
-                default:
-                {
-                    M_HP_LOG_ERR(
-                        "enum_value=" << static_cast<EnumUnderlying_t>(WEALTH_TYPE)
-                                      << " is invalid. (count="
-                                      << static_cast<EnumUnderlying_t>(Count) << ")");
-
-                    return "";
-                }
-            }
-        }
-
         wealth_type::Enum wealth_type::FromRankType(const rank_class::Enum RANK_CLASS)
         {
-            const auto RANK_CLASS_STR { rank_class::ToString(RANK_CLASS) };
+            const auto RANK_CLASS_STR { NAMEOF_ENUM(RANK_CLASS) };
 
             misc::VectorMap<wealth_type::Enum, float> wealthChanceMap;
 
@@ -364,11 +332,17 @@ namespace creature
             for (std::size_t i(0); i < wealth_type::Count; ++i)
             {
                 const auto NEXT_WEALTH_TYPE { static_cast<wealth_type::Enum>(i) };
-                const auto NEXT_WEALTH_TYPE_NAME { wealth_type::ToString(NEXT_WEALTH_TYPE) };
+                const auto NEXT_WEALTH_TYPE_NAME { NAMEOF_ENUM(NEXT_WEALTH_TYPE) };
 
-                const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(
-                    "wealthtype-chance-" + RANK_CLASS_STR + "-" + NEXT_WEALTH_TYPE_NAME
-                    + "-one-in") };
+                std::string str;
+                str.reserve(128);
+                str += "wealthtype-chance-";
+                str += RANK_CLASS_STR;
+                str += '-';
+                str += NEXT_WEALTH_TYPE_NAME;
+                str += "-one-in";
+
+                const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(str) };
 
                 if (NEXT_VALUE_STR == "remaining")
                 {
@@ -440,10 +414,10 @@ namespace creature
                 "nonplayer-ownershipprofile-collectortype-chance-base"));
 
             // adjust for race
-            const auto RACE_STR { race::ToString(CHARACTER_PTR->Race()) };
-
-            const auto RACE_KEY { "nonplayer-ownershipprofile-collectortype-chance-adjustment-race-"
-                                  + RACE_STR };
+            const auto RACE_KEY {
+                std::string("nonplayer-ownershipprofile-collectortype-chance-adjustment-race-")
+                    .append(CHARACTER_PTR->RaceName())
+            };
 
             const auto RACE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(RACE_KEY) };
 
@@ -469,7 +443,7 @@ namespace creature
                 CHANCE_BASE + ConvertStringToFloat(RACE_KEY, RACE_PARTS_STR_VEC[3]));
 
             // adjust for roles
-            const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
+            const auto ROLE_STR { NAMEOF_ENUM_STR(CHARACTER_PTR->Role()) };
 
             const auto ROLE_KEY { "nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
                                   + ROLE_STR };
@@ -567,35 +541,6 @@ namespace creature
             return collectorType;
         }
 
-        const std::string owns_magic_type::ToString(const owns_magic_type::Enum OWNS_MAGIC_TYPE)
-        {
-            if (OWNS_MAGIC_TYPE == Rarely)
-            {
-                return "Rarely";
-            }
-            else if (OWNS_MAGIC_TYPE == Religious)
-            {
-                return "Religious";
-            }
-            else if (OWNS_MAGIC_TYPE == Magical)
-            {
-                return "Magical";
-            }
-            else if (OWNS_MAGIC_TYPE == Count)
-            {
-                return "(Count)";
-            }
-            else
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(OWNS_MAGIC_TYPE)
-                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
-                                  << ")");
-
-                return "";
-            }
-        }
-
         owns_magic_type::Enum owns_magic_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             float chanceRarely(0.0f);
@@ -604,10 +549,9 @@ namespace creature
 
             // adjust for race
             {
-                const auto RACE_STR(race::ToString(CHARACTER_PTR->Race()));
-
-                const auto RACE_KEY { "nonplayer-ownershipprofile-ownsmagictype-chance-race-"
-                                      + RACE_STR };
+                const auto RACE_KEY { std::string(
+                                          "nonplayer-ownershipprofile-ownsmagictype-chance-race-")
+                                          .append(CHARACTER_PTR->RaceName()) };
 
                 const auto RACE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
                     RACE_KEY) };
@@ -646,7 +590,7 @@ namespace creature
 
             // adjust for role
             {
-                const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
+                const auto ROLE_STR { NAMEOF_ENUM_STR(CHARACTER_PTR->Role()) };
 
                 const auto ROLE_KEY {
                     "nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-" + ROLE_STR
@@ -731,43 +675,17 @@ namespace creature
             }
         }
 
-        const std::string complexity_type::ToString(const complexity_type::Enum COMPLEXITY_TYPE)
-        {
-            switch (COMPLEXITY_TYPE)
-            {
-                case Animal: { return "Animal";
-                }
-                case Simple: { return "Simple";
-                }
-                case Moderate: { return "Moderate";
-                }
-                case Complex: { return "Complex";
-                }
-                case Count: { return "(Count)";
-                }
-                default:
-                {
-                    M_HP_LOG_ERR(
-                        "enum_value=" << static_cast<EnumUnderlying_t>(COMPLEXITY_TYPE)
-                                      << " is invalid. (count="
-                                      << static_cast<EnumUnderlying_t>(Count) << ")");
-
-                    return "";
-                }
-            }
-        }
-
         complexity_type::Enum complexity_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             const auto RACE_COMPLEXITY_STR { misc::ConfigFile::Instance()->Value(
-                "nonplayer-ownershipprofile-complexitytype-race-"
-                + race::ToString(CHARACTER_PTR->Race())) };
+                std::string("nonplayer-ownershipprofile-complexitytype-race-")
+                    .append(CHARACTER_PTR->RaceName())) };
 
             if (RACE_COMPLEXITY_STR == "based-on-role")
             {
                 return EnumUtil<complexity_type>::FromString(misc::ConfigFile::Instance()->Value(
                     "nonplayer-ownershipprofile-complexitytype-role-"
-                    + role::ToString(CHARACTER_PTR->Role())));
+                    + NAMEOF_ENUM_STR(CHARACTER_PTR->Role())));
             }
             else
             {

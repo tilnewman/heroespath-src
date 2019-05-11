@@ -19,29 +19,28 @@ namespace misc
     class Range
     {
     public:
-        explicit Range(const T A = T(0), const T B = T(0))
+        explicit constexpr Range(const T A = T(0), const T B = T(0)) noexcept
             : a_(A)
             , b_(B)
         {}
 
-        constexpr T A() const { return a_; }
-        constexpr T B() const { return b_; }
+        constexpr Range(const Range &) noexcept = default;
+        constexpr Range(Range &&) noexcept = default;
+        constexpr Range & operator=(const Range &) noexcept = default;
+        constexpr Range & operator=(Range &&) noexcept = default;
 
-        constexpr T From() const { return a_; }
-        constexpr T To() const { return b_; }
+        constexpr T A() const noexcept { return a_; }
+        constexpr T B() const noexcept { return b_; }
 
-        constexpr T Min() const { return ((a_ < b_) ? a_ : b_); }
+        constexpr T From() const noexcept { return a_; }
+        constexpr T To() const noexcept { return b_; }
+
+        constexpr T Min() const noexcept { return ((a_ < b_) ? a_ : b_); }
         constexpr T Max() const { return ((b_ < a_) ? a_ : a_); }
 
-        constexpr T Diff() const { return Max() - Min(); }
-
-        constexpr T Mid() const { return Min() + (Diff() / T(2)); }
-
-        constexpr T Avg() const { return (a_ + b_) / T(2); }
-
-        constexpr float AvgFloat() const { return static_cast<float>(a_ + b_) * 0.5f; }
-
-        constexpr double AvgDouble() const { return static_cast<double>(a_ + b_) * 0.5; }
+        constexpr T Diff() const noexcept { return Max() - Min(); }
+        constexpr T Mid() const noexcept { return Min() + (Diff() / T(2)); }
+        constexpr T Avg() const noexcept { return (a_ + b_) / T(2); }
 
     private:
         T a_;

@@ -49,14 +49,14 @@ namespace item
     {
         const auto TREASURE_SCORES { CalculateTreasureSums(CHARACTER_PVEC) };
 
-        itemCache_OutParam.coins = Coin_t::Make(TREASURE_SCORES.Coin().Get());
-        itemCache_OutParam.gems = Gem_t::Make(TREASURE_SCORES.Gem().Get());
+        itemCache_OutParam.coins = TREASURE_SCORES.coin.GetAs<Coin_t>();
+        itemCache_OutParam.gems = TREASURE_SCORES.gem.GetAs<Gem_t>();
 
-        SelectItems(TREASURE_SCORES.Magic(), false, itemCache_OutParam);
-        SelectItems(TREASURE_SCORES.Religious(), true, itemCache_OutParam);
+        SelectItems(TREASURE_SCORES.magic, false, itemCache_OutParam);
+        SelectItems(TREASURE_SCORES.religious, true, itemCache_OutParam);
 
         if (itemCache_OutParam.items_pvec.empty()
-            && ((TREASURE_SCORES.Magic() > 0_score) || (TREASURE_SCORES.Religious() > 0_score)))
+            && ((TREASURE_SCORES.magic > 0_score) || (TREASURE_SCORES.religious > 0_score)))
         {
             ForceItemSelection(itemCache_OutParam);
         }
@@ -94,8 +94,8 @@ namespace item
                 misc::ConfigFile::Instance()->ValueOrDefault<int>("treasure-lockbox-coin-max")) };
 
             return (
-                (TREASURE_SCORES.Coin() > LOCKBOX_COIN_SUM_MAX) ? TreasureImage::ChestClosed
-                                                                : TreasureImage::LockboxClosed);
+                (TREASURE_SCORES.coin > LOCKBOX_COIN_SUM_MAX) ? TreasureImage::ChestClosed
+                                                              : TreasureImage::LockboxClosed);
         }
     }
 
@@ -109,24 +109,19 @@ namespace item
                 NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
         }
 
-        const auto COIN_AVG { scores.Coin().GetAs<float>()
-                              / static_cast<float>(CHARACTER_PVEC.size()) };
+        const auto CHARACTER_COUNT_FLOAT = static_cast<float>(CHARACTER_PVEC.size());
 
-        const auto GEM_AVG { scores.Gem().GetAs<float>()
-                             / static_cast<float>(CHARACTER_PVEC.size()) };
+        const auto COIN_AVG { scores.coin.GetAs<float>() / CHARACTER_COUNT_FLOAT };
+        const auto GEM_AVG { scores.gem.GetAs<float>() / CHARACTER_COUNT_FLOAT };
+        const auto MAGIC_AVG { scores.magic.GetAs<float>() / CHARACTER_COUNT_FLOAT };
+        const auto RELIGIOUS_AVG { scores.religious.GetAs<float>() / CHARACTER_COUNT_FLOAT };
 
-        const auto MAGIC_AVG { scores.Magic().GetAs<float>()
-                               / static_cast<float>(CHARACTER_PVEC.size()) };
+        const auto T_SCORES_MAX { creature::race::TreasureScoreMax };
 
-        const auto RELIGIOUS_AVG { scores.Religious().GetAs<float>()
-                                   / static_cast<float>(CHARACTER_PVEC.size()) };
-
-        const auto T_SCORES_MAX { creature::race::TreasureScoreMax() };
-
-        const auto COIN_RATIO { COIN_AVG / T_SCORES_MAX.Coin().GetAs<float>() };
-        const auto GEM_RATIO { GEM_AVG / T_SCORES_MAX.Gem().GetAs<float>() };
-        const auto MAGIC_RATIO { MAGIC_AVG / T_SCORES_MAX.Magic().GetAs<float>() };
-        const auto RELIGIOUS_RATIO { RELIGIOUS_AVG / T_SCORES_MAX.Religious().GetAs<float>() };
+        const auto COIN_RATIO { COIN_AVG / T_SCORES_MAX.coin.GetAs<float>() };
+        const auto GEM_RATIO { GEM_AVG / T_SCORES_MAX.gem.GetAs<float>() };
+        const auto MAGIC_RATIO { MAGIC_AVG / T_SCORES_MAX.magic.GetAs<float>() };
+        const auto RELIGIOUS_RATIO { RELIGIOUS_AVG / T_SCORES_MAX.religious.GetAs<float>() };
 
         return (COIN_RATIO + GEM_RATIO + MAGIC_RATIO + RELIGIOUS_RATIO) / 4.0f;
     }
@@ -142,47 +137,39 @@ namespace item
                 NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
         }
 
-        const auto COIN_BASE { Score_t::Make(
-            scores.Coin().GetAs<float>()
-            * misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-coin-base")) };
+        const auto COIN_BASE { scores.coin.ScaleCopy(
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-coin-base")) };
 
-        const auto COIN_RAND_BASE { Score_t::Make(
-            scores.Coin().GetAs<float>()
-            * misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-coin-mult")) };
+        const auto COIN_RAND_BASE { scores.coin.ScaleCopy(
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-coin-mult")) };
 
-        const auto COIN { (COIN_BASE + misc::Random(COIN_RAND_BASE)) };
+        scores.coin = (COIN_BASE + misc::Random(COIN_RAND_BASE));
 
-        const auto GEM_BASE { Score_t::Make(
-            scores.Gem().GetAs<float>()
-            * misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-gem-base")) };
+        const auto GEM_BASE { scores.gem.ScaleCopy(
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-gem-base")) };
 
-        const auto GEM_RAND_BASE { Score_t::Make(
-            scores.Gem().GetAs<float>()
-            * misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-gem-mult")) };
+        const auto GEM_RAND_BASE { scores.gem.ScaleCopy(
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-gem-mult")) };
 
-        const auto GEM { (GEM_BASE + misc::Random(GEM_RAND_BASE)) };
+        scores.gem = (GEM_BASE + misc::Random(GEM_RAND_BASE));
 
-        const auto MAGIC_BASE { Score_t::Make(
-            scores.Magic().GetAs<float>()
-            * misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-magic-base")) };
+        const auto MAGIC_BASE { scores.magic.ScaleCopy(
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-magic-base")) };
 
-        const auto MAGIC_RAND_BASE { Score_t::Make(
-            scores.Magic().GetAs<float>()
-            * misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-magic-mult")) };
+        const auto MAGIC_RAND_BASE { scores.magic.ScaleCopy(
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-magic-mult")) };
 
-        const auto MAGIC { (MAGIC_BASE + misc::Random(MAGIC_RAND_BASE)) };
+        scores.magic = (MAGIC_BASE + misc::Random(MAGIC_RAND_BASE));
 
-        const auto RELIGIOUS_BASE { Score_t::Make(
-            scores.Religious().GetAs<float>()
-            * misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-religious-base")) };
+        const auto RELIGIOUS_BASE { scores.religious.ScaleCopy(
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-religious-base")) };
 
-        const auto RELIGIOUS_RAND_BASE { Score_t::Make(
-            scores.Religious().GetAs<float>()
-            * misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-religious-mult")) };
+        const auto RELIGIOUS_RAND_BASE { scores.religious.ScaleCopy(
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("treasure-religious-mult")) };
 
-        const auto RELIGIOUS { (RELIGIOUS_BASE + misc::Random(RELIGIOUS_RAND_BASE)) };
+        scores.religious = (RELIGIOUS_BASE + misc::Random(RELIGIOUS_RAND_BASE));
 
-        return TreasureScores(COIN, GEM, MAGIC, RELIGIOUS);
+        return scores;
     }
 
     std::size_t TreasureFactory::SelectItems(

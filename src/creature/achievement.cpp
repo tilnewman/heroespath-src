@@ -92,8 +92,10 @@ namespace creature
         std::string str;
         str.reserve(512);
 
-        str = Name() + "s current count=" + std::to_string(count_)
-            + ", and has the following achievable titles: ";
+        str += Name();
+        str += "s current count=";
+        str += std::to_string(count_);
+        str += ", and has the following achievable titles: ";
 
         for (const auto & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
@@ -102,8 +104,9 @@ namespace creature
                 str += ", ";
             }
 
-            str += Titles::Name(NEXT_TITLE_COUNT_PAIR.second) + " at count "
-                + std::to_string(NEXT_TITLE_COUNT_PAIR.first);
+            str += Titles::Name(NEXT_TITLE_COUNT_PAIR.second);
+            str += " at count ";
+            str += std::to_string(NEXT_TITLE_COUNT_PAIR.first);
         }
 
         return str;

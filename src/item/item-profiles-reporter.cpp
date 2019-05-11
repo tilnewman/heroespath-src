@@ -591,7 +591,7 @@ namespace item
                 matVecSS << "(";
                 for (const auto MATERIAL : MATERIALS)
                 {
-                    matVecSS << material::ToString(MATERIAL) << ",";
+                    matVecSS << NAMEOF_ENUM(MATERIAL) << ",";
                 }
                 matVecSS << ")";
                 return matVecSS.str();

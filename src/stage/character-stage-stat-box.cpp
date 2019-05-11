@@ -379,7 +379,7 @@ namespace stage
     {
         if (IsValid(TRAIT))
         {
-            return creature::Traits::ToString(TRAIT);
+            return NAMEOF_ENUM_STR(TRAIT);
         }
         else
         {

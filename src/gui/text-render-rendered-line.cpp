@@ -137,14 +137,22 @@ namespace gui
             {
                 for (const auto & TEXT : texts)
                 {
-                    str += ((TEXT.IsValid()) ? "" : "I")
-                        + EnumUtil<GuiFont>::ToString(TEXT.getFont()) + "("
-                        + misc::ToString(TEXT.getGlobalBounds()) + ")\"" + TEXT.getString()
-                        + "\"dsfch=" + std::to_string(calcDownShiftForCharHeight(TEXT)) + "   ";
+                    str += ((TEXT.IsValid()) ? "" : "I");
+                    str += NAMEOF_ENUM(TEXT.getFont());
+                    str += '(';
+                    str += misc::ToString(TEXT.getGlobalBounds());
+                    str += ")\"";
+                    str += TEXT.getString();
+                    str += "\"dsfch=" + std::to_string(calcDownShiftForCharHeight(TEXT));
+                    str += "   ";
                 }
             }
 
-            str += "]gap=" + std::to_string(topGap()) + misc::ToString(region) + "}";
+            str += "]gap=";
+            str += std::to_string(topGap());
+            str += misc::ToString(region);
+            str += '}';
+
             return str;
         }
 

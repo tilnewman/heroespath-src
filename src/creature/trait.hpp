@@ -37,8 +37,8 @@ namespace creature
         explicit Trait(const Traits::Enum TYPE = Traits::Count, const Trait_t NORMAL = 0);
 
         Traits::Enum Which() const { return type_; }
-        const std::string Name() const { return Traits::Name(type_); }
-        const std::string Desc() const { return Traits::Desc(type_); }
+        const std::string Name() const { return std::string(Traits::Name(type_)); }
+        const std::string Desc() const { return std::string(Traits::Desc(type_)); }
         Trait_t Normal() const { return normal_; }
         Trait_t Current() const { return current_; }
 

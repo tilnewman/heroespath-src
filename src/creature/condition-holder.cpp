@@ -164,30 +164,28 @@ namespace creature
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->Desc().empty() == false),
-                    "creature::condition::Holder::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                    "creature::condition::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                                            << "\") resulted in an empty Desc().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->LongDesc().empty() == false),
                     "creature::condition::Holder::Test(\""
-                        << Conditions::ToString(NEXT_ENUM)
-                        << "\") resulted in an empty LongDesc().");
+                        << NAMEOF_ENUM(NEXT_ENUM) << "\") resulted in an empty LongDesc().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->ToString().empty() == false),
                     "creature::condition::Holder::Test(\""
-                        << Conditions::ToString(NEXT_ENUM)
-                        << "\") resulted in an empty ImageFilename().");
+                        << NAMEOF_ENUM(NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->Name().empty() == false),
-                    "creature::condition::Holder::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                    "creature::condition::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                                            << "\") resulted in an empty Name().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->Name() == Conditions::Name(NEXT_ENUM)),
                     "creature::condition::Holder::Test(ptr=\""
-                        << CONDITION_PTR->Name() << "\", enum=\"" << Conditions::ToString(NEXT_ENUM)
+                        << CONDITION_PTR->Name() << "\", enum=\"" << NAMEOF_ENUM(NEXT_ENUM)
                         << "\") Condition is out of order.");
 
                 ++condIndex;
@@ -206,7 +204,7 @@ namespace creature
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (conditionsUVec_.empty() == false),
-                "creature::condition::Holder::Get(" << Conditions::ToString(ENUM)
+                "creature::condition::Holder::Get(" << NAMEOF_ENUM(ENUM)
                                                     << ") was called when Holder was empty.");
 
             const auto INDEX { static_cast<std::size_t>(ENUM) };
@@ -214,7 +212,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < conditionsUVec_.size()),
                 "creature::condition::Holder::Get("
-                    << Conditions::ToString(ENUM)
+                    << NAMEOF_ENUM(ENUM)
                     << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
 
             return ConditionPtr_t(conditionsUVec_[INDEX].get());

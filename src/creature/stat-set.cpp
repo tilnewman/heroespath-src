@@ -61,7 +61,7 @@ namespace creature
         }
 
         M_HP_LOG_ERR(
-            "StatSet::Get(trait_enum=" << Traits::ToString(ENUM) << ") but that value is invalid.");
+            "StatSet::Get(trait_enum=" << NAMEOF_ENUM(ENUM) << ") but that value is invalid.");
 
         return 0;
     }
@@ -111,7 +111,7 @@ namespace creature
 
         if (WILL_WRAP)
         {
-            str += "(";
+            str += '(';
         }
 
         auto appendStatIfNeeded = [&](const auto & STAT, const std::string & NAME) {
@@ -130,7 +130,7 @@ namespace creature
 
         if (WILL_WRAP)
         {
-            str += ")";
+            str += ')';
         }
 
         return str;

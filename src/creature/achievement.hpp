@@ -43,7 +43,7 @@ namespace creature
 
         AchievementType::Enum Which() const { return which_; }
         std::size_t Count() const { return count_; }
-        const std::string Name() const { return AchievementType::Name(which_); }
+        const std::string Name() const { return std::string(AchievementType::Name(which_)); }
         const TitleCountMap_t & TitleCountMap() const { return titleCountMap_; }
 
         // These functions return pointers instead of enums because they

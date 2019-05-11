@@ -260,7 +260,7 @@ namespace item
                     MakeWeaponSpecific(weapon::projectile_type::Longbow),
                     MakeWeaponSpecific(weapon::sword_type::Broadsword),
                     MakeWeaponSpecific(weapon::sword_type::Longsword),
-                    MakeWeaponSpecific(weapon::sword_type::Knightlysword),
+                    MakeWeaponSpecific(weapon::sword_type::KnightlySword),
                     MakeWeaponSpecific(weapon::sword_type::Claymore),
                     MakeWeaponSpecific(weapon::axe_type::Battleaxe),
                     MakeWeaponSpecific(weapon::axe_type::Waraxe)
@@ -362,7 +362,7 @@ namespace item
                     MakeWeaponSpecific(weapon::projectile_type::CompositeBow),
                     MakeWeaponSpecific(weapon::sword_type::Broadsword),
                     MakeWeaponSpecific(weapon::sword_type::Longsword),
-                    MakeWeaponSpecific(weapon::sword_type::Knightlysword),
+                    MakeWeaponSpecific(weapon::sword_type::KnightlySword),
                     MakeWeaponSpecific(weapon::sword_type::Claymore),
                     MakeWeaponSpecific(weapon::axe_type::Battleaxe),
                     MakeWeaponSpecific(weapon::axe_type::Waraxe),
@@ -1109,11 +1109,10 @@ namespace item
             ((ARMOR_TYPE != armor_type::Shield) && (ARMOR_TYPE != armor_type::Covering)
              && (ARMOR_TYPE != armor_type::Helm)),
             "item::ItemProfileThinFactory::MakeArmorNonSpecific(armor_type="
-                << armor_type::ToString(ARMOR_TYPE) << ", base_type="
-                << ((BASE_TYPE == armor::base_type::Count) ? "Count"
-                                                           : armor::base_type::ToString(BASE_TYPE))
+                << NAMEOF_ENUM(ARMOR_TYPE) << ", base_type="
+                << ((BASE_TYPE == armor::base_type::Count) ? "Count" : NAMEOF_ENUM(BASE_TYPE))
                 << ", misc_type="
-                << ((MISC_TYPE == misc_type::Count) ? "Count" : misc_type::ToString(MISC_TYPE))
+                << ((MISC_TYPE == misc_type::Count) ? "Count" : NAMEOF_ENUM(MISC_TYPE))
                 << ") but the armor_type given IS a SPECIFIC type.");
 
         return ItemProfileThin(armor::ArmorTypeWrapper(ARMOR_TYPE, BASE_TYPE), MISC_TYPE);

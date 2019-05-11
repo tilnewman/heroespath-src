@@ -12,47 +12,16 @@
 #include "wolfen-class-enum.hpp"
 
 #include "misc/config-file.hpp"
-#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string wolfen_class::ToString(const wolfen_class::Enum WOLFEN_CLASS_TYPE)
-    {
-        switch (WOLFEN_CLASS_TYPE)
-        {
-            case Pup: { return "Pup";
-            }
-            case Juvenile: { return "Juvenile";
-            }
-            case Adult: { return "Adult";
-            }
-            case Noble: { return "Noble";
-            }
-            case Highborn: { return "Highborn";
-            }
-            case Elder: { return "Elder";
-            }
-            case Count: { return "(Count)";
-            }
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(WOLFEN_CLASS_TYPE)
-                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
-                                  << ")");
-
-                return "";
-            }
-        }
-    }
-
     const std::string wolfen_class::Desc(const wolfen_class::Enum WOLFEN_CLASS_TYPE)
     {
         return misc::ConfigFile::Instance()->Value(
-            "creature-race-desc-wolfen-" + ToString(WOLFEN_CLASS_TYPE));
+            "creature-race-desc-wolfen-" + NAMEOF_ENUM_STR(WOLFEN_CLASS_TYPE));
     }
 
     wolfen_class::Enum wolfen_class::ClassFromRank(const Rank_t & RANK)

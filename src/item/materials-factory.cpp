@@ -133,13 +133,13 @@ namespace item
             ss << EXCEPTION.what()
                << " --this was thrown during "
                   "item::MaterialFactory::MakeForEquipment(thin_profile={"
-               << THIN_PROFILE.ToString() << "}, named_type=" << named_type::ToString(NAMED_TYPE)
-               << ", set_type=" << set_type::ToString(SET_TYPE) << ")";
+               << THIN_PROFILE.ToString() << "}, named_type=" << NAMEOF_ENUM(NAMED_TYPE)
+               << ", set_type=" << NAMEOF_ENUM(SET_TYPE) << ")";
 
             for (const auto & MATERIAL_PAIR : MATERIAL_PAIRS_COPY)
             {
-                ss << "\n(" << material::ToString(MATERIAL_PAIR.first) << ", "
-                   << material::ToString(MATERIAL_PAIR.second) << ")\t" << std::boolalpha
+                ss << "\n(" << NAMEOF_ENUM(MATERIAL_PAIR.first) << ", "
+                   << NAMEOF_ENUM(MATERIAL_PAIR.second) << ")\t" << std::boolalpha
                    << IsCombinationValid(MATERIAL_PAIR);
             }
 
@@ -172,13 +172,12 @@ namespace item
             std::ostringstream ss;
             ss << EXCEPTION.what()
                << " --this was thrown during item::MaterialFactory::MakeForMiscType(misc_type="
-               << misc_type::ToString(MISC_TYPE) << ", is_magical=" << std::boolalpha << IS_MAGICAL
-               << ")";
+               << NAMEOF_ENUM(MISC_TYPE) << ", is_magical=" << std::boolalpha << IS_MAGICAL << ")";
 
             for (const auto & MATERIAL_PAIR : MATERIAL_PAIRS_COPY)
             {
-                ss << "\n(" << material::ToString(MATERIAL_PAIR.first) << ", "
-                   << material::ToString(MATERIAL_PAIR.second) << ")\t" << std::boolalpha
+                ss << "\n(" << NAMEOF_ENUM(MATERIAL_PAIR.first) << ", "
+                   << NAMEOF_ENUM(MATERIAL_PAIR.second) << ")\t" << std::boolalpha
                    << IsCombinationValid(MATERIAL_PAIR);
             }
 
@@ -1636,14 +1635,14 @@ namespace item
         if (materialPairs.empty())
         {
             std::ostringstream ss;
-            ss << "item::MaterialFactory::LimitForNamedType(named_type="
-               << named_type::ToString(NAMED_TYPE) << ", thin_profile={" << THIN_PROFILE.ToString()
+            ss << "item::MaterialFactory::LimitForNamedType(named_type=" << NAMEOF_ENUM(NAMED_TYPE)
+               << ", thin_profile={" << THIN_PROFILE.ToString()
                << "}) resulted in no materials.  Original materials:";
 
             for (const auto & MATERIAL_PAIR : MATERIAL_PAIRS_COPY)
             {
-                ss << "\n(" << material::ToString(MATERIAL_PAIR.first) << ", "
-                   << material::ToString(MATERIAL_PAIR.second) << ")\t" << std::boolalpha
+                ss << "\n(" << NAMEOF_ENUM(MATERIAL_PAIR.first) << ", "
+                   << NAMEOF_ENUM(MATERIAL_PAIR.second) << ")\t" << std::boolalpha
                    << IsCombinationValid(MATERIAL_PAIR);
             }
 
@@ -2290,8 +2289,8 @@ namespace item
         if (material::IsSolid(PRIMARY) == false)
         {
             M_HP_LOG_WRN(
-                "item::MaterialFactory::IsCombinationValid(" << material::ToString(PRIMARY) << ", "
-                                                             << material::ToString(SECONDARY)
+                "item::MaterialFactory::IsCombinationValid(" << NAMEOF_ENUM(PRIMARY) << ", "
+                                                             << NAMEOF_ENUM(SECONDARY)
                                                              << ") found non-solid primary.");
 
             return false;
@@ -2304,8 +2303,8 @@ namespace item
         else if (SECONDARY == material::Count)
         {
             M_HP_LOG_WRN(
-                "item::MaterialFactory::IsCombinationValid(" << material::ToString(PRIMARY) << ", "
-                                                             << material::ToString(SECONDARY)
+                "item::MaterialFactory::IsCombinationValid(" << NAMEOF_ENUM(PRIMARY) << ", "
+                                                             << NAMEOF_ENUM(SECONDARY)
                                                              << ") found secondary==Count.");
 
             return false;

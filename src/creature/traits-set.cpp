@@ -36,7 +36,7 @@ namespace creature
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<Traits>::IsValid(ENUM)),
-            "TraitSet::Get(trait_enum=" << Traits::ToString(ENUM)
+            "TraitSet::Get(trait_enum=" << NAMEOF_ENUM(ENUM)
                                         << ") but that trait value is invalid.");
 
         return traitVec_[static_cast<std::size_t>(ENUM)];
@@ -46,7 +46,7 @@ namespace creature
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<Traits>::IsValid(ENUM)),
-            "TraitSet::GetCopy(" << Traits::ToString(ENUM) << ") but that trait value is invalid.");
+            "TraitSet::GetCopy(" << NAMEOF_ENUM(ENUM) << ") but that trait value is invalid.");
 
         return traitVec_[static_cast<std::size_t>(ENUM)];
     }
@@ -59,6 +59,11 @@ namespace creature
     {
         std::string str;
         str.reserve(128);
+
+        if (WILL_WRAP)
+        {
+            str += '(';
+        }
 
         for (EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
@@ -86,18 +91,23 @@ namespace creature
                     str += Traits::Name(NEXT_ENUM);
                 }
 
-                str += " " + std::to_string(NEXT_CURR);
+                str += ' ';
+                str += std::to_string(NEXT_CURR);
 
                 if (WILL_PREFIX_PERCENT)
                 {
-                    str += "%";
+                    str += '%';
                 }
             }
         }
 
-        if (!str.empty() && WILL_WRAP)
+        if (str.compare("(") == 0)
         {
-            str = "(" + str + ")";
+            str.clear();
+        }
+        else if (WILL_WRAP)
+        {
+            str += ')';
         }
 
         return str;
@@ -110,16 +120,19 @@ namespace creature
 
         if (WILL_WRAP)
         {
-            str += "(";
+            str += '(';
         }
 
-        str += StatStringHelper(Traits::Strength, false) + StatStringHelper(Traits::Accuracy)
-            + StatStringHelper(Traits::Charm) + StatStringHelper(Traits::Luck)
-            + StatStringHelper(Traits::Speed) + StatStringHelper(Traits::Intelligence);
+        str += StatStringHelper(Traits::Strength, false);
+        str += StatStringHelper(Traits::Accuracy);
+        str += StatStringHelper(Traits::Charm);
+        str += StatStringHelper(Traits::Luck);
+        str += StatStringHelper(Traits::Speed);
+        str += StatStringHelper(Traits::Intelligence);
 
         if (WILL_WRAP)
         {
-            str += ")";
+            str += ')';
         }
 
         return str;
@@ -136,13 +149,15 @@ namespace creature
             str += ", ";
         }
 
-        str += Traits::Abbr(ENUM) + "=";
+        str += Traits::Abbr(ENUM);
+        str += '=';
 
         const auto & TRAIT { traitVec_[static_cast<std::size_t>(ENUM)] };
 
         if (TRAIT.Current() != TRAIT.Normal())
         {
-            str += std::to_string(TRAIT.Current()) + "/";
+            str += std::to_string(TRAIT.Current());
+            str += '/';
         }
 
         str += std::to_string(TRAIT.Normal());

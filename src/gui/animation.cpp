@@ -32,7 +32,7 @@ namespace gui
         const sf::BlendMode & BLEND_MODE,
         const sf::Color & COLOR_FROM,
         const sf::Color & COLOR_TO)
-        : Entity(Animations::ToString(ENUM) + "_Animation", REGION)
+        : Entity(NAMEOF_ENUM_STR(ENUM) + "_Animation", REGION)
         , which_(ENUM)
         , blendMode_(BLEND_MODE)
         , timePerFrameSec_(TIME_PER_FRAME_SEC)
@@ -55,9 +55,9 @@ namespace gui
         if (frameIndexRects_.empty())
         {
             M_HP_LOG_ERR(
-                "Failed to load/find any animation frames."
-                + M_HP_VAR_STR(Animations::ToString(ENUM)) + M_HP_VAR_STR(cachedTextures_.Path())
-                + M_HP_VAR_STR(origSizeV_));
+                "Failed to load/find any animation frames." << NAMEOF_ENUM(ENUM)
+                                                            << M_HP_VAR_STR(cachedTextures_.Path())
+                                                            << M_HP_VAR_STR(origSizeV_));
         }
 
         SetupSprite();

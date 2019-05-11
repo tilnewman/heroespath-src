@@ -48,7 +48,7 @@ namespace creature
             const bool IS_MAGICAL = false,
             const TraitSet & TRAIT_SET = TraitSet());
 
-        const std::string Name() const { return Conditions::Name(type_); }
+        const std::string Name() const { return std::string(Conditions::Name(type_)); }
         Conditions::Enum Which() const { return type_; }
         const std::string Desc() const { return Conditions::Desc(type_); }
         const std::string ToString() const;

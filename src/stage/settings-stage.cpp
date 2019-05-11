@@ -100,7 +100,7 @@ namespace stage
         /*
         M_HP_LOG(
             GetStageName() << " HandlePopupCallback(response=\""
-                           << popup::PopupButtons::ToString(PACKET_PTR->type) << "\")");
+                           << popup::PopupNAMEOF_ENUM(PACKET_PTR->type) << "\")");
 
         if (PACKET_PTR->type == popup::PopupButtons::No)
         {
@@ -599,14 +599,20 @@ namespace stage
         str.reserve(128);
         for (const auto & MUSIC_INFO : MUSIC_INFO_VEC)
         {
-            str += "\"" + MUSIC_INFO.SongName() + "\"\nby " + MUSIC_INFO.ArtistName()
-                + "\nLicense: " + MUSIC_INFO.LicenseTitle()
-                + "\nDuration: " + MUSIC_INFO.Duration().ToString() + "\n\n";
+            str += '\"';
+            str += MUSIC_INFO.SongName();
+            str += "\"\nby ";
+            str += MUSIC_INFO.ArtistName();
+            str += "\nLicense: ";
+            str += MUSIC_INFO.LicenseTitle();
+            str += "\nDuration: ";
+            str += MUSIC_INFO.Duration().ToString();
+            str += "\n\n";
         }
 
         if (str.empty())
         {
-            str += " ";
+            str += ' ';
         }
 
         const gui::TextInfo TEXT_INFO(

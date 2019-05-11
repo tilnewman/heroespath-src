@@ -131,12 +131,16 @@ namespace gui
             std::string str;
             str.reserve(lines.size() * 1024);
 
-            str += "\nRender (" + std::to_string(lines.size())
-                + ")  region=" + misc::ToString(region) + "\n\t";
+            str += "\nRender (";
+            str += std::to_string(lines.size());
+            str += ")  region=";
+            str += misc::ToString(region);
+            str += "\n\t";
 
             for (const auto & LINE : lines)
             {
-                str += LINE.ToString() + "\n\t";
+                str += LINE.ToString();
+                str += "\n\t";
             }
 
             return str;

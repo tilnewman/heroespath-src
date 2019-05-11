@@ -15,6 +15,7 @@
 //         creating and including enums as light-weight as possible.  So while you CAN include
 //         enum-util.hpp in a header file, it would defeat the design and slow down the build.
 //
+#include "misc/nameof.hpp"
 #include "misc/type-helpers.hpp"
 
 #include <string>
@@ -58,11 +59,11 @@ struct EnumBitField_t
     EnumBitField_t() = delete;
 };
 
-template <EnumFirstValue FIRST_VALUE_TYPE>
+template <EnumFirstValue KIND_OF_FIRST_VALUE>
 struct EnumBaseCounting
 {
     using EnumBase_t = EnumCounting_t;
-    static constexpr EnumFirstValue first_value_t = FIRST_VALUE_TYPE;
+    static constexpr EnumFirstValue first_value_t = KIND_OF_FIRST_VALUE;
 };
 
 struct EnumBaseBitField
@@ -94,19 +95,19 @@ struct EnumStringHow
     explicit EnumStringHow(
         const Wrap WILL_WRAP = Wrap::No,
         const std::string & SEPARATOR = ", ",
-        const NoneEmpty WILL_NONE_RETURN_EMPT = NoneEmpty::Yes)
+        const NoneEmpty WILL_NONE_RETURN_EMPTY = NoneEmpty::Yes)
         : will_wrap(WILL_WRAP)
         , separator(SEPARATOR)
-        , will_none_return_empty(WILL_NONE_RETURN_EMPT)
+        , will_none_return_empty(WILL_NONE_RETURN_EMPTY)
     {}
 
     explicit EnumStringHow(
         const std::string & SEPARATOR,
         const Wrap WILL_WRAP = Wrap::No,
-        const NoneEmpty WILL_NONE_RETURN_EMPT = NoneEmpty::Yes)
+        const NoneEmpty WILL_NONE_RETURN_EMPTY = NoneEmpty::Yes)
         : will_wrap(WILL_WRAP)
         , separator(SEPARATOR)
-        , will_none_return_empty(WILL_NONE_RETURN_EMPT)
+        , will_none_return_empty(WILL_NONE_RETURN_EMPTY)
     {}
 
     EnumStringHow(const EnumStringHow &) = default;

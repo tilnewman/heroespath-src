@@ -11,8 +11,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace map
@@ -27,8 +25,6 @@ namespace map
             Shadow,
             Count
         };
-
-        static const std::string ToString(const Enum);
     };
 
 } // namespace map

@@ -27,8 +27,6 @@ namespace gui
             Large,
             Count
         };
-
-        static const std::string ToString(const Size::Enum);
     };
 
 } // namespace gui

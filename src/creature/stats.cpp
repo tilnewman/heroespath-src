@@ -437,7 +437,7 @@ namespace creature
         {
             M_HP_LOG_ERR(
                 "creature::Stats::RollBonusByRace(stat_enum="
-                << Traits::ToString(TRAIT_ENUM) << ", race_enum=" << RACE_ENUM
+                << NAMEOF_ENUM(TRAIT_ENUM) << ", race_enum=" << RACE_ENUM
                 << ") but that trait value is invalid.");
 
             return 0;
@@ -514,7 +514,7 @@ namespace creature
         {
             M_HP_LOG_ERR(
                 "creature::Stats::RollBonusByRole(stat_enum="
-                << Traits::ToString(TRAIT_ENUM) << ", role_enum=" << ROLE_ENUM
+                << NAMEOF_ENUM(TRAIT_ENUM) << ", role_enum=" << ROLE_ENUM
                 << ") but that trait value is invalid.");
 
             return 0;

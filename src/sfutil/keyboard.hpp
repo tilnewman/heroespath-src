@@ -18,7 +18,7 @@ namespace heroespath
 namespace sfutil
 {
 
-    inline const char * sfKeyToString(const sf::Keyboard::Key KEY)
+    constexpr std::string_view sfKeyToString(const sf::Keyboard::Key KEY) noexcept
     {
         switch (KEY)
         {
@@ -125,31 +125,31 @@ namespace sfutil
             case sf::Keyboard::Pause: return "Pause";
             case sf::Keyboard::Unknown: return "(Unknown)";
             case sf::Keyboard::KeyCount:
-            default: return "(out_of_range)";
+            default: return "sfutil::sfKeyToString(sf::Keyboard::Key=out_of_range)";
         }
     }
 
-    inline char sfKeyToNameValidCharacterNameCharOrZero(
-        const sf::Keyboard::Key & KEY, const bool IS_UPPER_CASE)
+    constexpr char sfKeyToNameValidCharacterNameCharOrZero(
+        const sf::Keyboard::Key & KEY, const bool IS_UPPER_CASE) noexcept
     {
         if ((KEY >= sf::Keyboard::A) && (KEY <= sf::Keyboard::Z))
         {
             if (IS_UPPER_CASE)
             {
-                return ('A' + static_cast<char>(int(KEY) - int(sf::Keyboard::A)));
+                return char('A' + static_cast<char>(int(KEY) - int(sf::Keyboard::A)));
             }
             else
             {
-                return ('a' + static_cast<char>(int(KEY) - int(sf::Keyboard::A)));
+                return char('a' + static_cast<char>(int(KEY) - int(sf::Keyboard::A)));
             }
         }
         else if ((KEY >= sf::Keyboard::Num0) && (KEY <= sf::Keyboard::Num9))
         {
-            return ('0' + static_cast<char>(int(KEY) - int(sf::Keyboard::Num0)));
+            return char('0' + static_cast<char>(int(KEY) - int(sf::Keyboard::Num0)));
         }
         else if ((KEY >= sf::Keyboard::Numpad0) && (KEY <= sf::Keyboard::Numpad9))
         {
-            return ('0' + static_cast<char>(int(KEY) - int(sf::Keyboard::Numpad0)));
+            return char('0' + static_cast<char>(int(KEY) - int(sf::Keyboard::Numpad0)));
         }
         else if (KEY == sf::Keyboard::Dash)
         {
@@ -165,12 +165,11 @@ namespace sfutil
         }
         else
         {
-            return 0;
+            return char(0);
         }
     }
 
 } // namespace sfutil
-
 } // namespace heroespath
 
 namespace sf

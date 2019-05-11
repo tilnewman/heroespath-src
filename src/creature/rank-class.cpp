@@ -31,7 +31,7 @@ namespace creature
             const rank_class::Enum RANK_ENUM { static_cast<rank_class::Enum>(i) };
 
             rankCumulative += misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "rankclass-" + ToString(RANK_ENUM) + "-rankmax");
+                "rankclass-" + NAMEOF_ENUM_STR(RANK_ENUM) + "-rankmax");
 
             if (RANK_PARAM <= rankCumulative)
             {
@@ -51,7 +51,7 @@ namespace creature
         {
             min
                 = (misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                       "rankclass-" + ToString(Master) + "-rankmax")
+                       "rankclass-" + std::string(NAMEOF_ENUM(Master)) + "-rankmax")
                    + 1_rank);
         }
         else if (ENUM == Novice)
@@ -59,50 +59,22 @@ namespace creature
             min = 1_rank;
 
             max = misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "rankclass-" + ToString(Novice) + "-rankmax");
+                "rankclass-" + std::string(NAMEOF_ENUM(Novice)) + "-rankmax");
         }
         else
         {
             min
                 = (misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                       "rankclass-" + ToString(static_cast<rank_class::Enum>(ENUM - 1))
+                       "rankclass-"
+                       + std::string(NAMEOF_ENUM(static_cast<rank_class::Enum>(ENUM - 1)))
                        + "-rankmax")
                    + 1_rank);
 
             max = misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "rankclass-" + ToString(ENUM) + "-rankmax");
+                "rankclass-" + std::string(NAMEOF_ENUM(ENUM)) + "-rankmax");
         }
 
         return RankRange_t(min, max);
-    }
-
-    const std::string rank_class::ToString(const rank_class::Enum ENUM)
-    {
-        switch (ENUM)
-        {
-            case Novice: { return "Novice";
-            }
-            case Trainee: { return "Trainee";
-            }
-            case Skilled: { return "Skilled";
-            }
-            case Expert: { return "Expert";
-            }
-            case Master: { return "Master";
-            }
-            case GrandMaster: { return "GrandMaster";
-            }
-            case Count: { return "(Count)";
-            }
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
-                                  << static_cast<EnumUnderlying_t>(Count) << ")");
-
-                return "";
-            }
-        }
     }
 
 } // namespace creature

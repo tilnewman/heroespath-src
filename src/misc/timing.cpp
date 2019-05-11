@@ -686,7 +686,7 @@ namespace misc
         // create the end-of-contest summary string
         std::ostringstream ss;
         ss << std::setfill(' ');
-        ss << name_ << " Time Contest Results in " << TimeRes::ToString(resolution_) << ":";
+        ss << name_ << " Time Contest Results in " << NAMEOF_ENUM(resolution_) << ":";
 
         for (std::size_t index(0); index < statsNamePairs.size(); ++index)
         {
@@ -798,8 +798,8 @@ namespace misc
 
         std::ostringstream ss;
         ss << std::setfill(' ');
-        ss << name_ << " Time Contests Final Results in " << TimeRes::ToString(resolution_)
-           << " after " << contestResultsHistoryMapUPtr_->Size() << " contests:";
+        ss << name_ << " Time Contests Final Results in " << NAMEOF_ENUM(resolution_) << " after "
+           << contestResultsHistoryMapUPtr_->Size() << " contests:";
 
         const auto MAX_NAME_LENGTH_INT { static_cast<int>(maxNameLength) };
 

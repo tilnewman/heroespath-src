@@ -21,9 +21,9 @@ namespace misc
     const std::string ToString(const sf::Color & C)
     {
         std::string str;
-        str.reserve(32);
+        str.reserve(16);
 
-        str += ("(");
+        str += '(';
 
         if (sf::Color::Black == C)
         {
@@ -59,17 +59,20 @@ namespace misc
         }
         else
         {
-            str += std::to_string(static_cast<unsigned>(C.r)) + ","
-                + std::to_string(static_cast<unsigned>(C.g)) + ","
-                + std::to_string(static_cast<unsigned>(C.b));
+            str += std::to_string(static_cast<unsigned>(C.r));
+            str += ',';
+            str += std::to_string(static_cast<unsigned>(C.g));
+            str += ',';
+            str += std::to_string(static_cast<unsigned>(C.b));
 
             if (C.a != 255)
             {
-                str += "," + std::to_string(static_cast<unsigned>(C.a));
+                str += ',';
+                str += std::to_string(static_cast<unsigned>(C.a));
             }
         }
 
-        str += ")";
+        str += ')';
 
         return str;
     }

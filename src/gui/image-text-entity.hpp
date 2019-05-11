@@ -92,8 +92,6 @@ namespace gui
 
                 Count
             };
-
-            static const std::string ToString(const Enum);
         };
 
         ImageTextEntity(const ImageTextEntity &) = delete;

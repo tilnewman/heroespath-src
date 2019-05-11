@@ -29,7 +29,14 @@ namespace gui
 
     const std::string Date::ToString() const
     {
-        return std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day);
+        std::string str;
+        str.reserve(32);
+        str += std::to_string(year);
+        str += '-';
+        str += std::to_string(month);
+        str += '-';
+        str += std::to_string(day);
+        return str;
     }
 
     bool Date::IsValid() const { return ((year > 0) && (month > 0) && (day > 0)); }

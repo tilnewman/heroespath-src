@@ -175,7 +175,7 @@ namespace item
             }
             case weapon::sword_type::Flamberg: { return 190_score;
             }
-            case weapon::sword_type::Knightlysword: { return 110_score;
+            case weapon::sword_type::KnightlySword: { return 110_score;
             }
             case weapon::sword_type::Broadsword: { return 100_score;
             }

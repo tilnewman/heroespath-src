@@ -30,9 +30,7 @@ namespace heroespath
 namespace misc
 {
 
-    const int Log::LINE_NUMBER_INVALID_ { -1 }; // anything less than zero works here
-    const char * const Log::SEPARATOR_STR_ { "  " };
-    std::unique_ptr<Log> Log::instanceUPtr_ {};
+    std::unique_ptr<Log> Log::instanceUPtr_;
 
     Log::Log(
         const std::string & FILE_NAME,

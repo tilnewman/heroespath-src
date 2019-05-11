@@ -12,6 +12,7 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/nameof.hpp"
 #include "misc/strings.hpp"
 
@@ -275,18 +276,24 @@ namespace item
                     const auto SPECIFIC_WEAPON_ENUM { static_cast<typename T::Enum>(i) };
 
                     const auto SPECIFIC_WEAPON_STR_LOWERCASE { misc::ToLowerCopy(
-                        T::ToString(SPECIFIC_WEAPON_ENUM)) };
+                        EnumUtil<T>::ToString(SPECIFIC_WEAPON_ENUM)) };
 
                     if (SPECIFIC_WEAPON_STR_LOWERCASE == SYSTEM_NAME_LOWERCASE)
                     {
                         type_ = WEAPON_TYPE;
                         variant_ = SPECIFIC_WEAPON_ENUM;
 
-                        const std::string CONTEXT_STR(
-                            "after SetupWithSpecificTypeName<" + std::string(NAMEOF_TYPE_T(T))
-                            + "::Enum>(system_name_lowercase=" + SYSTEM_NAME_LOWERCASE
-                            + ", weapon_type_tostring_lowercase=" + SPECIFIC_WEAPON_STR_LOWERCASE
-                            + ")");
+                        std::string str;
+                        str.reserve(128);
+                        str += "after SetupWithSpecificTypeName<";
+                        str += std::string(NAMEOF_TYPE(T));
+                        str += "::Enum>(system_name_lowercase=";
+                        str += SYSTEM_NAME_LOWERCASE;
+                        str += ", weapon_type_tostring_lowercase=";
+                        str += SPECIFIC_WEAPON_STR_LOWERCASE;
+                        str += ')';
+
+                        const std::string CONTEXT_STR(str);
 
                         SetNamesAndVerify(CONTEXT_STR);
                         return true;

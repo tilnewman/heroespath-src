@@ -2494,8 +2494,7 @@ namespace stage
             std::ostringstream ssErr;
             ssErr << "stage::CombatStage::HandleSong_Step2_SelectTargetOrPerformOnAll("
                   << "song=" << songBeingPlayedPtrOpt_.value()->Name() << ") had a target_type of "
-                  << combat::TargetType::ToString(SONG_TARGET)
-                  << " which is not yet supported in combat stage.";
+                  << NAMEOF_ENUM(SONG_TARGET) << " which is not yet supported in combat stage.";
 
             SystemErrorPopup("Playing this type of song is not yet supported.", ssErr.str());
 
@@ -2592,8 +2591,7 @@ namespace stage
             std::ostringstream ssErr;
             ssErr << "stage::CombatStage::HandleCast Step2 SelectTargetOrPerformOnAll("
                   << "spell=" << spellBeingCastPtrOpt_.value()->Name() << ") had a target_type of "
-                  << combat::TargetType::ToString(SPELL_TARGET)
-                  << " which is not yet supported in combat stage.";
+                  << NAMEOF_ENUM(SPELL_TARGET) << " which is not yet supported in combat stage.";
 
             SystemErrorPopup("Casting this type of spell is not yet supported.", ssErr.str());
 
@@ -3215,7 +3213,7 @@ namespace stage
 
             if (boost::algorithm::contains(CURR_WEAPONS_STR, ","))
             {
-                weaponsStr += "s";
+                weaponsStr += 's';
             }
 
             weaponsStr += ":  " + CURR_WEAPONS_STR;
@@ -3262,7 +3260,7 @@ namespace stage
 
             if (TURN_CREATURE_PTR->Conditions().size() > 1)
             {
-                infoStr += "s";
+                infoStr += 's';
             }
 
             infoStr += ":  " + TURN_CREATURE_PTR->ConditionNames(6);
@@ -3286,7 +3284,8 @@ namespace stage
             if (creature::race::RaceRoleMatch(TURN_CREATURE_PTR->Race(), TURN_CREATURE_PTR->Role())
                 == false)
             {
-                titleStr += " " + TURN_CREATURE_PTR->RoleName();
+                titleStr += ' ';
+                titleStr += TURN_CREATURE_PTR->RoleName();
             }
 
             // turn box weapon text (or text that indicates that a creature cannot take their turn)
@@ -3300,7 +3299,7 @@ namespace stage
                 willRedColorShakeWeaponText_ = true;
 
                 weaponHoldingStr += "Cannot take "
-                    + creature::sex::HisHerIts(TURN_CREATURE_PTR->Sex(), false, false)
+                    + std::string(creature::sex::HisHerIts(TURN_CREATURE_PTR->Sex(), false, false))
                     + " turn because " + TURN_CREATURE_PTR->CanTakeActionStr(false) + "!";
             }
 
@@ -3320,7 +3319,7 @@ namespace stage
 
             if (TURN_CREATURE_PTR->HasCondition(creature::Conditions::Good))
             {
-                enemyCondsStr += " ";
+                enemyCondsStr += ' ';
             }
             else
             {
@@ -3329,7 +3328,7 @@ namespace stage
 
                 if (boost::algorithm::contains(CONDITION_LIST_STR, ","))
                 {
-                    enemyCondsStr += "s";
+                    enemyCondsStr += 's';
                 }
 
                 enemyCondsStr += ": " + CONDITION_LIST_STR;

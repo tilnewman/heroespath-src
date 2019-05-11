@@ -40,7 +40,7 @@ namespace item
 
     creature::role::Enum ItemProfile::RoleRestriction() const
     {
-        if ((WeaponInfo().SwordType() == weapon::sword_type::Knightlysword)
+        if ((WeaponInfo().SwordType() == weapon::sword_type::KnightlySword)
             || (WeaponInfo().SwordType() == weapon::sword_type::Claymore))
         {
             return creature::role::Knight;
@@ -106,7 +106,8 @@ namespace item
 
         if (category::None != category_)
         {
-            str += "category=" + category::ToString(category_, EnumStringHow(Wrap::Yes));
+            str += "category=";
+            str += category::ToString(category_, EnumStringHow(Wrap::Yes));
         }
 
         if (!str.empty())
@@ -126,39 +127,47 @@ namespace item
 
         if (ROLE_RESTRICTION != creature::role::Count)
         {
-            str += ", role_restriction=" + creature::role::ToString(ROLE_RESTRICTION);
+            str += ", role_restriction=";
+            str += NAMEOF_ENUM(ROLE_RESTRICTION);
         }
 
-        str += ", mat_pri=" + material::ToString(matPri_);
+        str += ", mat_pri=";
+        str += NAMEOF_ENUM(matPri_);
 
         if (material::Nothing != matSec_)
         {
-            str += ", mat_sec=" + material::ToString(matSec_);
+            str += ", mat_sec=";
+            str += NAMEOF_ENUM(matSec_);
         }
 
         if (set_type::Not != set_)
         {
-            str += ", set_type=" + ((set_type::Count == set_) ? "Count" : set_type::ToString(set_));
+            str += ", set_type=";
+            str += ((set_type::Count == set_) ? "Count" : NAMEOF_ENUM(set_));
         }
 
         if (named_type::Not != named_)
         {
-            str += ", named_type="
-                + ((named_type::Count == named_) ? "Count" : named_type::ToString(named_));
+            str += ", named_type=";
+            str += ((named_type::Count == named_) ? "Count" : NAMEOF_ENUM(named_));
         }
 
         if (element_type::None != element_)
         {
-            str += ", element_type=" + element_type::ToString(element_, EnumStringHow(Wrap::Yes));
+            str += ", element_type=";
+            str += element_type::ToString(element_, EnumStringHow(Wrap::Yes));
         }
 
         if (summonInfo_.CanSummon())
         {
-            str += ", summonInfo=" + summonInfo_.ToString();
+            str += ", summonInfo=";
+            str += summonInfo_.ToString();
         }
         else if (summonInfo_.IsDefaultAndCompletelyInvalid() == false)
         {
-            str += ", summonInfo=" + summonInfo_.ToString() + "(but CanSummon()=false?)";
+            str += ", summonInfo=";
+            str += summonInfo_.ToString();
+            str += "(but CanSummon()=false?)";
         }
 
         return str;
@@ -237,10 +246,10 @@ namespace item
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((misc_type::EquipCategory(MISC_TYPE) & category::Equipable) > 0),
                 "item::ItemProfile::SetMisc(misc_type="
-                    << misc_type::ToString(MISC_TYPE) << ", is_pixie=" << std::boolalpha << IS_PIXIE
-                    << ", mat_pri=" << material::ToString(MATERIAL_PRIMARY)
-                    << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY) << ", set_type="
-                    << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+                    << NAMEOF_ENUM(MISC_TYPE) << ", is_pixie=" << std::boolalpha << IS_PIXIE
+                    << ", mat_pri=" << NAMEOF_ENUM(MATERIAL_PRIMARY)
+                    << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SECONDARY) << ", set_type="
+                    << ((SET_TYPE == set_type::Count) ? "Count" : NAMEOF_ENUM(SET_TYPE))
                     << ", element_type="
                     << element_type::ToString(ELEMENT_TYPE, EnumStringHow(Wrap::Yes))
                     << ") element_type wasn't None but the misc_type was not equipable.");

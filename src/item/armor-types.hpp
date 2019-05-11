@@ -12,8 +12,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace item
@@ -31,8 +29,6 @@ namespace item
                 Pavis,
                 Count
             };
-
-            static const std::string ToString(const shield_type::Enum);
         };
 
         struct helm_type : public EnumBaseCounting<EnumFirstValue::Valid>
@@ -48,8 +44,17 @@ namespace item
                 Count
             };
 
-            static const std::string ToString(const helm_type::Enum);
-            static const std::string Name(const helm_type::Enum);
+            static constexpr std::string_view const Name(const helm_type::Enum HELM_TYPE)
+            {
+                if (HELM_TYPE == MailCoif)
+                {
+                    return "Mail Coif";
+                }
+                else
+                {
+                    return NAMEOF_ENUM(HELM_TYPE);
+                }
+            }
         };
 
         struct base_type : public EnumBaseCounting<EnumFirstValue::Valid>
@@ -62,8 +67,6 @@ namespace item
                 Plate,
                 Count
             };
-
-            static const std::string ToString(const base_type::Enum);
         };
 
         struct cover_type : public EnumBaseCounting<EnumFirstValue::Valid>
@@ -76,8 +79,6 @@ namespace item
                 Cloak,
                 Count
             };
-
-            static const std::string ToString(const cover_type::Enum);
         };
 
     } // namespace armor

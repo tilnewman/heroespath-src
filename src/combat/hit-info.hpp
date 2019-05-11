@@ -64,8 +64,6 @@ namespace combat
             Trap,
             Count
         };
-
-        static const std::string ToString(const Enum);
     };
 
     // Everything required to describe an attempted combat action.

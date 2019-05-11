@@ -36,8 +36,8 @@ void testSlider(
     const float ADJUSTMENT,
     const std::size_t ITERATION_COUNT_MIN)
 {
-    std::cout << "testSlider<Value_t=" << NAMEOF_TYPE_T(Value_t)
-              << ", Slider_t=" << NAMEOF_TYPE_T(Slider_t) << ">(from=" << FROM << ", to=" << TO
+    std::cout << "testSlider<Value_t=" << NAMEOF_TYPE(Value_t)
+              << ", Slider_t=" << NAMEOF_TYPE(Slider_t) << ">(from=" << FROM << ", to=" << TO
               << ", start_at=" << START_AT << ", adjustment=" << ADJUSTMENT
               << ", iteration_count_min=" << ITERATION_COUNT_MIN << ")" << std::endl;
 

@@ -715,17 +715,18 @@ namespace gui
 
         if (BYTES >= MB)
         {
-            str += std::to_string(static_cast<long double>(BYTES) / static_cast<long double>(MB))
-                + "MB";
+            str += std::to_string(static_cast<long double>(BYTES) / static_cast<long double>(MB));
+            str += "MB";
         }
         else if (BYTES >= KB)
         {
-            str += std::to_string(static_cast<long double>(BYTES) / static_cast<long double>(KB))
-                + "KB";
+            str += std::to_string(static_cast<long double>(BYTES) / static_cast<long double>(KB));
+            str += "KB";
         }
         else
         {
-            str += std::to_string(BYTES) + "B";
+            str += std::to_string(BYTES);
+            str += 'B';
         }
 
         return str;

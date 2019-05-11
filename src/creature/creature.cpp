@@ -43,12 +43,12 @@ namespace creature
 
     Creature::Creature(
         const bool IS_PLAYER,
-        const std::string & NAME,
+        const std::string_view NAME,
         const sex::Enum SEX,
         const race::Enum & RACE,
         const role::Enum & ROLE,
         const StatSet & STATS,
-        const std::string & IMAGE_FILENAME,
+        const std::string_view IMAGE_FILENAME,
         const Health_t & HEALTH,
         const Rank_t & RANK,
         const Experience_t & EXPERIENCE,
@@ -66,7 +66,7 @@ namespace creature
         , inventory_()
         , dateTimeCreated_(gui::DateTime::CurrentDateTime())
         , spellsVec_()
-        , achievements_(NAME, ROLE)
+        , achievements_(ROLE)
         , heldWeaponsPVec_()
         , lastSpellCastNum_(0)
         , songsVec_()
@@ -132,7 +132,7 @@ namespace creature
 
         result += Name();
 
-        if (result != RaceName())
+        if (result != RaceNameForced())
         {
             result += " the ";
             result += race::RaceRoleName(race_, role_);
@@ -150,15 +150,15 @@ namespace creature
     {
         if (race_ == creature::race::Dragon)
         {
-            return creature::dragon_class::Name(DragonClass());
+            return NAMEOF_ENUM_STR(DragonClass());
         }
         else if (race_ == creature::race::Wolfen)
         {
-            return creature::wolfen_class::Name(WolfenClass());
+            return NAMEOF_ENUM_STR(WolfenClass());
         }
         else
         {
-            return rank_class::ToString(RankClass());
+            return NAMEOF_ENUM_STR(RankClass());
         }
     }
 
@@ -239,7 +239,7 @@ namespace creature
 
         result.reserve(8);
 
-        result += "0";
+        result += '0';
 
         const float HEALTH_RATIO(HealthRatio());
         if (!misc::IsRealClose(HEALTH_RATIO, 0.0f))
@@ -262,7 +262,7 @@ namespace creature
 
         if (WILL_APPEND_SYMBOL)
         {
-            result += "%";
+            result += '%';
         }
 
         return result;
@@ -512,27 +512,37 @@ namespace creature
 
     const std::string Creature::ItemIsAddAllowed(const item::ItemPtr_t ITEM_PTR) const
     {
-        // always allow bodypart items
+        std::string str;
+        str.reserve(128);
+
         if (ITEM_PTR->IsBodypart())
         {
-            return ITEM_ACTION_SUCCESS_STR_;
+            // always allow bodypart items
+            str = ITEM_ACTION_SUCCESS_STR_;
         }
-
-        // verify strength/weight
-        if (isPlayer_ && ((inventory_.Weight() + ITEM_PTR->Weight()) > WeightCanCarry()))
+        else if (isPlayer_ && ((inventory_.Weight() + ITEM_PTR->Weight()) > WeightCanCarry()))
         {
-            return std::string("item weighs ") + ITEM_PTR->Weight().ToString() + " which is "
-                + ((inventory_.Weight() + ITEM_PTR->Weight()) - WeightCanCarry()).ToString()
-                + " too heavy";
-        }
+            // verify strength/weight
 
-        // verify armor vs race
-        if (ITEM_PTR->IsArmor() && IsBeast())
+            str = "item weighs ";
+            str += ITEM_PTR->Weight().ToString();
+            str += " which is ";
+            str += ((inventory_.Weight() + ITEM_PTR->Weight()) - WeightCanCarry()).ToString();
+            str += " too heavy";
+        }
+        else if (ITEM_PTR->IsArmor() && IsBeast())
         {
-            return race::Name(race_) + "s (or any beast) cannot be given armor";
+            // verify armor vs race
+
+            str = std::string(race::Name(race_));
+            str += "s (or any beast) cannot be given armor";
+        }
+        else
+        {
+            str = ITEM_ACTION_SUCCESS_STR_;
         }
 
-        return ITEM_ACTION_SUCCESS_STR_;
+        return str;
     }
 
     void Creature::ItemRemove(const item::ItemPtr_t ITEM_PTR)
@@ -625,7 +635,7 @@ namespace creature
             if (REQUIRED_ROLE != Role())
             {
                 return "Can't equip because it is part of a magical set intended for "
-                    + role::Name(REQUIRED_ROLE) + "s.";
+                    + std::string(role::Name(REQUIRED_ROLE)) + "s.";
             }
         }
 
@@ -657,8 +667,8 @@ namespace creature
         if (ITEM_PTR->HasCategoryType(item::category::OneHanded)
             && (inventory_.CountItemOfCategoryEquipped(item::category::OneHanded) > 2))
         {
-            equipFailReasonStr
-                += separatorIfNotEmpty(equipFailReasonStr) + "Can't equip three one-handed items.";
+            equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+            equipFailReasonStr += "Can't equip three one-handed items.";
         }
 
         if (ITEM_PTR->HasCategoryType(item::category::TwoHanded))
@@ -671,10 +681,10 @@ namespace creature
 
             if (NONBODYPART_TWOHANDED_WEAPONS_SVEC.empty() == false)
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                    + "Can't equip multiple two-handed items. ("
-                    + item::Algorithms::Names(NONBODYPART_TWOHANDED_WEAPONS_SVEC)
-                    + " is already equipped)";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += "Can't equip multiple two-handed items. (";
+                equipFailReasonStr += item::Algorithms::Names(NONBODYPART_TWOHANDED_WEAPONS_SVEC);
+                equipFailReasonStr += " is already equipped)";
             }
         }
 
@@ -685,8 +695,8 @@ namespace creature
             if ((MISC_TYPE == item::misc_type::Wand)
                 && (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Wand) > 0))
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                    + "Can't equip more than one wand at a time.";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += "Can't equip more than one wand at a time.";
             }
 
             // verify valid duplicates upper limits
@@ -694,8 +704,8 @@ namespace creature
                 && (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Ring)
                     < Body().NumArms()))
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                    + "Can't equip more than one ring per hand.";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += "Can't equip more than one ring per hand.";
             }
 
             if ((MISC_TYPE == item::misc_type::MaskMourners)
@@ -715,15 +725,16 @@ namespace creature
 
                 if (Body().NumHeads() <= equippedMaskCount)
                 {
-                    equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                        + "Can only equip one mask per head.";
+                    equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                    equipFailReasonStr += "Can only equip one mask per head.";
                 }
             }
 
             if ((MISC_TYPE == item::misc_type::Ring) && (Body().HasFingers() == false))
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr) + RaceName()
-                    + "'s can't equip rings because they have no fingers.";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += RaceName();
+                equipFailReasonStr += "'s can't equip rings because they have no fingers.";
             }
         }
 
@@ -733,32 +744,34 @@ namespace creature
 
             if ((ARMOR_TYPE == item::armor_type::Bracers) && (Body().HasArms() == false))
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                    + "Can't equip bracers without arms.";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += "Can't equip bracers without arms.";
             }
 
             if ((ARMOR_TYPE == item::armor_type::Gauntlets) && (Body().HasFingers() == false))
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                    + "Can't equip gauntlets without fingers.";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += "Can't equip gauntlets without fingers.";
             }
 
             if ((ARMOR_TYPE == item::armor_type::Gauntlets) && (Body().HasArms() == false))
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                    + "Can't equip gauntlets without arms.";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += "Can't equip gauntlets without arms.";
             }
 
             if ((ARMOR_TYPE == item::armor_type::Helm) && (Body().HasHead() == false))
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr) + RaceName()
-                    + "'s can't equip helms because they have no head.";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += RaceName();
+                equipFailReasonStr += "'s can't equip helms because they have no head.";
             }
 
             if ((ARMOR_TYPE == item::armor_type::Helm) && (Body().HasHorns() == true))
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr) + RaceName()
-                    + "'s can't equip helms beaus they have horns.";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += RaceName();
+                equipFailReasonStr += "'s can't equip helms beaus they have horns.";
             }
 
             if ((ARMOR_TYPE == item::armor_type::Aventail)
@@ -766,8 +779,8 @@ namespace creature
                         inventory_.ItemsEquipped(), item::armor_type::Helm)
                         .empty()))
             {
-                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                    + "Can't equip an aventail without first equipping a helm.";
+                equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                equipFailReasonStr += "Can't equip an aventail without first equipping a helm.";
             }
 
             std::size_t armorEquipLimit { 1 };
@@ -780,43 +793,60 @@ namespace creature
             {
                 armorEquipLimit = Body().NumArms() / 2;
 
-                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr)
-                    + "(Bracers and gauntlets are pairs of items.  You can only equip one "
-                      "set per two arms.  "
-                    + Name() + " has " + std::to_string(Body().NumArms()) + " arms.)";
+                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr);
+
+                equipLimitErrorStr
+                    += "(Bracers and gauntlets are pairs of items.  You can only equip one "
+                       "set per two arms.  ";
+
+                equipLimitErrorStr += Name() + " has ";
+                equipLimitErrorStr += std::to_string(Body().NumArms());
+                equipLimitErrorStr += " arms.)";
             }
             else if (ARMOR_TYPE == item::armor_type::Shield)
             {
                 armorEquipLimit = Body().NumArms();
 
-                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr)
-                    + "(Can only equip one shield per arm.  " + Name() + " has "
-                    + std::to_string(Body().NumArms()) + " arms.)";
+                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr);
+                equipLimitErrorStr += "(Can only equip one shield per arm.  ";
+                equipLimitErrorStr += Name();
+                equipLimitErrorStr += " has ";
+                equipLimitErrorStr += std::to_string(Body().NumArms());
+                equipLimitErrorStr += " arms.)";
             }
             else if (
                 (ARMOR_TYPE == item::armor_type::Boots) || (ARMOR_TYPE == item::armor_type::Pants))
             {
                 armorEquipLimit = Body().NumLegs() / 2;
 
-                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr)
-                    + "(Can only equip one boots or pants per two legs.  " + Name() + " has "
-                    + std::to_string(Body().NumLegs()) + " legs.)";
+                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr);
+                equipLimitErrorStr += "(Can only equip one boots or pants per two legs.  ";
+                equipLimitErrorStr += Name();
+                equipLimitErrorStr += " has ";
+                equipLimitErrorStr += std::to_string(Body().NumLegs());
+                equipLimitErrorStr += " legs.)";
             }
             else if (ARMOR_TYPE == item::armor_type::Helm)
             {
                 armorEquipLimit = Body().NumHeads();
 
-                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr)
-                    + "(Can only equip one helm per head.  " + Name() + " has "
-                    + std::to_string(Body().NumHeads()) + " heads.)";
+                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr);
+                equipLimitErrorStr += "(Can only equip one helm per head.  ";
+                equipLimitErrorStr += Name();
+                equipLimitErrorStr += " has ";
+                equipLimitErrorStr += std::to_string(Body().NumHeads());
+                equipLimitErrorStr += " heads.)";
             }
             else if (ARMOR_TYPE == item::armor_type::Aventail)
             {
                 armorEquipLimit = inventory_.CountItemOfArmorTypeEquipped(item::armor_type::Helm);
 
-                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr)
-                    + "(Can only equip one aventail per helm.  " + Name() + " has "
-                    + std::to_string(armorEquipLimit) + " helms.)";
+                equipLimitErrorStr += separatorIfNotEmpty(equipLimitErrorStr);
+                equipLimitErrorStr += "(Can only equip one aventail per helm.  ";
+                equipLimitErrorStr += Name();
+                equipLimitErrorStr += " has ";
+                equipLimitErrorStr += std::to_string(armorEquipLimit);
+                equipLimitErrorStr += " helms.)";
             }
 
             const auto & ARMOR_INFO { ITEM_PTR->ArmorInfo() };
@@ -839,61 +869,71 @@ namespace creature
 
                 if ((ARMOR_INFO.CoverType() == item::armor::cover_type::Vest) && HAS_EQUIPPED_VEST)
                 {
-                    equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                        + "Can't equip vest because already has a vest equipped.";
+                    equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                    equipLimitErrorStr += "Can't equip vest because already has a vest equipped.";
                 }
                 else if (ARMOR_INFO.CoverType() == item::armor::cover_type::Cape)
                 {
                     if (HAS_EQUIPPED_CAPE)
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Can't equip cape because already has a cape equipped.";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+
+                        equipLimitErrorStr
+                            += "Can't equip cape because already has a cape equipped.";
                     }
 
                     if (HAS_EQUIPPED_ROBE || HAS_EQUIPPED_CLOAK)
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Can't equip cape because already has a robe or cloak equipped.";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+
+                        equipLimitErrorStr
+                            += "Can't equip cape because already has a robe or cloak equipped.";
                     }
                 }
                 else if (ARMOR_INFO.CoverType() == item::armor::cover_type::Robe)
                 {
                     if (HAS_EQUIPPED_ROBE)
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Can't equip robe because already has a robe equipped.";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                        equipLimitErrorStr
+                            += "Can't equip robe because already has a robe equipped.";
                     }
 
                     if (HAS_EQUIPPED_CAPE)
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Can't equip robe because already has a cape equipped.";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                        equipLimitErrorStr
+                            += "Can't equip robe because already has a cape equipped.";
                     }
 
                     if (HAS_EQUIPPED_CLOAK)
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Can't equip robe because already has a cloak equipped.";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                        equipLimitErrorStr
+                            += "Can't equip robe because already has a cloak equipped.";
                     }
                 }
                 else if (ARMOR_INFO.CoverType() == item::armor::cover_type::Cloak)
                 {
                     if (HAS_EQUIPPED_CLOAK)
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Can't equip cloak because already has a cloak equipped.";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                        equipLimitErrorStr
+                            += "Can't equip cloak because already has a cloak equipped.";
                     }
 
                     if (HAS_EQUIPPED_CAPE)
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Can't equip cloak because already has a cape equipped.";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                        equipLimitErrorStr
+                            += "Can't equip cloak because already has a cape equipped.";
                     }
 
                     if (HAS_EQUIPPED_ROBE)
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Can't equip cloak because already has a robe equipped.";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                        equipLimitErrorStr
+                            += "Can't equip cloak because already has a robe equipped.";
                     }
                 }
             }
@@ -904,22 +944,27 @@ namespace creature
 
                 if (ALREADY_EQUIPPED_COUNT > armorEquipLimit)
                 {
-                    const auto ARMOR_TYPE_STR { item::armor_type::ToString(ARMOR_TYPE) };
+                    const auto ARMOR_TYPE_STR { NAMEOF_ENUM(ARMOR_TYPE) };
 
                     if (0 == armorEquipLimit)
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Can't equip any " + ARMOR_TYPE_STR + ".";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                        equipLimitErrorStr += "Can't equip any ";
+                        equipLimitErrorStr += ARMOR_TYPE_STR;
+                        equipLimitErrorStr += '.';
                     }
                     else
                     {
-                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr)
-                            + "Already equipped " + std::to_string(ALREADY_EQUIPPED_COUNT) + " "
-                            + ARMOR_TYPE_STR + ", which is the limit.";
+                        equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                        equipLimitErrorStr += "Already equipped ";
+                        equipLimitErrorStr += std::to_string(ALREADY_EQUIPPED_COUNT);
+                        equipLimitErrorStr += ' ';
+                        equipLimitErrorStr += ARMOR_TYPE_STR;
+                        equipLimitErrorStr += ", which is the limit.";
                     }
 
-                    equipFailReasonStr
-                        += separatorIfNotEmpty(equipFailReasonStr) + equipLimitErrorStr;
+                    equipFailReasonStr += separatorIfNotEmpty(equipFailReasonStr);
+                    equipLimitErrorStr += equipLimitErrorStr;
                 }
             }
         }
@@ -936,13 +981,19 @@ namespace creature
 
     const std::string Creature::ItemIsEquipAllowedByRole(const item::ItemPtr_t ITEM_PTR) const
     {
+        std::string str(ITEM_ACTION_SUCCESS_STR_);
+        str.reserve(256);
+
         // this const stack variable is just to protect the member
         const auto ROLE { role_ };
 
         const auto EXCLUSIVE_ROLE { ITEM_PTR->ExclusiveRole() };
         if ((EXCLUSIVE_ROLE != creature::role::Count) && (EXCLUSIVE_ROLE != ROLE))
         {
-            return "Only " + creature::role::ToString(EXCLUSIVE_ROLE) + "s may equip this item.";
+            str = "Only ";
+            str += NAMEOF_ENUM(EXCLUSIVE_ROLE);
+            str += "s may equip this item.";
+            return str;
         }
 
         const auto & WEAPON_INFO { ITEM_PTR->WeaponInfo() };
@@ -951,38 +1002,43 @@ namespace creature
         if (((ROLE != role::Knight) && (ROLE != role::Warlord)) && WEAPON_INFO.IsBladedStaff()
             && (WEAPON_INFO.IsSpear() == false))
         {
-            return "Only knights and warlords may equip non-simple-spear bladed staff weapons.";
+            str = "Only knights and warlords may equip non-simple-spear bladed staff weapons.";
+            return str;
         }
-
-        if ((role_ != role::Knight) && (ITEM_PTR->IsArmor())
+        else if (
+            (role_ != role::Knight) && (ITEM_PTR->IsArmor())
             && (ARMOR_INFO.BaseType() == item::armor::base_type::Plate))
         {
-            return "Only knights may equip plate armor.";
+            str = "Only knights may equip plate armor.";
+            return str;
         }
-
-        if ((ROLE != role::Knight) && (ITEM_PTR->IsArmor())
+        else if (
+            (ROLE != role::Knight) && (ITEM_PTR->IsArmor())
             && ((ARMOR_INFO.ShieldType() == item::armor::shield_type::Heater)
                 || (ARMOR_INFO.ShieldType() == item::armor::shield_type::Pavis)))
         {
-            return "Only knights may equip Pavis or Heater shields.";
+            str = "Only knights may equip Pavis or Heater shields.";
+            return str;
         }
 
         if (ITEM_PTR->IsBodypart() == false)
         {
             if (race_ == race::Dragon)
             {
-                return "Dragons can only equip body parts, such as skin, horns, claws, or bite.";
+                str = "Dragons can only equip body parts, such as skin, horns, claws, or bite.";
+                return str;
             }
-
-            if (race_ == race::Wolfen)
+            else if (race_ == race::Wolfen)
             {
-                return "Wolfens can only equip body parts, such as skin, claws, or bite.";
+                str = "Wolfens can only equip body parts, such as skin, claws, or bite.";
+                return str;
             }
         }
 
         if ((item::misc_type::IsMusicalInstrument(ITEM_PTR->MiscType())) && (ROLE != role::Bard))
         {
-            return "Only Bards can equip musical instruments.";
+            str = "Only Bards can equip musical instruments.";
+            return str;
         }
 
         if ((ROLE == role::Cleric) || (ROLE == role::Sorcerer))
@@ -995,8 +1051,10 @@ namespace creature
                     && (ITEM_PTR->HasWeaponType(item::weapon_type::Staff) == false)
                     && (WEAPON_INFO.IsWhip() == false))
                 {
-                    return std::string((ROLE == role::Cleric) ? "Clerics" : "Sorcerers")
-                        + " can only equip staffs, knives, daggers, whips, slings,  and blowpipes.";
+                    str = std::string((ROLE == role::Cleric) ? "Clerics" : "Sorcerers");
+                    str += " can only equip staffs, knives, daggers, whips, slings,  and "
+                           "blowpipes.";
+                    return str;
                 }
             }
 
@@ -1007,8 +1065,9 @@ namespace creature
                 if ((MAT_PRI != item::material::Cloth) && (MAT_PRI != item::material::Leather)
                     && (MAT_PRI != item::material::Silk) && (MAT_PRI != item::material::Fur))
                 {
-                    return std::string((ROLE == role::Cleric) ? "Clerics" : "Sorcerers")
-                        + " can only equip armor made from cloth, silk, fur, or leather.";
+                    str = std::string((ROLE == role::Cleric) ? "Clerics" : "Sorcerers");
+                    str += " can only equip armor made from cloth, silk, fur, or leather.";
+                    return str;
                 }
             }
         }
@@ -1018,12 +1077,16 @@ namespace creature
             if ((WEAPON_INFO.AxeType() == item::weapon::axe_type::Waraxe)
                 || (WEAPON_INFO.ClubType() == item::weapon::club_type::Warhammer))
             {
-                return role::Name(ROLE) + "s cannot equip axes or clubs made for war.";
+                str = role::Name(ROLE);
+                str += "s cannot equip axes or clubs made for war.";
+                return str;
             }
 
             if (WEAPON_INFO.IsBladedStaff())
             {
-                return role::Name(ROLE) + "s cannot equip bladed staffs.";
+                str = role::Name(ROLE);
+                str += "s cannot equip bladed staffs.";
+                return str;
             }
         }
 
@@ -1033,7 +1096,8 @@ namespace creature
                 && (WEAPON_INFO.ProjectileType() != item::weapon::projectile_type::Sling)
                 && (WEAPON_INFO.ProjectileType() != item::weapon::projectile_type::Blowpipe))
             {
-                return "Thieves cannot equip two-handed weapons except for Slings and Blowpipes.";
+                str = "Thieves cannot equip two-handed weapons except for Slings and Blowpipes.";
+                return str;
             }
 
             // if (ITEM_PTR->HasWeaponType(item::weapon_type::Axe)
@@ -1046,7 +1110,7 @@ namespace creature
             //}
         }
 
-        return ITEM_ACTION_SUCCESS_STR_;
+        return str;
     }
 
     const std::string Creature::ItemUnEquip(const item::ItemPtr_t ITEM_PTR)
@@ -1275,19 +1339,19 @@ namespace creature
 
         if (spellsVec_.empty())
         {
-            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no spells"
+            return RESPONSE_PREFIX + std::string(sex::HeSheIt(sex_, false)) + " knows no spells"
                 + RESPONSE_POSTFIX;
         }
 
         if (TraitWorking(Traits::Mana) <= 0)
         {
-            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left"
+            return RESPONSE_PREFIX + std::string(sex::HeSheIt(sex_, false)) + " has no mana left"
                 + RESPONSE_POSTFIX;
         }
 
         if (inventory_.HasCastingItemEquipped() == false)
         {
-            return RESPONSE_PREFIX + creature::sex::HeSheIt(sex_, false)
+            return RESPONSE_PREFIX + std::string(creature::sex::HeSheIt(sex_, false))
                 + " has no wand or other casting item" + RESPONSE_POSTFIX;
         }
 
@@ -1378,19 +1442,19 @@ namespace creature
 
         if (songsVec_.empty())
         {
-            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no songs"
+            return RESPONSE_PREFIX + std::string(sex::HeSheIt(sex_, false)) + " knows no songs"
                 + RESPONSE_POSTFIX;
         }
 
         if (TraitWorking(Traits::Mana) <= 0)
         {
-            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left"
+            return RESPONSE_PREFIX + std::string(sex::HeSheIt(sex_, false)) + " has no mana left"
                 + RESPONSE_POSTFIX;
         }
 
         if (inventory_.HasMusicalInstrumentEquipped() == false)
         {
-            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false)
+            return RESPONSE_PREFIX + std::string(sex::HeSheIt(sex_, false))
                 + " has no musical instrument equipped" + RESPONSE_POSTFIX;
         }
 
@@ -1465,26 +1529,49 @@ namespace creature
         std::string result;
         result.reserve(2048);
 
-        result
-            += ("\"" + name_ + "\"" + ", " + sex::ToString(sex_) + ", " + race::Name(race_) + ", "
-                + role::Name(role_) + ", " + actualSet_.StatsString(false)
-                + ", health=" + healthCurrent_.ToString() + "/" + healthNormal_.ToString()
-                + ", mana=" + std::to_string(TraitWorking(Traits::Mana)) + "/"
-                + std::to_string(TraitNormal(Traits::Mana)) + ", rank=" + Rank().ToString()
-                + ", exp=" + Exp().ToString() + ", body[" + bodyType_.ToString() + "], conds=");
+        result += '\"';
+        result += name_;
+        result += '\"';
+        result += ", ";
+        result += NAMEOF_ENUM(sex_);
+        result += ", ";
+        result += race::Name(race_);
+
+        result += ", ";
+        result += role::Name(role_);
+        result += ", ";
+        result += actualSet_.StatsString(false);
+        result += ", health=";
+        result += healthCurrent_.ToString();
+        result += '/';
+        result += healthNormal_.ToString();
+        result += ", mana=";
+        result += std::to_string(TraitWorking(Traits::Mana));
+        result += '/';
+        result += std::to_string(TraitNormal(Traits::Mana));
+        result += ", rank=";
+        result += Rank().ToString();
+        result += ", exp=";
+        result += Exp().ToString();
+        result += ", body[";
+        result += bodyType_.ToString();
+        result += "], conds=";
 
         for (const auto NEXT_CONDITION_ENUM : conditionsVec_)
         {
-            result += condition::Holder::Get(NEXT_CONDITION_ENUM)->Name() + ",";
+            result += condition::Holder::Get(NEXT_CONDITION_ENUM)->Name();
+            result += ',';
         }
 
         result += " titles=";
         for (const auto NEXT_TITLE_ENUM : titlesVec_)
         {
-            result += title::Holder::Get(NEXT_TITLE_ENUM)->Name() + ",";
+            result += title::Holder::Get(NEXT_TITLE_ENUM)->Name();
+            result += ',';
         }
 
-        result += " inventory=" + inventory_.ToString();
+        result += " inventory=";
+        result += inventory_.ToString();
 
         return result;
     }
@@ -1629,19 +1716,19 @@ namespace creature
         {
             if (WILL_WRAP)
             {
-                result += "(";
+                result += '(';
             }
 
             if (WORKING > NORMAL)
             {
-                result += "+";
+                result += '+';
             }
 
             result += std::to_string(WORKING - NORMAL);
 
             if (WILL_WRAP)
             {
-                result += ")";
+                result += ')';
             }
         }
 

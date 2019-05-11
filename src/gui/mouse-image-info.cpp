@@ -143,18 +143,27 @@ namespace gui
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += "(";
+            str += '(';
         }
 
-        str += "Up=" + up.ToString(false, Wrap::Yes) + SEPARATOR
-            + "Down=" + down.ToString(false, Wrap::Yes) + SEPARATOR
-            + "Over=" + over.ToString(false, Wrap::Yes) + SEPARATOR
-            + "Disabled=" + disabled.ToString(false, Wrap::Yes) + SEPARATOR
-            + "will_draw_up_if_missing=" + misc::ToString(will_draw_up_if_missing);
+        str += "Up=";
+        str += up.ToString(false, Wrap::Yes);
+        str += SEPARATOR;
+        str += "Down=";
+        str += down.ToString(false, Wrap::Yes);
+        str += SEPARATOR;
+        str += "Over=";
+        str += over.ToString(false, Wrap::Yes);
+        str += SEPARATOR;
+        str += "Disabled=";
+        str += disabled.ToString(false, Wrap::Yes);
+        str += SEPARATOR;
+        str += "will_draw_up_if_missing=";
+        str += misc::ToString(will_draw_up_if_missing);
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += ")";
+            str += ')';
         }
 
         return str;

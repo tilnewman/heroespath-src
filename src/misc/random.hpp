@@ -105,9 +105,9 @@ namespace misc
                 {
                     M_HP_LOG_ERR(
                         "Random<"
-                        << NAMEOF_TYPE_T(T) << ">(MIN=" << THE_MIN << ", MAX=" << THE_MAX_ORIG
+                        << NAMEOF_TYPE(T) << ">(MIN=" << THE_MIN << ", MAX=" << THE_MAX_ORIG
                         << ") failing because the difference between (MAX-MIN) overflows for T="
-                        << NAMEOF_TYPE_T(T)
+                        << NAMEOF_TYPE(T)
                         << ".  So instead, generating a random number between [MIN, "
                            "MIN+numeric_limit::max] or ["
                         << THE_MIN << ", " << THE_MAX_FINAL_LIMIT << "].");
@@ -149,7 +149,7 @@ namespace misc
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (CONTAINER.empty() == false),
-            "Given an empty " << NAMEOF_TYPE_T(Container_t) << " container.");
+            "Given an empty " << NAMEOF_TYPE(Container_t) << " container.");
 
         return Random(CONTAINER.size() - static_cast<std::size_t>(1));
     }
@@ -161,7 +161,7 @@ namespace misc
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (container.empty() == false),
-            "Given an empty " << NAMEOF_TYPE_T(Container_t) << " container. (non-const version)");
+            "Given an empty " << NAMEOF_TYPE(Container_t) << " container. (non-const version)");
 
         const auto RANDOM_INDEX { RandomIndex(container) };
 
@@ -179,7 +179,7 @@ namespace misc
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (CONTAINER.empty() == false),
-            "Given an empty " << NAMEOF_TYPE_T(Container_t) << " container. (const version)");
+            "Given an empty " << NAMEOF_TYPE(Container_t) << " container. (const version)");
 
         const auto RANDOM_INDEX { RandomIndex(CONTAINER) };
 

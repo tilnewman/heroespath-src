@@ -639,7 +639,7 @@ namespace gui
     void SoundManager::CacheMusicInfo_CombatIntro()
     {
         const auto DIR_PATH_STR { misc::filesystem::CombinePaths(
-            musicDirectoryPath_, music::Directory(music::CombatIntro)) };
+            musicDirectoryPath_, std::string(music::Directory(music::CombatIntro))) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR)),
@@ -648,7 +648,7 @@ namespace gui
                 << DIR_PATH_STR);
 
         const auto MUSIC_FILE_PATHS { misc::filesystem::FindFiles(
-            false, DIR_PATH_STR, "", music::FileExt()) };
+            false, DIR_PATH_STR, "", std::string(music::FileExt)) };
 
         combatIntroMusicInfoVec_.clear();
 
@@ -668,7 +668,7 @@ namespace gui
             const auto NEXT_TRACK_NAME { FILE_NAME_PARTS_VEC.at(2) };
 
             const auto NEXT_LICENSE_NAME { boost::algorithm::erase_all_copy(
-                FILE_NAME_PARTS_VEC.at(3), music::FileExt()) };
+                FILE_NAME_PARTS_VEC.at(3), music::FileExt) };
 
             combatIntroMusicInfoVec_.emplace_back(MusicInfo(
                 music::CombatIntro,
@@ -696,7 +696,8 @@ namespace gui
         if (musicInfo.Which() == music::CombatIntro)
         {
             musicInfo = misc::RandomSelect(combatIntroMusicInfoVec_);
-            musicUPtr = OpenMusic(musicInfo.Filename(), music::Directory(music::CombatIntro));
+            musicUPtr = OpenMusic(
+                musicInfo.Filename(), std::string(music::Directory(music::CombatIntro)));
         }
         else
         {
@@ -739,7 +740,7 @@ namespace gui
             if (sfxIndex < sound_effect::Count)
             {
                 const auto ENUM { static_cast<sound_effect::Enum>(sfxIndex) };
-                const auto ENUM_STR { sound_effect::ToString(ENUM) };
+                const auto ENUM_STR { NAMEOF_ENUM_STR(ENUM) };
 
                 iStagePtr->TestingStrIncrement("SoundManager SFX Test \"" + ENUM_STR + "\"");
 
@@ -776,8 +777,8 @@ namespace gui
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (sfxSetVec_.at(static_cast<std::size_t>(sfxSetIndex)).IsValid()),
                     "gui::SoundManager::Test() While testing SoudEffectsSets #"
-                        << sfxSetIndex << ", enum="
-                        << sound_effect::ToString(static_cast<sound_effect::Enum>(sfxSetIndex))
+                        << sfxSetIndex
+                        << ", enum=" << NAMEOF_ENUM(static_cast<sound_effect::Enum>(sfxSetIndex))
                         << " found IsValid()==false.");
 
                 if (false
@@ -941,12 +942,14 @@ namespace gui
     SoundBufferUPtr_t SoundManager::LoadSfxBuffer(const sound_effect::Enum ENUM) const
     {
         const auto SOUND_FILE_PATH_STR { misc::filesystem::CombinePaths(
-            soundsDirectoryPath_, sound_effect::Directory(ENUM), sound_effect::Filename(ENUM)) };
+            soundsDirectoryPath_,
+            std::string(sound_effect::Directory(ENUM)),
+            std::string(sound_effect::Filename(ENUM))) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(SOUND_FILE_PATH_STR)),
-            "gui::SoundManager::LoadSound(" << sound_effect::ToString(ENUM)
-                                            << "), attempting path=\"" << SOUND_FILE_PATH_STR
+            "gui::SoundManager::LoadSound(" << NAMEOF_ENUM(ENUM) << "), attempting path=\""
+                                            << SOUND_FILE_PATH_STR
                                             << "\", failed because that file does not exist.");
 
         auto bufferUPtr { std::make_unique<sf::SoundBuffer>() };
@@ -954,7 +957,7 @@ namespace gui
         M_HP_ASSERT_OR_LOG_AND_THROW(
             bufferUPtr->loadFromFile(SOUND_FILE_PATH_STR),
             "gui::SoundManager::LoadSound("
-                << sound_effect::ToString(ENUM) << "), attempting path=\"" << SOUND_FILE_PATH_STR
+                << NAMEOF_ENUM(ENUM) << "), attempting path=\"" << SOUND_FILE_PATH_STR
                 << "\", sf::SoundBuffer::loadFromFile() returned false.  See console output"
                 << " for more information.");
 

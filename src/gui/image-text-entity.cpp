@@ -24,31 +24,6 @@ namespace heroespath
 namespace gui
 {
 
-    const std::string
-        ImageTextEntity::MouseStateSync::ToString(const MouseStateSync::Enum FOLLOW_TYPE)
-    {
-        switch (FOLLOW_TYPE)
-        {
-            case None: { return "None";
-            }
-            case Image: { return "Image";
-            }
-            case Text: { return "Text";
-            }
-            case Count: { return "(Count)";
-            }
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(FOLLOW_TYPE)
-                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
-                                  << ")");
-
-                return "";
-            }
-        }
-    }
-
     ImageTextEntity::ImageTextEntity(
         const std::string & NAME,
         ImageEntityUPtr_t && IMAGE_ENTITY_UPTR,

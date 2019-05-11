@@ -95,8 +95,6 @@ namespace combat
                 Charger, // always advances until reaching most desired target
                 Count
             };
-
-            static const std::string ToString(const Enum);
         };
 
         struct RetreatType : public EnumBaseCounting<EnumFirstValue::None>
@@ -108,8 +106,6 @@ namespace combat
                 Coward, // retreats if there are any opponents able to attack in the melee
                 Count
             };
-
-            static const std::string ToString(const Enum);
         };
 
         struct FrequencyType : public EnumBaseCounting<EnumFirstValue::Never>
@@ -128,8 +124,6 @@ namespace combat
                 Always,
                 Count
             };
-
-            static const std::string ToString(const Enum);
         };
 
         using SelectChanceMap_t = misc::VectorMap<SelectType::Enum, float>;

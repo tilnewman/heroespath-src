@@ -98,7 +98,8 @@ namespace item
             str += "broken ";
         }
 
-        str += desc_ + ".";
+        str += desc_;
+        str += '.';
         return str;
     }
 
@@ -121,15 +122,15 @@ namespace item
     {
         if (IsUnique())
         {
-            return ComposeName(misc_type::Name(miscType_));
+            return ComposeName(std::string(misc_type::Name(miscType_)));
         }
         else if (IsSet())
         {
-            return ComposeName(set_type::Name(SetType()) + " " + ReadableName());
+            return ComposeName(std::string(set_type::Name(SetType())) + " " + ReadableName());
         }
         else if (IsNamed())
         {
-            return ComposeName(named_type::Name(NamedType()) + " " + ReadableName());
+            return ComposeName(std::string(named_type::Name(NamedType())) + " " + ReadableName());
         }
         else
         {
@@ -156,11 +157,13 @@ namespace item
         std::string str;
         str.reserve(2048);
 
-        str += "name=" + misc::Quoted(Name()) + ", desc=" + misc::Quoted(Desc());
+        str += "name=\"";
+        str += misc::Quoted(Desc());
 
         if (category::None != category_)
         {
-            str += ", category=" + category::ToString(category_, EnumStringHow(Wrap::Yes));
+            str += ", category=";
+            str += category::ToString(category_, EnumStringHow(Wrap::Yes));
         }
 
         if (IsUnique())
@@ -175,18 +178,20 @@ namespace item
 
         if (armor::ArmorTypeWrapper() != armorInfo_)
         {
-            str += ", armor_info=" + armorInfo_.ToString();
+            str += ", armor_info=";
+            str += armorInfo_.ToString();
         }
 
         if (weapon::WeaponTypeWrapper() != weaponInfo_)
         {
-            str += ", weapon_info=" + weaponInfo_.ToString();
+            str += ", weapon_info=";
+            str += weaponInfo_.ToString();
         }
 
         if (misc_type::Not != miscType_)
         {
-            str += ", misc_type="
-                + ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
+            str += ", misc_type=";
+            str += ((misc_type::Count == miscType_) ? "Count" : NAMEOF_ENUM(miscType_));
         }
 
         if (isPixie_)
@@ -197,41 +202,46 @@ namespace item
 
         if (creature::role::Count != exclusiveToRole_)
         {
-            str += ", role_restriction=" + creature::role::ToString(exclusiveToRole_);
+            str += ", role_restriction=";
+            str += NAMEOF_ENUM(exclusiveToRole_);
         }
 
-        str += ", mat_pri=" + material::ToString(materialPri_);
+        str += ", mat_pri=";
+        str += NAMEOF_ENUM(materialPri_);
 
         if (material::Nothing != materialSec_)
         {
-            str += ", mat_sec=" + material::ToString(materialSec_);
+            str += ", mat_sec=";
+            str += NAMEOF_ENUM(materialSec_);
         }
 
         if (set_type::Not != setType_)
         {
-            str += ", set_type="
-                + ((set_type::Count == setType_) ? "Count" : set_type::ToString(setType_));
+            str += ", set_type=";
+            str += ((set_type::Count == setType_) ? "Count" : NAMEOF_ENUM(setType_));
         }
 
         if (named_type::Not != namedType_)
         {
-            str += ", named_type="
-                + ((named_type::Count == namedType_) ? "Count" : named_type::ToString(namedType_));
+            str += ", named_type=";
+            str += ((named_type::Count == namedType_) ? "Count" : NAMEOF_ENUM(namedType_));
         }
 
         if (element_type::None != elementType_)
         {
-            str += ", element_type="
-                + element_type::ToString(elementType_, EnumStringHow(Wrap::Yes));
+            str += ", element_type=";
+            str += element_type::ToString(elementType_, EnumStringHow(Wrap::Yes));
         }
 
         if (summonInfo_.CanSummon())
         {
-            str += ", summonInfo=" + summonInfo_.ToString();
+            str += ", summonInfo=";
+            str += summonInfo_.ToString();
         }
         else if (summonInfo_.IsDefaultAndCompletelyInvalid() == false)
         {
-            str += ", summonInfo=" + summonInfo_.ToString() + "(but CanSummon()=false?)";
+            str += ", summonInfo=" + summonInfo_.ToString();
+            str += "(but CanSummon()=false?)";
         }
 
         if (enchantmentsPVec_.empty() == false)
@@ -240,10 +250,11 @@ namespace item
 
             for (const auto & ENCHANTMENT_PTR : enchantmentsPVec_)
             {
-                str += ENCHANTMENT_PTR->ToString() + " | ";
+                str += ENCHANTMENT_PTR->ToString();
+                str += " | ";
             }
 
-            str += "}";
+            str += '}';
         }
 
         return str;
@@ -280,7 +291,7 @@ namespace item
         }
         else if (IsMisc())
         {
-            return misc_type::Name(miscType_);
+            return std::string(misc_type::Name(miscType_));
         }
         else
         {

@@ -11,8 +11,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace gui
@@ -28,8 +26,6 @@ namespace gui
             Disabled,
             Count
         };
-
-        static const std::string ToString(const MouseState::Enum);
     };
 
 } // namespace gui

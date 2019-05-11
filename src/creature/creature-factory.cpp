@@ -77,8 +77,8 @@ namespace creature
             (std::find(std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE)
              != std::end(VALID_ROLES)),
             "creature::CreatureFactory::MakeAndEquipEnemy(sex="
-                << creature::sex::ToString(SEX) << ", race=" << creature::race::ToString(RACE)
-                << ", role=" << creature::role::ToString(ROLE) << ", stats=" << STATS.ToString(true)
+                << NAMEOF_ENUM(SEX) << ", race=" << NAMEOF_ENUM(RACE)
+                << ", role=" << NAMEOF_ENUM(ROLE) << ", stats=" << STATS.ToString(true)
                 << ", health=" << HEALTH << ", rank=" << RANK << ", experience=" << EXPERIENCE
                 << ") but that race/role combination is invalid.");
 

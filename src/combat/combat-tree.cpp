@@ -22,23 +22,6 @@ namespace heroespath
 namespace combat
 {
 
-    const std::string EdgeType::ToString(const Enum ENUM)
-    {
-        switch (ENUM)
-        {
-            case EdgeType::Blocking: return "Blocking";
-            case EdgeType::ShoulderToShoulder: return "Shoulder-To-Shoulder";
-            case EdgeType::All: return "All";
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "edge_type_enum=" << EnumUnderlying_t(ENUM) << " was an invalid value.");
-
-                return "";
-            }
-        };
-    }
-
     CombatTree::CombatTree()
         : edges_()
         , vertexes_()
@@ -152,7 +135,7 @@ namespace combat
 
         if (WILL_WRAP)
         {
-            result += "[";
+            result += '[';
         }
 
         for (const auto & VERTEX : vertexes_)
@@ -162,7 +145,7 @@ namespace combat
 
         if (WILL_WRAP)
         {
-            result += "]";
+            result += ']';
         }
 
         return result;
@@ -289,18 +272,18 @@ namespace combat
 
         if (WILL_WRAP)
         {
-            result += "(";
+            result += '(';
         }
 
         for (const auto & EDGE : edges_)
         {
             result += std::to_string(EDGE.a) + "-" + std::to_string(EDGE.b) + ":"
-                + EdgeType::ToString(EDGE.type) + ", ";
+                + NAMEOF_ENUM_STR(EDGE.type) + ", ";
         }
 
         if (WILL_WRAP)
         {
-            result += ")";
+            result += ')';
         }
 
         return result;
@@ -312,7 +295,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2
-               << ", type=" << EdgeType::ToString(TYPE) << ") -but the two IDs are the same.";
+               << ", type=" << NAMEOF_ENUM(TYPE) << ") -but the two IDs are the same.";
 
             throw std::invalid_argument(ss.str());
         }
@@ -321,7 +304,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2
-               << ", type=" << EdgeType::ToString(TYPE) << ") -but that edge already exists.";
+               << ", type=" << NAMEOF_ENUM(TYPE) << ") -but that edge already exists.";
 
             throw std::invalid_argument(ss.str());
         }
@@ -330,7 +313,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2
-               << ", type=" << EdgeType::ToString(TYPE) << ") -but that edge ID1==" << ID1
+               << ", type=" << NAMEOF_ENUM(TYPE) << ") -but that edge ID1==" << ID1
                << " does not exist.";
 
             throw std::invalid_argument(ss.str());
@@ -340,7 +323,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2
-               << ", type=" << EdgeType::ToString(TYPE) << ") -but that edge ID2==" << ID2
+               << ", type=" << NAMEOF_ENUM(TYPE) << ") -but that edge ID2==" << ID2
                << " does not exist.";
 
             throw std::invalid_argument(ss.str());
@@ -465,7 +448,7 @@ namespace combat
 
         std::ostringstream ss;
         ss << "CombatTree::SetEdgeType(id1=" << ID1 << ", id2=" << ID2
-           << ", type=" << EdgeType::ToString(TYPE) << ") -but that edge does not exist.";
+           << ", type=" << NAMEOF_ENUM(TYPE) << ") -but that edge does not exist.";
 
         throw std::invalid_argument(ss.str());
     }

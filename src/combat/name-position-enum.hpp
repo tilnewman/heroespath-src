@@ -32,8 +32,6 @@ namespace combat
             TargetThenSource,
             Count
         };
-
-        static const std::string ToString(const Enum);
     };
 
     class ContentAndNamePos

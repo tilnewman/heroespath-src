@@ -175,33 +175,32 @@ namespace spell
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->Name().empty() == false),
-                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                "spell::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                          << "\") resulted in an empty Name().");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->Desc().empty() == false),
-                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                "spell::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                          << "\") resulted in an empty Desc().");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->DescExtra().empty() == false),
-                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                "spell::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                          << "\") resulted in an empty DescExtra().");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!SPELL_PTR->ManaCost().IsZero()),
-                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                "spell::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                          << "\") resulted in a zero Mana cost.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!SPELL_PTR->Rank().IsZero()),
-                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                "spell::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
                                          << "\") resulted in a zero Rank.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->Name() == Spells::Name(NEXT_ENUM)),
-                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
-                                         << "\") Spell is out of order.");
+                "spell::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM) << "\") Spell is out of order.");
 
             ++spellIndex;
 

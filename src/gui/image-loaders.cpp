@@ -66,12 +66,16 @@ namespace gui
         renderTexture.draw(sprite);
         renderTexture.display();
 
-        return gui::CachedTexture(
-            "FAKE_PATH_FOR_gui::ImageLoader::LoadAndCacheImage(avatar_enum="
-                + avatar::Avatar::ToString(WHICH_AVATAR) + ", image_options=" + OPTIONS.ToString()
-                + ") requested by " + REQUESTER_DESCRIPTION,
-            renderTexture.getTexture(),
-            OPTIONS);
+        std::string str;
+        str.reserve(512);
+        str += "FAKE_PATH_FOR_gui::ImageLoader::LoadAndCacheImage(avatar_enum=";
+        str += NAMEOF_ENUM(WHICH_AVATAR);
+        str += ", image_options=";
+        str += OPTIONS.ToString();
+        str += ") requested by ";
+        str += REQUESTER_DESCRIPTION;
+
+        return gui::CachedTexture(str, renderTexture.getTexture(), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(

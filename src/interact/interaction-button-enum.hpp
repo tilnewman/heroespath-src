@@ -13,7 +13,6 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
-#include <string>
 #include <vector>
 
 namespace heroespath
@@ -34,8 +33,20 @@ namespace interact
             Count
         };
 
-        static const std::string ToString(const Enum);
-        static sf::Keyboard::Key Key(const Enum);
+        static constexpr sf::Keyboard::Key Key(const Buttons::Enum BUTTON_TYPE) noexcept
+        {
+            switch (BUTTON_TYPE)
+            {
+                case Ignore: return sf::Keyboard::I;
+                case Continue: return sf::Keyboard::C;
+                case Goodbye: return sf::Keyboard::G;
+                case Yes: return sf::Keyboard::Y;
+                case No: return sf::Keyboard::N;
+                case Unlock: return sf::Keyboard::U;
+                case Count:
+                default: return sf::Keyboard::KeyCount;
+            }
+        }
     };
 
     using ButtonEnumVec_t = std::vector<Buttons::Enum>;

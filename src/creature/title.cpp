@@ -59,7 +59,7 @@ namespace creature
                 << ") was given an invalid TITLE enum.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (Titles::ToString(TITLE).empty() == false),
+            (NAMEOF_ENUM(TITLE).empty() == false),
             "creature::Title::Title(title_enum="
                 << TITLE << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
                 << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
@@ -68,13 +68,13 @@ namespace creature
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ROLES_VEC.empty() == false),
             "creature::Title::Title(title="
-                << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
+                << NAMEOF_ENUM(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
                 << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
                 << ", exp_bonus=" << EXPERIENCE_BONUS << ") was given an empty role vector.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ACHIEVEMENT_TYPE != AchievementType::Count),
-            "creature::Title::Title(title=" << Titles::ToString(TITLE)
+            "creature::Title::Title(title=" << NAMEOF_ENUM(TITLE)
                                             << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count="
                                             << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
                                             << ", exp_bonus=" << EXPERIENCE_BONUS
@@ -83,7 +83,7 @@ namespace creature
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (!((ACHIEVEMENT_TYPE != AchievementType::None) && (ACHIEVEMENT_COUNT == 0))),
             "creature::Title::Title(title="
-                << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
+                << NAMEOF_ENUM(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
                 << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
                 << ") was given a valid AchievementType but the achievement count was zero.");
 
@@ -92,11 +92,11 @@ namespace creature
         if ((ACHIEVEMENT_TYPE == AchievementType::Count)
             || (ACHIEVEMENT_TYPE == AchievementType::None))
         {
-            fileName_ += Titles::ToString(TITLE);
+            fileName_ += NAMEOF_ENUM(TITLE);
         }
         else
         {
-            fileName_ += AchievementType::ToString(ACHIEVEMENT_TYPE);
+            fileName_ += NAMEOF_ENUM(ACHIEVEMENT_TYPE);
 
             if (ACHIEVEMENT_INDEX > 0)
             {
@@ -123,42 +123,55 @@ namespace creature
         }
         else
         {
-            str += ", for role" + std::string((rolesVec_.size() == 1) ? "" : "s") + ": ";
+            str += ", for role";
+            str += std::string((rolesVec_.size() == 1) ? "" : "s");
+            str += ": ";
 
             for (const auto & NEXT_ROLE : rolesVec_)
             {
-                str += role::Name(NEXT_ROLE) + SEP_STR;
+                str += role::Name(NEXT_ROLE);
+                str += SEP_STR;
             }
         }
 
         if (AchievementType::None != achievementType_)
         {
-            str += "granted after " + std::to_string(achievementCount_) + " "
-                + AchievementType::Name(achievementType_) + SEP_STR;
+            str += "granted after ";
+            str += std::to_string(achievementCount_);
+            str += ' ';
+            str += AchievementType::Name(achievementType_);
+            str += SEP_STR;
         }
 
         if (0_rank != rankBonus_)
         {
-            str += "rank_bonus=" + rankBonus_.ToString() + SEP_STR;
+            str += "rank_bonus=";
+            str += rankBonus_.ToString();
+            str += SEP_STR;
         }
 
         if (0_exp != expBonus_)
         {
-            str += "exp_bonus=" + expBonus_.ToString() + SEP_STR;
+            str += "exp_bonus=";
+            str += expBonus_.ToString();
+            str += SEP_STR;
         }
 
         if (0_health != healthBonus_)
         {
-            str += "health_bonus=" + healthBonus_.ToString() + SEP_STR;
+            str += "health_bonus=";
+            str += healthBonus_.ToString();
+            str += SEP_STR;
         }
 
         const std::string STATS_STR(statBonus_.ToString(true));
         if (!STATS_STR.empty())
         {
-            str += "stat_bonuses=" + STATS_STR;
+            str += "stat_bonuses=";
+            str += STATS_STR;
         }
 
-        str += ".";
+        str += '.';
         return str;
     }
 
@@ -173,22 +186,28 @@ namespace creature
 
         if (ROLEVEC_ALL_PLAYER_ROLES_ == rolesVec_)
         {
-            str += "ALL roles" + SEP_STR;
+            str += "ALL roles";
+            str += SEP_STR;
         }
         else
         {
-            str += "the following role" + std::string((rolesVec_.size() == 1) ? "" : "s") + ": ";
+            str += "the following role";
+            str += std::string((rolesVec_.size() == 1) ? "" : "s");
+            str += ": ";
 
             for (const auto & NEXT_ROLE : rolesVec_)
             {
-                str += role::Name(NEXT_ROLE) + SEP_STR;
+                str += role::Name(NEXT_ROLE);
+                str += SEP_STR;
             }
         }
 
         if (AchievementType::None != achievementType_)
         {
-            str += "and is granted after " + std::to_string(achievementCount_) + " "
-                + AchievementType::Name(achievementType_);
+            str += "and is granted after ";
+            str += std::to_string(achievementCount_);
+            str += ' ';
+            str += AchievementType::Name(achievementType_);
         }
 
         str += ".  ";
@@ -199,10 +218,13 @@ namespace creature
         }
         else
         {
-            str += "This increases your rank by " + rankBonus_.ToString();
+            str += "This increases your rank by ";
+            str += rankBonus_.ToString();
         }
 
-        str += ", your health by " + healthBonus_.ToString() + SEP_STR;
+        str += ", your health by ";
+        str += healthBonus_.ToString();
+        str += SEP_STR;
 
         if (0_exp == expBonus_)
         {
@@ -210,7 +232,8 @@ namespace creature
         }
         else
         {
-            str += "and increases your experience by " + expBonus_.ToString();
+            str += "and increases your experience by ";
+            str += expBonus_.ToString();
         }
 
         str += ".  ";
@@ -222,7 +245,9 @@ namespace creature
         }
         else
         {
-            str += "Stats undergo the following changes:  " + STATS_STR + ".";
+            str += "Stats undergo the following changes:  ";
+            str += STATS_STR;
+            str += '.';
         }
 
         return str;

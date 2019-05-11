@@ -43,7 +43,7 @@ namespace sfutil
             auto appendSeparatorAndString = [&](const std::string & STR) {
                 if (result.empty() == false)
                 {
-                    result += "/";
+                    result += '/';
                 }
 
                 result += STR;
@@ -73,7 +73,7 @@ namespace sfutil
             {
                 result += "(error_unknown_sf_text_style=";
                 result += std::to_string(TEXT_STYLE);
-                result += ")";
+                result += ')';
             }
         }
 

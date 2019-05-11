@@ -472,7 +472,7 @@ namespace stage
                 lengths.emplace_back(LENGTH);
 
                 M_HP_LOG_DBG(
-                    gui::GuiFont::ToString(FONT_ENUM)
+                    NAMEOF_ENUM(FONT_ENUM)
                     << "\t" << FONT_SIZE_STR << '\t' << LENGTH << '\t' << "(" << LENGTH << "/"
                     << gui::Display::Instance()->GetWinWidth()
                     << ")=" << (LENGTH / gui::Display::Instance()->GetWinWidth()));
@@ -577,9 +577,15 @@ namespace stage
             const auto IMAGE_PATH_STR { misc::ConfigFile::Instance()->GetMediaPath(
                 imagePathKeyVec[imageIndex]) };
 
-            TestingStrAppend(
-                "PerformTest_IndividualImage: \"" + imagePathKeyVec[imageIndex] + "\", \""
-                + IMAGE_PATH_STR + "\"");
+            std::string str;
+            str.reserve(128);
+            str += "PerformTest_IndividualImage: \"";
+            str += imagePathKeyVec[imageIndex];
+            str += "\", \"";
+            str += IMAGE_PATH_STR;
+            str += '\"';
+
+            TestingStrAppend(str);
 
             TestingImageSet(IMAGE_PATH_STR);
 
@@ -634,9 +640,15 @@ namespace stage
             {
                 const auto IMAGE_PATH_STR { imagePathsVec[imageIndex] };
 
-                TestingStrAppend(
-                    "PerformTest_DirectoryImage: #" + std::to_string(imageIndex) + "\t\""
-                    + IMAGE_PATH_STR + "\"");
+                std::string str;
+                str.reserve(128);
+                ;
+                str += "PerformTest_DirectoryImage: #";
+                str += std::to_string(imageIndex);
+                str += "\t\"";
+                str += IMAGE_PATH_STR;
+                str += '\"';
+                TestingStrAppend(str);
 
                 TestingImageSet(IMAGE_PATH_STR);
                 ++imageIndex;
@@ -664,6 +676,7 @@ namespace stage
             hasInitialPrompt = true;
             TestingStrAppend(
                 "stage::TestingStage::PerformTest_CharacterImageSet() Starting Tests...");
+
             return false;
         }
 
@@ -673,8 +686,7 @@ namespace stage
             const auto WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(imageIndex) };
 
             TestingStrAppend(
-                "PerformTest_CharacterImageSet() \"" + avatar::Avatar::ToString(WHICH_AVATAR)
-                + "\"");
+                "PerformTest_CharacterImageSet() \"" + NAMEOF_ENUM_STR(WHICH_AVATAR) + "\"");
 
             const auto IMAGE_PATH_STR { avatar::Avatar::ImagePath(WHICH_AVATAR) };
             TestingImageSet(IMAGE_PATH_STR);
@@ -731,7 +743,7 @@ namespace stage
             {
                 M_HP_LOG_FAT(
                     "TestingStage::TestMaps() threw an exception while \""
-                    << ERROR_MSG << "\" for map \"" << map::Level::ToString(LEVEL_ENUM) << "\"");
+                    << ERROR_MSG << "\" for map \"" << NAMEOF_ENUM(LEVEL_ENUM) << "\"");
 
                 throw;
             }
@@ -751,7 +763,7 @@ namespace stage
                 const auto WHICH_LEVEL { static_cast<map::Level::Enum>(mapIndex) };
 
                 TestingStrAppend(
-                    "TestMaps() Testing \"" + map::Level::ToString(WHICH_LEVEL)
+                    "TestMaps() Testing \"" + NAMEOF_ENUM_STR(WHICH_LEVEL)
                     + "\" Map in First Pass Loading");
 
                 transitions[WHICH_LEVEL] = ParseMap(WHICH_LEVEL, "initial parse");
@@ -779,7 +791,7 @@ namespace stage
                 const auto CURRENT_LEVEL { transitionIter->first };
 
                 TestingStrAppend(
-                    "TestMaps() Testing \"" + map::Level::ToString(CURRENT_LEVEL)
+                    "TestMaps() Testing \"" + NAMEOF_ENUM_STR(CURRENT_LEVEL)
                     + "\" Map's transitions");
 
                 for (const auto ENTRY_LEVEL : transitionIter->second.entry_levels)
@@ -795,9 +807,8 @@ namespace stage
                     M_HP_ASSERT_OR_LOG_AND_THROW(
                         (WAS_FOUND),
                         "TestingStage::TestMaps() found a map \""
-                            << map::Level::ToString(CURRENT_LEVEL)
-                            << "\" that had an entry level from map \""
-                            << map::Level::ToString(ENTRY_LEVEL)
+                            << NAMEOF_ENUM(CURRENT_LEVEL)
+                            << "\" that had an entry level from map \"" << NAMEOF_ENUM(ENTRY_LEVEL)
                             << "\", but that map did not have an exit level to match.");
                 }
 
@@ -814,9 +825,8 @@ namespace stage
                     M_HP_ASSERT_OR_LOG_AND_THROW(
                         (WAS_FOUND),
                         "TestingStage::TestMaps() found a map \""
-                            << map::Level::ToString(CURRENT_LEVEL)
-                            << "\" that had an exit level to map \""
-                            << map::Level::ToString(EXIT_LEVEL)
+                            << NAMEOF_ENUM(CURRENT_LEVEL) << "\" that had an exit level to map \""
+                            << NAMEOF_ENUM(EXIT_LEVEL)
                             << "\", but that map did not have an entry level to match.");
                 }
 
@@ -869,10 +879,17 @@ namespace stage
         static std::size_t keyIndex { 0 };
         if (keyIndex < keyVec.size())
         {
-            TestingStrAppend(
-                "Testing GameDataFile Key() \"" + keyVec[keyIndex] + "\"="
-                + std::to_string(
-                      misc::ConfigFile::Instance()->ValueOrDefault<float>(keyVec[keyIndex])));
+            std::string str;
+            str.reserve(128);
+
+            str += "Testing GameDataFile Key() \"";
+            str += keyVec[keyIndex];
+            str += "\"=";
+
+            str += std::to_string(
+                misc::ConfigFile::Instance()->ValueOrDefault<float>(keyVec[keyIndex]));
+
+            TestingStrAppend(str);
 
             ++keyIndex;
             return false;
@@ -903,8 +920,7 @@ namespace stage
             {
                 const auto ENUM { static_cast<gui::Animations::Enum>(animIndex) };
 
-                TestingStrAppend(
-                    "PerformTest_Animations() \"" + gui::Animations::ToString(ENUM) + "\"");
+                TestingStrAppend("PerformTest_Animations() \"" + NAMEOF_ENUM_STR(ENUM) + "\"");
 
                 animUPtr_ = gui::AnimationFactory::Make(
                     static_cast<gui::Animations::Enum>(animIndex),
@@ -935,6 +951,7 @@ namespace stage
             didPostInitial = true;
             TestingStrAppend(
                 "stage::TestingStage::PerformTest_InventoryFactory() Starting Tests...");
+
             return false;
         }
 
@@ -946,13 +963,13 @@ namespace stage
         if (raceIndex < static_cast<int>(creature::race::Count))
         {
             const auto RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
-            const auto RACE_STR { creature::race::ToString(RACE_ENUM) };
+            const auto RACE_STR { NAMEOF_ENUM(RACE_ENUM) };
             const auto ROLE_VEC { creature::race::Roles(RACE_ENUM) };
 
             if (roleIndex < static_cast<EnumUnderlying_t>(ROLE_VEC.size()))
             {
                 const auto ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
-                const auto ROLE_STR { creature::role::ToString(ROLE_ENUM) };
+                const auto ROLE_STR { NAMEOF_ENUM(ROLE_ENUM) };
 
                 const int RANK_BASE { 50 };
                 const int RANK_MAX { [&]() {
@@ -976,13 +993,29 @@ namespace stage
                     }
                 }() };
 
-                TestingStrAppend(
-                    "InventoryFactory Testing: race=" + RACE_STR + " and role=" + ROLE_STR + "...");
+                {
+                    std::string str;
+                    str.reserve(128);
+                    str += "InventoryFactory Testing: race=";
+                    str += RACE_STR;
+                    str += " and role=";
+                    str += ROLE_STR;
+                    str += "...";
+                    TestingStrAppend(str);
+                }
 
                 for (int rankIndex(1); rankIndex <= RANK_MAX; ++rankIndex)
                 {
-                    const std::string NAME_STR(
-                        "Name_" + RACE_STR + "_" + ROLE_STR + "_" + std::to_string(rankIndex));
+                    std::string str;
+                    str.reserve(128);
+                    str += "Name_";
+                    str += RACE_STR;
+                    str += '_';
+                    str += ROLE_STR;
+                    str += '_';
+                    str += std::to_string(rankIndex);
+
+                    const std::string NAME_STR(str);
 
                     creature::Creature character(
                         false,
@@ -1242,7 +1275,8 @@ namespace stage
 
                 if (rItr->second > 0)
                 {
-                    str += " " + std::to_string(rItr->second);
+                    str += ' ';
+                    str += std::to_string(rItr->second);
                 }
 
                 gui::Text text(

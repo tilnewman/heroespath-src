@@ -24,14 +24,31 @@ namespace misc
     template <typename T>
     const std::string ToString(const sf::Vector2<T> & V)
     {
-        return "(" + ToString(V.x) + "," + ToString(V.y) + ")";
+        std::string str;
+        str.reserve(16);
+        str += '(';
+        str += ToString(V.x);
+        str += ',';
+        str += ToString(V.y);
+        str += ')';
+        return str;
     }
 
     template <typename T>
     const std::string ToString(const sf::Rect<T> & R)
     {
-        return "(" + ToString(R.left) + "," + ToString(R.top) + "/" + ToString(R.width) + "x"
-            + ToString(R.height) + ")";
+        std::string str;
+        str.reserve(16);
+        str += '(';
+        str += ToString(R.left);
+        str += ',';
+        str += ToString(R.top);
+        str += '/';
+        str += ToString(R.width);
+        str += 'x';
+        str += ToString(R.height);
+        str += ')';
+        return str;
     }
 
 } // namespace misc
@@ -108,6 +125,18 @@ std::ostream & operator<<(std::ostream & os, const sf::Vector2<T> & V)
 
 template <typename T>
 std::ostream & operator<<(std::ostream & os, const sf::Rect<T> & R)
+{
+    os << heroespath::misc::ToString(R);
+    return os;
+}
+
+inline std::ostream & operator<<(std::ostream & os, const sf::IntRect & R)
+{
+    os << heroespath::misc::ToString(R);
+    return os;
+}
+
+inline std::ostream & operator<<(std::ostream & os, const sf::FloatRect & R)
 {
     os << heroespath::misc::ToString(R);
     return os;

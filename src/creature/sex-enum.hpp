@@ -29,13 +29,51 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const Enum);
-        static const std::string Name(const Enum ENUM) { return ToString(ENUM); }
-        static const std::string HeSheIt(const Enum ENUM, const bool WILL_CAPITALIZE);
-        static const std::string HimHerIt(const Enum ENUM, const bool WILL_CAPITALIZE);
+        static constexpr std::string_view
+            HeSheIt(const sex::Enum SEX_TYPE, const bool WILL_CAPITALIZE) noexcept
+        {
+            switch (SEX_TYPE)
+            {
+                case Unknown: return ((WILL_CAPITALIZE) ? "It" : "it");
+                case Male: return ((WILL_CAPITALIZE) ? "He" : "he");
+                case Female: return ((WILL_CAPITALIZE) ? "She" : "she");
+                case Count: return "Count";
+                default: return "creature::sex::HeSheIt(ENUM=out_of_bounds)";
+            }
+        }
 
-        static const std::string
-            HisHerIts(const Enum ENUM, const bool WILL_CAPITALIZE, const bool WILL_POSSESSIVE_HER);
+        static constexpr std::string_view
+            HimHerIt(const sex::Enum SEX_TYPE, const bool WILL_CAPITALIZE) noexcept
+        {
+            switch (SEX_TYPE)
+            {
+                case Unknown: return ((WILL_CAPITALIZE) ? "It" : "it");
+                case Male: return ((WILL_CAPITALIZE) ? "Him" : "him");
+                case Female: return ((WILL_CAPITALIZE) ? "Her" : "her");
+                case Count: return "Count";
+                default: return "creature::sex::HimHerIt(ENUM=out_of_bounds)";
+            }
+        }
+
+        static constexpr std::string_view HisHerIts(
+            const sex::Enum SEX_TYPE,
+            const bool WILL_CAPITALIZE,
+            const bool WILL_POSSESSIVE_HER) noexcept
+        {
+            switch (SEX_TYPE)
+            {
+                case Unknown: return ((WILL_CAPITALIZE) ? "Its" : "its");
+                case Male: return ((WILL_CAPITALIZE) ? "His" : "his");
+
+                case Female:
+                    return (
+                        (WILL_CAPITALIZE) ? ((WILL_POSSESSIVE_HER) ? "Hers" : "Her")
+                                          : ((WILL_POSSESSIVE_HER) ? "hers" : "her"));
+
+                case Count: return "Count";
+                default: return "creature::sex::HisHerIts(ENUM=out_of_bounds)";
+            }
+        }
     };
 
 } // namespace creature

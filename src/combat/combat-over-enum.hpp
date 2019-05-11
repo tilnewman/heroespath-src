@@ -27,8 +27,6 @@ namespace combat
             Ran,
             Count
         };
-
-        static const std::string ToString(const CombatEnd::Enum);
     };
 
 } // namespace combat

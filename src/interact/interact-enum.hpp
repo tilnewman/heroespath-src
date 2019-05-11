@@ -27,8 +27,16 @@ namespace interact
             Count
         };
 
-        static const std::string ToString(const Enum);
-        static const std::string ImageKey(const Enum);
+        static constexpr std::string_view ImageKey(const Enum INTERACTION_TYPE) noexcept
+        {
+            switch (INTERACTION_TYPE)
+            {
+                case Lock: return "media-image-misc-lock";
+                case Conversation: return "media-image-misc-talk";
+                case Count:
+                default: return "interact::ImageKey(ENUM=out_of_bounds)";
+            }
+        }
     };
 
 } // namespace interact

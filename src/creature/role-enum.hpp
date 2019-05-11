@@ -35,8 +35,7 @@ namespace creature
             Firebrand,
             Sylavin,
             Wolfen,
-            PlayerRoleCount,
-            Thug = PlayerRoleCount,
+            Thug,
             Mugger,
             Drunk,
             Grunt,
@@ -77,13 +76,107 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const Enum);
-        static const std::string Name(const Enum ENUM) { return ToString(ENUM); }
+        static constexpr Enum PlayerRoleCount = Thug;
+
+        static constexpr std::string_view Name(const Enum ENUM) { return NAMEOF_ENUM(ENUM); }
+
         static const std::string Desc(const Enum);
-        static const std::string Abbr(const Enum);
-        static bool CanFly(const Enum);
-        static bool WillInitiallyFly(const Enum);
-        static combat::BlockingPosType::Enum BlockingPosType(const Enum);
+
+        static constexpr std::string_view Abbr(const role::Enum ENUM) noexcept
+        {
+            if (ENUM == Beastmaster)
+            {
+                return "Bsm";
+            }
+            else if (ENUM == Thief)
+            {
+                return "Thf";
+            }
+            else if (ENUM == Wolfen)
+            {
+                return "Wlf";
+            }
+            else
+            {
+                return NAMEOF_ENUM(ENUM).substr(0, 3);
+            }
+        }
+
+        static constexpr bool CanFly(const Enum ENUM) noexcept
+        {
+            return (
+                (ENUM == Firebrand) || (ENUM == Sylavin) || (ENUM == Wing) || (ENUM == Whelp)
+                || (ENUM == Bat));
+        }
+
+        static constexpr bool WillInitiallyFly(const Enum ENUM) noexcept
+        {
+            return ((ENUM == Wing) || (ENUM == Whelp) || (ENUM == Bat));
+        }
+
+        static constexpr combat::BlockingPosType::Enum BlockingPosType(const Enum ENUM) noexcept
+        {
+            switch (ENUM)
+            {
+                case Mountain:
+                case Spider:
+                case Beetle:
+                case Boar:
+                case Lion:
+                case Ramonaut:
+                case Serpent:
+                case Whelp:
+                case Pod:
+                case Spike:
+                case Skeleton:
+                case Thug:
+                case Mugger:
+                case Drunk:
+                case Grunt:
+                case FourArmed:
+                case Tendrilus:
+                case TwoHeaded:
+                case Giant:
+                case Smasher:
+                case Strangler:
+                case Soldier:
+                case Brute:
+                case Berserker:
+                case Knight:
+                case Wolfen:
+                case Firebrand:
+                case Ranger:
+                case Water:
+                case Blacksmith:
+                case Cat:
+                case Wolf:
+                case Sylavin: return combat::BlockingPosType::Front;
+
+                case Ghost:
+                case Bat:
+                case Beastmaster:
+                case Bard:
+                case Archer:
+                case Wing: return combat::BlockingPosType::Support;
+
+                case Captain:
+                case Warlord:
+                case Chieftain: return combat::BlockingPosType::Commanders;
+
+                case Thief: return combat::BlockingPosType::Reluctant;
+
+                case Elder:
+                case Shaman:
+                case Sorcerer:
+                case Cleric: return combat::BlockingPosType::Casters;
+
+                case Trader: return combat::BlockingPosType::Last;
+
+                case Count:
+                default: return combat::BlockingPosType::Count;
+            }
+        }
+
         static std::vector<Enum> RolesOfBlockingPosType(const combat::BlockingPosType::Enum);
     };
 

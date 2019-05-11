@@ -30,9 +30,10 @@ namespace creature
             for (EnumUnderlying_t i(0); i < race::Count_PlayerRaces; ++i)
             {
                 const auto NEXT_ENUM { static_cast<race::Enum>(i) };
-                const auto NEXT_ENUM_STR { race::ToString(NEXT_ENUM) };
 
-                const auto NEXT_KEY_STR { "creature-race-stat-modifiers-" + NEXT_ENUM_STR };
+                const auto NEXT_KEY_STR {
+                    std::string("creature-race-stat-modifiers-").append(NAMEOF_ENUM(NEXT_ENUM))
+                };
 
                 const auto STAT_STR { misc::ConfigFile::Instance()->Value(NEXT_KEY_STR) };
 

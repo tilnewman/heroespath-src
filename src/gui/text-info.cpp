@@ -118,7 +118,7 @@ namespace gui
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += "(";
+            str += '(';
         }
 
         if (*this == TextInfo())
@@ -137,16 +137,16 @@ namespace gui
             }
 
             appendWithSeparator(misc::Quoted(misc::MakeLoggableString(text)));
-            appendWithSeparator("font=" + GuiFont::ToString(font_letters));
-            appendWithSeparator("num_font=" + GuiFont::ToString(font_numbers));
+            appendWithSeparator("font=" + NAMEOF_ENUM_STR(font_letters));
+            appendWithSeparator("num_font=" + NAMEOF_ENUM_STR(font_numbers));
             appendWithSeparator(misc::ToString(color));
-            appendWithSeparator(gui::Justified::ToString(justified));
+            appendWithSeparator(NAMEOF_ENUM_STR(justified));
             appendWithSeparator(sfutil::TextStyleToString(style));
         }
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += ")";
+            str += ')';
         }
 
         return str;

@@ -11,8 +11,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace gui
@@ -27,8 +25,6 @@ namespace gui
             Dark,
             Count
         };
-
-        static const std::string ToString(const Brightness::Enum);
     };
 
 } // namespace gui

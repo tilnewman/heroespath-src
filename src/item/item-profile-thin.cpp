@@ -48,16 +48,19 @@ namespace item
         str.reserve(1024);
         if (weapon::WeaponTypeWrapper() != weaponInfo_)
         {
-            str += "weapon_info=" + weaponInfo_.ToString() + ", ";
+            str += "weapon_info=";
+            str += weaponInfo_.ToString();
+            str += ", ";
         }
 
         if (armor::ArmorTypeWrapper() != armorInfo_)
         {
-            str += "armor_info=" + armorInfo_.ToString();
+            str += "armor_info=";
+            str += armorInfo_.ToString();
         }
 
-        str += ", misc_type="
-            + ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
+        str += ", misc_type=";
+        str += ((misc_type::Count == miscType_) ? "Count" : NAMEOF_ENUM(miscType_));
 
         return str;
     }
@@ -89,7 +92,7 @@ namespace item
 
         if (IsMisc())
         {
-            name = misc_type::ToString(MiscType());
+            name = NAMEOF_ENUM(MiscType());
         }
         else if (IsWeapon())
         {

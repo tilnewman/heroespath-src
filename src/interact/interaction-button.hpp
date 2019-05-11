@@ -33,7 +33,7 @@ namespace interact
 
         Buttons::Enum Which() const { return whichButton_; }
 
-        const std::string Name() const { return Buttons::ToString(whichButton_); }
+        const std::string_view Name() const noexcept { return NAMEOF_ENUM(whichButton_); }
 
         sf::Keyboard::Key Key() const { return Buttons::Key(whichButton_); }
 

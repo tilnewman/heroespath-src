@@ -674,8 +674,7 @@ namespace stage
                 M_HP_LOG_ERR(
                     "stage::TreasureStage::PromptUserBasedOnTreasureAvailability(treasure_"
                     "available_enum="
-                    << item::TreasureAvailable::ToString(TREASURE_AVAILABLE)
-                    << ") but that enum valid was invalid.");
+                    << NAMEOF_ENUM(TREASURE_AVAILABLE) << ") but that enum valid was invalid.");
 
                 return;
             }
@@ -735,7 +734,8 @@ namespace stage
 
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateTrapPopupInfo(
             POPUP_NAME_LOCK_PICK_FAILURE_,
-            trap_.Description(item::TreasureImage::ToContainerName(treasureImageType_)),
+            trap_.Description(
+                std::string(item::TreasureImage::ToContainerName(treasureImageType_))),
             trap_.SoundEffect()) };
 
         SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
@@ -819,7 +819,7 @@ namespace stage
 
         lockPicking_.PopupSuccess(
             misc::MakeNotNull(this),
-            item::TreasureImage::ToContainerName(treasureImageType_),
+            std::string(item::TreasureImage::ToContainerName(treasureImageType_)),
             misc::MakeNotNull(this));
     }
 

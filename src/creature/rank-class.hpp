@@ -41,8 +41,6 @@ namespace creature
 
         // returns a second/max of zero to represent limitless
         static const RankRange_t RankRangeByClass(const rank_class::Enum);
-
-        static const std::string ToString(const rank_class::Enum);
     };
 
 } // namespace creature

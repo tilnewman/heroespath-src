@@ -146,7 +146,7 @@ namespace item
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((BODY_PART != body_part::Count) && (BODY_PART != body_part::Skin)),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(body_part="
-                    << ((body_part::Count == BODY_PART) ? "Count" : body_part::ToString(BODY_PART))
+                    << ((body_part::Count == BODY_PART) ? "Count" : NAMEOF_ENUM(BODY_PART))
                     << ") -that body_part is invalid.");
 
             SetNamesAndVerify("after body_part constructor");
@@ -285,10 +285,16 @@ namespace item
 
             for (const auto & VALUE_NAME_PAIR : namesMap)
             {
-                str += "\"" + VALUE_NAME_PAIR.first + "\"=" + VALUE_NAME_PAIR.second + ", ";
+                str += '\"';
+                str += VALUE_NAME_PAIR.first;
+                str += "\"=";
+                str += VALUE_NAME_PAIR.second;
+                str += ", ";
             }
 
-            str += "type=" + weapon_type::ToString(type_, EnumStringHow(Wrap::Yes)) + ", ";
+            str += "type=";
+            str += weapon_type::ToString(type_, EnumStringHow(Wrap::Yes));
+            str += ", ";
 
             if (IsStaff())
             {
@@ -302,7 +308,8 @@ namespace item
 
             if (IsBodyPart())
             {
-                str += body_part::ToString(BodyPartType()) + ",";
+                str += NAMEOF_ENUM(BodyPartType());
+                str += ',';
             }
 
             if (IsBite())
@@ -327,35 +334,43 @@ namespace item
 
             if (IsSword())
             {
-                str += sword_type::ToString(SwordType()) + ",";
+                str += NAMEOF_ENUM(SwordType());
+                str += ',';
             }
 
             if (IsAxe())
             {
-                str += axe_type::ToString(AxeType()) + ",";
+                str += NAMEOF_ENUM(AxeType());
+                str += ',';
             }
 
             if (IsClub())
             {
-                str += club_type::ToString(ClubType()) + ",";
+                str += NAMEOF_ENUM(ClubType());
+                str += ',';
             }
 
             if (IsWhip())
             {
-                str += whip_type::ToString(WhipType()) + ",";
+                str += NAMEOF_ENUM(WhipType());
+                str += ',';
             }
 
             if (IsProjectile())
             {
-                str += projectile_type::ToString(ProjectileType()) + ",";
+                str += NAMEOF_ENUM(ProjectileType());
+                str += ',';
             }
 
             if (IsBladedStaff())
             {
-                str += bladedstaff_type::ToString(BladedStaffType()) + ",";
+                str += NAMEOF_ENUM(BladedStaffType());
+                str += ',';
             }
 
-            str += " variant_=" + std::to_string(variant_.which()) + ", ";
+            str += " variant_=";
+            str += std::to_string(variant_.which());
+            str += ", ";
 
             if ((elementTypes_.size() != 1) || (elementTypes_.at(0) != element_type::None))
             {
@@ -371,7 +386,7 @@ namespace item
                     {
                         if (i > 0)
                         {
-                            str += ",";
+                            str += ',';
                         }
 
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
@@ -381,7 +396,7 @@ namespace item
                     }
                 }
 
-                str += "}";
+                str += '}';
             }
 
             return str;
@@ -401,7 +416,8 @@ namespace item
 
             if ((systemName_ != GENERAL_NAME_FILENAME_VERSION) && (systemName_ != "Bite"))
             {
-                imageFilenameStr += SEPARATOR + systemName_;
+                imageFilenameStr += SEPARATOR;
+                imageFilenameStr += systemName_;
             }
 
             imageFilenameStr += EXTENSION;
@@ -415,9 +431,8 @@ namespace item
         {
             namespace ba = boost::algorithm;
 
-            return (
-                misc::ToLowerCopy(ba::replace_all_copy(generalName_, " ", ""))
-                == misc::ToLowerCopy(specificName_));
+            return (misc::AreEqualCaseInsensitive(
+                (ba::replace_all_copy(generalName_, " ", "")), (specificName_)));
         }
 
         const std::vector<WeaponTypeWrapper> WeaponTypeWrapper::MakeCompleteSet()
@@ -508,7 +523,7 @@ namespace item
                 case weapon_type::BodyPart:
                 {
                     const auto BODY_PART_TYPE { BodyPartType() };
-                    generalName_ = body_part::ToString(BODY_PART_TYPE);
+                    generalName_ = NAMEOF_ENUM(BODY_PART_TYPE);
                     specificName_ = generalName_;
                     systemName_ = generalName_;
                     readableName_ = generalName_;
@@ -547,7 +562,7 @@ namespace item
 
                     generalName_ = weapon_type::Name(type_);
                     specificName_ = sword_type::Name(SWORD_TYPE);
-                    systemName_ = sword_type::ToString(SWORD_TYPE);
+                    systemName_ = NAMEOF_ENUM(SWORD_TYPE);
 
                     if ((SWORD_TYPE == sword_type::Broadsword)
                         || (SWORD_TYPE == sword_type::Longsword)
@@ -603,7 +618,7 @@ namespace item
 
                             break;
                         }
-                        case sword_type::Knightlysword:
+                        case sword_type::KnightlySword:
                         {
                             elementTypes_ = element_type::ValidCombinations(
                                 element_type::Frost | element_type::Honor);
@@ -643,7 +658,7 @@ namespace item
 
                     // you would think this should be axe_type::Name() called here, but the names
                     // are so distinct that we use ToString() instead, intentionally.
-                    specificName_ = axe_type::ToString(AXE_TYPE);
+                    specificName_ = NAMEOF_ENUM(AXE_TYPE);
                     systemName_ = specificName_;
 
                     if (AXE_TYPE == axe_type::Sickle)
@@ -689,7 +704,7 @@ namespace item
                     const auto WHIP_TYPE { WhipType() };
                     generalName_ = weapon_type::Name(type_);
                     specificName_ = whip_type::Name(WHIP_TYPE);
-                    systemName_ = whip_type::ToString(WHIP_TYPE);
+                    systemName_ = NAMEOF_ENUM(WHIP_TYPE);
                     readableName_ = specificName_;
 
                     switch (WHIP_TYPE)
@@ -721,7 +736,7 @@ namespace item
                     const auto CLUB_TYPE { ClubType() };
 
                     generalName_ = weapon_type::Name(type_);
-                    specificName_ = club_type::ToString(ClubType());
+                    specificName_ = NAMEOF_ENUM(ClubType());
                     systemName_ = specificName_;
 
                     if (CLUB_TYPE == club_type::Spiked)
@@ -811,7 +826,7 @@ namespace item
                     }
 
                     specificName_ = projectile_type::Name(PROJECTILE_TYPE);
-                    systemName_ = projectile_type::ToString(PROJECTILE_TYPE);
+                    systemName_ = NAMEOF_ENUM(PROJECTILE_TYPE);
                     readableName_ = specificName_;
 
                     type_ = static_cast<weapon_type::Enum>(type_ | weapon_type::Projectile);
@@ -854,7 +869,7 @@ namespace item
                     const auto BLADEDSTAFF_TYPE { BladedStaffType() };
                     generalName_ = weapon_type::Name(weapon_type::BladedStaff);
                     specificName_ = bladedstaff_type::Name(BLADEDSTAFF_TYPE);
-                    systemName_ = bladedstaff_type::ToString(BLADEDSTAFF_TYPE);
+                    systemName_ = NAMEOF_ENUM(BLADEDSTAFF_TYPE);
 
                     // skip prepending the general name because most players will know these items
                     // by their specfificName_

@@ -20,37 +20,6 @@ namespace heroespath
 namespace combat
 {
 
-    const std::string NamePosition::ToString(const Enum ENUM)
-    {
-        switch (ENUM)
-        {
-            case NoName: { return "NoName";
-            }
-            case SourceBefore: { return "SourceBefore";
-            }
-            case SourceAfter: { return "SourceAfter";
-            }
-            case SourceThenTarget: { return "SourceThenTarget";
-            }
-            case TargetBefore: { return "TargetBefore";
-            }
-            case TargetAfter: { return "TargetAfter";
-            }
-            case TargetThenSource: { return "TargetThenSource";
-            }
-            case Count: { return "(Count)";
-            }
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
-                                  << static_cast<EnumUnderlying_t>(Count) << ")");
-
-                return "";
-            }
-        }
-    }
-
     ContentAndNamePos::ContentAndNamePos(
         const std::string & PRE_STR,
         const std::string & CONTENT_STR,

@@ -55,7 +55,7 @@ namespace song
             const std::string & VERB_THIRD_PERSON,
             const std::string & VERB_PAST_TENSE);
 
-        const std::string Name() const { return Songs::Name(which_); }
+        const std::string Name() const { return std::string(Songs::Name(which_)); }
 
         const std::string ToString() const;
 

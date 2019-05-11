@@ -9,6 +9,7 @@
 //
 // log-pri-enum.hpp
 //
+#include <string>
 
 namespace heroespath
 {
@@ -26,20 +27,7 @@ namespace misc
             Fatal
         };
 
-        static const char * ToString(const Enum PRIORITY)
-        {
-            switch (PRIORITY)
-            {
-                case Debug: return "Debug";
-                case Default: return "Default";
-                case Warn: return "Warn";
-                case Error: return "Error";
-                case Fatal: return "Fatal";
-                default: return "Enum_value_out_of_range";
-            }
-        }
-
-        static const char * ToStringAcronym(const Enum PRIORITY)
+        static constexpr std::string_view ToStringAcronym(const Enum PRIORITY) noexcept
         {
             switch (PRIORITY)
             {
@@ -48,24 +36,28 @@ namespace misc
                 case Warn: return "WRN";
                 case Error: return "ERR";
                 case Fatal: return "FAT";
-                default: return "Enum_value_out_of_range";
+                default: return "misc::LogPriority::ToStringAcronym(ENUM=out_of_range)";
             }
         }
 
-        static const char * ConsoleColorStringBegin(const Enum PRIORITY)
+        static constexpr std::string_view ConsoleColorStringBegin(const Enum PRIORITY) noexcept
         {
             switch (PRIORITY)
             {
                 case Debug: return "\033[36;40m"; // cyan on black
                 case Warn: return "\033[33;40m"; // yellow on black
+
                 case Error:
                 case Fatal: return "\033[31;40m"; // red on black
-                case Default:
-                default: return "Enum_value_out_of_range";
+
+                case Default: return ""; // no color
+
+                default: return "misc::LogPriority::ConsoleColorStringBegin(ENUM=out_of_range)";
             }
         }
 
-        static const char * ConsoleColorStringEnd() { return "\033[0;0m"; }
+        // can't be a string_view or literal because of the null terminators in the string
+        static const std::string ConsoleColorStringEnd() { return "\033[0;0m"; }
     };
 
 } // namespace misc

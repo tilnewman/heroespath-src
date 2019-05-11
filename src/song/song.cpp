@@ -53,10 +53,9 @@ namespace song
              || (TARGET_TYPE == combat::TargetType::AllOpponents)
              || (TARGET_TYPE == combat::TargetType::QuestSpecific)),
             "song::Song::Constructor(which="
-                << Songs::ToString(WHICH) << ", song_type=" << SongType::ToString(TYPE)
-                << ", effect_type=" << combat::EffectType::ToString(EFFECT_TYPE)
-                << ", mana_cost=" << MANA_COST << ", rank=" << RANK
-                << ") had an invalid TargetType of " << combat::TargetType::ToString(TARGET_TYPE)
+                << NAMEOF_ENUM(WHICH) << ", song_type=" << NAMEOF_ENUM(TYPE) << ", effect_type="
+                << NAMEOF_ENUM(EFFECT_TYPE) << ", mana_cost=" << MANA_COST << ", rank=" << RANK
+                << ") had an invalid TargetType of " << NAMEOF_ENUM(TARGET_TYPE)
                 << ".  The only allowed TargetTypes are AllCompanions, AllOpponents, and "
                 << "QuestSpecific.");
     }
@@ -70,7 +69,7 @@ namespace song
 
         result
             += ("A " + misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>()) + " rank"
-                + combat::EffectType::Name(effectType_) + " magical ");
+                + std::string(combat::EffectType::Name(effectType_)) + " magical ");
 
         if (SongType::Guitar == type_)
         {
@@ -81,8 +80,8 @@ namespace song
             result += "drum beat";
         }
 
-        result += " that can be played during " + game::Phase::ToString(validPhases_)
-            + ", targeting " + combat::TargetType::Name(targetType_) + ", and costing "
+        result += " that can be played during " + std::string(game::Phase::ToString(validPhases_))
+            + ", targeting " + std::string(combat::TargetType::Name(targetType_)) + ", and costing "
             + manaCost_.ToString() + " mana.";
 
         return result;
@@ -110,7 +109,9 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                        " because "
+                            + std::string(
+                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is already emboldened.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -147,7 +148,8 @@ namespace song
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
-                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                                + std::string(
+                                      creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -193,7 +195,9 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                        " because "
+                            + std::string(
+                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " already has full mana.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -224,7 +228,9 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                        " because "
+                            + std::string(
+                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " did not need rousing.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -251,7 +257,9 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                        " because "
+                            + std::string(
+                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is already tripped.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -264,7 +272,9 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                        " because "
+                            + std::string(
+                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is flying.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -307,7 +317,8 @@ namespace song
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
-                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                                + std::string(
+                                      creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -322,7 +333,9 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                        " because "
+                            + std::string(
+                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is already panicked.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -365,7 +378,8 @@ namespace song
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
-                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                                + std::string(
+                                      creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -381,7 +395,9 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                        " because "
+                            + std::string(
+                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is already sleeping.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -419,7 +435,8 @@ namespace song
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
-                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
+                                + std::string(
+                                      creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 

@@ -466,7 +466,8 @@ namespace combat
         // count all race/role combinations
         for (const auto & CREATURE_PTR : CREATURES_PVEC)
         {
-            raceRoleMap[std::make_pair(CREATURE_PTR->RaceName(), CREATURE_PTR->RoleName())]++;
+            raceRoleMap[std::make_pair(
+                CREATURE_PTR->RaceNameForced(), CREATURE_PTR->RoleNameForced())]++;
         }
 
         // make a single string summary of all race/role combinations

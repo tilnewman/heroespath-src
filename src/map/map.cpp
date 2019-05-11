@@ -312,8 +312,8 @@ namespace map
         errorSS << "Tried to find where to place the player in the new map but failed to find the "
                    "matching entry transition among "
                 << TRANS_VEC.size()
-                << " possibilities. Transitioning from map=" << Level::ToString(LEVEL_FROM)
-                << " to " << Level::ToString(LEVEL_TO_LOAD)
+                << " possibilities. Transitioning from map=" << NAMEOF_ENUM(LEVEL_FROM) << " to "
+                << NAMEOF_ENUM(LEVEL_TO_LOAD)
                 << ".  You probably need to break out the Tiled app "
                    "and add or fix some transitions...";
 
@@ -334,7 +334,7 @@ namespace map
         M_HP_LOG_ERR(
             errorSS.str() << "  Placing the player into the first entry transition point found, "
                              "which is for map "
-                          << map::Level::ToString(FOUND_ITER->WhichLevel())
+                          << NAMEOF_ENUM(FOUND_ITER->WhichLevel())
                           << ", which is better than crashing I guess.");
 
         return sfutil::CenterOf(FOUND_ITER->Rect());

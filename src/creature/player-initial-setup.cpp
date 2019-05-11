@@ -226,7 +226,7 @@ namespace creature
 
         std::ostringstream ss;
         ss << "player::PlayerInitialSetup::SetupInventory(\"" << CREATURE_PTR->Name()
-           << "\", race=" << CREATURE_PTR->RaceName() << ", role=" << CREATURE_PTR->RoleName()
+           << "\", race=" << CREATURE_PTR->RaceNameForced() << ", role=" << CREATURE_PTR->RoleName()
            << ")  failed to assign any items.";
 
         throw std::runtime_error(ss.str());
@@ -301,13 +301,13 @@ namespace creature
         PlayerInitialSetup::GetStartingHealth(const creature::CreaturePtr_t CHARACTER_PTR) const
     {
         const auto HEALTH_BASE { misc::ConfigFile::Instance()->ValueOrDefault<Health_t>(
-            "player-race-health-initial-" + creature::race::ToString(CHARACTER_PTR->Race())) };
+            "player-race-health-initial-" + NAMEOF_ENUM_STR(CHARACTER_PTR->Race())) };
 
         return (
             HEALTH_BASE
             + misc::ConfigFile::Instance()->ValueOrDefault<Health_t>(
                   "player-role-health-adjustment-initial-"
-                  + creature::role::ToString(CHARACTER_PTR->Role())));
+                  + NAMEOF_ENUM_STR(CHARACTER_PTR->Role())));
     }
 
     void PlayerInitialSetup::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR) const

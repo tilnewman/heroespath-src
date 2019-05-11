@@ -355,22 +355,29 @@ namespace item
         std::string str;
         str.reserve(32 + (itemsPVec_.size() * 32) + (equippedItemsPVec_.size() * 32));
 
-        str += "[coins=" + coins_.ToString() + ", shards=" + meteorShards_.ToString()
-            = ", gems=" + gems_.ToString() = ", items_held=";
+        str += "[coins=";
+        str += coins_.ToString();
+        str += ", shards=";
+        str += meteorShards_.ToString();
+        str += ", gems=";
+        str += gems_.ToString();
+        str += ", items_held=";
 
         for (const auto & NEXT_ITEM_PTR : itemsPVec_)
         {
-            str += NEXT_ITEM_PTR->Name() + ",";
+            str += NEXT_ITEM_PTR->Name();
+            str += ',';
         }
 
         str += ", items_equipped=";
 
         for (const auto & NEXT_EQ_ITEM_PTR : equippedItemsPVec_)
         {
-            str += NEXT_EQ_ITEM_PTR->Name() + ",";
+            str += NEXT_EQ_ITEM_PTR->Name();
+            str += ',';
         }
 
-        str += "]";
+        str += ']';
 
         return str;
     }

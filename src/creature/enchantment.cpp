@@ -38,12 +38,15 @@ namespace creature
 
     const std::string Enchantment::EffectStr() const
     {
-        if (effectsStr_.empty() == false)
+        if (!effectsStr_.empty())
         {
             return effectsStr_;
         }
 
-        std::string str(EnchantmentType::ToString(type_));
+        std::string str;
+        str.reserve(128);
+
+        str += EnchantmentType::EffectStr(type_);
 
         const auto SepIfNotEmpty { [&]() -> std::string { return ((str.empty()) ? "" : ", "); } };
 
@@ -52,37 +55,49 @@ namespace creature
             const auto COUNT_REMAIN { useInfo_.CountRemaining() };
             if (COUNT_REMAIN > 0)
             {
-                str += SepIfNotEmpty() + std::to_string(COUNT_REMAIN) + " uses left";
+                str += SepIfNotEmpty();
+                str += std::to_string(COUNT_REMAIN);
+                str += " uses left";
             }
             else
             {
-                str += SepIfNotEmpty() + "cannot be used again";
+                str += SepIfNotEmpty();
+                str += "cannot be used again";
             }
 
             const auto SPELL { useInfo_.Spell() };
             if (SPELL != spell::Spells::Count)
             {
-                str += SepIfNotEmpty() + "casts the " + spell::Spells::Name(SPELL) + " spell";
+                str += SepIfNotEmpty();
+                str += "casts the ";
+                str += spell::Spells::Name(SPELL);
+                str += " spell";
             }
 
             const auto CONDS_REMOVED_VEC { useInfo_.ConditionsRemoved() };
             if (CONDS_REMOVED_VEC.empty())
             {
-                str += SepIfNotEmpty() + "removes the conditions: "
-                    + creature::condition::Algorithms::Names(CONDS_REMOVED_VEC, misc::JoinOpt::And);
+                str += SepIfNotEmpty();
+                str += "removes the conditions: ";
+
+                str += creature::condition::Algorithms::Names(
+                    CONDS_REMOVED_VEC, misc::JoinOpt::And);
             }
         }
 
         if (useInfo_.RestrictedToPhase() != game::Phase::None)
         {
-            str += SepIfNotEmpty() + ", use only during "
-                + game::Phase::ToString(useInfo_.RestrictedToPhase());
+            str += SepIfNotEmpty();
+            str += ", use only during ";
+            str += game::Phase::ToString(useInfo_.RestrictedToPhase());
         }
 
         const auto TRAITS_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAITS_STR.empty() == false)
         {
-            str += SepIfNotEmpty() + "Traits: " + TRAITS_STR;
+            str += SepIfNotEmpty();
+            str += "Traits: ";
+            str += TRAITS_STR;
         }
 
         return str;
@@ -166,8 +181,16 @@ namespace creature
 
     const std::string Enchantment::ToString() const
     {
-        return "Enchantment(name=" + creature::EnchantmentType::ToString(type_) + ", " + EffectStr()
-            + ")";
+        std::string str;
+        str.reserve(256);
+        str += "Enchantment(";
+        str += creature::EnchantmentType::ToString(type_);
+        str += '=';
+        str += '\"';
+        str += EffectStr();
+        str += '\"';
+        str += ')';
+        return str;
     }
 
     Score_t Enchantment::CalcTreasureScore() const

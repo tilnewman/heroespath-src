@@ -307,9 +307,9 @@ namespace item
             (elementTypes.empty() == false),
             "item::ItemProfileWarehouse::ElementTypesIncludingNone(thin_profile={"
                 << THIN_PROFILE.ToString() << "}, named_type="
-                << ((NAMED_TYPE == named_type::Count) ? "Count" : named_type::ToString(NAMED_TYPE))
+                << ((NAMED_TYPE == named_type::Count) ? "Count" : NAMEOF_ENUM(NAMED_TYPE))
                 << ", set_type="
-                << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+                << ((SET_TYPE == set_type::Count) ? "Count" : NAMEOF_ENUM(SET_TYPE))
                 << ") resulted in an elementType vector that was empty.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -317,9 +317,9 @@ namespace item
              != std::end(elementTypes)),
             "item::ItemProfileWarehouse::ElementTypesIncludingNone(thin_profile={"
                 << THIN_PROFILE.ToString() << "}, named_type="
-                << ((NAMED_TYPE == named_type::Count) ? "Count" : named_type::ToString(NAMED_TYPE))
+                << ((NAMED_TYPE == named_type::Count) ? "Count" : NAMEOF_ENUM(NAMED_TYPE))
                 << ", set_type="
-                << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+                << ((SET_TYPE == set_type::Count) ? "Count" : NAMEOF_ENUM(SET_TYPE))
                 << ") resulted in an elementType vector that did not contain "
                    "element_type::None.");
 
@@ -575,13 +575,11 @@ namespace item
                 (profile.IsArmor()),
                 "ItemProfileWarehouse::MakeForEquipment(thin_profile="
                     << THIN_PROFILE.ToString() << ", named_type="
-                    << ((NAMED_TYPE == named_type::Count) ? "Count"
-                                                          : named_type::ToString(NAMED_TYPE))
+                    << ((NAMED_TYPE == named_type::Count) ? "Count" : NAMEOF_ENUM(NAMED_TYPE))
                     << ", set_type="
-                    << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
-                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
-                    << ", mat_pri=" << material::ToString(MATERIAL_PRI)
-                    << ", mat_sec=" << material::ToString(MATERIAL_SEC)
+                    << ((SET_TYPE == set_type::Count) ? "Count" : NAMEOF_ENUM(SET_TYPE))
+                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE) << ", mat_pri="
+                    << NAMEOF_ENUM(MATERIAL_PRI) << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SEC)
                     << ") was unable to find the type of the given armor.");
 
             AppendToCorrectProfileCollection(profile);
@@ -599,7 +597,7 @@ namespace item
         if (THIN_PROFILE.IsWeapon())
         {
             const auto & THIN_PROFILE_WEAPON_INFO { THIN_PROFILE.WeaponInfo() };
-            
+
             if (THIN_PROFILE_WEAPON_INFO.IsSword())
             {
                 profile.SetSword(
@@ -738,13 +736,11 @@ namespace item
                 (profile.IsWeapon()),
                 "ItemProfileWarehouse::MakeForEquipment(thin_profile="
                     << THIN_PROFILE.ToString() << ", named_type="
-                    << ((NAMED_TYPE == named_type::Count) ? "Count"
-                                                          : named_type::ToString(NAMED_TYPE))
+                    << ((NAMED_TYPE == named_type::Count) ? "Count" : NAMEOF_ENUM(NAMED_TYPE))
                     << ", set_type="
-                    << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
-                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
-                    << ", mat_pri=" << material::ToString(MATERIAL_PRI)
-                    << ", mat_sec=" << material::ToString(MATERIAL_SEC)
+                    << ((SET_TYPE == set_type::Count) ? "Count" : NAMEOF_ENUM(SET_TYPE))
+                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE) << ", mat_pri="
+                    << NAMEOF_ENUM(MATERIAL_PRI) << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SEC)
                     << ") was unable to find the type of the given weapon.");
 
             AppendToCorrectProfileCollection(profile);
@@ -760,12 +756,10 @@ namespace item
         std::ostringstream ss;
         ss << "ItemProfileWarehouse::MakeForEquipment(thin_profile=" << THIN_PROFILE.ToString()
            << ", named_type="
-           << ((NAMED_TYPE == named_type::Count) ? "Count" : named_type::ToString(NAMED_TYPE))
-           << ", set_type="
-           << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+           << ((NAMED_TYPE == named_type::Count) ? "Count" : NAMEOF_ENUM(NAMED_TYPE))
+           << ", set_type=" << ((SET_TYPE == set_type::Count) ? "Count" : NAMEOF_ENUM(SET_TYPE))
            << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
-           << ", mat_pri=" << material::ToString(MATERIAL_PRI)
-           << ", mat_sec=" << material::ToString(MATERIAL_SEC)
+           << ", mat_pri=" << NAMEOF_ENUM(MATERIAL_PRI) << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SEC)
            << ") was unable to find the type of the given item profile.";
 
         throw std::runtime_error(ss.str());

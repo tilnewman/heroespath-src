@@ -52,7 +52,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (MAP.Empty() == false),
                 "creature::nonplayer::MappedRandomFloatChance(T=\""
-                    << NAMEOF_TYPE_T(T) << "\") called when the map was empty.");
+                    << NAMEOF_TYPE(T) << "\") called when the map was empty.");
 
             auto chanceSubTotal { 0.0f };
             for (const auto & NEXT_MAP_PAIR : MAP)
@@ -63,7 +63,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((misc::IsRealZero(chanceSubTotal) == false) && (chanceSubTotal > 0.0f)),
                 "creature::nonplayer::MappedRandomFloatChance(T=\""
-                    << NAMEOF_TYPE_T(T) << "\", size=" << MAP.Size()
+                    << NAMEOF_TYPE(T) << "\", size=" << MAP.Size()
                     << ") called when the map's chance total is zero or less.");
 
             const auto RAND { misc::Random(0.0f, chanceSubTotal) };
@@ -93,14 +93,19 @@ namespace creature
 
             // if we get here something is wrong, so log everything
 
-            std::string errorStr(
-                "creature::nonplayer::MappedRandomFloatChance(T=\"" + std::string(NAMEOF_TYPE_T(T))
-                + "\") failed to random select.  chanceSubTotal=" + std::to_string(chanceSubTotal)
-                + ", RAND=" + std::to_string(RAND) + ", MAP={");
+            std::string errorStr("creature::nonplayer::MappedRandomFloatChance(T=\"");
+            errorStr.reserve(128);
+            errorStr += std::string(NAMEOF_TYPE(T));
+            errorStr += "\") failed to random select.  chanceSubTotal=";
+            errorStr += std::to_string(chanceSubTotal);
+            errorStr += ", RAND=";
+            errorStr += std::to_string(RAND);
+            errorStr += ", MAP={";
 
             for (const auto & NEXT_MAP_PAIR : MAP)
             {
-                errorStr += std::to_string(NEXT_MAP_PAIR.second) + ", ";
+                errorStr += std::to_string(NEXT_MAP_PAIR.second);
+                errorStr += ", ";
             }
 
             errorStr += "}  ";
@@ -110,9 +115,12 @@ namespace creature
             {
                 if (NEXT_MAP_PAIR.second > 0.0f)
                 {
-                    errorStr += "picking " + std::to_string(static_cast<int>(NEXT_MAP_PAIR.first))
-                        + " with chance=" + std::to_string(NEXT_MAP_PAIR.second)
-                        + " at index=" + std::to_string(i);
+                    errorStr += "picking ";
+                    errorStr += std::to_string(static_cast<int>(NEXT_MAP_PAIR.first));
+                    errorStr += " with chance=";
+                    errorStr += std::to_string(NEXT_MAP_PAIR.second);
+                    errorStr += " at index=";
+                    errorStr += std::to_string(i);
 
                     M_HP_LOG_WRN(errorStr);
                     return NEXT_MAP_PAIR.first;
@@ -279,7 +287,7 @@ namespace creature
 
             M_HP_LOG(
                 "WARNING:  creature::nonplayer::MappedRandomItemChance(T=\""
-                << NAMEOF_TYPE_T(T)
+                << NAMEOF_TYPE(T)
                 << "\") failed random selection.  Choosing first with a count of one by "
                    "default.");
 
@@ -491,7 +499,6 @@ namespace creature
                 Count
             };
 
-            static const std::string ToString(const wealth_type::Enum);
             static wealth_type::Enum FromRankType(const rank_class::Enum RANK_CLASS);
             static wealth_type::Enum FromRank(const Rank_t & RANK);
             static wealth_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
@@ -540,7 +547,6 @@ namespace creature
                 Count
             };
 
-            static const std::string ToString(const owns_magic_type::Enum);
             static owns_magic_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
         };
 
@@ -565,7 +571,6 @@ namespace creature
                 Count
             };
 
-            static const std::string ToString(const Enum);
             static complexity_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
         };
 

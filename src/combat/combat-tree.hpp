@@ -67,11 +67,10 @@ namespace combat
             // blocking position is linked shoulder-to-shoulder.
             ShoulderToShoulder,
 
-            Count,
-            All = Count
+            Count
         };
 
-        static const std::string ToString(const Enum);
+        static constexpr Enum All = Count;
     };
 
     // Manages the combat tree and provides functions to ease common operations

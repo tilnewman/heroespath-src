@@ -30,10 +30,38 @@ namespace item
             Count
         };
 
-        static const std::string ToString(const Enum);
-        static const std::string ImageConfigKey(const Enum);
+        static const std::string_view ImageConfigKey(const Enum);
 
-        static const std::string ToContainerName(const Enum, const bool WILL_CAPITALIZE = false);
+        static constexpr std::string_view
+            ToContainerName(const TreasureImage::Enum IMAGE, const bool WILL_CAPITALIZE = false)
+        {
+            if ((IMAGE == ChestClosed) || (IMAGE == ChestOpen))
+            {
+                if (WILL_CAPITALIZE)
+                {
+                    return "Chest";
+                }
+                else
+                {
+                    return "chest";
+                }
+            }
+            else if ((IMAGE == LockboxClosed) || (IMAGE == LockboxOpen))
+            {
+                if (WILL_CAPITALIZE)
+                {
+                    return "Lockbox";
+                }
+                else
+                {
+                    return "lockbox";
+                }
+            }
+            else
+            {
+                return "";
+            }
+        }
     };
 
 } // namespace item

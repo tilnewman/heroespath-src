@@ -86,8 +86,8 @@ namespace misc
         bool IsFileReadyForWriting() const;
 
     private:
-        static const int LINE_NUMBER_INVALID_;
-        static const char * const SEPARATOR_STR_;
+        static const int LINE_NUMBER_INVALID_ = -1; // anything less than zero works here
+        static constexpr std::string_view SEPARATOR_STR_ = "  ";
         static std::unique_ptr<Log> instanceUPtr_;
 
         std::string fileName_;

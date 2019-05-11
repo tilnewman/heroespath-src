@@ -11,8 +11,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace combat
@@ -31,8 +29,6 @@ namespace combat
             Last,
             Count
         };
-
-        static const std::string ToString(const Enum);
     };
 
 } // namespace combat

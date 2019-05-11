@@ -844,7 +844,7 @@ namespace stage
         // Setup the strength attribute here because it is special.
         // See below where it is added by hand.
         const auto STRENGTH_BASE_TEXT {
-            creature::Traits::Name(creature::Traits::Strength) + " - "
+            std::string(creature::Traits::Name(creature::Traits::Strength)) + " - "
             + misc::ConfigFile::Instance()->Value("stats-stat-desc_Strength") + "\n\n"
         };
 
@@ -910,11 +910,11 @@ namespace stage
         gui::TextInfo & descTextInfo,
         gui::TextRegionUVec_t & textRegionUVec)
     {
-        descTextInfo.text = creature::Traits::Name(TRAIT_ENUM) + " - "
+        descTextInfo.text = std::string(creature::Traits::Name(TRAIT_ENUM)) + " - "
             + misc::ConfigFile::Instance()->Value(DESC_KEY) + "\n\n";
 
         textRegionUVec.emplace_back(std::make_unique<gui::TextRegion>(
-            creature::Traits::ToString(TRAIT_ENUM) + "StatDesc", descTextInfo, REGION));
+            NAMEOF_ENUM_STR(TRAIT_ENUM) + "StatDesc", descTextInfo, REGION));
 
         gui::TextInfo helpTextInfo(descTextInfo);
 
@@ -932,7 +932,7 @@ namespace stage
         if (helpTextInfo.text.empty() == false)
         {
             textRegionUVec.emplace_back(std::make_unique<gui::TextRegion>(
-                creature::Traits::ToString(TRAIT_ENUM) + "AttributeDesc", helpTextInfo, REGION));
+                NAMEOF_ENUM_STR(TRAIT_ENUM) + "AttributeDesc", helpTextInfo, REGION));
         }
     }
 
@@ -1319,7 +1319,7 @@ namespace stage
         const auto STAT_VALUE { fixedStatsSVec_[static_cast<std::size_t>(WHICH_STAT)]->Value() };
 
         std::ostringstream sss;
-        sss << "Your current " << creature::Traits::ToString(WHICH_STAT) << " is only "
+        sss << "Your current " << NAMEOF_ENUM(WHICH_STAT) << " is only "
             << STAT_VALUE << ".";
 
         const auto IS_ONLY_STR { sss.str() };

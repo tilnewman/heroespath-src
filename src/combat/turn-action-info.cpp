@@ -52,7 +52,7 @@ namespace combat
     {
         std::ostringstream ss;
 
-        ss << "{type=" << TurnAction::ToString(actionType_);
+        ss << "{type=" << NAMEOF_ENUM(actionType_);
 
         if (spellPtrOpt_)
         {

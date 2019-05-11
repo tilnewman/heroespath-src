@@ -57,7 +57,7 @@ namespace creature
             const Experience_t & EXPERIENCE_BONUS = 0_exp,
             const Health_t & HEALTH_BONUS = 0_health);
 
-        const std::string Name() const { return Titles::Name(title_); }
+        const std::string Name() const { return std::string(Titles::Name(title_)); }
         const std::string Desc() const { return Titles::Desc(title_); }
         Titles::Enum Which() const { return title_; }
         const StatSet StatBonus() const { return statBonus_; }

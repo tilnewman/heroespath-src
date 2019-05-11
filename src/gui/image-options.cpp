@@ -97,64 +97,78 @@ namespace gui
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += "(";
+            str += '(';
         }
 
         auto separatorIf = [&]() -> std::string { return ((str.empty()) ? "" : SEPARATOR); };
 
         if (option_enum & ImageOpt::Smooth)
         {
-            str += separatorIf() + "Smooth";
+            str += separatorIf();
+            str += "Smooth";
         }
 
         if (option_enum & ImageOpt::Repeated)
         {
-            str += separatorIf() + "Repeated";
+            str += separatorIf();
+            str += "Repeated";
         }
 
         if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) == 0))
         {
-            str += separatorIf() + "Invert"
-                + ((option_enum & ImageOpt::InvertIncludesAlpha) ? "NoAlpha" : "");
+            str += separatorIf();
+            str += "Invert";
+            str += ((option_enum & ImageOpt::InvertIncludesAlpha) ? "NoAlpha" : "");
         }
 
         if (HasMask())
         {
             const auto C { mask_color_opt.value() };
 
-            str += separatorIf() + "Mask" + std::to_string(int(C.r)) + "-"
-                + std::to_string(int(C.g)) + "-" + std::to_string(int(C.b));
+            str += separatorIf();
+            str += "Mask";
+            str += std::to_string(int(C.r));
+            str += '-';
+            str += std::to_string(int(C.g));
+            str += '-';
+            str += std::to_string(int(C.b));
 
             if (C.a < 255)
             {
-                str += "-" + std::to_string(int(C.a));
+                str += '-';
+                str += std::to_string(int(C.a));
             }
 
             if (IsMaskAlphaDefault() == false)
             {
-                str += SEPARATOR + "MaskAlpha" + std::to_string(unsigned(mask_alpha));
+                str += SEPARATOR;
+                str += "MaskAlpha";
+                str += std::to_string(unsigned(mask_alpha));
             }
         }
 
         if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) > 0))
         {
-            str += separatorIf() + "Invert"
-                + ((option_enum & ImageOpt::InvertIncludesAlpha) ? "ExcludingAlpha" : "");
+            str += separatorIf();
+            str += "Invert";
+            str += ((option_enum & ImageOpt::InvertIncludesAlpha) ? "ExcludingAlpha" : "");
         }
 
         if (option_enum & ImageOpt::FlipHoriz)
         {
-            str += separatorIf() + "FlipHoriz";
+            str += separatorIf();
+            str += "FlipHoriz";
         }
 
         if (option_enum & ImageOpt::FlipVert)
         {
-            str += separatorIf() + "FlipVert";
+            str += separatorIf();
+            str += "FlipVert";
         }
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += ")";
+            str += ')';
         }
 
         return str;

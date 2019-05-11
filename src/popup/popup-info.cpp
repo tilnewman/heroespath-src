@@ -70,23 +70,23 @@ namespace popup
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (TEXT_INFO.text.empty() == false),
             "popup::PopupInfo(name=\"" << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
-                                       << ", image=" << PopupImage::ToString(IMAGE)
-                                       << ", textInfo=\"" << TEXT_INFO.text
+                                       << ", image=" << NAMEOF_ENUM(IMAGE) << ", textInfo=\""
+                                       << TEXT_INFO.text
                                        << "\") was given TEXT_INFO.text that was empty.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<PopupImage>::IsValid(IMAGE)),
-            "popup::PopupInfo(name=\""
-                << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
-                << ", image=" << PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
-                << "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
+            "popup::PopupInfo(name=\"" << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
+                                       << ", image=" << NAMEOF_ENUM(IMAGE) << ", textInfo=\""
+                                       << TEXT_INFO.text << "\") was given an IMAGE value of "
+                                       << IMAGE << ", which is invalid.");
 
         if ((imageFadeSpeed_ > 0.0f) && (textures_.empty()))
         {
             std::ostringstream ss;
             ss << "popup::PopupInfo(name=" << name_
                << "\", buttons=" << PopupButtons::ToString(BUTTONS)
-               << ", image=" << PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
+               << ", image=" << NAMEOF_ENUM(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
                << "\") was given an image fade speed of " << IMAGE_FADE_SPEED
                << " but the TEXTURE_VEC was empty, which makes no sense.  If there is a fade "
                << "speed then there must be images to fade-in.";
@@ -220,18 +220,18 @@ namespace popup
             ss << "(";
         }
 
-        ss << PopupStage::ToString(stage_) << ", ";
+        ss << NAMEOF_ENUM(stage_) << ", ";
 
         ss << "\"" << name_ << "\", " << PopupButtons::ToString(buttons_)
-           << ", image=" << PopupImage::ToString(image_);
+           << ", image=" << NAMEOF_ENUM(image_);
 
         if (WILL_SHORTEN == false)
         {
-            ss << ", button_color=" << PopupButtonColor::ToString(buttonColor_);
+            ss << ", button_color=" << NAMEOF_ENUM(buttonColor_);
 
             ss << ", accent_image=" << std::boolalpha << willAddRandImage_;
 
-            ss << ", sound_effect=" << gui::sound_effect::ToString(soundEffect_);
+            ss << ", sound_effect=" << NAMEOF_ENUM(soundEffect_);
 
             if (numberMin_ != numberMax_)
             {
@@ -286,7 +286,7 @@ namespace popup
 
             if (howCombatEnded_ != combat::CombatEnd::Count)
             {
-                ss << ", combat_ended=" << combat::CombatEnd::ToString(howCombatEnded_);
+                ss << ", combat_ended=" << NAMEOF_ENUM(howCombatEnded_);
             }
 
             if (titleText_.empty() == false)

@@ -63,20 +63,20 @@ namespace gui
         if (raceIndex < creature::race::Count)
         {
             const auto RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
-            const auto RACE_STR { creature::race::ToString(RACE_ENUM) };
+            const auto RACE_STR { NAMEOF_ENUM(RACE_ENUM) };
             const auto ROLE_VEC { creature::race::Roles(RACE_ENUM) };
 
             static EnumUnderlying_t roleIndex { 0 };
             if (roleIndex < ROLE_VEC.size())
             {
                 const auto ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
-                const auto ROLE_STR { creature::role::ToString(ROLE_ENUM) };
+                const auto ROLE_STR { NAMEOF_ENUM(ROLE_ENUM) };
 
                 static EnumUnderlying_t sexIndex { 0 };
                 if (sexIndex < creature::sex::Count)
                 {
                     const auto SEX_ENUM { static_cast<creature::sex::Enum>(sexIndex) };
-                    const auto SEX_STR { creature::sex::ToString(SEX_ENUM) };
+                    const auto SEX_STR { NAMEOF_ENUM(SEX_ENUM) };
 
                     // test to ensure that BodyType maker will not throw
                     creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM);
@@ -90,7 +90,7 @@ namespace gui
                             const auto CLASS_ENUM { static_cast<creature::wolfen_class::Enum>(
                                 classIndex) };
 
-                            const auto CLASS_STR { creature::wolfen_class::ToString(CLASS_ENUM) };
+                            const auto CLASS_STR { NAMEOF_ENUM(CLASS_ENUM) };
 
                             const auto FILENAMES { Filenames(
                                 RACE_ENUM,
@@ -121,10 +121,20 @@ namespace gui
                                     allPaths.erase(imagePathFoundIter);
                                 }
 
-                                iStagePtr->TestingStrAppend(
-                                    (" CreatureImagePaths Tested race=" + RACE_STR
-                                     + " role=" + ROLE_STR + " sex=" + SEX_STR
-                                     + " wolfen_class=" + CLASS_STR + " filename=" + FILENAME));
+                                std::string str;
+                                str.reserve(128);
+                                str += " CreatureImagePaths Tested race=";
+                                str += RACE_STR;
+                                str += " role=";
+                                str += ROLE_STR;
+                                str += " sex=";
+                                str += SEX_STR;
+                                str += " wolfen_class=";
+                                str += CLASS_STR;
+                                str += " filename=";
+                                str += FILENAME;
+
+                                iStagePtr->TestingStrAppend(str);
 
                                 allPaths.erase(
                                     std::remove(std::begin(allPaths), std::end(allPaths), PATH),
@@ -146,7 +156,7 @@ namespace gui
                             const auto CLASS_ENUM { static_cast<creature::dragon_class::Enum>(
                                 classIndex) };
 
-                            const auto CLASS_STR { creature::dragon_class::ToString(CLASS_ENUM) };
+                            const auto CLASS_STR { NAMEOF_ENUM(CLASS_ENUM) };
 
                             const auto FILENAMES { Filenames(
                                 RACE_ENUM,
@@ -177,10 +187,20 @@ namespace gui
                                     allPaths.erase(imagePathFoundIter);
                                 }
 
-                                iStagePtr->TestingStrAppend(
-                                    " CreatureImagePaths Tested race=" + RACE_STR
-                                    + " role=" + ROLE_STR + " sex=" + SEX_STR
-                                    + " dragon_cla+=" + CLASS_STR + " filename=" + FILENAME);
+                                std::string str;
+                                str.reserve(128);
+                                str += " CreatureImagePaths Tested race=";
+                                str += RACE_STR;
+                                str += " role=";
+                                str += ROLE_STR;
+                                str += " sex=";
+                                str += SEX_STR;
+                                str += " dragon_cla+=";
+                                str += CLASS_STR;
+                                str += " filename=";
+                                str += FILENAME;
+
+                                iStagePtr->TestingStrAppend(str);
 
                                 allPaths.erase(
                                     std::remove(std::begin(allPaths), std::end(allPaths), PATH),
@@ -225,9 +245,18 @@ namespace gui
                                 allPaths.erase(imagePathFoundIter);
                             }
 
-                            iStagePtr->TestingStrAppend(
-                                " CreatureImagePaths Tested race=" + RACE_STR + " role=" + ROLE_STR
-                                + " sex=" + SEX_STR + " filename=" + FILENAME);
+                            std::string str;
+                            str.reserve(128);
+                            str += " CreatureImagePaths Tested race=";
+                            str += RACE_STR;
+                            str += " role=";
+                            str += ROLE_STR;
+                            str += " sex=";
+                            str += SEX_STR;
+                            str += " filename=";
+                            str += FILENAME;
+
+                            iStagePtr->TestingStrAppend(str);
 
                             allPaths.erase(
                                 std::remove(std::begin(allPaths), std::end(allPaths), PATH),
@@ -1597,10 +1626,9 @@ namespace gui
 
         std::ostringstream ss;
         ss << "gui::CreatureImagePaths::GetFilenames(race="
-           << ((RACE == creature::race::Count) ? "(count)" : creature::race::ToString(RACE))
-           << ", role="
-           << ((ROLE == creature::role::Count) ? "(count)" : creature::role::ToString(ROLE))
-           << ", sex=" << ((SEX == creature::sex::Count) ? "(count)" : creature::sex::ToString(SEX))
+           << ((RACE == creature::race::Count) ? "(count)" : NAMEOF_ENUM(RACE))
+           << ", role=" << ((ROLE == creature::role::Count) ? "(count)" : NAMEOF_ENUM(ROLE))
+           << ", sex=" << ((SEX == creature::sex::Count) ? "(count)" : NAMEOF_ENUM(SEX))
            << ", wolfen_class=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS
            << ") -No filenames found for that creature information.";
 

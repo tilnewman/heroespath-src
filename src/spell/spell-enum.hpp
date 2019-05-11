@@ -43,11 +43,27 @@ namespace spell
             Count
         };
 
-        // straight name without spaces
-        static const std::string ToString(const Enum);
+        static constexpr std::string_view Name(const Spells::Enum ENUM) noexcept
+        {
+            switch (ENUM)
+            {
+                case Sparks: return "Sparks";
+                case Bandage: return "Bandage";
+                case Sleep: return "Sleep";
+                case Awaken: return "Awaken";
+                case Trip: return "Trip";
+                case Lift: return "Lift";
+                case Daze: return "Daze";
+                case Panic: return "Panic";
+                case ClearMind: return "Clear Mind";
+                case Poison: return "Poison";
+                case Antidote: return "Antidote";
+                case PoisonCloud: return "Poison Cloud";
+                case Count: return "Count";
+                default: return "spell::Spells::Name(ENUM=out_of_range)";
+            }
+        }
 
-        // human readable with spaces
-        static const std::string Name(const Enum);
         static const std::string ShortDesc(const Enum);
         static const std::string ExtraDesc(const Enum);
         static const std::string ImageFilename(const Enum);

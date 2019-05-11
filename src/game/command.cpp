@@ -104,13 +104,13 @@ namespace game
         if (EnumUtil<gui::music>::IsValid(to_stop) || (gui::music::All == to_stop))
         {
             prefixSeparatorString();
-            ss << "music_stop=" << gui::music::ToString(to_stop);
+            ss << "music_stop=" << NAMEOF_ENUM(to_stop);
         }
 
         if (EnumUtil<gui::music>::IsValid(to_start))
         {
             prefixSeparatorString();
-            ss << "music_start=" << gui::music::ToString(to_start);
+            ss << "music_start=" << NAMEOF_ENUM(to_start);
         }
 
         if (volume_min > 0.0f)

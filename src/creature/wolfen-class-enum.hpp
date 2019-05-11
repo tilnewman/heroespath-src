@@ -33,8 +33,6 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const Enum);
-        static const std::string Name(const Enum ENUM) { return ToString(ENUM); }
         static const std::string Desc(const Enum);
         static Enum ClassFromRank(const Rank_t &);
     };

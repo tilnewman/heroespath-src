@@ -34,6 +34,7 @@ namespace avatar
         : whichAvatar_(WHICH_AVATAR)
         , cachedTexture_(PathWrapper(Avatar::ImagePath(whichAvatar_)))
         , sprite_(cachedTexture_.Get())
+        , defaultPoseSprite_()
         , animation_(CreateAnimation(Pose::Standing, gui::Direction::Right))
         , frameTimerSec_(0.0f)
         , frameIndex_(0)

@@ -47,13 +47,13 @@ namespace gui
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             ((LAST_ENUM != sound_effect::None) && (LAST_ENUM != sound_effect::Count)),
-            "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
-                                         << ", last=" << LAST_ENUM << ") last was invalid.");
+            "SfxSet::Constructor(first=" << NAMEOF_ENUM(FIRST_ENUM) << ", last=" << LAST_ENUM
+                                         << ") last was invalid.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (FIRST_ENUM != LAST_ENUM),
-            "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
-                                         << ", last=" << sound_effect::ToString(LAST_ENUM)
+            "SfxSet::Constructor(first=" << NAMEOF_ENUM(FIRST_ENUM)
+                                         << ", last=" << NAMEOF_ENUM(LAST_ENUM)
                                          << ") first and last were the same.");
 
         const int FIRST_INT { static_cast<int>(FIRST_ENUM) };
@@ -61,8 +61,8 @@ namespace gui
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (FIRST_INT < LAST_INT),
-            "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM) << ", last="
-                                         << sound_effect::ToString(LAST_ENUM) << ") first>last.");
+            "SfxSet::Constructor(first=" << NAMEOF_ENUM(FIRST_ENUM)
+                                         << ", last=" << NAMEOF_ENUM(LAST_ENUM) << ") first>last.");
 
         sfxEnums_.reserve(static_cast<std::size_t>((LAST_INT - FIRST_INT) + 1));
 
@@ -73,8 +73,8 @@ namespace gui
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (sfxEnums_.empty() == false),
-            "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
-                                         << ", last=" << sound_effect::ToString(LAST_ENUM)
+            "SfxSet::Constructor(first=" << NAMEOF_ENUM(FIRST_ENUM)
+                                         << ", last=" << NAMEOF_ENUM(LAST_ENUM)
                                          << ") resulted in an empty sfxEnums_ vector.");
     }
 
@@ -102,7 +102,7 @@ namespace gui
             }
 
             std::ostringstream ssErr;
-            ssErr << "gui::SfxSet::Play(" << sound_effect::ToString(ENUM)
+            ssErr << "gui::SfxSet::Play(" << NAMEOF_ENUM(ENUM)
                   << ") did not find that sound effect among the static sounds.";
             throw std::range_error(ssErr.str());
         }

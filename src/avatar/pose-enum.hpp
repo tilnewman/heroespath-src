@@ -11,8 +11,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace avatar
@@ -31,8 +29,6 @@ namespace avatar
             Dead,
             Count
         };
-
-        static const std::string ToString(const Enum);
     };
 
 } // namespace avatar

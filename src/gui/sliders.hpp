@@ -69,7 +69,7 @@ namespace gui
             {
                 M_HP_LOG_ERR(
                     "(" + FILE_FUNC_LINE_STR
-                    << ")  The given SPEED<" << NAMEOF_TYPE_T(T) << ">=" + std::to_string(SPEED)
+                    << ")  The given SPEED<" << NAMEOF_TYPE(T) << ">=" + std::to_string(SPEED)
                     << " is less than zero which is invalid.  This slider will be "
                        "stopped.");
 
@@ -87,7 +87,7 @@ namespace gui
             {
                 M_HP_LOG_ERR(
                     FILE_FUNC_LINE_STR + "  The given START_AT_ORIG<"
-                    << NAMEOF_TYPE_T(T) << ">=" << START_AT_ORIG << " is invalid (<FROM)(<" << FROM
+                    << NAMEOF_TYPE(T) << ">=" << START_AT_ORIG << " is invalid (<FROM)(<" << FROM
                     << ").  The actual starting ratio will be set to that FROM(" << FROM << ").");
 
                 startAtFinal = FROM;
@@ -96,7 +96,7 @@ namespace gui
             {
                 M_HP_LOG_ERR(
                     FILE_FUNC_LINE_STR + "  The given START_AT_ORIG<"
-                    << NAMEOF_TYPE_T(T) << ">=" << START_AT_ORIG << " is invalid (>TO)(>" << TO
+                    << NAMEOF_TYPE(T) << ">=" << START_AT_ORIG << " is invalid (>TO)(>" << TO
                     << ").  The actual start value will be set to " << TO << ".");
 
                 startAtFinal = TO;
@@ -113,7 +113,7 @@ namespace gui
             {
                 M_HP_LOG_ERR(
                     FILE_FUNC_LINE_STR + "  The given FROM<"
-                    << NAMEOF_TYPE_T(T) << ">=" << FROM << " is the same as the given TO=" << TO
+                    << NAMEOF_TYPE(T) << ">=" << FROM << " is the same as the given TO=" << TO
                     << ", which is invalid.  This slider will be stopped.");
 
                 isStopped = true;
@@ -137,7 +137,7 @@ namespace gui
             {
                 M_HP_LOG_ERR(
                     FILE_FUNC_LINE_STR + "  The VALUE_MIN_FINAL<"
-                    << NAMEOF_TYPE_T(T) << ">(" << VALUE_MIN_FINAL
+                    << NAMEOF_TYPE(T) << ">(" << VALUE_MIN_FINAL
                     << ") is equal to the VALUE_MAX_FINAL(" << VALUE_MAX_FINAL
                     << ", which is invalid.  This slider will be stopped.");
 
@@ -154,7 +154,7 @@ namespace gui
 
                 M_HP_LOG_ERR(
                     FILE_FUNC_LINE_STR + "  The VALUE_TO_START_AT_ORIG<"
-                    << NAMEOF_TYPE_T(T) << ">(" << VALUE_TO_START_AT_ORIG
+                    << NAMEOF_TYPE(T) << ">(" << VALUE_TO_START_AT_ORIG
                     << ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] "
                        "or ["
                     << VALUE_MIN_FINAL << ", " << VALUE_MAX_FINAL
@@ -172,7 +172,7 @@ namespace gui
 
                 M_HP_LOG_ERR(
                     FILE_FUNC_LINE_STR + "  The VALUE_OF_FIRST_TARGET_ORIG<"
-                    << NAMEOF_TYPE_T(T) << ">(" << VALUE_OF_FIRST_TARGET_ORIG
+                    << NAMEOF_TYPE(T) << ">(" << VALUE_OF_FIRST_TARGET_ORIG
                     << ") not within the valid interval of [VALUE_MIN_FINAL, VALUE_MAX_FINAL] "
                        "or ["
                     << VALUE_MIN_FINAL << ", " << VALUE_MAX_FINAL
@@ -195,8 +195,8 @@ namespace gui
 
                 M_HP_LOG_ERR(
                     FILE_FUNC_LINE_STR + "  The valueToStartAtFinal<"
-                    << NAMEOF_TYPE_T(T) << ">(" << valueToStartAtFinal
-                    << ")=valueOfFirstTargetFinal(" << VALUE_OF_FIRST_TARGET_FINAL_BEFORE
+                    << NAMEOF_TYPE(T) << ">(" << valueToStartAtFinal << ")=valueOfFirstTargetFinal("
+                    << VALUE_OF_FIRST_TARGET_FINAL_BEFORE
                     << "), which is invalid.  So valueOfFirstTargetFinal has been changed to  "
                     << valueOfFirstTargetFinal << ".");
             }
@@ -281,7 +281,7 @@ namespace gui
                 }
                 else
                 {
-                    value_ = ((2.0f - (sin(radians_) + 1.0f)) * 0.5f);
+                    value_ = static_cast<float>((2.0f - (sin(radians_) + 1.0f)) * 0.5f);
                     value_ = std::clamp(value_, 0.0f, 1.0f);
                 }
             }

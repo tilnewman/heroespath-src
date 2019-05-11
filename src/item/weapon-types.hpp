@@ -33,14 +33,23 @@ namespace item
                 Saber,
                 Broadsword,
                 Longsword,
-                Knightlysword,
+                KnightlySword,
                 Flamberg,
                 Claymore,
                 Count
             };
 
-            static const std::string ToString(const sword_type::Enum);
-            static const std::string Name(const sword_type::Enum);
+            inline static const std::string Name(const sword_type::Enum SWORD_TYPE)
+            {
+                if (SWORD_TYPE == sword_type::KnightlySword)
+                {
+                    return "Knightly";
+                }
+                else
+                {
+                    return std::string(NAMEOF_ENUM(SWORD_TYPE));
+                }
+            }
         };
 
         struct axe_type : public EnumBaseCounting<EnumFirstValue::Valid>
@@ -54,8 +63,18 @@ namespace item
                 Count
             };
 
-            static const std::string ToString(const axe_type::Enum);
-            static const std::string Name(const axe_type::Enum);
+            static constexpr std::string_view Name(const axe_type::Enum AXE_TYPE)
+            {
+                switch (AXE_TYPE)
+                {
+                    case Handaxe: return "Hand";
+                    case Sickle: return "Sickle";
+                    case Battleaxe: return "Battle";
+                    case Waraxe: return "War";
+                    case Count: return "Count";
+                    default: return "item::weapon::Name(ENUM)_out_of_bounds";
+                }
+            }
         };
 
         struct club_type : public EnumBaseCounting<EnumFirstValue::Valid>
@@ -68,8 +87,6 @@ namespace item
                 Warhammer,
                 Count
             };
-
-            static const std::string ToString(const club_type::Enum);
         };
 
         struct whip_type : public EnumBaseCounting<EnumFirstValue::Valid>
@@ -82,8 +99,17 @@ namespace item
                 Count
             };
 
-            static const std::string ToString(const whip_type::Enum);
-            static const std::string Name(const whip_type::Enum);
+            inline static const std::string Name(const whip_type::Enum WHIP_TYPE)
+            {
+                if (WHIP_TYPE == whip_type::MaceAndChain)
+                {
+                    return "Mace And Chain";
+                }
+                else
+                {
+                    return std::string(NAMEOF_ENUM(WHIP_TYPE));
+                }
+            }
         };
 
         struct projectile_type : public EnumBaseCounting<EnumFirstValue::Valid>
@@ -99,8 +125,17 @@ namespace item
                 Count
             };
 
-            static const std::string ToString(const projectile_type::Enum);
-            static const std::string Name(const projectile_type::Enum);
+            inline static const std::string Name(const projectile_type::Enum PROJECTILE_TYPE)
+            {
+                if (PROJECTILE_TYPE == projectile_type::CompositeBow)
+                {
+                    return "Composite Bow";
+                }
+                else
+                {
+                    return std::string(NAMEOF_ENUM(PROJECTILE_TYPE));
+                }
+            }
         };
 
         struct bladedstaff_type : public EnumBaseCounting<EnumFirstValue::Valid>
@@ -116,8 +151,17 @@ namespace item
                 Count
             };
 
-            static const std::string ToString(const bladedstaff_type::Enum);
-            static const std::string Name(const bladedstaff_type::Enum);
+            inline static const std::string Name(const bladedstaff_type::Enum BSTAFF_TYPE)
+            {
+                if (BSTAFF_TYPE == bladedstaff_type::ShortSpear)
+                {
+                    return "Short Spear";
+                }
+                else
+                {
+                    return std::string(NAMEOF_ENUM(BSTAFF_TYPE));
+                }
+            }
         };
 
     } // namespace weapon

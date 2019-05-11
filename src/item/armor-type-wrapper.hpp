@@ -199,8 +199,8 @@ namespace item
                 {
                     const auto SPECIFIC_TYPE_ENUM { static_cast<typename T::Enum>(i) };
 
-                    const auto SPECIFIC_TYPE_STR_LOWERCASE { misc::ToLowerCopy(
-                        T::ToString(SPECIFIC_TYPE_ENUM)) };
+                    const std::string SPECIFIC_TYPE_STR_LOWERCASE { misc::ToLowerCopy(
+                        NAMEOF_ENUM(SPECIFIC_TYPE_ENUM)) };
 
                     if (SPECIFIC_TYPE_STR_LOWERCASE == SYSTEM_NAME_LOWERCASE)
                     {
@@ -208,11 +208,16 @@ namespace item
                         base_ = BASE_TYPE;
                         variant_ = SPECIFIC_TYPE_ENUM;
 
-                        const std::string CONTEXT_STR(
-                            "after SetupWithSpecificTypeName<" + std::string(NAMEOF_TYPE_T(T))
-                            + "::Enum>(system_name_lowercase=" + SYSTEM_NAME_LOWERCASE
-                            + ", armor_type_tostring_lowercase=" + SPECIFIC_TYPE_STR_LOWERCASE
-                            + ")");
+                        std::string str;
+                        str.reserve(128);
+                        str += "after SetupWithSpecificTypeName<";
+                        str += std::string(NAMEOF_TYPE(T));
+                        str += "::Enum>(system_name_lowercase=";
+                        str += SYSTEM_NAME_LOWERCASE;
+                        str += ", armor_type_tostring_lowercase=";
+                        str += SPECIFIC_TYPE_STR_LOWERCASE;
+                        str += ')';
+                        const std::string CONTEXT_STR(str);
 
                         SetNamesAndVerify(CONTEXT_STR);
                         return true;
