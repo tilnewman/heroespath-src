@@ -10,8 +10,6 @@
 // map.hpp
 //
 #include "avatar/model.hpp"
-#include "gui/collision-grid.hpp"
-#include "gui/collision-quad-tree.hpp"
 #include "gui/direction-enum.hpp"
 #include "interact/interaction-manager.hpp"
 #include "map/level-enum.hpp"
@@ -107,9 +105,6 @@ namespace map
         void StopWalkSfxIfValid();
 
         bool DoesRectCollideWithMap(const sf::FloatRect & RECT) const;
-        bool DoesRectCollideWithMap_UsingAlgorithm_Naive(const sf::FloatRect & RECT) const;
-        bool DoesRectCollideWithMap_UsingAlgorithm_Quad(const sf::FloatRect & RECT) const;
-        bool DoesRectCollideWithMap_UsingAlgorithm_Grid(const sf::FloatRect & RECT) const;
 
         const sf::Vector2f
             MoveVector(const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT) const;
@@ -141,12 +136,6 @@ namespace map
         MapDisplayUPtr_t mapDisplayUPtr_;
         interact::InteractionManager & interactionManager_;
         std::vector<sf::FloatRect> collisionVec_;
-        gui::QuadTree quadTree_;
-        gui::CollisionGrid collisionGrid_;
-        mutable misc::TimeTrials collisionTimeTrials_;
-        const std::size_t collisionNaiveIndex_;
-        const std::size_t collisionQuadIndex_;
-        const std::size_t collisionGridIndex_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
 

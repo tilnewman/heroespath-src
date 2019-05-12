@@ -47,12 +47,6 @@ namespace map
         , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(REGION))
         , interactionManager_(interactionManager)
         , collisionVec_()
-        , quadTree_()
-        , collisionGrid_()
-        , collisionTimeTrials_("Collision Detection", TimeRes::Nano, true, 50, 0.1)
-        , collisionNaiveIndex_(collisionTimeTrials_.AddCollecter("Naive"))
-        , collisionQuadIndex_(collisionTimeTrials_.AddCollecter("Quad"))
-        , collisionGridIndex_(collisionTimeTrials_.AddCollecter("Grid"))
         , transitionVec_()
         , level_(Level::Count)
         , player_(game::Game::Instance()->State().Party().Avatar())
@@ -116,12 +110,6 @@ namespace map
         player_.MapPos(mapDisplayUPtr_->PlayerPosMap());
 
         ResetNonPlayers();
-
-        quadTree_.Setup(sf::FloatRect(sf::Vector2f(), mapDisplayUPtr_->MapSize()), collisionVec_);
-
-        collisionGrid_.Setup(mapDisplayUPtr_->MapSize(), collisionVec_);
-
-        collisionTimeTrials_.EndAllContests();
     }
 
     bool Map::MovePlayer(const gui::Direction::Enum DIRECTION)
@@ -589,55 +577,6 @@ namespace map
 
     bool Map::DoesRectCollideWithMap(const sf::FloatRect & RECT) const
     {
-        // TEMP TODO REMOVE AFTER TESTING run all three collision detection algorithms so that
-        // each can be timed
-
-        //// determine if the player's new position collides with a map object
-        //// use naive algorithm if the collision rect count is low enough
-        // if (collisionVec_.size() < 40)
-        //{
-        //    if (DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(
-        //            PLAYER_RECT_FOR_MAP_COLLISIONS))
-        //    {
-        //        return true;
-        //    }
-        //}
-        // else
-        //{
-        //    if (DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(
-        //            PLAYER_RECT_FOR_MAP_COLLISIONS))
-        //    {
-        //        return true;
-        //    }
-        //}
-
-        bool didCollideWithMap { false };
-
-        {
-            M_HP_SCOPED_TIME_TRIAL(collisionTimeTrials_, collisionQuadIndex_);
-            DoesRectCollideWithMap_UsingAlgorithm_Quad(RECT);
-        }
-
-        {
-            M_HP_SCOPED_TIME_TRIAL(collisionTimeTrials_, collisionNaiveIndex_);
-            DoesRectCollideWithMap_UsingAlgorithm_Naive(RECT);
-        }
-
-        {
-            M_HP_SCOPED_TIME_TRIAL(collisionTimeTrials_, collisionGridIndex_);
-            didCollideWithMap = DoesRectCollideWithMap_UsingAlgorithm_Grid(RECT);
-        }
-
-        if (collisionTimeTrials_.ContestCount() == 6)
-        {
-            collisionTimeTrials_.EndAllContests();
-        }
-
-        return didCollideWithMap;
-    }
-
-    bool Map::DoesRectCollideWithMap_UsingAlgorithm_Naive(const sf::FloatRect & RECT) const
-    {
         for (const auto & COLLISION_RECT : collisionVec_)
         {
             if (COLLISION_RECT.intersects(RECT))
@@ -647,16 +586,6 @@ namespace map
         }
 
         return false;
-    }
-
-    bool Map::DoesRectCollideWithMap_UsingAlgorithm_Quad(const sf::FloatRect & RECT) const
-    {
-        return collisionGrid_.DoesRectCollide(RECT);
-    }
-
-    bool Map::DoesRectCollideWithMap_UsingAlgorithm_Grid(const sf::FloatRect & RECT) const
-    {
-        return quadTree_.DoesRectCollide(RECT);
     }
 
     const sf::Vector2f
