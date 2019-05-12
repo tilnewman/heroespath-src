@@ -138,12 +138,12 @@ namespace map
         }
 
         // check if the player just walked into an exit transition
-        const auto COLLIDING_EXIT_TRANSITION_ITER { std::find_if(
+        const auto COLLIDING_EXIT_TRANSITION_ITER = std::find_if(
             std::begin(transitionVec_), std::end(transitionVec_), [&](const auto & TRANSITION) {
                 return (
-                    (TRANSITION.IsEntry() == false)
-                    && (TRANSITION.Rect().contains(MOVED_PLAYER_POS_V)));
-            }) };
+                    !TRANSITION.IsEntry()
+                    && sfutil::Contains(TRANSITION.Rect(), MOVED_PLAYER_POS_V));
+            });
 
         if (COLLIDING_EXIT_TRANSITION_ITER != std::end(transitionVec_))
         {
@@ -188,8 +188,8 @@ namespace map
                     avatar.CurrentSprite().getGlobalBounds()),
                 MOVE_V) };
 
-            if (MOVED_RECT_FOR_COLL_DET_WITH_OTHER_NPC.intersects(
-                    PLAYER_RECT_FOR_COLL_DET_WITH_NPCS))
+            if (sfutil::Intersects(
+                    MOVED_RECT_FOR_COLL_DET_WITH_OTHER_NPC, PLAYER_RECT_FOR_COLL_DET_WITH_NPCS))
             {
                 avatar.StopWalking();
                 avatar.SetIsNextToPlayer(true, player_.MapPos(), false);
@@ -270,7 +270,7 @@ namespace map
             const auto OTHER_AVATAR_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
                 otherAvatar.CurrentSprite().getGlobalBounds()) };
 
-            if (MOVED_PLAYER_RECT.intersects(OTHER_AVATAR_RECT))
+            if (sfutil::Intersects(MOVED_PLAYER_RECT, OTHER_AVATAR_RECT))
             {
                 player_.MovingIntoSet(npcPtrAvatarPair.first);
                 otherAvatar.SetIsNextToPlayer(true, player_.MapPos(), true);
@@ -549,7 +549,7 @@ namespace map
                 const auto FINAL_PROPOSED_NPC_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
                     RAW_PROPOSED_NPC_RECT) };
 
-                if (FINAL_PROPOSED_NPC_RECT.intersects(PLAYER_RECT))
+                if (sfutil::Intersects(FINAL_PROPOSED_NPC_RECT, PLAYER_RECT))
                 {
                     continue;
                 }
@@ -579,7 +579,7 @@ namespace map
     {
         for (const auto & COLLISION_RECT : collisionVec_)
         {
-            if (COLLISION_RECT.intersects(RECT))
+            if (sfutil::Intersects(COLLISION_RECT, RECT))
             {
                 return true;
             }
@@ -703,8 +703,8 @@ namespace map
                         OTHER_AVATAR.CurrentSprite().getGlobalBounds())
                 };
 
-                return RECT_ADJ_FOR_COLL_DET_WITH_NPCS.intersects(
-                    OTHER_AVATAR_RECT_FOR_COLL_DET_WITH_OTHER_NPC);
+                return sfutil::Intersects(
+                    RECT_ADJ_FOR_COLL_DET_WITH_NPCS, OTHER_AVATAR_RECT_FOR_COLL_DET_WITH_OTHER_NPC);
             });
     }
 

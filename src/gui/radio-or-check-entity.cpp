@@ -91,8 +91,7 @@ namespace gui
 
     bool RadioOrCheckEntity::MouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (!IsInvalid() && isMouseDownOnImage_
-            && imageEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+        if (!IsInvalid() && isMouseDownOnImage_ && imageEntityUPtr_->Contains(MOUSE_POS_V))
         {
             // radio buttons cannot be un-selected
             if (!isRadioButton_ || !IsSelected())
@@ -107,7 +106,7 @@ namespace gui
 
     bool RadioOrCheckEntity::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (!IsInvalid() && imageEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+        if (!IsInvalid() && imageEntityUPtr_->Contains(MOUSE_POS_V))
         {
             isMouseDownOnImage_ = true;
             return true;
@@ -118,7 +117,7 @@ namespace gui
 
     bool RadioOrCheckEntity::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (GetEntityRegion().contains(MOUSE_POS_V))
+        if (Contains(MOUSE_POS_V))
         {
             if (!isMouseOverRegion_)
             {

@@ -273,8 +273,7 @@ namespace stage
             std::string text("");
 
             // check if focused entity is hovered first
-            if (entityWithFocusPtrOpt_
-                && (entityWithFocusPtrOpt_.value()->GetEntityRegion().contains(MOUSE_POS_V)))
+            if (entityWithFocusPtrOpt_ && entityWithFocusPtrOpt_.value()->Contains(MOUSE_POS_V))
             {
                 text = entityWithFocusPtrOpt_.value()->GetMouseHoverText();
             }
@@ -284,7 +283,7 @@ namespace stage
             {
                 for (const auto & NEXT_ENTITY_PTR : entityPVec_)
                 {
-                    if (NEXT_ENTITY_PTR->GetEntityRegion().contains(MOUSE_POS_V))
+                    if (NEXT_ENTITY_PTR->Contains(MOUSE_POS_V))
                     {
                         text = NEXT_ENTITY_PTR->GetMouseHoverText();
 

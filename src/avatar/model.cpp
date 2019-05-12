@@ -210,7 +210,7 @@ namespace avatar
     {
         for (const auto & RECT : walkRects_)
         {
-            if (RECT.contains(POS_V))
+            if (sfutil::Contains(RECT, POS_V))
             {
                 return true;
             }
@@ -325,7 +325,7 @@ namespace avatar
         std::vector<std::size_t> possibleWalkRectIndexes_;
         for (std::size_t i(0); i < walkRects_.size(); ++i)
         {
-            if (walkRects_.at(i).contains(mapPosV_))
+            if (sfutil::Contains(walkRects_.at(i), mapPosV_))
             {
                 possibleWalkRectIndexes_.emplace_back(i);
             }
@@ -387,7 +387,7 @@ namespace avatar
             misc::Random(RECT.left, RECT.left + RECT.width),
             misc::Random(RECT.top, RECT.top + RECT.height));
 
-        if (RECT.contains(NEW_WALK_TARGET_POS_V) == false)
+        if (!sfutil::Contains(RECT, NEW_WALK_TARGET_POS_V))
         {
             M_HP_LOG_ERR(
                 "NEW_WALK_TARGET_POS_V was not contained by the RECT it came from."

@@ -95,20 +95,20 @@ namespace gui
         ResetMouseDownStatus();
 
         // check the pad and end-points before the bar because they are on top of the bar
-        if (CalcPadSpriteRegion().contains(MOUSE_POS_V))
+        if (sfutil::Contains(CalcPadSpriteRegion(), MOUSE_POS_V))
         {
             padIsMouseDown_ = true;
             padIsMouseDownPosV_ = MOUSE_POS_V;
         }
-        else if (topOrLeftSprite_.getGlobalBounds().contains(MOUSE_POS_V))
+        else if (sfutil::Contains(topOrLeftSprite_, MOUSE_POS_V))
         {
             topOrLeftIsMouseDown_ = true;
         }
-        else if (botOrRightSprite_.getGlobalBounds().contains(MOUSE_POS_V))
+        else if (sfutil::Contains(botOrRightSprite_, MOUSE_POS_V))
         {
             botOrRightIsMouseDown_ = true;
         }
-        else if (barSprite_.getGlobalBounds().contains(MOUSE_POS_V))
+        else if (sfutil::Contains(barSprite_, MOUSE_POS_V))
         {
             barIsMouseDown_ = true;
         }

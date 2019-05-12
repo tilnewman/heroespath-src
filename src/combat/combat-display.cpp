@@ -254,16 +254,7 @@ namespace combat
 
         for (const auto & COMBAT_NODE_PTR : combatTree_.GetCombatNodes())
         {
-            const sf::FloatRect NEXT_VERT_RECT(COMBAT_NODE_PTR->GetEntityRegion());
-
-            if ((battlefieldRect_.contains(NEXT_VERT_RECT.left, NEXT_VERT_RECT.top))
-                && (battlefieldRect_.contains(
-                       NEXT_VERT_RECT.left + NEXT_VERT_RECT.width, NEXT_VERT_RECT.top))
-                && (battlefieldRect_.contains(
-                       NEXT_VERT_RECT.left, NEXT_VERT_RECT.top + NEXT_VERT_RECT.height))
-                && (battlefieldRect_.contains(
-                       NEXT_VERT_RECT.left + NEXT_VERT_RECT.width,
-                       NEXT_VERT_RECT.top + NEXT_VERT_RECT.height)))
+            if (sfutil::Contains(battlefieldRect_, COMBAT_NODE_PTR->GetEntityRegion()))
             {
                 isAnyNodeDrawn = true;
                 COMBAT_NODE_PTR->WillDraw(true);
@@ -303,7 +294,7 @@ namespace combat
 
             if (!COMBAT_NODE_CLICKED_ON_PTR_OPT)
             {
-                if (battlefieldRect_.contains(MOUSE_POS_V))
+                if (sfutil::Contains(battlefieldRect_, MOUSE_POS_V))
                 {
                     isMouseHeldDownInBF_ = true;
                 }

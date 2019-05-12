@@ -615,12 +615,12 @@ namespace stage
 
             const auto MOUSEOVER_ELEMENT_PTR_OPT
                 = [&]() -> gui::ListElementPtrOpt_t<creature::CreaturePtr_t> {
-                if (characterListBoxUPtr_->GetEntityRegion().contains(mousePosV_))
+                if (characterListBoxUPtr_->Contains(mousePosV_))
                 {
                     isMouseOverCharacterListBox = true;
                     return characterListBoxUPtr_->AtPos(mousePosV_);
                 }
-                else if (partyListBoxUPtr_->GetEntityRegion().contains(mousePosV_))
+                else if (partyListBoxUPtr_->Contains(mousePosV_))
                 {
                     isMouseOverCharacterListBox = false;
                     return partyListBoxUPtr_->AtPos(mousePosV_);

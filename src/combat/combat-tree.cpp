@@ -105,7 +105,7 @@ namespace combat
     {
         for (const auto & VERTEX : vertexes_)
         {
-            if (VERTEX.node_sptr->GetEntityRegion().contains(POS_X, POS_Y))
+            if (VERTEX.node_sptr->Contains(POS_X, POS_Y))
             {
                 return CombatNodePtrOpt_t(CombatNodePtr_t(VERTEX.node_sptr.get()));
             }

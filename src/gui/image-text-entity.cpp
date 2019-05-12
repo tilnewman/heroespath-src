@@ -210,7 +210,7 @@ namespace gui
             didSomethingHappend = true;
         }
 
-        if (isMouseDown_ && GetEntityRegion().contains(MOUSE_POS_V))
+        if (isMouseDown_ && Contains(MOUSE_POS_V))
         {
             bool didDoubleClickAlready(false);
 
@@ -248,7 +248,7 @@ namespace gui
 
     bool ImageTextEntity::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (GetEntityRegion().contains(MOUSE_POS_V))
+        if (Contains(MOUSE_POS_V))
         {
             isMouseDown_ = true;
         }
@@ -352,10 +352,10 @@ namespace gui
         if (callbackHandlerPtrOpt_)
         {
             const auto IS_MOUSE_OVER_IMAGE { (
-                imageEntityUPtr_ && imageEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
+                imageEntityUPtr_ && imageEntityUPtr_->Contains(MOUSE_POS_V)) };
 
             const auto IS_MOUSE_OVER_TEXT { (
-                textEntityUPtr_ && textEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
+                textEntityUPtr_ && textEntityUPtr_->Contains(MOUSE_POS_V)) };
 
             const EventPacket EVENT_PACKET(
                 misc::MakeNotNull(this),
@@ -379,10 +379,10 @@ namespace gui
         if (callbackHandlerPtrOpt_)
         {
             const auto IS_MOUSE_OVER_IMAGE { (
-                imageEntityUPtr_ && imageEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
+                imageEntityUPtr_ && imageEntityUPtr_->Contains(MOUSE_POS_V)) };
 
             const auto IS_MOUSE_OVER_TEXT { (
-                textEntityUPtr_ && textEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
+                textEntityUPtr_ && textEntityUPtr_->Contains(MOUSE_POS_V)) };
 
             const EventPacket EVENT_PACKET(
                 misc::MakeNotNull(this),

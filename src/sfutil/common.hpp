@@ -589,6 +589,51 @@ namespace sfutil
             || (P.y > (R.top + R.height)));
     }
 
+    template <typename T>
+    bool Contains(const sf::Rect<T> & R, const float LEFT, const float TOP) noexcept
+    {
+        return Contains(R, sf::Vector2f(LEFT, TOP));
+    }
+
+    template <typename T1, typename T2>
+    const std::enable_if_t<has_getglobalbounds_v<T1>, bool>
+        Contains(const T1 & THING, const sf::Vector2<T2> & P) noexcept
+    {
+        return Contains(THING.getGlobalBounds(), P);
+    }
+
+    template <typename T>
+    const std::enable_if_t<has_getglobalbounds_v<T>, bool>
+        Contains(const T & THING, const float LEFT, const float TOP) noexcept
+    {
+        return Contains(THING.getGlobalBounds(), sf::Vector2f(LEFT, TOP));
+    }
+
+    // works and returns true for sizes=0, but will not work for sizes<0
+    template <typename T>
+    bool Contains(const sf::Rect<T> & A, const sf::Rect<T> & B) noexcept
+    {
+        return (
+            Contains(A, sf::Vector2<T>(B.left, B.top))
+            && Contains(A, sf::Vector2<T>((B.left + B.width), (B.top + B.height))));
+    }
+
+    // works and returns true for sizes=0, but will not work for sizes<0
+    template <typename T1, typename T2>
+    const std::enable_if_t<has_getglobalbounds_v<T1>, bool>
+        Contains(const T1 & THING, const sf::Rect<T2> & R) noexcept
+    {
+        return Contains(THING.getGlobalBounds(), sf::FloatRect(R));
+    }
+
+    // works and returns true for sizes=0, but will not work for sizes<0
+    template <typename T1, typename T2>
+    const std::enable_if_t<has_getglobalbounds_v<T1, T2>, bool>
+        Contains(const T1 & THING1, const T2 & THING2) noexcept
+    {
+        return Contains(THING1.getGlobalBounds(), THING2.getGlobalBounds());
+    }
+
     // DOES NOT WORK IF SIZES <=0: DIFFERENT from sf::Rect::intersects()
     // returns true on overlap: SAME as sf::Rect::intersects()
     // returns true on overlap when sizes=0:  DIFFERENT from sf::Rect::intersects()

@@ -441,7 +441,7 @@ namespace stage
 
     bool CreditsStage::IsCreditVisible(const Credit & CREDIT) const
     {
-        return CREDIT.Region().intersects(boxUPtr_->OuterRegion());
+        return sfutil::Intersects(CREDIT.Region(), boxUPtr_->OuterRegion());
     }
 
     void CreditsStage::MoveCreditsToStartPos()

@@ -4303,7 +4303,7 @@ namespace stage
         const gui::ImageTextEntityUPtr_t & BUTTON_UPTR, const sf::Vector2f & MOUSE_POS_V)
     {
         if ((BUTTON_UPTR->GetMouseState() == gui::MouseState::Disabled)
-            && BUTTON_UPTR->GetEntityRegion().contains(MOUSE_POS_V))
+            && BUTTON_UPTR->Contains(MOUSE_POS_V))
         {
             PopupRejectionWindow(BUTTON_UPTR->GetMouseHoverText());
             return true;

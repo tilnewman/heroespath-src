@@ -275,7 +275,7 @@ namespace stage
             for (std::size_t i(imageInspectIndex_); i < IMAGE_COUNT; ++i)
             {
                 const auto & PACKET { imageInspectPackets_[i] };
-                if (PACKET.sprite.getGlobalBounds().contains(MOUSE_POS_V))
+                if (sfutil::Contains(PACKET.sprite, MOUSE_POS_V))
                 {
                     const auto FILE_NAME { std::string(PACKET.text.getString()) };
 

@@ -172,7 +172,7 @@ namespace gui
 
         SizetOpt_t IndexAtPos(const sf::Vector2f & POS_V) const
         {
-            if ((Empty() == false) && (entityRegion_.contains(POS_V)))
+            if (!Empty() && Contains(POS_V))
             {
                 const auto DISTANCE_FROM_TOP { POS_V.y - entityRegion_.top };
 

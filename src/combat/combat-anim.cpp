@@ -334,12 +334,12 @@ namespace combat
 
         const auto PROJ_ANIM_SPRITE_GBOUNDS { projAnimSprite_.getGlobalBounds() };
 
-        if ((BATTLEFIELD_RECT.contains(PROJ_ANIM_SPRITE_GBOUNDS.left, PROJ_ANIM_SPRITE_GBOUNDS.top)
-             == false)
-            || (BATTLEFIELD_RECT.contains(
-                    PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width,
-                    PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height)
-                == false))
+        if (!sfutil::Contains(
+                BATTLEFIELD_RECT, PROJ_ANIM_SPRITE_GBOUNDS.left, PROJ_ANIM_SPRITE_GBOUNDS.top)
+            || !sfutil::Contains(
+                   BATTLEFIELD_RECT,
+                   (PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width),
+                   (PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height)))
         {
             ProjectileShootAnimStop();
         }

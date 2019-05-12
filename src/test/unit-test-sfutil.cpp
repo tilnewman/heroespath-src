@@ -72,7 +72,7 @@ namespace intersects_test_stuff
             "Transitive(RI_" #rect_a "__tion__RI_" #rect_b "==RI_" #expected ")");                 \
     }
 
-#define M_TEST_EQUAL_INTERSECTS(rect_a, rect_b, expected)                                          \
+#define M_TEST_EQUAL_INTERSECTS_IMPL(rect_a, rect_b, expected, will_test_contains)                 \
     {                                                                                              \
         BOOST_CHECK_MESSAGE(                                                                       \
             (RI_##rect_a.intersects(RI_##rect_b)) == expected,                                     \
@@ -93,7 +93,22 @@ namespace intersects_test_stuff
         BOOST_CHECK_MESSAGE(                                                                       \
             (RI_##rect_a.intersects(RI_##rect_b)) == Intersects(RI_##rect_a, RI_##rect_b),         \
             "SFML==New(RI_" #rect_a "__ect__RI_" #rect_b " " #expected ")");                       \
+                                                                                                   \
+        if (will_test_contains)                                                                    \
+        {                                                                                          \
+            const auto IS_A_INSIDE_B = Contains(RI_##rect_a, RI_##rect_b);                         \
+            const auto IS_A_EQUAL_B = (RI_##rect_a == RI_##rect_b);                                \
+                                                                                                   \
+            BOOST_CHECK_MESSAGE(                                                                   \
+                (IS_A_INSIDE_B == IS_A_EQUAL_B),                                                   \
+                "Contains(RI_" #rect_a ", RI_" #rect_b ")="                                        \
+                    << std::boolalpha << IS_A_INSIDE_B                                             \
+                    << " but expected=(RI_ " #rect_a "==RI_" #rect_b ")=" << IS_A_EQUAL_B);        \
+        }                                                                                          \
     }
+
+#define M_TEST_EQUAL_INTERSECTS(rect_a, rect_b, expected)                                          \
+    M_TEST_EQUAL_INTERSECTS_IMPL(rect_a, rect_b, expected, true);
 
 } // namespace intersects_test_stuff
 
@@ -2585,12 +2600,49 @@ BOOST_AUTO_TEST_CASE(intersects_tests)
     const sf::IntRect RI_N1_1(-1, -1, 1, 1);
     const sf::IntRect RI_10_1(10, 10, 1, 1);
     const sf::IntRect RI_N10_1(-10, -10, 1, 1);
+    const sf::IntRect RI_SURROUNDS_ALL(-100, -100, 200, 200);
     //
     const sf::FloatRect RF_0_0(RI_0_0);
     const sf::FloatRect RF_1_1(RI_1_1);
     const sf::FloatRect RF_N1_1(RI_N1_1);
     const sf::FloatRect RF_10_1(RI_10_1);
     const sf::FloatRect RF_N10_1(RI_N10_1);
+    const sf::FloatRect RF_SURROUNDS_ALL(RI_SURROUNDS_ALL);
+
+    BOOST_CHECK(Contains(RI_SURROUNDS_ALL, RI_SURROUNDS_ALL));
+    BOOST_CHECK(Contains(RF_SURROUNDS_ALL, RF_SURROUNDS_ALL));
+
+    BOOST_CHECK(!Contains(RI_0_0, RI_1_1));
+    BOOST_CHECK(!Contains(RI_0_0, RI_N1_1));
+    BOOST_CHECK(!Contains(RI_10_1, RI_N10_1));
+
+    BOOST_CHECK(!Contains(RI_1_1, RI_0_0));
+    BOOST_CHECK(Contains(RI_N1_1, RI_0_0));
+    BOOST_CHECK(!Contains(RI_N10_1, RI_10_1));
+
+    BOOST_CHECK(!Contains(RI_0_0, RI_SURROUNDS_ALL));
+    BOOST_CHECK(!Contains(RI_1_1, RI_SURROUNDS_ALL));
+    BOOST_CHECK(!Contains(RI_N1_1, RI_SURROUNDS_ALL));
+    BOOST_CHECK(!Contains(RI_10_1, RI_SURROUNDS_ALL));
+    BOOST_CHECK(!Contains(RI_N10_1, RI_SURROUNDS_ALL));
+
+    BOOST_CHECK(Contains(RI_SURROUNDS_ALL, RI_0_0));
+    BOOST_CHECK(Contains(RI_SURROUNDS_ALL, RI_1_1));
+    BOOST_CHECK(Contains(RI_SURROUNDS_ALL, RI_N1_1));
+    BOOST_CHECK(Contains(RI_SURROUNDS_ALL, RI_10_1));
+    BOOST_CHECK(Contains(RI_SURROUNDS_ALL, RI_N10_1));
+
+    BOOST_CHECK(!Contains(RF_0_0, RF_SURROUNDS_ALL));
+    BOOST_CHECK(!Contains(RF_1_1, RF_SURROUNDS_ALL));
+    BOOST_CHECK(!Contains(RF_N1_1, RF_SURROUNDS_ALL));
+    BOOST_CHECK(!Contains(RF_10_1, RF_SURROUNDS_ALL));
+    BOOST_CHECK(!Contains(RF_N10_1, RF_SURROUNDS_ALL));
+
+    BOOST_CHECK(Contains(RF_SURROUNDS_ALL, RF_0_0));
+    BOOST_CHECK(Contains(RF_SURROUNDS_ALL, RF_1_1));
+    BOOST_CHECK(Contains(RF_SURROUNDS_ALL, RF_N1_1));
+    BOOST_CHECK(Contains(RF_SURROUNDS_ALL, RF_10_1));
+    BOOST_CHECK(Contains(RF_SURROUNDS_ALL, RF_N10_1));
 
     M_TEST_EQUAL_INTERSECTS(N1_1, N1_1, true);
     M_TEST_EQUAL_INTERSECTS(10_1, 10_1, true);
@@ -2607,7 +2659,7 @@ BOOST_AUTO_TEST_CASE(intersects_tests)
     M_TEST_EQUAL_INTERSECTS(10_1, N10_1, false);
     M_TEST_EQUAL_INTERSECTS(10_1, N1_1, false);
     M_TEST_EQUAL_INTERSECTS(N10_1, N1_1, false);
-    M_TEST_EQUAL_INTERSECTS(N1_1, 0_0, false);
+    M_TEST_EQUAL_INTERSECTS_IMPL(N1_1, 0_0, false, false);
 
     M_TEST_INTERSECTION(1_1, 10_1, 0_0);
     M_TEST_INTERSECTION(1_1, N10_1, 0_0);
