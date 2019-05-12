@@ -112,7 +112,7 @@ namespace item
             const material::Enum SECONDARY_MATERIAL,
             const std::string & SECONDARY_MATERIAL_NAME) const;
 
-        const std::string FirstLetterLowercaseCopy(const std::string &) const;
+        const std::string FirstLetterLowercaseCopy(const std::string_view) const;
     };
 
 } // namespace item

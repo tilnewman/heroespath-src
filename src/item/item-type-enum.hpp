@@ -26,7 +26,7 @@ namespace heroespath
 namespace item
 {
 
-    struct category : public EnumBaseBitField
+    struct category : public EnumBaseBitField<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -46,12 +46,7 @@ namespace item
             Last = ShowsEnemyInfo
         };
 
-        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
-
         static const std::string Name(const Enum, const EnumStringHow & HOW = EnumStringHow());
-
-        static const std::string
-            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
     struct material : public EnumBaseCounting<EnumFirstValue::Nothing>
@@ -111,7 +106,7 @@ namespace item
             Count
         };
 
-        static inline const std::string Name(const item::material::Enum MATERIAL) noexcept
+        static constexpr std::string_view Name(const item::material::Enum MATERIAL) noexcept
         {
             if (MATERIAL == material::DriedFlesh)
             {
@@ -119,7 +114,7 @@ namespace item
             }
             else
             {
-                return std::string(NAMEOF_ENUM(MATERIAL));
+                return NAMEOF_ENUM(MATERIAL);
             }
         }
 
@@ -655,7 +650,7 @@ namespace item
     using MaterialPair_t = std::pair<material::Enum, material::Enum>;
     using MaterialPairVec_t = std::vector<MaterialPair_t>;
 
-    struct element_type : public EnumBaseBitField
+    struct element_type : public EnumBaseBitField<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -667,14 +662,13 @@ namespace item
             Last = Shadow
         };
 
-        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
-
         static constexpr bool IsValid(const Enum ENUM) noexcept
         {
             return !(((ENUM & Fire) && (ENUM & Frost)) || ((ENUM & Honor) && (ENUM & Shadow)));
         }
 
-        static const std::string Name(const Enum, const bool INCLUDE_OF = true);
+        static const std::string Name(
+            const Enum, const EnumStringHow & HOW = EnumStringHow(), const bool INCLUDE_OF = true);
 
         template <typename T>
         static const std::vector<element_type::Enum>
@@ -743,9 +737,6 @@ namespace item
                 element_type::Fire | element_type::Frost | element_type::Honor
                 | element_type::Shadow);
         }
-
-        static const std::string
-            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
     using ElementEnumVec_t = std::vector<element_type::Enum>;
@@ -1870,7 +1861,7 @@ namespace item
         static const ElementEnumVec_t ElementTypes(const Enum, const bool WILL_INCLUDE_NONE);
     };
 
-    struct weapon_type : public EnumBaseBitField
+    struct weapon_type : public EnumBaseBitField<SeparatorAlwaysSlash>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -1899,23 +1890,8 @@ namespace item
             Last = BladedStaff
         };
 
-        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
-
-        inline static const std::string Name(const weapon_type::Enum WEAPON_TYPE)
-        {
-            if (WEAPON_TYPE & weapon_type::BladedStaff)
-            {
-                return boost::algorithm::replace_all_copy(
-                    weapon_type::ToString(WEAPON_TYPE), "BladedStaff", "Bladed Staff");
-            }
-            else
-            {
-                return weapon_type::ToString(WEAPON_TYPE);
-            }
-        }
-
-        static const std::string ToStringPopulate(
-            const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR = "/");
+        static const std::string
+            Name(const Enum WEAPON_TYPE, const EnumStringHow & HOW = EnumStringHow());
     };
 
     struct armor_type : public EnumBaseCounting<EnumFirstValue::Not>

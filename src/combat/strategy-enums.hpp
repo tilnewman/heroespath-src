@@ -21,7 +21,7 @@ namespace combat
     namespace strategy
     {
 
-        struct SelectType : public EnumBaseBitField
+        struct SelectType : public EnumBaseBitField<>
         {
             enum Enum : EnumUnderlying_t
             {
@@ -48,41 +48,51 @@ namespace combat
                 NotBeast = 1 << 19,
                 Last = NotBeast
             };
-
-            static const std::string
-                ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
-
-            static const std::string
-                ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
         };
 
-        struct RefineType : public EnumBaseBitField
+        struct RefineType : public EnumBaseBitField<>
         {
             enum Enum : EnumUnderlying_t
             {
                 None = 0,
-                Murderer = 1 << 0, // selects whoever is unconscious
-                Bloodthirsty = 1 << 1, // selects whoever has the least health current
-                Coward = 1 << 2, // selects whoever can't fight back
-                Hit = 1 << 3, // selects whoever first hits him/her/it
-                Attack = 1 << 4, // selects whoever first attacks him/her/it
-                MusicMaker = 1 << 5, // selects whoever was last to play a song/music/bard-spell
-                Caster = 1 << 6, // selects whoever casts spells
-                Enchanted = 1 << 7, // selects whoever is enchanted
-                NotEnchanted = 1 << 8, // selects whoever is NOT enchanted
-                Steadfast = 1 << 9, // won't change selected target until they die
-                LastTo = 1 << 10, // will change selection/target to whoever last triggers the
-                                  // refinement type
-                MostDamage = 1 << 11, // selects whoever is doing the most damage
+
+                // selects whoever is unconscious
+                Murderer = 1 << 0,
+
+                // selects whoever has the least health current
+                Bloodthirsty = 1 << 1,
+
+                // selects whoever can't fight back
+                Coward = 1 << 2,
+
+                // selects whoever first hits him/her/it
+                Hit = 1 << 3,
+
+                // selects whoever first attacks him/her/it
+                Attack = 1 << 4,
+
+                // selects whoever was last to play a song/music/bard-spell
+                MusicMaker = 1 << 5,
+
+                // selects whoever casts spells
+                Caster = 1 << 6,
+
+                // selects whoever is enchanted
+                Enchanted = 1 << 7,
+                // selects whoever is NOT enchanted
+                NotEnchanted = 1 << 8,
+
+                // won't change selected target until they die
+                Steadfast = 1 << 9,
+
+                // will change selection/target to whoever last triggers the refinement type
+                LastTo = 1 << 10,
+
+                // selects whoever is doing the most damage
+                MostDamage = 1 << 11,
 
                 Last = MostDamage
             };
-
-            static const std::string
-                ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
-
-            static const std::string
-                ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
         };
 
         struct AdvanceType : public EnumBaseCounting<EnumFirstValue::None>

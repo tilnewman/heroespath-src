@@ -527,7 +527,7 @@ namespace game
             M_HP_LOG_ERR(
                 "A popup response was given to GameController but there was no loop or no "
                 "popup_stage."
-                + popup::PopupButtons::ToString(TYPE) + M_HP_VAR_STR(SELECTION));
+                + EnumUtil<popup::PopupButtons>::ToString(TYPE) + M_HP_VAR_STR(SELECTION));
 
             return;
         }

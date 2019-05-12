@@ -439,7 +439,7 @@ namespace popup
         ss << "Mana Cost: " << SONG_PTR->ManaCost() << "\n"
            << "Rank: " << SONG_PTR->Rank() << "\n"
            << "Targets " << combat::TargetType::Name(SONG_PTR->Target()) << "\n"
-           << "Play during " << game::Phase::ToString(SONG_PTR->ValidPhases()) << "\n";
+           << "Play during " << EnumUtil<game::Phase>::ToString(SONG_PTR->ValidPhases()) << "\n";
 
         const auto SONGDETAILS_TEXTRECT_LEFT { pageRectRight_.left };
 
@@ -504,7 +504,8 @@ namespace popup
             }
             else
             {
-                ss << "Only during " << game::Phase::ToString(SONG_PTR->ValidPhases()) << ".";
+                ss << "Only during " << EnumUtil<game::Phase>::ToString(SONG_PTR->ValidPhases())
+                   << ".";
             }
         }
 

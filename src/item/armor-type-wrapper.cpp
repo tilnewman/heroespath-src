@@ -13,6 +13,7 @@
 
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 #include "misc/vector-map.hpp"
@@ -319,7 +320,7 @@ namespace item
 
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
 
-                        str += element_type::ToString(
+                        str += EnumUtil<element_type>::ToString(
                             ELEMENT_TYPE, EnumStringHow(Wrap::Yes, "&", NoneEmpty::No));
                     }
                 }

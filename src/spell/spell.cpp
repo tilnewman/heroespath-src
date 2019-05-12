@@ -53,9 +53,9 @@ namespace spell
     const std::string Spell::DescDetails() const
     {
         return std::string("A ") + misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>())
-            + " rank" + " " + std::string(combat::EffectType::Name(effectType_))
-            + " spell that can be cast during " + game::Phase::ToString(validPhases_)
-            + ", targeting " + std::string(combat::TargetType::Name(targetType_)) + ", and costing "
+            + " rank" + " " + EnumUtil<combat::EffectType>::NameStd(effectType_)
+            + " spell that can be cast during " + EnumUtil<game::Phase>::ToString(validPhases_)
+            + ", targeting " + EnumUtil<combat::TargetType>::NameStd(targetType_) + ", and costing "
             + manaCost_.ToString() + " mana.";
     }
 

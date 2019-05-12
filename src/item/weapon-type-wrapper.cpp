@@ -12,6 +12,7 @@
 #include "weapon-type-wrapper.hpp"
 
 #include "misc/boost-string-includes.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 #include "misc/vector-map.hpp"
@@ -293,7 +294,7 @@ namespace item
             }
 
             str += "type=";
-            str += weapon_type::ToString(type_, EnumStringHow(Wrap::Yes));
+            str += EnumUtil<weapon_type>::ToString(type_, EnumStringHow(Wrap::Yes));
             str += ", ";
 
             if (IsStaff())
@@ -391,7 +392,7 @@ namespace item
 
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
 
-                        str += element_type::ToString(
+                        str += EnumUtil<element_type>::ToString(
                             ELEMENT_TYPE, EnumStringHow(Wrap::Yes, "&", NoneEmpty::No));
                     }
                 }
@@ -495,7 +496,7 @@ namespace item
         bool
             WeaponTypeWrapper::SetupWithKnifeOrDaggerName(const std::string & SYSTEM_NAME_LOWERCASE)
         {
-            const auto KNIFE_NAME { weapon_type::ToString(weapon_type::Knife) };
+            const auto KNIFE_NAME { EnumUtil<weapon_type>::ToString(weapon_type::Knife) };
 
             const auto IS_KNIFE { SYSTEM_NAME_LOWERCASE == misc::ToLowerCopy(KNIFE_NAME) };
 
@@ -850,7 +851,7 @@ namespace item
                     {
                         generalName_ = weapon_type::Name(type_);
                         specificName_ = generalName_;
-                        systemName_ = weapon_type::ToString(type_);
+                        systemName_ = EnumUtil<weapon_type>::ToString(type_);
                         readableName_ = generalName_;
 
                         elementTypes_ = element_type::ValidCombinations(
@@ -867,7 +868,7 @@ namespace item
                 case weapon_type::BladedStaff:
                 {
                     const auto BLADEDSTAFF_TYPE { BladedStaffType() };
-                    generalName_ = weapon_type::Name(weapon_type::BladedStaff);
+                    generalName_ = EnumUtil<weapon_type>::Name(weapon_type::BladedStaff);
                     specificName_ = bladedstaff_type::Name(BLADEDSTAFF_TYPE);
                     systemName_ = NAMEOF_ENUM(BLADEDSTAFF_TYPE);
 

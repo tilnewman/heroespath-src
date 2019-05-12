@@ -23,60 +23,18 @@ namespace heroespath
 namespace item
 {
 
-    const std::string category::ToString(const Enum ENUM, const EnumStringHow & HOW)
-    {
-        return EnumUtil<category>::ToString(ENUM, HOW);
-    }
-
     const std::string category::Name(const Enum ENUM, const EnumStringHow & HOW)
     {
-        std::string str = ToString(ENUM, HOW);
-        boost::algorithm::ireplace_all(str, ToString(OneHanded), "one-handed");
-        boost::algorithm::ireplace_all(str, ToString(TwoHanded), "two-handed");
-        boost::algorithm::ireplace_all(str, ToString(ConsumedOnUse), "consumed upon use");
-        boost::algorithm::ireplace_all(str, ToString(ShowsEnemyInfo), "shows enemy info");
+        std::string str = EnumUtil<category>::ToString(ENUM, HOW);
+        boost::algorithm::ireplace_all(str, NAMEOF_ENUM(OneHanded), "one-handed");
+        boost::algorithm::ireplace_all(str, NAMEOF_ENUM(TwoHanded), "two-handed");
+        boost::algorithm::ireplace_all(str, NAMEOF_ENUM(ConsumedOnUse), "consumed upon use");
+        boost::algorithm::ireplace_all(str, NAMEOF_ENUM(ShowsEnemyInfo), "shows enemy info");
         return str;
     }
 
     const std::string
-        category::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
-    {
-        std::string str;
-        str.reserve(64);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, category::Broken, "Broken", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, category::Useable, "Useable", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, category::BodyPart, "BodyPart", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, category::Equipable, "Equipable", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, category::Wearable, "Wearable", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, category::OneHanded, "OneHanded", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, category::TwoHanded, "TwoHanded", SEPARATOR);
-
-        AppendNameIfBitIsSet(str, ENUM_VALUE, category::ConsumedOnUse, "ConsumedOnUse", SEPARATOR);
-
-        AppendNameIfBitIsSet(
-            str, ENUM_VALUE, category::ShowsEnemyInfo, "ShowsEnemyInfo", SEPARATOR);
-
-        return str;
-    }
-
-    const std::string element_type::ToString(const Enum ENUM, const EnumStringHow & HOW)
-    {
-        return EnumUtil<element_type>::ToString(ENUM, HOW);
-    }
-
-    const std::string element_type::ToStringPopulate(
-        const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
-    {
-        std::string str;
-        str.reserve(32);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, element_type::Fire, "Fire", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, element_type::Frost, "Frost", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, element_type::Honor, "Honor", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, element_type::Shadow, "Shadow", SEPARATOR);
-        return str;
-    }
-
-    const std::string element_type::Name(const Enum ELEMENT_TYPE, const bool INCLUDE_OF)
+        element_type::Name(const Enum ELEMENT_TYPE, const EnumStringHow &, const bool INCLUDE_OF)
     {
         std::string str;
         str.reserve(64);
@@ -96,7 +54,7 @@ namespace item
                     str += " and ";
                 }
 
-                str += element_type::ToString(BIT);
+                str += NAMEOF_ENUM(BIT);
             }
         } };
 
@@ -221,28 +179,16 @@ namespace item
             ArmorRatingBonusPri(MATERIAL_SEC).GetAs<float>() * SEC_MATERIAL_ARMOR_ADJ_RATIO);
     }
 
-    const std::string weapon_type::ToString(const Enum ENUM, const EnumStringHow & HOW)
+    const std::string
+        weapon_type::Name(const weapon_type::Enum WEAPON_TYPE, const EnumStringHow & HOW)
     {
-        return EnumUtil<weapon_type>::ToString(ENUM, HOW);
-    }
+        std::string str(EnumUtil<weapon_type>::ToString(WEAPON_TYPE, HOW));
 
-    const std::string weapon_type::ToStringPopulate(
-        const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
-    {
-        std::string str;
-        str.reserve(64);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::BodyPart, "BodyPart", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Sword, "Sword", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Axe, "Axe", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Whip, "Whip", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Knife, "Knife", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Club, "Club", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Staff, "Staff", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::BladedStaff, "BladedStaff", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Melee, "Melee", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Projectile, "Projectile", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Bladed, "Bladed", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::Pointed, "Pointed", SEPARATOR);
+        if (WEAPON_TYPE & weapon_type::BladedStaff)
+        {
+            boost::algorithm::replace_all(str, "BladedStaff", "Bladed Staff");
+        }
+
         return str;
     }
 

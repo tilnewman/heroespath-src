@@ -36,7 +36,7 @@ struct TestStuff
     }
 
     template <typename T>
-    void drawAndDisplay(const T & drawableThing)
+    void drawAndDisplay(const T &)
     {
         // window.clear();
         // window.draw(drawableThing);

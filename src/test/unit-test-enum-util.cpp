@@ -292,7 +292,7 @@ struct Counting : public EnumBaseCounting<EnumFirstValue::None>
 };
 
 // a bitfield enum to test with
-struct Bitfield : public EnumBaseBitField
+struct Bitfield : public EnumBaseBitField<>
 {
     enum Enum : EnumUnderlying_t
     {
@@ -301,24 +301,10 @@ struct Bitfield : public EnumBaseBitField
         B = 1 << 1,
         Last = B
     };
-
-    static const std::string ToString(const Enum ENUM, const EnumStringHow & HOW = EnumStringHow())
-    {
-        return EnumUtil<Bitfield>::ToString(ENUM, HOW);
-    }
-
-    static const std::string
-        ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
-    {
-        std::string str;
-        AppendNameIfBitIsSet(str, ENUM_VALUE, Enum::A, "A", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, Enum::B, "B", SEPARATOR);
-        return str;
-    }
 };
 
 // a bitfield enum to test with
-struct Bitfield2 : public EnumBaseBitField
+struct Bitfield2 : public EnumBaseBitField<>
 {
     enum Enum : EnumUnderlying_t
     {
@@ -327,20 +313,6 @@ struct Bitfield2 : public EnumBaseBitField
         B = 1 << 1,
         Last = B
     };
-
-    static const std::string ToString(const Enum ENUM, const EnumStringHow & HOW = EnumStringHow())
-    {
-        return EnumUtil<Bitfield2>::ToString(ENUM, HOW);
-    }
-
-    static const std::string
-        ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
-    {
-        std::string str;
-        AppendNameIfBitIsSet(str, ENUM_VALUE, Enum::A, "A", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, Enum::B, "B", SEPARATOR);
-        return str;
-    }
 };
 
 BOOST_AUTO_TEST_CASE(Case_1_MiscEnumUtil_Counting_Tests)
@@ -402,24 +374,27 @@ BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
 
     //
 
-    BOOST_CHECK(Bitfield::ToString(Bitfield::None) == "");
-    BOOST_CHECK(Bitfield::ToString(Bitfield::A) == "A");
-    BOOST_CHECK(Bitfield::ToString(Bitfield::B) == "B");
-    BOOST_CHECK(Bitfield::ToString((Bitfield::A | Bitfield::B)) == "A, B");
+    BOOST_CHECK(EnumUtil<Bitfield>::ToString(Bitfield::None) == "");
+    BOOST_CHECK(EnumUtil<Bitfield>::ToString(Bitfield::A) == "A");
+    BOOST_CHECK(EnumUtil<Bitfield>::ToString(Bitfield::B) == "B");
+    BOOST_CHECK(EnumUtil<Bitfield>::ToString((Bitfield::A | Bitfield::B)) == "A, B");
 
     BOOST_CHECK(
-        Bitfield::ToString(Bitfield::None, EnumStringHow(", ", Wrap::No, NoneEmpty::No)) == "None");
+        EnumUtil<Bitfield>::ToString(Bitfield::None, EnumStringHow(", ", Wrap::No, NoneEmpty::No))
+        == "None");
 
     BOOST_CHECK(
-        Bitfield::ToString(Bitfield::None, EnumStringHow(", ", Wrap::Yes, NoneEmpty::No))
+        EnumUtil<Bitfield>::ToString(Bitfield::None, EnumStringHow(", ", Wrap::Yes, NoneEmpty::No))
         == "(None)");
 
     // don't wrap empty
     BOOST_CHECK(
-        Bitfield::ToString(Bitfield::None, EnumStringHow(", ", Wrap::Yes, NoneEmpty::Yes)) == "");
+        EnumUtil<Bitfield>::ToString(Bitfield::None, EnumStringHow(", ", Wrap::Yes, NoneEmpty::Yes))
+        == "");
 
     BOOST_CHECK(
-        Bitfield::ToString(Bitfield::None, EnumStringHow(", ", Wrap::No, NoneEmpty::Yes)) == "");
+        EnumUtil<Bitfield>::ToString(Bitfield::None, EnumStringHow(", ", Wrap::No, NoneEmpty::Yes))
+        == "");
 
     //
 
@@ -498,10 +473,10 @@ BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
 
     TestBitFieldEnum<Bitfield2>();
 
-    BOOST_CHECK(Bitfield2::ToString(Bitfield2::None) == "");
-    BOOST_CHECK(Bitfield2::ToString(Bitfield2::A) == "A");
-    BOOST_CHECK(Bitfield2::ToString(Bitfield2::B) == "B");
-    BOOST_CHECK(Bitfield2::ToString((Bitfield2::A | Bitfield2::B)) == "A, B");
+    BOOST_CHECK(EnumUtil<Bitfield2>::ToString(Bitfield2::None) == "");
+    BOOST_CHECK(EnumUtil<Bitfield2>::ToString(Bitfield2::A) == "A");
+    BOOST_CHECK(EnumUtil<Bitfield2>::ToString(Bitfield2::B) == "B");
+    BOOST_CHECK(EnumUtil<Bitfield2>::ToString((Bitfield2::A | Bitfield2::B)) == "A, B");
 
     using Under_t = std::underlying_type<Bitfield::Enum>::type;
 

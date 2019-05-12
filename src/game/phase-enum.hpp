@@ -18,7 +18,7 @@ namespace heroespath
 namespace game
 {
 
-    struct Phase : public EnumBaseBitField
+    struct Phase : public EnumBaseBitField<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -30,11 +30,6 @@ namespace game
             Inventory = 1 << 4,
             Last = Inventory
         };
-
-        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
-
-        static const std::string
-            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
 } // namespace game

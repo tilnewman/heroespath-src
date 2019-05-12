@@ -80,8 +80,8 @@ namespace song
             result += "drum beat";
         }
 
-        result += " that can be played during " + std::string(game::Phase::ToString(validPhases_))
-            + ", targeting " + std::string(combat::TargetType::Name(targetType_)) + ", and costing "
+        result += " that can be played during " + EnumUtil<game::Phase>::ToString(validPhases_)
+            + ", targeting " + EnumUtil<combat::TargetType>::NameStd(targetType_) + ", and costing "
             + manaCost_.ToString() + " mana.";
 
         return result;

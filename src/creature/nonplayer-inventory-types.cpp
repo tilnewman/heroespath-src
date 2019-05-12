@@ -383,31 +383,6 @@ namespace creature
             return FromRank(CHARACTER_PTR->Rank());
         }
 
-        const std::string collector_type::ToString(const Enum ENUM, const EnumStringHow & HOW)
-        {
-            return EnumUtil<collector_type>::ToString(ENUM, HOW);
-        }
-
-        const std::string collector_type::ToStringPopulate(
-            const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
-        {
-            std::string str;
-            str.reserve(32);
-
-            AppendNameIfBitIsSet(
-                str, ENUM_VALUE, collector_type::Minimalist, "Minimalist", SEPARATOR);
-
-            AppendNameIfBitIsSet(
-                str, ENUM_VALUE, collector_type::Practical, "Practical", SEPARATOR);
-
-            AppendNameIfBitIsSet(
-                str, ENUM_VALUE, collector_type::Collector, "Collector", SEPARATOR);
-
-            AppendNameIfBitIsSet(str, ENUM_VALUE, collector_type::Hoarder, "Hoarder", SEPARATOR);
-
-            return str;
-        }
-
         collector_type::Enum collector_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             const auto CHANCE_BASE(misc::ConfigFile::Instance()->ValueOrDefault<float>(

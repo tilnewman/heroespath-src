@@ -26,6 +26,20 @@
 
 namespace heroespath
 {
+namespace combat
+{
+    namespace strategy
+    {
+        struct SelectType;
+        struct RefineType;
+    } // namespace strategy
+} // namespace combat
+
+namespace item
+{
+    struct weapon_type;
+}
+
 namespace helpers
 {
 
@@ -119,7 +133,7 @@ namespace helpers
             }
             else
             {
-                str += EnumWrapper_t::ToStringPopulate(ENUM_VALUE, HOW.separator);
+                ToStringPopulate(str, ENUM_VALUE, HOW.separator);
             }
 
             if (str.compare("(") == 0)
@@ -145,10 +159,11 @@ namespace helpers
             EnumUnderlying_t result { 0 };
 
             // normally we would split on anything !IsAlphaOrDigit(), but some of the enum names
-            // have underscores and there are other kinds of strings we are parsing that have other
-            // chars that we can't split on from the config files.  For example, the string
-            // "sword-long-ratio" should not match any enum but it will if we split it on the dash
-            // and turn it into "sword" "long" "ratio".  The usual bitfield enum separator chars are
+            // have underscores and there are other kinds of strings we are parsing that have
+            // other chars that we can't split on from the config files.  For example, the
+            // string "sword-long-ratio" should not match any enum but it will if we split it on
+            // the dash and turn it into "sword" "long" "ratio".  The usual bitfield enum
+            // separator chars are
             // '/' and ','.
             auto isSeparator = [](const char CH) constexpr noexcept
             {
@@ -175,6 +190,98 @@ namespace helpers
         }
 
     private:
+        static void ToStringPopulateAppendIf(
+            const std::size_t STR_SIZE_ORIG,
+            std::string & str,
+            const EnumUnderlying_t ENUM_VALUE,
+            const std::string_view SEP,
+            const std::string_view BIT_NAME,
+            EnumUnderlying_t & singleBitToCheck)
+        {
+            if (ENUM_VALUE & singleBitToCheck)
+            {
+                if (str.size() != STR_SIZE_ORIG)
+                {
+                    if constexpr (misc::are_same_v<
+                                      typename EnumWrapper_t::SeparatorPolicy_t,
+                                      SeparatorVaries>)
+                    {
+                        str += SEP;
+                    }
+                    else
+                    {
+                        str += '/';
+                    }
+                }
+
+                str += BIT_NAME;
+            }
+
+            singleBitToCheck <<= 1;
+        }
+
+        // combat::strategy::SelectType, combat::strategy::,
+        static void ToStringPopulate(
+            std::string & str, const EnumUnderlying_t ENUM_VALUE, const std::string_view SEP)
+        {
+            const auto ORIG_SIZE = str.size();
+
+            EnumUnderlying_t singleBitToCheck { 1 };
+
+            if constexpr (misc::are_same_v<EnumWrapper_t, combat::strategy::SelectType>)
+            {
+                static const std::array<std::string_view, 20> NAMES
+                    = { "Pixie",  "Dragon",   "Human",     "Gnome",       "Wolfen",
+                        "Archer", "Sorcerer", "Knight",    "Beastmaster", "Cleric",
+                        "Thief",  "Bard",     "FireBrand", "Sylavin",     "Projectile",
+                        "Caster", "CanFly",   "CantFly",   "Beast",       "NotBeast" };
+
+                for (const auto & NAME : NAMES)
+                {
+                    ToStringPopulateAppendIf(
+                        ORIG_SIZE, str, ENUM_VALUE, SEP, NAME, singleBitToCheck);
+                }
+            }
+            else if constexpr (misc::are_same_v<EnumWrapper_t, combat::strategy::RefineType>)
+            {
+                static const std::array<std::string_view, 12> NAMES
+                    = { "Murderer",     "Bloodthirsty", "Coward", "Hit",
+                        "Attack",       "MusicMaker",   "Caster", "Enchanted",
+                        "NotEnchanted", "Steadfast",    "LastTo", "MostDamage" };
+
+                for (const auto & NAME : NAMES)
+                {
+                    ToStringPopulateAppendIf(
+                        ORIG_SIZE, str, ENUM_VALUE, SEP, NAME, singleBitToCheck);
+                }
+            }
+            else if constexpr (misc::are_same_v<EnumWrapper_t, heroespath::item::weapon_type>)
+            {
+                static const std::array<std::string_view, 12> NAMES
+                    = { "Melee", "Projectile", "BodyPart", "Bladed", "Pointed", "Sword",
+                        "Axe",   "Whip",       "Knife",    "Club",   "Staff",   "BladedStaff" };
+
+                for (const auto & NAME : NAMES)
+                {
+                    ToStringPopulateAppendIf(
+                        ORIG_SIZE, str, ENUM_VALUE, SEP, NAME, singleBitToCheck);
+                }
+            }
+            else
+            {
+                while (singleBitToCheck <= EnumWrapper_t::Last)
+                {
+                    ToStringPopulateAppendIf(
+                        ORIG_SIZE,
+                        str,
+                        ENUM_VALUE,
+                        SEP,
+                        NAMEOF_ENUM(static_cast<typename EnumWrapper_t::Enum>(singleBitToCheck)),
+                        singleBitToCheck);
+                }
+            }
+        }
+
         static constexpr EnumUnderlying_t CalcLargestValidValue()
         {
             EnumUnderlying_t finalValue { 1 };
@@ -256,39 +363,55 @@ struct EnumUtil
         }
     }
 
-    template <typename T = typename EnumWrapper_t::EnumBase_t>
-    static constexpr std::enable_if_t<misc::are_same_v<T, EnumCounting_t>, std::string_view>
-        ToString(const EnumUnderlying_t ENUM_VALUE)
+    template <typename T = EnumWrapper_t>
+    static constexpr std::
+        enable_if_t<misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, std::string_view>
+        ToString(const typename T::Enum ENUM)
     {
-        return NAMEOF_ENUM(static_cast<typename EnumWrapper_t::Enum>(ENUM_VALUE));
+        return NAMEOF_ENUM(ENUM);
     }
 
-    // template <typename T = typename EnumWrapper_t::EnumBase_t>
-    // static constexpr std::enable_if_t<misc::are_same_v<T, EnumCounting_t>, std::string_view>
-    //    Name(const EnumUnderlying_t)
-    //{
-    //    static_assert(
-    //        misc::dependant_false_v<T>, "should not be using EnumUtil::Name(enum) anymore");
-    //
-    //    return "should not be using EnumUtil::Name(enum) anymore";
-    //}
+    template <typename T = EnumWrapper_t>
+    static std::
+        enable_if_t<misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, const std::string>
+        ToStringStd(const typename T::Enum ENUM)
+    {
+        return NAMEOF_ENUM_STR(ENUM);
+    }
+
+    template <typename T = EnumWrapper_t>
+    static std::enable_if_t<
+        misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>,
+        const std::string_view>
+        Name(const typename T::Enum ENUM)
+    {
+        return EnumWrapper_t::Name(ENUM);
+    }
+
+    template <typename T = EnumWrapper_t>
+    static std::
+        enable_if_t<misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, const std::string>
+        NameStd(const typename T::Enum ENUM)
+    {
+        return std::string(EnumWrapper_t::Name(ENUM));
+    }
 
     // this is how all bitwise enums implement their ToString() function and is used everywhere
-    template <typename T = typename EnumWrapper_t::EnumBase_t>
-    static std::enable_if_t<!misc::are_same_v<T, EnumCounting_t>, const std::string>
-        ToString(const EnumUnderlying_t ENUM_VALUE, const EnumStringHow & HOW = EnumStringHow())
+    template <typename T = EnumWrapper_t>
+    static std::
+        enable_if_t<!misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, const std::string>
+        ToString(const typename T::Enum ENUM, const EnumStringHow & HOW = EnumStringHow())
     {
-        return helpers::BitFieldEnum<EnumWrapper_t>::ToString(
-            static_cast<typename EnumWrapper_t::Enum>(ENUM_VALUE), HOW);
+        return helpers::BitFieldEnum<T>::ToString(ENUM, HOW);
     }
 
     // if EnumWrapper_t does not provide its own Name() then use ToString() by default
-    template <typename T = typename EnumWrapper_t::EnumBase_t>
-    static std::enable_if_t<!misc::are_same_v<T, EnumCounting_t>, const std::string>
-        Name(const EnumUnderlying_t ENUM_VALUE, const EnumStringHow & HOW = EnumStringHow())
+    template <typename T = EnumWrapper_t>
+    static std::
+        enable_if_t<!misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, const std::string>
+        Name(const typename T::Enum ENUM, const EnumStringHow & HOW = EnumStringHow())
     {
-        return helpers::BitFieldEnum<EnumWrapper_t>::ToString(
-            static_cast<typename EnumWrapper_t::Enum>(ENUM_VALUE), HOW);
+        return T::Name(ENUM, HOW);
     }
 
     // case insensitive, returns Count on error

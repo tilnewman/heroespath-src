@@ -14,6 +14,7 @@
 #include "creature/condition-algorithms.hpp"
 #include "creature/creature.hpp"
 #include "item/item-score-helper.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 
 namespace heroespath
@@ -89,7 +90,7 @@ namespace creature
         {
             str += SepIfNotEmpty();
             str += ", use only during ";
-            str += game::Phase::ToString(useInfo_.RestrictedToPhase());
+            str += EnumUtil<game::Phase>::ToString(useInfo_.RestrictedToPhase());
         }
 
         const auto TRAITS_STR { traitSet_.ToString(false, false, false, true) };
@@ -184,7 +185,7 @@ namespace creature
         std::string str;
         str.reserve(256);
         str += "Enchantment(";
-        str += creature::EnchantmentType::ToString(type_);
+        str += EnumUtil<creature::EnchantmentType>::ToString(type_);
         str += '=';
         str += '\"';
         str += EffectStr();

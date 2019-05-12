@@ -623,7 +623,7 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << EnumUtil<item::weapon_type>::ToString(randomSelectedWeaponType)
                             << "\" and kind=\"" << NAMEOF_ENUM(AXE_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
@@ -661,7 +661,7 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << EnumUtil<item::weapon_type>::ToString(randomSelectedWeaponType)
                             << "\" and kind=\"" << NAMEOF_ENUM(BLADEDSTAFF_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
@@ -698,7 +698,7 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << EnumUtil<item::weapon_type>::ToString(randomSelectedWeaponType)
                             << "\" and kind=\"" << NAMEOF_ENUM(CLUB_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
@@ -735,7 +735,7 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << EnumUtil<item::weapon_type>::ToString(randomSelectedWeaponType)
                             << "\" and kind=\"" << NAMEOF_ENUM(PROJECTILE_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
@@ -766,7 +766,7 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << EnumUtil<item::weapon_type>::ToString(randomSelectedWeaponType)
                             << "\" and kind=\"" << NAMEOF_ENUM(SWORD_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
@@ -797,7 +797,7 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << EnumUtil<item::weapon_type>::ToString(randomSelectedWeaponType)
                             << "\" and kind=\"" << NAMEOF_ENUM(WHIP_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
@@ -825,7 +825,7 @@ namespace creature
                        << "creature=\"" << CHARACTER_PTR->ToString()
                        << "\") failed to find a valid random selected item::weapon.  "
                           "(item::weapon_type="
-                       << item::weapon_type::ToString(randomSelectedWeaponType) << "\")";
+                       << EnumUtil<item::weapon_type>::ToString(randomSelectedWeaponType) << "\")";
 
                     throw std::runtime_error(ss.str());
                 }

@@ -655,9 +655,11 @@ namespace item
             (ITEM_PROFILE.WeaponType() == ITEM_PTR->WeaponType()),
             makeErrorReportPrefix()
                 << " weapon_types did not match.  profile="
-                << weapon_type::ToString(ITEM_PROFILE.WeaponType(), EnumStringHow(Wrap::Yes))
+                << EnumUtil<weapon_type>::ToString(
+                       ITEM_PROFILE.WeaponType(), EnumStringHow(Wrap::Yes))
                 << " but item="
-                << weapon_type::ToString(ITEM_PTR->WeaponType(), EnumStringHow(Wrap::Yes)) << ".");
+                << EnumUtil<weapon_type>::ToString(ITEM_PTR->WeaponType(), EnumStringHow(Wrap::Yes))
+                << ".");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PROFILE.ArmorType() == ITEM_PTR->ArmorType()),
@@ -710,7 +712,8 @@ namespace item
                 makeErrorReportPrefix()
                     << "equipable, but the misc_type=" << NAMEOF_ENUM(ITEM_PTR->MiscType())
                     << " is NOT equipable.  misc_type_equip_category="
-                    << category::ToString(misc_type::EquipCategory(ITEM_PTR->MiscType())));
+                    << EnumUtil<category>::ToString(
+                           misc_type::EquipCategory(ITEM_PTR->MiscType())));
 
             // unique_types cannot be set
             if (misc_type::IsUnique(ITEM_PTR->MiscType()))

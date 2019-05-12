@@ -231,7 +231,7 @@ namespace item
         if (PROFILE.IsElemental())
         {
             desc += ", and pulsing with ";
-            desc += element_type::Name(PROFILE.ElementType(), false);
+            desc += element_type::Name(PROFILE.ElementType(), heroespath::EnumStringHow(), false);
             desc += " magic";
         }
 
@@ -360,7 +360,7 @@ namespace item
             }
             else
             {
-                return material::Name(SECONDARY_MATERIAL);
+                return std::string(material::Name(SECONDARY_MATERIAL));
             }
         }() };
 
@@ -500,7 +500,8 @@ namespace item
         }
     }
 
-    const std::string ItemNameFactory::FirstLetterLowercaseCopy(const std::string & ORIG_STR) const
+    const std::string
+        ItemNameFactory::FirstLetterLowercaseCopy(const std::string_view ORIG_STR) const
     {
         std::string finalStr { ORIG_STR };
 

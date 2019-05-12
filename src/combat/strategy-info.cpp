@@ -11,6 +11,8 @@
 //
 #include "strategy-info.hpp"
 
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <tuple>
 
@@ -49,9 +51,9 @@ namespace combat
             std::string str("StrategyInfo:");
             str.reserve(256);
             str += " Select=";
-            str += SelectType::ToString(selectType_, EnumStringHow(Wrap::Yes));
+            str += EnumUtil<SelectType>::ToString(selectType_, EnumStringHow(Wrap::Yes));
             str += ", Refine=";
-            str += RefineType::ToString(refineType_, EnumStringHow(Wrap::Yes));
+            str += EnumUtil<RefineType>::ToString(refineType_, EnumStringHow(Wrap::Yes));
             str += ", Advance=";
             str += NAMEOF_ENUM(advanceType_);
             str += ", Retreat=";

@@ -15,6 +15,7 @@
 #include "gui/sound-manager.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
 #include "song/song.hpp"
@@ -50,8 +51,8 @@ namespace combat
             M_HP_LOG_ERR(
                 "combat::CombatSoundEffects::PlayShoot(weapon=\""
                 << WEAPON_PTR->Name() << "\", category=\""
-                << item::category::ToString(WEAPON_PTR->Category())
-                << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE)
+                << EnumUtil<item::category>::ToString(WEAPON_PTR->Category())
+                << "\", weapon_type=" << EnumUtil<item::weapon_type>::ToString(WEAPON_TYPE)
                 << ") Unable to find a 'shoot' sound effect to fit that weapon_type.");
         }
     }
@@ -286,8 +287,8 @@ namespace combat
                     "combat::CombatSoundEffects::PlayHitOrMiss("
                     << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole() << "\", weapon=\""
                     << WEAPON_PTR->Name() << "\", category=\""
-                    << item::category::ToString(WEAPON_PTR->Category())
-                    << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE)
+                    << EnumUtil<item::category>::ToString(WEAPON_PTR->Category())
+                    << "\", weapon_type=" << EnumUtil<item::weapon_type>::ToString(WEAPON_TYPE)
                     << ") Unable to find a 'miss' sound effect to fit that weapon_type.");
             }
         }

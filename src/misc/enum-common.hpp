@@ -40,6 +40,12 @@ enum class NoneEmpty : bool
     Yes = true
 };
 
+struct SeparatorVaries
+{};
+
+struct SeparatorAlwaysSlash
+{};
+
 enum class EnumFirstValue
 {
     Valid,
@@ -66,28 +72,11 @@ struct EnumBaseCounting
     static constexpr EnumFirstValue first_value_t = KIND_OF_FIRST_VALUE;
 };
 
+template <typename Separator_t = SeparatorVaries>
 struct EnumBaseBitField
 {
     using EnumBase_t = EnumBitField_t;
-
-protected:
-    static void AppendNameIfBitIsSet(
-        std::string & stringSoFar,
-        const EnumUnderlying_t ENUM_VALUE,
-        const EnumUnderlying_t BIT_TO_CHECK,
-        const std::string & NAME,
-        const std::string & SEPARATOR)
-    {
-        if (ENUM_VALUE & BIT_TO_CHECK)
-        {
-            if (stringSoFar.empty() == false)
-            {
-                stringSoFar.append(SEPARATOR);
-            }
-
-            stringSoFar.append(NAME);
-        }
-    }
+    using SeparatorPolicy_t = Separator_t;
 };
 
 struct EnumStringHow

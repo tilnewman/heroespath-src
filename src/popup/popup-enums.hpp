@@ -40,7 +40,7 @@ namespace popup
         };
     };
 
-    struct PopupButtons : public EnumBaseBitField
+    struct PopupButtons : public EnumBaseBitField<SeparatorAlwaysSlash>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -57,11 +57,6 @@ namespace popup
         static constexpr Enum YesNo = (Yes | No);
         static constexpr Enum YesNoCancel = (Yes | No | Cancel);
         static constexpr Enum SelectCancel = (Select | Cancel);
-
-        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
-
-        static const std::string
-            ToStringPopulate(const EnumUnderlying_t BUTTONS, const std::string & SEPARATOR = "/");
 
         static constexpr bool IsAffirmative(const PopupButtons::Enum BUTTON) noexcept
         {

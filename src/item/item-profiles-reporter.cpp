@@ -460,7 +460,7 @@ namespace item
                         std::end(elementTypeScoreVecPair.second));
 
                     ss << "\n\t" << std::setw(20)
-                       << element_type::ToString(
+                       << EnumUtil<element_type>::ToString(
                               elementTypeScoreVecPair.first,
                               EnumStringHow(Wrap::Yes, "/", NoneEmpty::No))
                        << "\t\tcount=" << std::setw(7) << elementTypeScoreVecPair.second.size()

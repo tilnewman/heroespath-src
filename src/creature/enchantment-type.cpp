@@ -19,70 +19,48 @@ namespace heroespath
 namespace creature
 {
 
-    const std::string EnchantmentType::ToString(const Enum ENUM, const EnumStringHow & HOW)
-    {
-        return EnumUtil<EnchantmentType>::ToString(ENUM, HOW);
-    }
-
     const std::string EnchantmentType::EffectStr(const Enum ENUM)
     {
-        std::string str(ToString(ENUM, EnumStringHow(",", Wrap::No, NoneEmpty::No)));
+        std::string str(
+            EnumUtil<EnchantmentType>::ToString(ENUM, EnumStringHow(",", Wrap::No, NoneEmpty::No)));
+
         str.reserve(str.size() * 3);
 
-        boost::algorithm::ireplace_all(str, ToString(WhenUsed), "when used:");
-
-        boost::algorithm::ireplace_all(str, ToString(WhenHeld), "when held:");
-
-        boost::algorithm::ireplace_all(str, ToString(WhenEquipped), "when equipped:");
-
-        boost::algorithm::ireplace_all(str, ToString(RemoveAfterUse), "RemoveAfterUse");
-
-        boost::algorithm::ireplace_all(str, ToString(BoundToNothing), "item not required");
-
-        boost::algorithm::ireplace_all(str, ToString(BoundToItem), "bound to the item");
-
-        boost::algorithm::ireplace_all(str, ToString(AllowsFlight), "allows flying");
+        boost::algorithm::ireplace_all(
+            str, EnumUtil<EnchantmentType>::ToString(WhenUsed), "when used:");
 
         boost::algorithm::ireplace_all(
-            str, ToString(CurseWithoutItem), "allows casting curse without a cursed item");
+            str, EnumUtil<EnchantmentType>::ToString(WhenHeld), "when held:");
 
         boost::algorithm::ireplace_all(
-            str, ToString(BlessWithoutItem), "allows casting bless without a blessed item");
+            str, EnumUtil<EnchantmentType>::ToString(WhenEquipped), "when equipped:");
 
         boost::algorithm::ireplace_all(
-            str, ToString(OnlyIfSetIsComplete), "only if all items in the set are equipped");
+            str, EnumUtil<EnchantmentType>::ToString(RemoveAfterUse), "RemoveAfterUse");
 
-        return str;
-    }
+        boost::algorithm::ireplace_all(
+            str, EnumUtil<EnchantmentType>::ToString(BoundToNothing), "item not required");
 
-    const std::string EnchantmentType::ToStringPopulate(
-        const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
-    {
-        std::string str;
-        str.reserve(128);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, EnchantmentType::WhenUsed, "WhenUsed", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, EnchantmentType::WhenHeld, "WhenHeld", SEPARATOR);
-        AppendNameIfBitIsSet(
-            str, ENUM_VALUE, EnchantmentType::WhenEquipped, "WhenEquipped", SEPARATOR);
-        AppendNameIfBitIsSet(
-            str, ENUM_VALUE, EnchantmentType::RemoveAfterUse, "RemoveAfterUse", SEPARATOR);
-        AppendNameIfBitIsSet(
-            str, ENUM_VALUE, EnchantmentType::BoundToNothing, "BoundToNothing", SEPARATOR);
-        AppendNameIfBitIsSet(
-            str, ENUM_VALUE, EnchantmentType::BoundToItem, "BoundToItem", SEPARATOR);
-        AppendNameIfBitIsSet(
-            str, ENUM_VALUE, EnchantmentType::AllowsFlight, "AllowsFlight", SEPARATOR);
-        AppendNameIfBitIsSet(
-            str, ENUM_VALUE, EnchantmentType::CurseWithoutItem, "CurseWithoutItem", SEPARATOR);
-        AppendNameIfBitIsSet(
-            str, ENUM_VALUE, EnchantmentType::BlessWithoutItem, "BlessWithoutItem", SEPARATOR);
+        boost::algorithm::ireplace_all(
+            str, EnumUtil<EnchantmentType>::ToString(BoundToItem), "bound to the item");
 
-        AppendNameIfBitIsSet(
+        boost::algorithm::ireplace_all(
+            str, EnumUtil<EnchantmentType>::ToString(AllowsFlight), "allows flying");
+
+        boost::algorithm::ireplace_all(
             str,
-            ENUM_VALUE,
-            EnchantmentType::OnlyIfSetIsComplete,
-            "OnlyIfSetIsComplete",
-            SEPARATOR);
+            EnumUtil<EnchantmentType>::ToString(CurseWithoutItem),
+            "allows casting curse without a cursed item");
+
+        boost::algorithm::ireplace_all(
+            str,
+            EnumUtil<EnchantmentType>::ToString(BlessWithoutItem),
+            "allows casting bless without a blessed item");
+
+        boost::algorithm::ireplace_all(
+            str,
+            EnumUtil<EnchantmentType>::ToString(OnlyIfSetIsComplete),
+            "only if all items in the set are equipped");
 
         return str;
     }

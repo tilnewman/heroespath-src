@@ -467,7 +467,7 @@ namespace popup
         ss << "Mana Cost: " << SPELL_PTR->ManaCost() << "\n"
            << "Rank: " << SPELL_PTR->Rank() << "\n"
            << "Targets " << combat::TargetType::Name(SPELL_PTR->Target()) << "\n"
-           << "Cast during " << game::Phase::ToString(SPELL_PTR->ValidPhases()) << "\n";
+           << "Cast during " << EnumUtil<game::Phase>::ToString(SPELL_PTR->ValidPhases()) << "\n";
 
         if (!spellDetailsTextUPtr_)
         {
@@ -534,7 +534,8 @@ namespace popup
             }
             else
             {
-                ss << "Only during " << game::Phase::ToString(SPELL_PTR->ValidPhases()) << ".";
+                ss << "Only during " << EnumUtil<game::Phase>::ToString(SPELL_PTR->ValidPhases())
+                   << ".";
             }
         }
 

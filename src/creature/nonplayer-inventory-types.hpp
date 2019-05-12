@@ -505,7 +505,7 @@ namespace creature
         };
 
         // defines the number of items a creature owns
-        struct collector_type : public EnumBaseBitField
+        struct collector_type : public EnumBaseBitField<>
         {
             enum Enum : EnumUnderlying_t
             {
@@ -527,13 +527,7 @@ namespace creature
                 Last = Hoarder
             };
 
-            static const std::string
-                ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
-
             static collector_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
-
-            static const std::string
-                ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
         };
 
         // defines the frequency/power of magical items owned by the creature

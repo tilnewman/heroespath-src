@@ -69,23 +69,23 @@ namespace popup
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (TEXT_INFO.text.empty() == false),
-            "popup::PopupInfo(name=\"" << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
-                                       << ", image=" << NAMEOF_ENUM(IMAGE) << ", textInfo=\""
-                                       << TEXT_INFO.text
-                                       << "\") was given TEXT_INFO.text that was empty.");
+            "popup::PopupInfo(name=\""
+                << name_ << "\", buttons=" << EnumUtil<PopupButtons>::ToString(BUTTONS)
+                << ", image=" << NAMEOF_ENUM(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
+                << "\") was given TEXT_INFO.text that was empty.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<PopupImage>::IsValid(IMAGE)),
-            "popup::PopupInfo(name=\"" << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
-                                       << ", image=" << NAMEOF_ENUM(IMAGE) << ", textInfo=\""
-                                       << TEXT_INFO.text << "\") was given an IMAGE value of "
-                                       << IMAGE << ", which is invalid.");
+            "popup::PopupInfo(name=\""
+                << name_ << "\", buttons=" << EnumUtil<PopupButtons>::ToString(BUTTONS)
+                << ", image=" << NAMEOF_ENUM(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
+                << "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
 
         if ((imageFadeSpeed_ > 0.0f) && (textures_.empty()))
         {
             std::ostringstream ss;
             ss << "popup::PopupInfo(name=" << name_
-               << "\", buttons=" << PopupButtons::ToString(BUTTONS)
+               << "\", buttons=" << EnumUtil<PopupButtons>::ToString(BUTTONS)
                << ", image=" << NAMEOF_ENUM(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
                << "\") was given an image fade speed of " << IMAGE_FADE_SPEED
                << " but the TEXTURE_VEC was empty, which makes no sense.  If there is a fade "
@@ -222,7 +222,7 @@ namespace popup
 
         ss << NAMEOF_ENUM(stage_) << ", ";
 
-        ss << "\"" << name_ << "\", " << PopupButtons::ToString(buttons_)
+        ss << "\"" << name_ << "\", " << EnumUtil<PopupButtons>::ToString(buttons_)
            << ", image=" << NAMEOF_ENUM(image_);
 
         if (WILL_SHORTEN == false)

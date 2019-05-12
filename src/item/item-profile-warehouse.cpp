@@ -578,8 +578,9 @@ namespace item
                     << ((NAMED_TYPE == named_type::Count) ? "Count" : NAMEOF_ENUM(NAMED_TYPE))
                     << ", set_type="
                     << ((SET_TYPE == set_type::Count) ? "Count" : NAMEOF_ENUM(SET_TYPE))
-                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE) << ", mat_pri="
-                    << NAMEOF_ENUM(MATERIAL_PRI) << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SEC)
+                    << ", element_type=" << EnumUtil<element_type>::ToString(ELEMENT_TYPE)
+                    << ", mat_pri=" << NAMEOF_ENUM(MATERIAL_PRI)
+                    << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SEC)
                     << ") was unable to find the type of the given armor.");
 
             AppendToCorrectProfileCollection(profile);
@@ -739,8 +740,9 @@ namespace item
                     << ((NAMED_TYPE == named_type::Count) ? "Count" : NAMEOF_ENUM(NAMED_TYPE))
                     << ", set_type="
                     << ((SET_TYPE == set_type::Count) ? "Count" : NAMEOF_ENUM(SET_TYPE))
-                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE) << ", mat_pri="
-                    << NAMEOF_ENUM(MATERIAL_PRI) << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SEC)
+                    << ", element_type=" << EnumUtil<element_type>::ToString(ELEMENT_TYPE)
+                    << ", mat_pri=" << NAMEOF_ENUM(MATERIAL_PRI)
+                    << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SEC)
                     << ") was unable to find the type of the given weapon.");
 
             AppendToCorrectProfileCollection(profile);
@@ -758,7 +760,7 @@ namespace item
            << ", named_type="
            << ((NAMED_TYPE == named_type::Count) ? "Count" : NAMEOF_ENUM(NAMED_TYPE))
            << ", set_type=" << ((SET_TYPE == set_type::Count) ? "Count" : NAMEOF_ENUM(SET_TYPE))
-           << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
+           << ", element_type=" << EnumUtil<element_type>::ToString(ELEMENT_TYPE)
            << ", mat_pri=" << NAMEOF_ENUM(MATERIAL_PRI) << ", mat_sec=" << NAMEOF_ENUM(MATERIAL_SEC)
            << ") was unable to find the type of the given item profile.";
 
