@@ -87,10 +87,12 @@ namespace gui
                 0, 0, static_cast<int>(GetWinWidthu()), static_cast<int>(GetWinHeightu()));
         }
 
+        // zero disables the limit
         void SetFrameRateLimit(const unsigned LIMIT);
 
         unsigned GetFrameRateLimit() const { return frameRateLimit_; }
 
+        // false disables the limit
         void SetVerticalSync(const bool WILL_SYNC);
 
         bool GetVerticalSync() const { return willVerticalSync_; }

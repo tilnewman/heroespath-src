@@ -66,16 +66,16 @@ namespace game
         {
             ConsumeAndIgnoreStrayEvents();
 
-            // misc::TimeTrials framerateTrials("Framerate", TimeRes::Micro, true, 200, 0.0);
+            misc::TimeTrials framerateTrials("Framerate", TimeRes::Micro, true, 200, 0.0);
 
-            // const std::size_t FRAMERATE_COLLECTER_INDEX { framerateTrials.AddCollecter(
-            //    flags_.ToString()) };
+            const std::size_t FRAMERATE_COLLECTER_INDEX { framerateTrials.AddCollecter(
+                flags_.ToString()) };
 
             durationClock_.restart();
 
             while (!iStatus_.IsLoopStopRequested())
             {
-                // M_HP_SCOPED_TIME_TRIAL(framerateTrials, FRAMERATE_COLLECTER_INDEX);
+                M_HP_SCOPED_TIME_TRIAL(framerateTrials, FRAMERATE_COLLECTER_INDEX);
 
                 gui::Display::Instance()->ClearToBlack();
 
@@ -108,7 +108,7 @@ namespace game
                 ++frameCounter_;
             }
 
-            // framerateTrials.EndAllContests();
+            framerateTrials.EndAllContests();
             // componentFramerateTrials_.EndAllContests();
         }
         catch (const std::exception & EXCEPTION)

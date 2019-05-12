@@ -1025,8 +1025,7 @@ namespace gui
             M_HP_LOG_ERR(makeLogMessage(
                 "Changed resolution ",
                 " succeeded in changing the resolution but not in changing the AA level.  The "
-                "AA "
-                "ended up="
+                "AA  ended up="
                     + misc::ToString(DISPLAY_SETTINGS_AFTER.second) + "."));
         }
         else if (RESULT.FailedAndRevertFailed())
@@ -1035,9 +1034,17 @@ namespace gui
                 "Failed to change resolution ",
                 makeResMessage(
                     ".  For some unknown reason (ahem) SFML switched to a new resolution that "
-                    "was "
-                    "not "
-                    "the intended or the original.  New resolution=",
+                    "was  not  the intended or the original.  New resolution=",
+                    DISPLAY_SETTINGS_AFTER)));
+        }
+        else
+        {
+            M_HP_LOG_ERR(makeLogMessage(
+                "Failed to change resolution (in an unusual case...not sure what happened here...)"
+                    + M_HP_VAR_STR(RESULT.did_res_change) + M_HP_VAR_STR(RESULT.is_res_intended)
+                    + M_HP_VAR_STR(RESULT.did_aa_change) + M_HP_VAR_STR(RESULT.is_aa_intended),
+                makeResMessage(
+                    "Here are all the details of what display settings we ended up with:",
                     DISPLAY_SETTINGS_AFTER)));
         }
 

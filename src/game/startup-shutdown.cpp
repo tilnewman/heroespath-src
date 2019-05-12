@@ -81,6 +81,11 @@ namespace game
         // heroespath::LogMacroHelper::LogTimingStart();
         M_HP_LOG("game setup starting");
 
+        if (WILL_SETUP_FOR_TESTING)
+        {
+            M_HP_LOG("game setup WILL be customized to run UNIT TESTING");
+        }
+
         M_HP_LOG("Detected Platform \"" << misc::platform_name << "\"");
         if (!misc::platform_is_supported)
         {
@@ -299,7 +304,15 @@ namespace game
         gui::Display::LogAllSupportedFullScreenVideoModes();
         gui::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0, WILL_SETUP_FOR_TESTING);
 
-        if (!WILL_SETUP_FOR_TESTING)
+        if (WILL_SETUP_FOR_TESTING)
+        {
+            M_HP_LOG("Since game is being setup for unit testing, the frame_rate_limit and "
+                     "vertical_sync will both be disabled.");
+
+            gui::Display::Instance()->SetFrameRateLimit(0);
+            gui::Display::Instance()->SetVerticalSync(false);
+        }
+        else
         {
             gui::Display::Instance()->SetFrameRateLimit(
                 static_cast<unsigned>(misc::ConfigFile::Instance()->ValueOrDefault<int>(
@@ -360,7 +373,12 @@ namespace game
     {
         // SettingsFile::LoadAndRestore() must happen before initialization so that subsystems can
         // use the settings saved from the last run of the game.
-        if (!WILL_SETUP_FOR_TESTING)
+        if (WILL_SETUP_FOR_TESTING)
+        {
+            M_HP_LOG(
+                "Since game is being setup for unit testing, the settings file will be ignored.");
+        }
+        else
         {
             misc::SettingsFile::Instance()->LoadAndRestore();
         }
