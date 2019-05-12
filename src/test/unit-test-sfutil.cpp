@@ -1430,7 +1430,7 @@ BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
     // display tests
 
     heroespath::misc::Log::Acquire();
-    heroespath::gui::Display::Acquire("HeroespathTestDisplay", sf::Style::None, 0);
+    heroespath::gui::Display::Acquire("HeroespathTestDisplay", sf::Style::None, 0, true);
 
     const sf::Vector2f SCREEN_SIZE_V(DisplaySize());
     const float HALF_SCALE(0.5f);

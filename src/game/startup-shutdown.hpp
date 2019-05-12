@@ -26,13 +26,22 @@ namespace game
         StartupShutdown & operator=(StartupShutdown &&) = delete;
         StartupShutdown() = delete;
 
-        StartupShutdown(const std::string & APPLICATION_NAME, int ARGC, char * argv[]);
+        StartupShutdown(
+            const std::string & APPLICATION_NAME,
+            int ARGC,
+            char * argv[],
+            const bool WILL_SETUP_FOR_TESTING);
+
         ~StartupShutdown();
 
         void Run() const;
 
     private:
-        void Setup(const std::string & APPLICATION_NAME, int ARGC, char * argv[]) const;
+        void Setup(
+            const std::string & APPLICATION_NAME,
+            int ARGC,
+            char * argv[],
+            const bool WILL_SETUP_FOR_TESTING) const;
 
         void Teardown() const;
 
@@ -43,11 +52,14 @@ namespace game
         void Teardown_Logger() const;
 
         void Setup_ParseCommandLineArguments(const int ARGC, char * argv[]) const;
-        void Setup_Display(const std::string & APPLICATION_NAME) const;
+
+        void Setup_Display(
+            const std::string & APPLICATION_NAME, const bool WILL_SETUP_FOR_TESTING) const;
+
         void Setup_FilesystemPaths() const;
         void Setup_HoldersFill() const;
         void Setup_SubsystemsAcquire() const;
-        void Setup_SubsystemsInitialize() const;
+        void Setup_SubsystemsInitialize(const bool WILL_SETUP_FOR_TESTING) const;
     };
 
 } // namespace game

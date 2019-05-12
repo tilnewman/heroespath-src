@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE(HelperFunctionTests)
 
 BOOST_AUTO_TEST_CASE(TextureCacheTests)
 {
-    heroespath::game::StartupShutdown startStop("Heroes' Path Test", 0, nullptr);
+    heroespath::game::StartupShutdown startStop("Heroes' Path Test", 0, nullptr, true);
 
     TextureCache & tc = *heroespath::gui::TextureCache::Instance();
 

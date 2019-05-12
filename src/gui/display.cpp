@@ -38,13 +38,19 @@ namespace gui
     std::unique_ptr<Display> Display::instanceUPtr_;
 
     Display::Display(
-        const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
+        const std::string & TITLE,
+        const sf::Uint32 STYLE,
+        const unsigned ANTIALIAS_LEVEL,
+        const bool WILL_SETUP_FOR_TESTING)
         : winTitle_(TITLE)
         , winStyle_(STYLE)
         , frameRateLimit_(0)
         , willVerticalSync_(false)
         , winUPtr_(std::make_unique<sf::RenderWindow>(
-              EstablishVideoMode(), TITLE, STYLE, sf::ContextSettings(0, 0, ANTIALIAS_LEVEL)))
+              EstablishVideoMode(WILL_SETUP_FOR_TESTING),
+              TITLE,
+              STYLE,
+              sf::ContextSettings(0, 0, ANTIALIAS_LEVEL)))
         , fadeColoredRectSliderUPtr_()
     {
         M_HP_LOG_DBG("Subsystem Construction: Display");
@@ -80,11 +86,15 @@ namespace gui
     }
 
     void Display::Acquire(
-        const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
+        const std::string & TITLE,
+        const sf::Uint32 STYLE,
+        const unsigned ANTIALIAS_LEVEL,
+        const bool WILL_SETUP_FOR_TESTING)
     {
         if (!instanceUPtr_)
         {
-            instanceUPtr_ = std::make_unique<Display>(TITLE, STYLE, ANTIALIAS_LEVEL);
+            instanceUPtr_
+                = std::make_unique<Display>(TITLE, STYLE, ANTIALIAS_LEVEL, WILL_SETUP_FOR_TESTING);
         }
         else
         {
@@ -788,7 +798,7 @@ namespace gui
         return NUM_SUPPORTED_RESOLUTIONS;
     }
 
-    const sf::VideoMode Display::EstablishVideoMode()
+    const sf::VideoMode Display::EstablishVideoModeMaxResolution()
     {
         sf::VideoMode videoMode;
 
@@ -825,7 +835,7 @@ namespace gui
             if (0 == NUM_SUPPORTED)
             {
                 M_HP_LOG(
-                    "No valid video modes found that are supported by this system.  "
+                    "No valid full-screen video modes found that are supported by this system.  "
                     << "See above for a list of supported video modes.  Attempt to increase "
                     << "your resolution to one of these.");
 
@@ -846,6 +856,39 @@ namespace gui
         }
 
         return videoMode;
+    }
+
+    const sf::VideoMode Display::EstablishVideoModeMinResolution()
+    {
+        ResolutionVec_t supportedResolutionsVec;
+        const std::size_t NUM_SUPPORTED(
+            ComposeSupportedFullScreenVideoModesVec(supportedResolutionsVec));
+
+        if (0 == NUM_SUPPORTED)
+        {
+            M_HP_LOG(
+                "No valid full-screen video modes found that are supported by this system.  "
+                << "See above for a list of supported video modes.  Attempt to increase "
+                << "your resolution to one of these.");
+
+            throw std::runtime_error(
+                "No valid video modes found that are supported by this system.");
+        }
+
+        M_HP_LOG("Attempting to find a good low resolution suitable for testing...");
+
+        std::sort(std::begin(supportedResolutionsVec), std::end(supportedResolutionsVec));
+
+        for (const auto & RES : supportedResolutionsVec)
+        {
+            if (RES.width >= 800)
+            {
+                return sf::VideoMode(RES.width, RES.height, RES.bits_per_pixel);
+            }
+        }
+
+        throw std::runtime_error("No valid full-screen video modes found for testing that are "
+                                 "supported by this system.");
     }
 
     const sf::VideoMode Display::GetCurrentVideoMode()
@@ -934,7 +977,8 @@ namespace gui
         {
             M_HP_LOG_ERR(makeLogMessage(
                 "Failed to change resolution ",
-                ".  The call to sf::RenderWindow::create() resulted in the window NOT being open, "
+                ".  The call to sf::RenderWindow::create() resulted in the window NOT being "
+                "open, "
                 "so reverting back to original."));
 
             winUPtr_->create(
@@ -980,7 +1024,8 @@ namespace gui
         {
             M_HP_LOG_ERR(makeLogMessage(
                 "Changed resolution ",
-                " succeeded in changing the resolution but not in changing the AA level.  The AA "
+                " succeeded in changing the resolution but not in changing the AA level.  The "
+                "AA "
                 "ended up="
                     + misc::ToString(DISPLAY_SETTINGS_AFTER.second) + "."));
         }
@@ -989,7 +1034,8 @@ namespace gui
             M_HP_LOG_ERR(makeLogMessage(
                 "Failed to change resolution ",
                 makeResMessage(
-                    ".  For some unknown reason (ahem) SFML switched to a new resolution that was "
+                    ".  For some unknown reason (ahem) SFML switched to a new resolution that "
+                    "was "
                     "not "
                     "the intended or the original.  New resolution=",
                     DISPLAY_SETTINGS_AFTER)));

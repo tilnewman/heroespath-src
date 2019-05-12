@@ -61,5 +61,11 @@ namespace gui
             == std::tie(V.width, V.height, V.bitsPerPixel);
     }
 
+    bool operator<(const Resolution & L, const Resolution & R)
+    {
+        return std::tie(L.width, L.height, L.bits_per_pixel, L.name, L.aspect_ratio)
+            < std::tie(R.width, R.height, R.bits_per_pixel, R.name, R.aspect_ratio);
+    }
+
 } // namespace gui
 } // namespace heroespath

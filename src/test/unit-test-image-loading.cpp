@@ -23,91 +23,67 @@
 
 using namespace heroespath;
 
-struct TestStuff
-{
-    TestStuff()
-    //: window(
-    //      sf::VideoMode(800, 600, sf::VideoMode::getDesktopMode().bitsPerPixel),
-    //      "HP Test Image Loading")
-    //, windowSize(window.getSize())
-    //, windowRect(sf::Vector2f(), windowSize)
-    {
-        // window.clear(sf::Color::Red);
-    }
-
-    template <typename T>
-    void drawAndDisplay(const T &)
-    {
-        // window.clear();
-        // window.draw(drawableThing);
-        // window.display();
-        // sf::sleep(sf::seconds(0.01f));
-    }
-
-    void handleEvents()
-    {
-        // sf::Event event;
-        // while (window.pollEvent(event))
-        //{
-        //    BOOST_CHECK(event.type != sf::Event::Closed);
-        //}
-    }
-
-    // sf::RenderWindow window;
-    // sf::Vector2f windowSize;
-    // sf::FloatRect windowRect;
-    std::unique_ptr<gui::CachedTexture> cachedTextureUPtr;
-};
-
 struct Fixture
 {
     void setup()
     {
         startupShutdownUPtr
-            = std::make_unique<game::StartupShutdown>("HP Test Image Loading", 0, nullptr);
+            = std::make_unique<game::StartupShutdown>("HP Test Image Loading", 0, nullptr, true);
 
-        stuffUPtr = std::make_unique<TestStuff>();
+        gui::Display::Instance()->PollEvents();
     }
 
     void teardown()
     {
-        stuffUPtr.reset();
+        gui::Display::Instance()->PollEvents();
+        cachedTextureUPtr.reset();
         startupShutdownUPtr.reset();
     }
 
-    static TestStuff & stuff()
-    {
-        BOOST_CHECK(stuffUPtr.get() != nullptr);
-        return *stuffUPtr;
-    }
-
     template <typename T>
-    static void drawAndDisplay(const T & drawableThing)
+    static void display(T && cachedTexture)
     {
-        gui::Display::Instance()->PollEvents();
-        gui::Display::Instance()->ClearToBlack();
-        gui::Display::Instance()->TestDraw(drawableThing);
-        gui::Display::Instance()->DisplayFrameBuffer();
-        sf::sleep(sf::seconds(0.01f));
-    }
+        cachedTextureUPtr = std::make_unique<gui::CachedTexture>(cachedTexture);
 
-    // template<typename T>
-    // static void updateTextureAndSprite(T && cachedTexture)
-    //{
-    //
-    //}
+        BOOST_CHECK(cachedTextureUPtr->Get().getSize().x > 0);
+        BOOST_CHECK(cachedTextureUPtr->Get().getSize().y > 0);
+
+        sprite.setTexture(cachedTextureUPtr->Get(), true);
+
+        const auto INITIAL_GLOBAL_BOUNDS = sprite.getGlobalBounds();
+
+        if ((INITIAL_GLOBAL_BOUNDS.width > gui::Display::Instance()->GetWinWidth())
+            || (INITIAL_GLOBAL_BOUNDS.height > gui::Display::Instance()->GetWinHeight()))
+        {
+            sfutil::FitAndCenterTo(sprite, gui::Display::Instance()->FullScreenRect());
+        }
+        else
+        {
+            sfutil::CenterTo(sprite, gui::Display::Instance()->FullScreenRect());
+        }
+
+        gui::Display::Instance()->ClearToBlack();
+        gui::Display::Instance()->TestDraw(sprite);
+        gui::Display::Instance()->DisplayFrameBuffer();
+    }
 
     static std::unique_ptr<game::StartupShutdown> startupShutdownUPtr;
-    static std::unique_ptr<TestStuff> stuffUPtr;
+    static std::unique_ptr<gui::CachedTexture> cachedTextureUPtr;
+    static sf::Sprite sprite;
+    static sf::Vector2f windowSize;
+    static sf::FloatRect windowRect;
 };
 
 std::unique_ptr<heroespath::game::StartupShutdown> Fixture::startupShutdownUPtr;
-std::unique_ptr<TestStuff> Fixture::stuffUPtr;
+std::unique_ptr<gui::CachedTexture> Fixture::cachedTextureUPtr;
+sf::Sprite Fixture::sprite;
+sf::Vector2f Fixture::windowSize;
+sf::FloatRect Fixture::windowRect;
 
 BOOST_TEST_GLOBAL_FIXTURE(Fixture);
 
 template <typename EnumWrapper_t>
-void TestEnumImageLoading(sf::Sprite & sprite)
+void TestEnumImageLoading()
 {
     for (EnumUnderlying_t index(0); index < EnumWrapper_t::Count; ++index)
     {
@@ -118,28 +94,17 @@ void TestEnumImageLoading(sf::Sprite & sprite)
             << NAMEOF_TYPE(EnumWrapper_t) << "> on image with index/value=" << index
             << ", enum=" << NAMEOF_ENUM(ENUM_VALUE) << "...");
 
-        Fixture::stuff().cachedTextureUPtr
-            = std::make_unique<gui::CachedTexture>(gui::LoadAndCacheImage(ENUM_VALUE));
-
-        BOOST_CHECK(Fixture::stuff().cachedTextureUPtr->Get().getSize().x > 0);
-        BOOST_CHECK(Fixture::stuff().cachedTextureUPtr->Get().getSize().y > 0);
-
-        sprite.setTexture(Fixture::stuff().cachedTextureUPtr->Get(), true);
-        sprite.setPosition(0.0f, 0.0f);
-        Fixture::drawAndDisplay(sprite);
-        // Fixture::stuff().handleEvents();
-        // Fixture::stuff().drawAndDisplay(sprite);
+        Fixture::display(gui::LoadAndCacheImage(ENUM_VALUE));
     }
 }
 
 BOOST_AUTO_TEST_CASE(image_loading__enum_image_loading)
 {
-    sf::Sprite sprite;
-    TestEnumImageLoading<creature::Conditions>(sprite);
-    TestEnumImageLoading<creature::Titles>(sprite);
-    TestEnumImageLoading<gui::CombatImageType>(sprite);
-    TestEnumImageLoading<song::Songs>(sprite);
-    TestEnumImageLoading<spell::Spells>(sprite);
+    TestEnumImageLoading<creature::Conditions>();
+    TestEnumImageLoading<creature::Titles>();
+    TestEnumImageLoading<gui::CombatImageType>();
+    TestEnumImageLoading<song::Songs>();
+    TestEnumImageLoading<spell::Spells>();
 }
 
 BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
@@ -166,41 +131,19 @@ BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
     sf::Sprite sprite;
     while ((imageIndex < imagePathKeys.size()))
     {
-        {
-            const auto KEY_STR { imagePathKeys.at(imageIndex++) };
+        const auto KEY_STR { imagePathKeys.at(imageIndex++) };
 
-            M_HP_LOG(
-                "Unit Test \"image_loading__enum_image_loading\" about to test image index #"
-                << imageIndex << ", key=\"" << KEY_STR << "\"...");
+        M_HP_LOG(
+            "Unit Test \"image_loading__enum_image_loading\" about to test image index #"
+            << imageIndex << ", key=\"" << KEY_STR << "\"...");
 
-            BOOST_CHECK(!KEY_STR.empty());
+        BOOST_CHECK(!KEY_STR.empty());
 
-            const auto IMAGE_PATH_STR { misc::ConfigFile::Instance()->GetMediaPath(KEY_STR) };
-            M_HP_LOG("...which has the media path=\"" << IMAGE_PATH_STR << "\"...");
-            BOOST_CHECK(!IMAGE_PATH_STR.empty());
+        const auto IMAGE_PATH_STR { misc::ConfigFile::Instance()->GetMediaPath(KEY_STR) };
+        M_HP_LOG("...which has the media path=\"" << IMAGE_PATH_STR << "\"...");
+        BOOST_CHECK(!IMAGE_PATH_STR.empty());
 
-            Fixture::stuff().cachedTextureUPtr = std::make_unique<gui::CachedTexture>(KEY_STR);
-            sprite.setTexture(Fixture::stuff().cachedTextureUPtr->Get(), true);
-
-            const auto INITIAL_GLOBAL_BOUNDS = sprite.getGlobalBounds();
-
-            BOOST_CHECK(INITIAL_GLOBAL_BOUNDS.width > 0.0f);
-            BOOST_CHECK(INITIAL_GLOBAL_BOUNDS.height > 0.0f);
-            sprite.setPosition(0.0f, 0.0f);
-            Fixture::drawAndDisplay(sprite);
-            // if ((INITIAL_GLOBAL_BOUNDS.width > Fixture::stuff().windowSize.x)
-            //    || (INITIAL_GLOBAL_BOUNDS.height > Fixture::stuff().windowSize.y))
-            //{
-            //    sfutil::FitAndCenterTo(sprite, Fixture::stuff().windowRect);
-            //}
-            // else
-            //{
-            //    sfutil::CenterTo(sprite, Fixture::stuff().windowRect);
-            //}
-        }
-
-        // Fixture::stuff().handleEvents();
-        // Fixture::stuff().drawAndDisplay(sprite);
+        Fixture::display(gui::CachedTexture(KEY_STR));
     }
 
     BOOST_CHECK(imageIndex == imagePathKeys.size());

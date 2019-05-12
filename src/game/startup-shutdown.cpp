@@ -59,13 +59,19 @@ namespace game
 {
 
     StartupShutdown::StartupShutdown(
-        const std::string & APPLICATION_NAME, const int ARGC, char * argv[])
+        const std::string & APPLICATION_NAME,
+        const int ARGC,
+        char * argv[],
+        const bool WILL_SETUP_FOR_TESTING)
     {
-        Setup(APPLICATION_NAME, ARGC, argv);
+        Setup(APPLICATION_NAME, ARGC, argv, WILL_SETUP_FOR_TESTING);
     }
 
     void StartupShutdown::Setup(
-        const std::string & APPLICATION_NAME, const int ARGC, char * argv[]) const
+        const std::string & APPLICATION_NAME,
+        const int ARGC,
+        char * argv[],
+        const bool WILL_SETUP_FOR_TESTING) const
     {
         // this order is critical
         misc::stringStreamHolder::init();
@@ -97,10 +103,10 @@ namespace game
         item::armor::ArmorDetailLoader::LoadFromGameDataFile();
         item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
 
-        Setup_Display(APPLICATION_NAME);
+        Setup_Display(APPLICATION_NAME, WILL_SETUP_FOR_TESTING);
         Setup_FilesystemPaths();
         Setup_SubsystemsAcquire();
-        Setup_SubsystemsInitialize();
+        Setup_SubsystemsInitialize(WILL_SETUP_FOR_TESTING);
         Setup_HoldersFill();
 
         // this causes the initial stage transition/creation so it must occur last
@@ -286,17 +292,22 @@ namespace game
         }
     }
 
-    void StartupShutdown::Setup_Display(const std::string & APPLICATION_NAME) const
+    void StartupShutdown::Setup_Display(
+        const std::string & APPLICATION_NAME, const bool WILL_SETUP_FOR_TESTING) const
     {
         gui::Display::LogAllFullScreenVideoModes();
         gui::Display::LogAllSupportedFullScreenVideoModes();
-        gui::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0);
+        gui::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0, WILL_SETUP_FOR_TESTING);
 
-        gui::Display::Instance()->SetFrameRateLimit(static_cast<unsigned>(
-            misc::ConfigFile::Instance()->ValueOrDefault<int>("system-window-frame-rate-limit")));
+        if (!WILL_SETUP_FOR_TESTING)
+        {
+            gui::Display::Instance()->SetFrameRateLimit(
+                static_cast<unsigned>(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                    "system-window-frame-rate-limit")));
 
-        gui::Display::Instance()->SetVerticalSync(
-            misc::ConfigFile::Instance()->ValueOrDefault<bool>("system-window-sync"));
+            gui::Display::Instance()->SetVerticalSync(
+                misc::ConfigFile::Instance()->ValueOrDefault<bool>("system-window-sync"));
+        }
     }
 
     void StartupShutdown::Setup_FilesystemPaths() const
@@ -345,11 +356,14 @@ namespace game
         GameController::Acquire();
     }
 
-    void StartupShutdown::Setup_SubsystemsInitialize() const
+    void StartupShutdown::Setup_SubsystemsInitialize(const bool WILL_SETUP_FOR_TESTING) const
     {
         // SettingsFile::LoadAndRestore() must happen before initialization so that subsystems can
         // use the settings saved from the last run of the game.
-        misc::SettingsFile::Instance()->LoadAndRestore();
+        if (!WILL_SETUP_FOR_TESTING)
+        {
+            misc::SettingsFile::Instance()->LoadAndRestore();
+        }
 
         gui::SoundManager::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();

@@ -19,7 +19,7 @@ int main(int argc, char * argv[])
 {
     try
     {
-        heroespath::game::StartupShutdown startStop("Heroes' Path", argc, argv);
+        heroespath::game::StartupShutdown startStop("Heroes' Path", argc, argv, false);
         startStop.Run();
         return EXIT_SUCCESS;
     }

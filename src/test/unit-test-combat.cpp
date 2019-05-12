@@ -32,7 +32,7 @@ namespace ts = test_stuff;
 BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 {
     {
-        StartupShutdown startupShutdown("Heroes' Path Combat Tests", 0, nullptr);
+        StartupShutdown startupShutdown("Heroes' Path Combat Tests", 0, nullptr, true);
 
         {
             combat::CombatTree combatTree;
