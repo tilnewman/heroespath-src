@@ -979,7 +979,8 @@ BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
 BOOST_AUTO_TEST_CASE(strong_numeric_type_tests)
 {
     // using Health_t as a test because it's value_type is int...less typing
-    Health_t a;
+
+    Health_t a; // should zero initialize
     BOOST_CHECK_EQUAL(a.Get(), 0);
     BOOST_CHECK(a.IsZero());
     BOOST_CHECK(a.IsPositive());
@@ -1139,6 +1140,7 @@ BOOST_AUTO_TEST_CASE(strong_numeric_type_tests)
     BOOST_CHECK_EQUAL(Max(-321_health, -123_health, 0_health, 123_health, 321_health), 321_health);
     BOOST_CHECK_EQUAL(Min(-321_health, -123_health, 0_health, 123_health, 321_health), -321_health);
 
+    BOOST_CHECK_EQUAL(a.Get(), 0);
     BOOST_CHECK_EQUAL((++a).Get(), 1);
     BOOST_CHECK_EQUAL(a.Get(), 1);
 
