@@ -19,13 +19,9 @@
 #include <numeric>
 #include <stdexcept>
 
-#include "unit-test-test-stuff.hpp"
-
 using namespace heroespath;
 using namespace heroespath::misc;
 using namespace heroespath::gui;
-
-namespace ts = test_stuff;
 
 template <typename Value_t, typename Slider_t>
 void testSlider(

@@ -13,13 +13,13 @@
 
 #include <SFML/System/Clock.hpp>
 
+#include "unit-test-test-stuff.hpp"
+
 #include "misc/nameof.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/strings.hpp"
 #include "misc/vectors.hpp"
-
-#include "unit-test-test-stuff.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -1456,10 +1456,8 @@ BOOST_AUTO_TEST_CASE(misc_strings__Trim)
 
 BOOST_AUTO_TEST_CASE(join_when_empty_tests)
 {
-    namespace ts = test_stuff;
-
-    const ts::IntVec_t EMPTY;
-    for (const auto VALUE : ts::TEST_COUNTS)
+    const std::vector<int> EMPTY;
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
         const auto SIZET_VALUE { static_cast<std::size_t>(VALUE) };
 

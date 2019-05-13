@@ -106,6 +106,9 @@ namespace gui
         const sf::Vector2f getScale() const { return sfText_.getScale(); }
         const sf::Vector2f getPosition() const { return sfText_.getPosition(); }
 
+        // always 0,0, the whole point of this class is to handle the origin internally
+        const sf::Vector2f getOrigin() const { return sf::Vector2f(); }
+
         const sf::Vector2f getSize() const
         {
             return sf::Vector2f(sfText_.getGlobalBounds().width, sfText_.getGlobalBounds().height);

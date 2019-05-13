@@ -16,81 +16,79 @@
 
 #include <boost/test/unit_test.hpp>
 
-namespace ts = test_stuff;
-
+using namespace heroespath;
 BOOST_AUTO_TEST_CASE(isUnique_CornerCases)
 {
-    const ts::IntVec_t EMPTY = {};
+    const std::vector<int> EMPTY;
 
-    BOOST_CHECK_MESSAGE(ts::isUnique(EMPTY), "empty vec=" << ts::vectorToString(EMPTY));
-
-    const ts::IntVec_t FIRST_DUPLICATED = { 0, 1, 0 };
+    const std::vector<int> FIRST_DUPLICATED = { 0, 1, 0 };
 
     BOOST_CHECK_MESSAGE(
-        ts::isUnique(FIRST_DUPLICATED) == false,
-        "first duplicated vec=" << ts::vectorToString(FIRST_DUPLICATED));
+        test::isUnique(FIRST_DUPLICATED) == false,
+        "first duplicated vec=" << test::containerToString(FIRST_DUPLICATED));
 
-    const ts::IntVec_t LAST_DUPLICATED = { 0, 1, 1 };
-
-    BOOST_CHECK_MESSAGE(
-        ts::isUnique(LAST_DUPLICATED) == false,
-        "last duplicated vec=" << ts::vectorToString(LAST_DUPLICATED));
-
-    const ts::IntVec_t PATTERN_1 = { 0, 0, 1, 1 };
+    const std::vector<int> LAST_DUPLICATED = { 0, 1, 1 };
 
     BOOST_CHECK_MESSAGE(
-        ts::isUnique(PATTERN_1) == false, "pattern 1 vec=" << ts::vectorToString(PATTERN_1));
+        test::isUnique(LAST_DUPLICATED) == false,
+        "last duplicated vec=" << test::containerToString(LAST_DUPLICATED));
 
-    const ts::IntVec_t PATTERN_2 = { 0, 1, 0, 1 };
+    const std::vector<int> PATTERN_1 = { 0, 0, 1, 1 };
 
     BOOST_CHECK_MESSAGE(
-        ts::isUnique(PATTERN_2) == false, "pattern 2 vec=" << ts::vectorToString(PATTERN_2));
+        test::isUnique(PATTERN_1) == false, "pattern 1 vec=" << test::containerToString(PATTERN_1));
+
+    const std::vector<int> PATTERN_2 = { 0, 1, 0, 1 };
+
+    BOOST_CHECK_MESSAGE(
+        test::isUnique(PATTERN_2) == false, "pattern 2 vec=" << test::containerToString(PATTERN_2));
 }
 
 BOOST_AUTO_TEST_CASE(isUnique_SingleValues)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        const ts::IntVec_t SINGLE_VALUE(1, VALUE);
+        const std::vector<int> SINGLE_VALUE(1, VALUE);
 
         BOOST_CHECK_MESSAGE(
-            ts::isUnique(SINGLE_VALUE), "single value vec=" << ts::vectorToString(SINGLE_VALUE));
+            test::isUnique(SINGLE_VALUE),
+            "single value vec=" << test::containerToString(SINGLE_VALUE));
     }
 }
 
 BOOST_AUTO_TEST_CASE(isUnique_RepeatedValues)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        const ts::IntVec_t REPEATED_VALUES(static_cast<std::size_t>(VALUE), VALUE);
+        const std::vector<int> REPEATED_VALUES(static_cast<std::size_t>(VALUE), VALUE);
 
         BOOST_CHECK_MESSAGE(
-            (ts::isUnique(REPEATED_VALUES) == (VALUE < 2)),
-            "repeated values vec=" << ts::vectorToString(REPEATED_VALUES));
+            (test::isUnique(REPEATED_VALUES) == (VALUE < 2)),
+            "repeated values vec=" << test::containerToString(REPEATED_VALUES));
     }
 }
 
 BOOST_AUTO_TEST_CASE(isUnique_CountingValues)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        ts::IntVec_t countingValues;
+        std::vector<int> countingValues;
         for (int i { 0 }; i <= VALUE; ++i)
         {
             countingValues.emplace_back(i);
         }
 
         BOOST_CHECK_MESSAGE(
-            ts::isUnique(countingValues),
-            "counting values vec=" << ts::vectorToString(countingValues));
+            test::isUnique(countingValues),
+            "counting values vec=" << test::containerToString(countingValues));
     }
 }
 
 BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithOneDuplicate)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        ts::IntVec_t countingValuesWithDuplicate;
+        std::vector<int> countingValuesWithDuplicate;
         for (int i { 0 }; i <= VALUE; ++i)
         {
             if (i == 0)
@@ -102,17 +100,17 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithOneDuplicate)
         }
 
         BOOST_CHECK_MESSAGE(
-            ts::isUnique(countingValuesWithDuplicate) == (countingValuesWithDuplicate.size() < 2),
+            test::isUnique(countingValuesWithDuplicate) == (countingValuesWithDuplicate.size() < 2),
             "counting values with duplicate vec="
-                << ts::vectorToString(countingValuesWithDuplicate));
+                << test::containerToString(countingValuesWithDuplicate));
     }
 }
 
 BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithMultDuplicate)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        ts::IntVec_t countingValuesWithDuplicate;
+        std::vector<int> countingValuesWithDuplicate;
         for (int i { 0 }; i <= VALUE; ++i)
         {
             countingValuesWithDuplicate.emplace_back(i);
@@ -120,87 +118,89 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithMultDuplicate)
         }
 
         BOOST_CHECK_MESSAGE(
-            ts::isUnique(countingValuesWithDuplicate) == (countingValuesWithDuplicate.empty()),
+            test::isUnique(countingValuesWithDuplicate) == (countingValuesWithDuplicate.empty()),
             "counting values with duplicate vec="
-                << ts::vectorToString(countingValuesWithDuplicate));
+                << test::containerToString(countingValuesWithDuplicate));
     }
 }
 
 BOOST_AUTO_TEST_CASE(isSorted_CornerCases)
 {
-    const ts::IntVec_t EMPTY = {};
-
-    BOOST_CHECK_MESSAGE(ts::isSortedDescending(EMPTY), "empty vec=" << ts::vectorToString(EMPTY));
-
-    const ts::IntVec_t FIRST_DUPLICATED = { 0, 1, 0 };
+    const std::vector<int> EMPTY;
 
     BOOST_CHECK_MESSAGE(
-        ts::isSortedDescending(FIRST_DUPLICATED) == false,
-        "first duplicated vec=" << ts::vectorToString(FIRST_DUPLICATED));
+        test::isSortedDescending(EMPTY), "empty vec=" << test::containerToString(EMPTY));
 
-    const ts::IntVec_t LAST_DUPLICATED = { 0, 1, 1 };
-
-    BOOST_CHECK_MESSAGE(
-        ts::isSortedDescending(LAST_DUPLICATED),
-        "last duplicated vec=" << ts::vectorToString(LAST_DUPLICATED));
-
-    const ts::IntVec_t PATTERN_1 = { 0, 0, 1, 1 };
+    const std::vector<int> FIRST_DUPLICATED = { 0, 1, 0 };
 
     BOOST_CHECK_MESSAGE(
-        ts::isSortedDescending(PATTERN_1), "pattern 1 vec=" << ts::vectorToString(PATTERN_1));
+        test::isSortedDescending(FIRST_DUPLICATED) == false,
+        "first duplicated vec=" << test::containerToString(FIRST_DUPLICATED));
 
-    const ts::IntVec_t PATTERN_2 = { 0, 1, 0, 1 };
+    const std::vector<int> LAST_DUPLICATED = { 0, 1, 1 };
 
     BOOST_CHECK_MESSAGE(
-        ts::isSortedDescending(PATTERN_2) == false,
-        "pattern 2 vec=" << ts::vectorToString(PATTERN_2));
+        test::isSortedDescending(LAST_DUPLICATED),
+        "last duplicated vec=" << test::containerToString(LAST_DUPLICATED));
+
+    const std::vector<int> PATTERN_1 = { 0, 0, 1, 1 };
+
+    BOOST_CHECK_MESSAGE(
+        test::isSortedDescending(PATTERN_1),
+        "pattern 1 vec=" << test::containerToString(PATTERN_1));
+
+    const std::vector<int> PATTERN_2 = { 0, 1, 0, 1 };
+
+    BOOST_CHECK_MESSAGE(
+        test::isSortedDescending(PATTERN_2) == false,
+        "pattern 2 vec=" << test::containerToString(PATTERN_2));
 }
 
 BOOST_AUTO_TEST_CASE(isSorted_SingleValues)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        const ts::IntVec_t SINGLE_VALUE(1, VALUE);
+        const std::vector<int> SINGLE_VALUE(1, VALUE);
 
         BOOST_CHECK_MESSAGE(
-            ts::isSortedDescending(SINGLE_VALUE),
-            "single value vec=" << ts::vectorToString(SINGLE_VALUE));
+            test::isSortedDescending(SINGLE_VALUE),
+            "single value vec=" << test::containerToString(SINGLE_VALUE));
     }
 }
 
 BOOST_AUTO_TEST_CASE(isSorted_RepeatedValues)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        const ts::IntVec_t REPEATED_VALUES(static_cast<std::size_t>(VALUE), VALUE);
+        const std::vector<int> REPEATED_VALUES(static_cast<std::size_t>(VALUE), VALUE);
 
         BOOST_CHECK_MESSAGE(
-            ts::isSortedDescending(REPEATED_VALUES),
-            "repeated values vec=" << ts::vectorToString(REPEATED_VALUES));
+            test::isSortedDescending(REPEATED_VALUES),
+            "repeated values vec=" << test::containerToString(REPEATED_VALUES));
     }
 }
 
 BOOST_AUTO_TEST_CASE(isSorted_CountingValues)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        ts::IntVec_t countingValues;
+        std::vector<int> countingValues;
         for (int i { 0 }; i <= VALUE; ++i)
         {
             countingValues.emplace_back(i);
         }
 
         BOOST_CHECK_MESSAGE(
-            ts::isSortedDescending(countingValues),
-            "counting values vec=" << ts::vectorToString(countingValues));
+            test::isSortedDescending(countingValues),
+            "counting values vec=" << test::containerToString(countingValues));
     }
 }
 
 BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithOneDuplicate)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        ts::IntVec_t countingValuesWithDuplicate;
+        std::vector<int> countingValuesWithDuplicate;
         for (int i { 0 }; i <= VALUE; ++i)
         {
             if (VALUE == 0)
@@ -212,17 +212,17 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithOneDuplicate)
         }
 
         BOOST_CHECK_MESSAGE(
-            ts::isSortedDescending(countingValuesWithDuplicate),
+            test::isSortedDescending(countingValuesWithDuplicate),
             "counting values with duplicate vec="
-                << ts::vectorToString(countingValuesWithDuplicate));
+                << test::containerToString(countingValuesWithDuplicate));
     }
 }
 
 BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithMultDuplicate)
 {
-    for (const auto VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
-        ts::IntVec_t countingValuesWithDuplicate;
+        std::vector<int> countingValuesWithDuplicate;
         for (int i { 0 }; i <= VALUE; ++i)
         {
             countingValuesWithDuplicate.emplace_back(i);
@@ -230,8 +230,8 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithMultDuplicate)
         }
 
         BOOST_CHECK_MESSAGE(
-            ts::isSortedDescending(countingValuesWithDuplicate),
+            test::isSortedDescending(countingValuesWithDuplicate),
             "counting values with duplicate vec="
-                << ts::vectorToString(countingValuesWithDuplicate));
+                << test::containerToString(countingValuesWithDuplicate));
     }
 }

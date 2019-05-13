@@ -11,6 +11,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "unit-test-test-stuff.hpp"
+
 #include "gui/display.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/log.hpp"
@@ -18,7 +20,6 @@
 #include "misc/random.hpp"
 #include "sfutil/angles.hpp"
 #include "sfutil/blend-mode.hpp"
-
 #include "sfutil/center.hpp"
 #include "sfutil/color.hpp"
 #include "sfutil/common.hpp"
@@ -40,22 +41,12 @@
 #include "sfutil/video-mode.hpp"
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Window/WindowStyle.hpp>
+#include <SFML/Window.hpp>
 
-#include <iostream>
 #include <limits>
-#include <vector>
 
-#include "unit-test-test-stuff.hpp"
-
-using namespace test_stuff;
 using namespace heroespath;
-using namespace heroespath::gui;
 using namespace heroespath::sfutil;
-using namespace heroespath::misc;
-
-namespace intersects_test_stuff
-{
 
 #define M_TEST_INTERSECTION(rect_a, rect_b, expected)                                              \
     {                                                                                              \
@@ -110,13 +101,8 @@ namespace intersects_test_stuff
 #define M_TEST_EQUAL_INTERSECTS(rect_a, rect_b, expected)                                          \
     M_TEST_EQUAL_INTERSECTS_IMPL(rect_a, rect_b, expected, true);
 
-} // namespace intersects_test_stuff
-
-namespace minimally_enclosing_test_stuff
-{
-
 template <typename T1, typename T2>
-void test(
+void minimallyEnclosingTest(
     const sf::Rect<T1> & RECT_A,
     const sf::Rect<T2> & RECT_B,
     const bool WILL_IGNORE_ANY_WITH_SIZE_ZERO_OR_LESS,
@@ -243,17 +229,15 @@ void test(
 }
 
 template <typename T1, typename T2>
-void testWithAndWithoutIgnore(
+void minimallyEnclosingTestWithAndWithoutIgnore(
     const sf::Rect<T1> & RECT_A,
     const sf::Rect<T2> & RECT_B,
     const sf::Rect<T1> & RECT_EXPECTED,
     const std::string & TEST_NAME)
 {
-    test(RECT_A, RECT_B, false, RECT_EXPECTED, TEST_NAME + " (both=false)");
-    test(RECT_A, RECT_B, true, RECT_EXPECTED, TEST_NAME + " (both=true)");
+    minimallyEnclosingTest(RECT_A, RECT_B, false, RECT_EXPECTED, TEST_NAME + " (both=false)");
+    minimallyEnclosingTest(RECT_A, RECT_B, true, RECT_EXPECTED, TEST_NAME + " (both=true)");
 }
-
-} // namespace minimally_enclosing_test_stuff
 
 BOOST_AUTO_TEST_CASE(Type_Helpers_Tests)
 {
@@ -602,6 +586,8 @@ BOOST_AUTO_TEST_CASE(VectorAndRectTests)
 
 BOOST_AUTO_TEST_CASE(Vertex_Tests)
 {
+    using namespace heroespath::gui;
+
     const sf::Vector2f V0(0.0f, 0.0f);
     const sf::Vector2f V1(1.0f, 1.0f);
     const sf::Vector2f VN1(-1.0f, -1.0f);
@@ -911,11 +897,11 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
 
     va.clear();
 
-    AppendVertexesForQuadRepeatedOverLength(va, POS_10_V, RECT_10, ::Orientation::Count, 25.0f);
+    AppendVertexesForQuadRepeatedOverLength(va, POS_10_V, RECT_10, Orientation::Count, 25.0f);
 
     BOOST_CHECK(va.getVertexCount() == 0);
 
-    AppendVertexesForQuadRepeatedOverLength(va, POS_10_V, RECT_10, ::Orientation::Horiz, 0.0f);
+    AppendVertexesForQuadRepeatedOverLength(va, POS_10_V, RECT_10, Orientation::Horiz, 0.0f);
 
     BOOST_CHECK(va.getVertexCount() == 0);
 
@@ -924,7 +910,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     va.clear();
 
     AppendVertexesForQuadRepeatedOverLength(
-        va, POS_10_V, RECT_10, ::Orientation::Horiz, 5.0f, sf::Color::Red, 5.0f);
+        va, POS_10_V, RECT_10, Orientation::Horiz, 5.0f, sf::Color::Red, 5.0f);
 
     BOOST_CHECK(va.getVertexCount() == 4);
 
@@ -951,7 +937,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
         va,
         POS_10_V,
         RECT_10,
-        ::Orientation::Horiz,
+        Orientation::Horiz,
         5.0f,
         sf::Color::White,
         999.0f,
@@ -977,7 +963,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
         va,
         POS_10_V,
         RECT_10,
-        ::Orientation::Horiz,
+        Orientation::Horiz,
         25.0f,
         sf::Color::White,
         5.0f,
@@ -1432,12 +1418,14 @@ BOOST_AUTO_TEST_CASE(ColorTests)
 
 BOOST_AUTO_TEST_CASE(DirectionTests)
 {
-    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(-1, 0), sf::Vector2i(1, 0)) == Direction::Right);
-    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(1, 0), sf::Vector2i(-1, 0)) == Direction::Left);
-    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(0, -1), sf::Vector2i(0, 1)) == Direction::Down);
-    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(0, 1), sf::Vector2i(0, -1)) == Direction::Up);
-    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(0, 0), sf::Vector2i(0, 0)) == Direction::Count);
-    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(1, -1), sf::Vector2i(1, -1)) == Direction::Count);
+    BOOST_CHECK(
+        DirectionFromAToB(sf::Vector2i(-1, 0), sf::Vector2i(1, 0)) == gui::Direction::Right);
+    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(1, 0), sf::Vector2i(-1, 0)) == gui::Direction::Left);
+    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(0, -1), sf::Vector2i(0, 1)) == gui::Direction::Down);
+    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(0, 1), sf::Vector2i(0, -1)) == gui::Direction::Up);
+    BOOST_CHECK(DirectionFromAToB(sf::Vector2i(0, 0), sf::Vector2i(0, 0)) == gui::Direction::Count);
+    BOOST_CHECK(
+        DirectionFromAToB(sf::Vector2i(1, -1), sf::Vector2i(1, -1)) == gui::Direction::Count);
 }
 
 BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
@@ -1966,11 +1954,12 @@ BOOST_AUTO_TEST_CASE(FitTests)
         BOOST_CHECK(spriteDefault1.getGlobalBounds() == RECT_ZERO_F);
     }
 
-    BOOST_CHECK(IsRealClose(ScaleThatFits(TALL_V_F.x, TALL_V_F.y, WIDE_V_I.x, WIDE_V_I.y), 0.1f));
-    BOOST_CHECK(IsRealClose(ScaleThatFits(WIDE_V_F, TALL_V_I), 0.1f));
-    BOOST_CHECK(IsRealClose(ScaleThatFits(TALL_RECT_F, WIDE_V_I), 0.1f));
-    BOOST_CHECK(IsRealClose(ScaleThatFits(TALL_V_F, WIDE_RECT_I), 0.1f));
-    BOOST_CHECK(IsRealClose(ScaleThatFits(TALL_RECT_F, WIDE_RECT_I), 0.1f));
+    BOOST_CHECK(
+        misc::IsRealClose(ScaleThatFits(TALL_V_F.x, TALL_V_F.y, WIDE_V_I.x, WIDE_V_I.y), 0.1f));
+    BOOST_CHECK(misc::IsRealClose(ScaleThatFits(WIDE_V_F, TALL_V_I), 0.1f));
+    BOOST_CHECK(misc::IsRealClose(ScaleThatFits(TALL_RECT_F, WIDE_V_I), 0.1f));
+    BOOST_CHECK(misc::IsRealClose(ScaleThatFits(TALL_V_F, WIDE_RECT_I), 0.1f));
+    BOOST_CHECK(misc::IsRealClose(ScaleThatFits(TALL_RECT_F, WIDE_RECT_I), 0.1f));
 }
 
 BOOST_AUTO_TEST_CASE(PositionTests)
@@ -1999,12 +1988,12 @@ BOOST_AUTO_TEST_CASE(PositionTests)
     BOOST_CHECK(Position(sprite) == POS_V_F);
 
     BOOST_CHECK(Right(RECT_I) == SUM_I);
-    BOOST_CHECK(IsRealClose(Right(sprite), SUM_F));
+    BOOST_CHECK(misc::IsRealClose(Right(sprite), SUM_F));
 
     BOOST_CHECK(Bottom(RECT_I) == SUM_I);
-    BOOST_CHECK(IsRealClose(Bottom(RECT_F), SUM_F));
+    BOOST_CHECK(misc::IsRealClose(Bottom(RECT_F), SUM_F));
 
-    BOOST_CHECK(IsRealClose(Bottom(sprite), SUM_F));
+    BOOST_CHECK(misc::IsRealClose(Bottom(sprite), SUM_F));
 }
 
 BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
@@ -2393,7 +2382,7 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(GrowToSquareCopy(GS_RECT_I) == GS_RECT_GROWN_I);
 
     auto gsRectITemp { GS_RECT_I };
-    ::GrowToSquare(gsRectITemp);
+    GrowToSquare(gsRectITemp);
     BOOST_CHECK(gsRectITemp == GS_RECT_GROWN_I);
 
     //
@@ -2514,8 +2503,6 @@ BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)
 
 BOOST_AUTO_TEST_CASE(minimally_enclosing_tests)
 {
-    using namespace minimally_enclosing_test_stuff;
-
     // type checking up front
     {
         using Container_t = std::vector<sf::FloatRect>;
@@ -2524,7 +2511,7 @@ BOOST_AUTO_TEST_CASE(minimally_enclosing_tests)
                                 sf::FloatRect(1.0f, 1.0f, 1.0f, 1.0f),
                                 sf::FloatRect(2.0f, 2.0f, 2.0f, 2.0f) };
 
-        using Value_t = iterator_value_type_t<const Container_t::iterator>;
+        using Value_t = misc::iterator_value_type_t<const Container_t::iterator>;
         using Rect_t = rect_type_picker_t<Value_t>;
         Rect_t minimalRect {};
     }
@@ -2544,19 +2531,21 @@ BOOST_AUTO_TEST_CASE(minimally_enclosing_tests)
     const sf::Rect<float> R10N30F(-10.0f, -10.0f, 30.0f, 30.0f);
     const sf::Rect<int> R10N30I { R10N30F };
 
-    testWithAndWithoutIgnore(R0F, R0F, R0F, "R0F identity");
-    testWithAndWithoutIgnore(R1F, R1F, R1F, "R1F identity");
+    minimallyEnclosingTestWithAndWithoutIgnore(R0F, R0F, R0F, "R0F identity");
+    minimallyEnclosingTestWithAndWithoutIgnore(R1F, R1F, R1F, "R1F identity");
 
-    test(R0F, R1F, false, sf::FloatRect(0.0f, 0.0f, 2.0f, 2.0f), "R0F,R1F,false==(0,0,2,2)");
+    minimallyEnclosingTest(
+        R0F, R1F, false, sf::FloatRect(0.0f, 0.0f, 2.0f, 2.0f), "R0F,R1F,false==(0,0,2,2)");
 
-    test(R0F, R1F, true, R1F, "R0F,R1F,true==R1F");
+    minimallyEnclosingTest(R0F, R1F, true, R1F, "R0F,R1F,true==R1F");
 
-    testWithAndWithoutIgnore(R10I, R10NPI, R10N30I, "R10I,(-10,-10,10,10)==(-10,-10,30,30)");
+    minimallyEnclosingTestWithAndWithoutIgnore(
+        R10I, R10NPI, R10N30I, "R10I,(-10,-10,10,10)==(-10,-10,30,30)");
 
     const sf::Rect<int> R1_0I(1, 1, 0, 0);
     const sf::Rect<int> R0_1I(0, 0, 1, 1);
-    test(R0I, R1_0I, false, R0_1I, "R0I,(1,1,0,0),false==(0,0,1,1)");
-    test(R0I, R1_0I, true, R0I, "R0I,(1,1,0,0),true==R0I");
+    minimallyEnclosingTest(R0I, R1_0I, false, R0_1I, "R0I,(1,1,0,0),false==(0,0,1,1)");
+    minimallyEnclosingTest(R0I, R1_0I, true, R0I, "R0I,(1,1,0,0),true==R0I");
 
     {
         sf::Image image;
@@ -2572,7 +2561,7 @@ BOOST_AUTO_TEST_CASE(minimally_enclosing_tests)
         sf::Sprite sprite2(texture);
         sprite2.setPosition(10.0f, 10.0f);
 
-        testWithAndWithoutIgnore(
+        minimallyEnclosingTestWithAndWithoutIgnore(
             sprite1.getGlobalBounds(),
             sprite2.getGlobalBounds(),
             sf::FloatRect(-10.0f, -10.0f, 30.0f, 30.0f),
@@ -2583,7 +2572,7 @@ BOOST_AUTO_TEST_CASE(minimally_enclosing_tests)
         sf::Sprite spriteDefault1;
         sf::Sprite spriteDefault2;
 
-        testWithAndWithoutIgnore(
+        minimallyEnclosingTestWithAndWithoutIgnore(
             spriteDefault1.getGlobalBounds(),
             spriteDefault2.getGlobalBounds(),
             R0F,
@@ -2593,8 +2582,6 @@ BOOST_AUTO_TEST_CASE(minimally_enclosing_tests)
 
 BOOST_AUTO_TEST_CASE(intersects_tests)
 {
-    using namespace intersects_test_stuff;
-
     const sf::IntRect RI_0_0(0, 0, 0, 0);
     const sf::IntRect RI_1_1(1, 1, 1, 1);
     const sf::IntRect RI_N1_1(-1, -1, 1, 1);

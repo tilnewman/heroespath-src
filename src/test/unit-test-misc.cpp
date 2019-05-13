@@ -58,9 +58,6 @@ constexpr bool isExact(const T A, const T B) noexcept
     return (!(A < B) && !(A > B));
 };
 
-namespace real_test_stuff
-{
-
 #define M_FUNCTION_CALL_EXPANDER_TYPES_NUMERIC(function_name)                                      \
     {                                                                                              \
         function_name<char>();                                                                     \
@@ -329,11 +326,6 @@ void isRealTestsForType()
     }
 }
 
-} // namespace real_test_stuff
-
-namespace iterator_type_test_stuff
-{
-
 #define M_ITER_TYPE_TEST(expected, which, type)                                                    \
     {                                                                                              \
         BOOST_CHECK_MESSAGE(                                                                       \
@@ -411,8 +403,6 @@ namespace iterator_type_test_stuff
         M_ITER_TYPE_TESTS_FOR_CONT(IS_INPUT_AND_HAS_RANDOM_ACCESS, which, std::set);               \
         M_ITER_TYPE_TESTS_FOR_CONT(IS_INPUT_AND_HAS_RANDOM_ACCESS, which, std::multiset);          \
     }
-
-} // namespace iterator_type_test_stuff
 
 BOOST_AUTO_TEST_CASE(Type_Helpers_Tests_CompileTime)
 {
@@ -592,8 +582,6 @@ BOOST_AUTO_TEST_CASE(Type_Helpers_Tests_Runtime)
 
 BOOST_AUTO_TEST_CASE(iterator_type_tests)
 {
-    using namespace iterator_type_test_stuff;
-
     M_ITER_TYPE_TEST_ALL(are_iterator_v, true, true);
     M_ITER_TYPE_TEST_ALL(are_input_iterator_v, true, true);
     M_ITER_TYPE_TEST_ALL(are_output_iterator_v, false, true);
@@ -724,8 +712,6 @@ BOOST_AUTO_TEST_CASE(Real_MinMin)
 
 BOOST_AUTO_TEST_CASE(Real_IsRealZero)
 {
-    using namespace real_test_stuff;
-
     BOOST_CHECK(IsRealClose(0, 0));
     BOOST_CHECK(IsRealClose(1, 1));
     BOOST_CHECK(IsRealClose(-1, -1));

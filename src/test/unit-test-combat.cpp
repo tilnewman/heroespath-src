@@ -6,12 +6,13 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
+#include "unit-test-test-stuff.hpp"
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Game_Combat"
 
 #include <boost/test/unit_test.hpp>
 
-#include "unit-test-test-stuff.hpp"
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 #include "combat/combat-node.hpp"
 #include "combat/combat-tree.hpp"
@@ -20,98 +21,84 @@
 #include "creature/player-party-factory.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-state-factory.hpp"
-#include "game/startup-shutdown.hpp"
-
-#include <stdexcept>
 
 using namespace heroespath;
-using namespace heroespath::game;
-
-namespace ts = test_stuff;
 
 BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 {
+    combat::CombatTree combatTree;
+
+    BOOST_CHECK(combatTree.NextAvailableId() == 0);
+
+    BOOST_CHECK_THROW(combatTree.GetNodePtr(0), std::invalid_argument);
+
+    BOOST_CHECK(combatTree.GetNodePtrOpt(0.0f, 0.0f) == boost::none);
+
+    BOOST_CHECK(combatTree.VertexCount() == 0);
+    BOOST_CHECK(combatTree.VertexCountByBlockingPos(0) == 0);
+
+    BOOST_CHECK(combatTree.VertexesString(false).empty());
+
+    BOOST_CHECK_THROW(combatTree.RemoveVertex(0, false), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveVertex(0, true), std::invalid_argument);
+
+    BOOST_CHECK(combatTree.EdgeCount() == 0);
+    BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::All) == 0);
+    BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::Blocking) == 0);
+    BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::ShoulderToShoulder) == 0);
+    BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::Count) == 0);
+
+    BOOST_CHECK(combatTree.Edges().empty());
+    BOOST_CHECK(combatTree.Edges(combat::EdgeType::All).empty());
+    BOOST_CHECK(combatTree.Edges(combat::EdgeType::Blocking).empty());
+    BOOST_CHECK(combatTree.Edges(combat::EdgeType::ShoulderToShoulder).empty());
+    BOOST_CHECK(combatTree.Edges(combat::EdgeType::Count).empty());
+
+    BOOST_CHECK(combatTree.EdgesString(false).empty());
+
+    BOOST_CHECK_THROW(combatTree.AddEdge(0, 0, combat::EdgeType::Blocking), std::invalid_argument);
+
+    BOOST_CHECK_THROW(combatTree.AddEdge(0, 1, combat::EdgeType::Blocking), std::invalid_argument);
+
+    BOOST_CHECK_THROW(combatTree.RemoveEdge(0, 0), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveEdge(0, 1), std::invalid_argument);
+
+    BOOST_CHECK(combatTree.DoesVertexExist(0) == false);
+
+    BOOST_CHECK(combatTree.DoesEdgeExist(0, 1) == false);
+
+    BOOST_CHECK_THROW(combatTree.GetEdgeType(0, 1), std::invalid_argument);
+
+    BOOST_CHECK_THROW(
+        combatTree.SetEdgeType(0, 1, combat::EdgeType::Blocking), std::invalid_argument);
+
     {
-        StartupShutdown startupShutdown("Heroes' Path Combat Tests", 0, nullptr, true);
-
-        {
-            combat::CombatTree combatTree;
-
-            BOOST_CHECK(combatTree.NextAvailableId() == 0);
-
-            BOOST_CHECK_THROW(combatTree.GetNodePtr(0), std::invalid_argument);
-
-            BOOST_CHECK(combatTree.GetNodePtrOpt(0.0f, 0.0f) == boost::none);
-
-            BOOST_CHECK(combatTree.VertexCount() == 0);
-            BOOST_CHECK(combatTree.VertexCountByBlockingPos(0) == 0);
-
-            BOOST_CHECK(combatTree.VertexesString(false).empty());
-
-            BOOST_CHECK_THROW(combatTree.RemoveVertex(0, false), std::invalid_argument);
-            BOOST_CHECK_THROW(combatTree.RemoveVertex(0, true), std::invalid_argument);
-
-            BOOST_CHECK(combatTree.EdgeCount() == 0);
-            BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::All) == 0);
-            BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::Blocking) == 0);
-            BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::ShoulderToShoulder) == 0);
-            BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::Count) == 0);
-
-            BOOST_CHECK(combatTree.Edges().empty());
-            BOOST_CHECK(combatTree.Edges(combat::EdgeType::All).empty());
-            BOOST_CHECK(combatTree.Edges(combat::EdgeType::Blocking).empty());
-            BOOST_CHECK(combatTree.Edges(combat::EdgeType::ShoulderToShoulder).empty());
-            BOOST_CHECK(combatTree.Edges(combat::EdgeType::Count).empty());
-
-            BOOST_CHECK(combatTree.EdgesString(false).empty());
-
-            BOOST_CHECK_THROW(
-                combatTree.AddEdge(0, 0, combat::EdgeType::Blocking), std::invalid_argument);
-
-            BOOST_CHECK_THROW(
-                combatTree.AddEdge(0, 1, combat::EdgeType::Blocking), std::invalid_argument);
-
-            BOOST_CHECK_THROW(combatTree.RemoveEdge(0, 0), std::invalid_argument);
-            BOOST_CHECK_THROW(combatTree.RemoveEdge(0, 1), std::invalid_argument);
-
-            BOOST_CHECK(combatTree.DoesVertexExist(0) == false);
-
-            BOOST_CHECK(combatTree.DoesEdgeExist(0, 1) == false);
-
-            BOOST_CHECK_THROW(combatTree.GetEdgeType(0, 1), std::invalid_argument);
-
-            BOOST_CHECK_THROW(
-                combatTree.SetEdgeType(0, 1, combat::EdgeType::Blocking), std::invalid_argument);
-
-            {
-                heroespath::combat::IDVec_t ids;
-                combatTree.FindAdjacentByEdgeType(0, ids);
-                BOOST_CHECK(ids.empty());
-            }
-
-            {
-                heroespath::combat::IDVec_t ids;
-                combatTree.FindAdjacent(0, ids);
-                BOOST_CHECK(ids.empty());
-            }
-
-            BOOST_CHECK(combatTree.CountAdjacent(0) == 0);
-            BOOST_CHECK(combatTree.AreAnyAdjacent(0) == false);
-            BOOST_CHECK(combatTree.GetBlockingPosMin() == 0);
-            BOOST_CHECK(combatTree.GetBlockingPosMax() == 0);
-            BOOST_CHECK(combatTree.GetBlockingDistanceMax() == 0);
-            BOOST_CHECK(combatTree.GetNodeIDsAtBlockingPos(0).empty());
-            BOOST_CHECK(combatTree.GetNodeIDsAllAroundBlockingPos(0).empty());
-            BOOST_CHECK(combatTree.GetNodesAtBlockingPos(0).empty());
-            BOOST_CHECK(combatTree.GetNodesAllAroundBlockingPos(0).empty());
-            BOOST_CHECK(combatTree.GetCombatNodes().empty());
-        }
+        heroespath::combat::IDVec_t ids;
+        combatTree.FindAdjacentByEdgeType(0, ids);
+        BOOST_CHECK(ids.empty());
     }
+
+    {
+        heroespath::combat::IDVec_t ids;
+        combatTree.FindAdjacent(0, ids);
+        BOOST_CHECK(ids.empty());
+    }
+
+    BOOST_CHECK(combatTree.CountAdjacent(0) == 0);
+    BOOST_CHECK(combatTree.AreAnyAdjacent(0) == false);
+    BOOST_CHECK(combatTree.GetBlockingPosMin() == 0);
+    BOOST_CHECK(combatTree.GetBlockingPosMax() == 0);
+    BOOST_CHECK(combatTree.GetBlockingDistanceMax() == 0);
+    BOOST_CHECK(combatTree.GetNodeIDsAtBlockingPos(0).empty());
+    BOOST_CHECK(combatTree.GetNodeIDsAllAroundBlockingPos(0).empty());
+    BOOST_CHECK(combatTree.GetNodesAtBlockingPos(0).empty());
+    BOOST_CHECK(combatTree.GetNodesAllAroundBlockingPos(0).empty());
+    BOOST_CHECK(combatTree.GetCombatNodes().empty());
 }
 
+/*
 BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
 {
-    /*
     std::cout << "begin" << std::endl;
     BOOST_CHECK_MESSAGE(
         StartupShutdown::Setup("Heroes' Path Unit Tests", 0, nullptr),
@@ -431,5 +418,5 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     StartupShutdown::Teardown();
 
     std::cout << "end" << std::endl;
-    */
 }
+*/

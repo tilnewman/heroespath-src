@@ -6,100 +6,40 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
+#include "unit-test-test-stuff.hpp"
+
+using namespace heroespath;
+using namespace heroespath::test;
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_ImageLoad"
 
 #include <boost/test/unit_test.hpp>
 
-#include "game/startup-shutdown.hpp"
-#include "gui/display.hpp"
-#include "gui/image-loaders.hpp"
-#include "misc/boost-string-includes.hpp"
-#include "misc/config-file.hpp"
-#include "sfutil/fitting.hpp"
-#include "sfutil/scale.hpp"
-
-#include <SFML/Graphics.hpp>
-
-using namespace heroespath;
-
-struct Fixture
-{
-    void setup()
-    {
-        startupShutdownUPtr
-            = std::make_unique<game::StartupShutdown>("HP Test Image Loading", 0, nullptr, true);
-
-        gui::Display::Instance()->PollEvents();
-    }
-
-    void teardown()
-    {
-        gui::Display::Instance()->PollEvents();
-        cachedTextureUPtr.reset();
-        startupShutdownUPtr.reset();
-    }
-
-    template <typename T>
-    static void display(T && cachedTexture)
-    {
-        cachedTextureUPtr = std::make_unique<gui::CachedTexture>(cachedTexture);
-
-        BOOST_CHECK(cachedTextureUPtr->Get().getSize().x > 0);
-        BOOST_CHECK(cachedTextureUPtr->Get().getSize().y > 0);
-
-        sprite.setTexture(cachedTextureUPtr->Get(), true);
-
-        const auto INITIAL_GLOBAL_BOUNDS = sprite.getGlobalBounds();
-
-        if ((INITIAL_GLOBAL_BOUNDS.width > gui::Display::Instance()->GetWinWidth())
-            || (INITIAL_GLOBAL_BOUNDS.height > gui::Display::Instance()->GetWinHeight()))
-        {
-            sfutil::FitAndCenterTo(sprite, gui::Display::Instance()->FullScreenRect());
-        }
-        else
-        {
-            sfutil::CenterTo(sprite, gui::Display::Instance()->FullScreenRect());
-        }
-
-        gui::Display::Instance()->ClearToBlack();
-        gui::Display::Instance()->TestDraw(sprite);
-        gui::Display::Instance()->DisplayFrameBuffer();
-    }
-
-    static std::unique_ptr<game::StartupShutdown> startupShutdownUPtr;
-    static std::unique_ptr<gui::CachedTexture> cachedTextureUPtr;
-    static sf::Sprite sprite;
-    static sf::Vector2f windowSize;
-    static sf::FloatRect windowRect;
-};
-
-std::unique_ptr<heroespath::game::StartupShutdown> Fixture::startupShutdownUPtr;
-std::unique_ptr<gui::CachedTexture> Fixture::cachedTextureUPtr;
-sf::Sprite Fixture::sprite;
-sf::Vector2f Fixture::windowSize;
-sf::FloatRect Fixture::windowRect;
-
-BOOST_TEST_GLOBAL_FIXTURE(Fixture);
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 template <typename EnumWrapper_t>
 void TestEnumImageLoading()
 {
     for (EnumUnderlying_t index(0); index < EnumWrapper_t::Count; ++index)
     {
-        const auto ENUM_VALUE { static_cast<typename EnumWrapper_t::Enum>(index) };
+        const auto ENUM { static_cast<typename EnumWrapper_t::Enum>(index) };
 
         M_HP_LOG(
             "Unit Test \"image_loading__enum_image_loading\" TestImageLoading<"
             << NAMEOF_TYPE(EnumWrapper_t) << "> on image with index/value=" << index
-            << ", enum=" << NAMEOF_ENUM(ENUM_VALUE) << "...");
+            << ", enum=" << NAMEOF_ENUM(ENUM) << "...");
 
-        Fixture::display(gui::LoadAndCacheImage(ENUM_VALUE));
+        GameEngineGlobalFixture::displayNextImage(gui::LoadAndCacheImage(ENUM));
     }
 }
 
 BOOST_AUTO_TEST_CASE(image_loading__enum_image_loading)
 {
+    GameEngineGlobalFixture::startUnitTestSeries(
+        "Enum Images Test",
+        (creature::Conditions::Count + creature::Titles ::Count + gui::CombatImageType::Count
+         + song::Songs ::Count + spell::Spells ::Count));
+
     TestEnumImageLoading<creature::Conditions>();
     TestEnumImageLoading<creature::Titles>();
     TestEnumImageLoading<gui::CombatImageType>();
@@ -109,42 +49,78 @@ BOOST_AUTO_TEST_CASE(image_loading__enum_image_loading)
 
 BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
 {
-    std::vector<std::string> imagePathKeys
-        = misc::ConfigFile::Instance()->FindAllKeysWithPrefix("media-image-");
+    auto & configFile = *misc::ConfigFile::Instance();
 
-    // remove keys that are not for actual images
-    imagePathKeys.erase(
-        std::remove_if(
-            std::begin(imagePathKeys),
-            std::end(imagePathKeys),
-            [](const auto & KEY_STR) {
-                return (
-                    boost::algorithm::ends_with(KEY_STR, "-dir")
-                    || boost::algorithm::ends_with(KEY_STR, "-texture-rect"));
-            }),
-        std::end(imagePathKeys));
-
-    BOOST_CHECK(!imagePathKeys.empty());
-
-    std::size_t imageIndex(0);
-
-    sf::Sprite sprite;
-    while ((imageIndex < imagePathKeys.size()))
+    struct KeyPath
     {
-        const auto KEY_STR { imagePathKeys.at(imageIndex++) };
+        KeyPath(const std::string & KEY = "", const std::string & PATH = "")
+            : key(KEY)
+            , path(PATH)
+        {}
 
-        M_HP_LOG(
-            "Unit Test \"image_loading__enum_image_loading\" about to test image index #"
-            << imageIndex << ", key=\"" << KEY_STR << "\"...");
+        std::string key;
+        std::string path;
+    };
 
-        BOOST_CHECK(!KEY_STR.empty());
+    // create a container of keys and paths to images
+    std::vector<KeyPath> keyPaths;
+    {
+        std::vector<std::string> keys = configFile.FindAllKeysWithPrefix("media-image-");
 
-        const auto IMAGE_PATH_STR { misc::ConfigFile::Instance()->GetMediaPath(KEY_STR) };
-        M_HP_LOG("...which has the media path=\"" << IMAGE_PATH_STR << "\"...");
-        BOOST_CHECK(!IMAGE_PATH_STR.empty());
+        BOOST_CHECK_MESSAGE(
+            !keys.empty(), "configFile.FindAllKeysWithPrefix(\"media-image-\") found no keys.");
 
-        Fixture::display(gui::CachedTexture(KEY_STR));
+        for (const auto & KEY : keys)
+        {
+            BOOST_CHECK_MESSAGE(
+                !KEY.empty(),
+                "configFile.FindAllKeysWithPrefix(\"media-image-\") returned "
+                    << keys.size() << " keys but one was an empty string.");
+
+            // skip if not a key to an actual image
+            if (boost::algorithm::ends_with(KEY, "-dir")
+                || boost::algorithm::ends_with(KEY, "-rect"))
+            {
+                M_HP_LOG(
+                    "skipping key=\"" << KEY << "\" because it is not a key to an actual image.");
+
+                continue;
+            }
+
+            const std::string PATH(configFile.GetMediaPath(KEY));
+
+            BOOST_CHECK_MESSAGE(!PATH.empty(), "The key=\"" << KEY << "\" had an empty path.");
+
+            if (std::find_if(
+                    std::begin(keyPaths),
+                    std::end(keyPaths),
+                    [&PATH](const auto & KEYPATH) { return (KEYPATH.path.compare(PATH) == 0); })
+                == std::end(keyPaths))
+            {
+                keyPaths.emplace_back(KEY, PATH);
+            }
+            else
+            {
+                M_HP_LOG(
+                    "skipping key=\"" << KEY << "\" because its path=\"" << PATH
+                                      << "\" is a duplicate.");
+            }
+        }
     }
 
-    BOOST_CHECK(imageIndex == imagePathKeys.size());
+    BOOST_CHECK_MESSAGE(
+        !keyPaths.empty(),
+        "Even though configFile.FindAllKeysWithPrefix(\"media-image-\") found keys, none of "
+        "them were actual valid images.");
+
+    GameEngineGlobalFixture::startUnitTestSeries(
+        "All Images in the Config File, Load and Display Test", keyPaths.size());
+
+    for (const auto & KEYPATH : keyPaths)
+    {
+        M_HP_LOG(
+            "About to test key=\"" << KEYPATH.key << "\" with path=\"" << KEYPATH.path << "\"");
+
+        GameEngineGlobalFixture::displayNextImage(gui::CachedTexture(KEYPATH.key));
+    }
 }
