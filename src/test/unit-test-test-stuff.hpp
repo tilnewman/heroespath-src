@@ -156,7 +156,7 @@ namespace test
             m_windowRegion = FULL_SCREEN_RECT;
 
             m_titleRegion
-                = sf::FloatRect(0.0f, 0.0f, m_windowRegion.width, (m_windowRegion.height * 0.175f));
+                = sf::FloatRect(0.0f, 0.0f, m_windowRegion.width, (m_windowRegion.height * 0.1f));
 
             m_imageRegion = sf::FloatRect(
                 0.0f,
