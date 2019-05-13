@@ -25,7 +25,6 @@ namespace gui
         {
             None = 0,
             Smooth = 1 << 0,
-            Default = Smooth,
             FlipHoriz = 1 << 1,
             FlipVert = 1 << 2,
             Repeated = 1 << 3,
@@ -33,9 +32,11 @@ namespace gui
             InvertAfterMask = 1 << 5,
             InvertIncludesAlpha = 1 << 6,
             ShadowMaskNormal = 1 << 7,
-            ShadowMaskForShadowImage = 1 << 8,
-            Last = ShadowMaskForShadowImage
+            ShadowMaskForShadowImage = 1 << 8
         };
+
+        static constexpr Enum Default = Smooth;
+        static constexpr Enum Last = ShadowMaskForShadowImage;
     };
 
 } // namespace gui

@@ -37,10 +37,7 @@ namespace misc
         using value_type = Value_t;
         using tag_type = Tag_t;
 
-        constexpr StrongNumericType() noexcept
-            : m_value(Value_t(0))
-        {}
-
+        constexpr StrongNumericType() noexcept = default;
         constexpr StrongNumericType(const StrongNumericType &) noexcept = default;
         constexpr StrongNumericType(StrongNumericType &&) noexcept = default;
         constexpr StrongNumericType & operator=(const StrongNumericType &) noexcept = default;

@@ -298,9 +298,10 @@ struct Bitfield : public EnumBaseBitField<>
     {
         None = 0,
         A = 1 << 0,
-        B = 1 << 1,
-        Last = B
+        B = 1 << 1
     };
+
+    static constexpr Enum Last = B;
 };
 
 // a bitfield enum to test with
@@ -310,9 +311,10 @@ struct Bitfield2 : public EnumBaseBitField<>
     {
         None = 0,
         A = 1 << 0,
-        B = 1 << 1,
-        Last = B
+        B = 1 << 1
     };
+
+    static constexpr Enum Last = B;
 };
 
 BOOST_AUTO_TEST_CASE(Case_1_MiscEnumUtil_Counting_Tests)
@@ -334,19 +336,19 @@ BOOST_AUTO_TEST_CASE(Case_1_MiscEnumUtil_Counting_Tests)
 
 BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
 {
-    // handy quick initial sanity check if all goes to <insert explative>
+    // handy quick initial sanity check if all goes to<insert explative>
     // std::cout << "\nBitfield::A\tdefault_as_number=" << Bitfield::A << ", to_string=\""
-    //          << Bitfield::ToString(Bitfield::A)
+    //          << EnumUtil<Bitfield>::ToString(Bitfield::A)
     //          << "\", from_string(\"A\")=" << EnumUtil<Bitfield2>::FromString("A")
     //          << ", from_string(\"a\")=" << EnumUtil<Bitfield2>::FromString("a");
     //
     // std::cout << "\nBitfield::B\tdefault_as_number=" << Bitfield::B << ", to_string=\""
-    //          << Bitfield::ToString(Bitfield::B)
+    //          << EnumUtil<Bitfield>::ToString(Bitfield::B)
     //          << "\", from_string(\"B\")=" << EnumUtil<Bitfield2>::FromString("B")
     //          << ", from_string(\"b\")=" << EnumUtil<Bitfield2>::FromString("b");
     //
     // std::cout << "\nBitfield:: A|B\tdefault_as_number=" << (Bitfield::A | Bitfield::B)
-    //          << ", to_string=\"" << Bitfield::ToString(Bitfield::A | Bitfield::B)
+    //          << ", to_string=\"" << EnumUtil<Bitfield>::ToString(Bitfield::A | Bitfield::B)
     //          << "\", (\"A, B\")=" << EnumUtil<Bitfield2>::FromString("A/B")
     //          << ", (\"a, b\")=" << EnumUtil<Bitfield2>::FromString("a/b")
     //          << "\", (\"A, b\")=" << EnumUtil<Bitfield2>::FromString("A/B")

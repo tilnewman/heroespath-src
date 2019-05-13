@@ -50,9 +50,10 @@ namespace popup
             Yes = 1 << 2,
             No = 1 << 3,
             Cancel = 1 << 4,
-            Select = 1 << 5,
-            Last = Select
+            Select = 1 << 5
         };
+
+        static constexpr Enum Last = Select;
 
         static constexpr Enum YesNo = (Yes | No);
         static constexpr Enum YesNoCancel = (Yes | No | Cancel);

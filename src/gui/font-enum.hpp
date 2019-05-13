@@ -42,8 +42,6 @@ namespace gui
             // (good for signs) (great flavorful numbers)
             SignThinTallNarrow,
 
-            Number = SignThinTallNarrow,
-
             // Queen-Country, very bold and short with medieval flavor
             // (good for signs)
             SignBoldShortWide,
@@ -61,6 +59,8 @@ namespace gui
 
             Count
         };
+
+        static constexpr Enum Number = SignThinTallNarrow;
 
         static constexpr std::string_view Name(const GuiFont::Enum FONT) noexcept
         {

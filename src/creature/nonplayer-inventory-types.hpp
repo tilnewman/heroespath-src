@@ -522,10 +522,10 @@ namespace creature
                 Collector = 1 << 2,
 
                 // often carries duplicates, especially items that cannot be used
-                Hoarder = 1 << 3,
-
-                Last = Hoarder
+                Hoarder = 1 << 3
             };
+
+            static constexpr Enum Last = Hoarder;
 
             static collector_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
         };

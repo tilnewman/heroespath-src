@@ -202,16 +202,7 @@ namespace helpers
             {
                 if (str.size() != STR_SIZE_ORIG)
                 {
-                    if constexpr (misc::are_same_v<
-                                      typename EnumWrapper_t::SeparatorPolicy_t,
-                                      SeparatorVaries>)
-                    {
-                        str += SEP;
-                    }
-                    else
-                    {
-                        str += '/';
-                    }
+                    str += SEP;
                 }
 
                 str += BIT_NAME;
@@ -222,9 +213,20 @@ namespace helpers
 
         // combat::strategy::SelectType, combat::strategy::,
         static void ToStringPopulate(
-            std::string & str, const EnumUnderlying_t ENUM_VALUE, const std::string_view SEP)
+            std::string & str,
+            const EnumUnderlying_t ENUM_VALUE,
+            const std::string_view SEPARATOR_ORIG)
         {
             const auto ORIG_SIZE = str.size();
+
+            std::string separator(SEPARATOR_ORIG);
+
+            if constexpr (misc::are_same_v<
+                              typename EnumWrapper_t::SeparatorPolicy_t,
+                              SeparatorAlwaysSlash>)
+            {
+                separator = "/";
+            }
 
             EnumUnderlying_t singleBitToCheck { 1 };
 
@@ -239,7 +241,7 @@ namespace helpers
                 for (const auto & NAME : NAMES)
                 {
                     ToStringPopulateAppendIf(
-                        ORIG_SIZE, str, ENUM_VALUE, SEP, NAME, singleBitToCheck);
+                        ORIG_SIZE, str, ENUM_VALUE, separator, NAME, singleBitToCheck);
                 }
             }
             else if constexpr (misc::are_same_v<EnumWrapper_t, combat::strategy::RefineType>)
@@ -252,7 +254,7 @@ namespace helpers
                 for (const auto & NAME : NAMES)
                 {
                     ToStringPopulateAppendIf(
-                        ORIG_SIZE, str, ENUM_VALUE, SEP, NAME, singleBitToCheck);
+                        ORIG_SIZE, str, ENUM_VALUE, separator, NAME, singleBitToCheck);
                 }
             }
             else if constexpr (misc::are_same_v<EnumWrapper_t, heroespath::item::weapon_type>)
@@ -264,7 +266,7 @@ namespace helpers
                 for (const auto & NAME : NAMES)
                 {
                     ToStringPopulateAppendIf(
-                        ORIG_SIZE, str, ENUM_VALUE, SEP, NAME, singleBitToCheck);
+                        ORIG_SIZE, str, ENUM_VALUE, separator, NAME, singleBitToCheck);
                 }
             }
             else
@@ -275,7 +277,7 @@ namespace helpers
                         ORIG_SIZE,
                         str,
                         ENUM_VALUE,
-                        SEP,
+                        separator,
                         NAMEOF_ENUM(static_cast<typename EnumWrapper_t::Enum>(singleBitToCheck)),
                         singleBitToCheck);
                 }

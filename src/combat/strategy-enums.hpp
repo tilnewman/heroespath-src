@@ -45,9 +45,10 @@ namespace combat
                 CanFly = 1 << 16,
                 CantFly = 1 << 17,
                 Beast = 1 << 18,
-                NotBeast = 1 << 19,
-                Last = NotBeast
+                NotBeast = 1 << 19
             };
+
+            static constexpr Enum Last = NotBeast;
         };
 
         struct RefineType : public EnumBaseBitField<>
@@ -89,10 +90,10 @@ namespace combat
                 LastTo = 1 << 10,
 
                 // selects whoever is doing the most damage
-                MostDamage = 1 << 11,
-
-                Last = MostDamage
+                MostDamage = 1 << 11
             };
+
+            static constexpr Enum Last = MostDamage;
         };
 
         struct AdvanceType : public EnumBaseCounting<EnumFirstValue::None>

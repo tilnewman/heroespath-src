@@ -42,9 +42,10 @@ namespace item
             OneHanded = 1 << 5,
             TwoHanded = 1 << 6,
             ConsumedOnUse = 1 << 7,
-            ShowsEnemyInfo = 1 << 8,
-            Last = ShowsEnemyInfo
+            ShowsEnemyInfo = 1 << 8
         };
+
+        static constexpr Enum Last = ShowsEnemyInfo;
 
         static const std::string Name(const Enum, const EnumStringHow & HOW = EnumStringHow());
     };
@@ -658,9 +659,10 @@ namespace item
             Fire = 1 << 0,
             Frost = 1 << 1,
             Honor = 1 << 2,
-            Shadow = 1 << 3,
-            Last = Shadow
+            Shadow = 1 << 3
         };
+
+        static constexpr Enum Last = Shadow;
 
         static constexpr bool IsValid(const Enum ENUM) noexcept
         {
@@ -1885,10 +1887,10 @@ namespace item
             Knife = 1 << 8,
             Club = 1 << 9,
             Staff = 1 << 10,
-            BladedStaff = 1 << 11,
-
-            Last = BladedStaff
+            BladedStaff = 1 << 11
         };
+
+        static constexpr Enum Last = BladedStaff;
 
         static const std::string
             Name(const Enum WEAPON_TYPE, const EnumStringHow & HOW = EnumStringHow());

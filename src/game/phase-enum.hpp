@@ -27,9 +27,10 @@ namespace game
             Exploring = 1 << 1,
             Conversation = 1 << 2,
             Quest = 1 << 3,
-            Inventory = 1 << 4,
-            Last = Inventory
+            Inventory = 1 << 4
         };
+
+        static constexpr Enum Last = Inventory;
     };
 
 } // namespace game

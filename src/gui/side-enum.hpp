@@ -24,9 +24,10 @@ namespace gui
             Top = 1 << 0,
             Bottom = 1 << 1,
             Left = 1 << 2,
-            Right = 1 << 3,
-            Last = Right
+            Right = 1 << 3
         };
+
+        static constexpr Enum Last = Right;
     };
 
 } // namespace gui

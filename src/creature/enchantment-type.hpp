@@ -33,9 +33,10 @@ namespace creature
             AllowsFlight = 1 << 6,
             CurseWithoutItem = 1 << 7,
             BlessWithoutItem = 1 << 8,
-            OnlyIfSetIsComplete = 1 << 9,
-            Last = OnlyIfSetIsComplete
+            OnlyIfSetIsComplete = 1 << 9
         };
+
+        static constexpr Enum Last = OnlyIfSetIsComplete;
 
         static const std::string EffectStr(const Enum);
     };

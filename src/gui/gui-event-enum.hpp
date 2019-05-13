@@ -28,9 +28,10 @@ namespace gui
             MouseWheel = 1 << 2,
             SelectionChange = 1 << 3,
             Keypress = 1 << 4,
-            FocusChange = 1 << 5,
-            Last = FocusChange
+            FocusChange = 1 << 5
         };
+
+        static constexpr Enum Last = FocusChange;
     };
 
 } // namespace gui

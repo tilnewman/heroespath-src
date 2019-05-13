@@ -19,11 +19,12 @@ namespace misc
     class Range
     {
     public:
-        explicit constexpr Range(const T A = T(0), const T B = T(0)) noexcept
+        explicit constexpr Range(const T A, const T B) noexcept
             : a_(A)
             , b_(B)
         {}
 
+        constexpr Range() noexcept = default;
         constexpr Range(const Range &) noexcept = default;
         constexpr Range(Range &&) noexcept = default;
         constexpr Range & operator=(const Range &) noexcept = default;
