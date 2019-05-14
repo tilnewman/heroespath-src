@@ -9,9 +9,10 @@
 //
 // unit-test-image-loading.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_ImageLoad"
+#define BOOST_TEST_MODULE "image_loading"
 #include <boost/test/unit_test.hpp>
 
+#include "avatar/avatar-enum.hpp"
 #include "creature/condition.hpp"
 #include "creature/title.hpp"
 #include "gui/combat-image-enum.hpp"
@@ -22,53 +23,63 @@
 #include "testutil/common.hpp"
 #include "testutil/game-engine-global-fixture.hpp"
 #include "testutil/i-displayer.hpp"
-#include "testutil/single-image-displayer.hpp"
+
+#include "testutil/single-image-displayer-scoped.hpp"
 
 using namespace heroespath;
 using namespace heroespath::test;
 
-void GameEngineGlobalFixture::setupBeforeAllTests()
-{
-    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
-    m_delayAfterEachDrawSec = 0.01f;
-}
-
 BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 template <typename EnumWrapper_t>
-void TestEnumImageLoading()
+void TestEnumImageLoading(SingleImageDisplayerScoped & displayerScoped)
 {
     for (EnumUnderlying_t index(0); index < EnumWrapper_t::Count; ++index)
     {
         const auto ENUM { static_cast<typename EnumWrapper_t::Enum>(index) };
 
         M_HP_LOG(
-            "Unit Test \"image_loading__enum_image_loading\" TestImageLoading<"
-            << NAMEOF_TYPE(EnumWrapper_t) << "> on image with index/value=" << index
-            << ", enum=" << NAMEOF_ENUM(ENUM) << "...");
+            displayerScoped.name() << ", about to load and display " << NAMEOF_TYPE(EnumWrapper_t)
+                                   << " #" << index << " \"" << NAMEOF_ENUM(ENUM) << "\"...");
 
-        GameEngineGlobalFixture::displayer().appendImageToSeries(gui::LoadAndCacheImage(ENUM));
-        GameEngineGlobalFixture::draw();
+        displayerScoped.appendImage(gui::LoadAndCacheImage(ENUM));
     }
 }
 
-BOOST_AUTO_TEST_CASE(image_loading__enum_image_loading)
+BOOST_AUTO_TEST_CASE(enums)
 {
-    GameEngineGlobalFixture::displayer().beginImageSeries(
-        "Enum Images Test",
-        (creature::Conditions::Count + creature::Titles ::Count + gui::CombatImageType::Count
-         + song::Songs ::Count + spell::Spells ::Count));
+    const auto IMAGE_COUNT_TOTAL = static_cast<std::size_t>(
+        creature::Conditions::Count + creature::Titles::Count + gui::CombatImageType::Count
+        + song::Songs::Count + spell::Spells::Count + gui::CombatImageType::Count);
 
-    TestEnumImageLoading<creature::Conditions>();
-    TestEnumImageLoading<creature::Titles>();
-    TestEnumImageLoading<gui::CombatImageType>();
-    TestEnumImageLoading<song::Songs>();
-    TestEnumImageLoading<spell::Spells>();
+    SingleImageDisplayerScoped displayerScoped(IMAGE_COUNT_TOTAL);
 
-    GameEngineGlobalFixture::displayer().endImageSeries();
+    TestEnumImageLoading<creature::Conditions>(displayerScoped);
+    TestEnumImageLoading<creature::Titles>(displayerScoped);
+    TestEnumImageLoading<gui::CombatImageType>(displayerScoped);
+    TestEnumImageLoading<song::Songs>(displayerScoped);
+    TestEnumImageLoading<spell::Spells>(displayerScoped);
+    TestEnumImageLoading<gui::CombatImageType>(displayerScoped);
 }
 
-BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
+BOOST_AUTO_TEST_CASE(avatar_enums)
+{
+    SingleImageDisplayerScoped displayerScoped(static_cast<std::size_t>(avatar::Avatar::Count));
+
+    for (EnumUnderlying_t index(0); index < avatar::Avatar::Count; ++index)
+    {
+        const auto ENUM { static_cast<typename avatar::Avatar::Enum>(index) };
+
+        M_HP_LOG(
+            displayerScoped.name() << ", about to load and display " << NAMEOF_TYPE(avatar::Avatar)
+                                   << " #" << index << " \"" << NAMEOF_ENUM(ENUM) << "\"...");
+
+        displayerScoped.appendImage(
+            gui::CachedTexture(PathWrapper(avatar::Avatar::ImagePath(ENUM))));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(all_media_image_in_config_file)
 {
     auto & configFile = *misc::ConfigFile::Instance();
 
@@ -102,9 +113,6 @@ BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
             if (boost::algorithm::ends_with(KEY, "-dir")
                 || boost::algorithm::ends_with(KEY, "-rect"))
             {
-                M_HP_LOG(
-                    "skipping key=\"" << KEY << "\" because it is not a key to an actual image.");
-
                 continue;
             }
 
@@ -120,12 +128,6 @@ BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
             {
                 keyPaths.emplace_back(KEY, PATH);
             }
-            else
-            {
-                M_HP_LOG(
-                    "skipping key=\"" << KEY << "\" because its path=\"" << PATH
-                                      << "\" is a duplicate.");
-            }
         }
     }
 
@@ -134,17 +136,14 @@ BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
         "Even though configFile.FindAllKeysWithPrefix(\"media-image-\") found keys, none of "
         "them were actual valid images.");
 
-    GameEngineGlobalFixture::displayer().beginImageSeries(
-        "All Images in the Config File, Load and Display Test", keyPaths.size());
+    SingleImageDisplayerScoped displayerScoped(keyPaths.size());
 
     for (const auto & KEYPATH : keyPaths)
     {
         M_HP_LOG(
-            "About to test key=\"" << KEYPATH.key << "\" with path=\"" << KEYPATH.path << "\"");
+            displayerScoped.name() << ", about to load and display key=\"" << KEYPATH.key
+                                   << "\", path=\"" << KEYPATH.path << "\"...");
 
-        GameEngineGlobalFixture::displayer().appendImageToSeries(gui::CachedTexture(KEYPATH.key));
-        GameEngineGlobalFixture::draw();
+        displayerScoped.appendImage(gui::CachedTexture(KEYPATH.key));
     }
-
-    GameEngineGlobalFixture::displayer().endImageSeries();
 }

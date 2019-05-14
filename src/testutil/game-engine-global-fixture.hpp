@@ -41,6 +41,13 @@ namespace test
         GameEngineGlobalFixture() { setupBeforeAllTests(); }
         static void setupBeforeAllTests();
 
+        static float delayAfterEachDraw() { return m_delayAfterEachDrawSec; }
+
+        static void delayAfterEachDrawSet(const float NEW_DELAY)
+        {
+            m_delayAfterEachDrawSec = NEW_DELAY;
+        }
+
         void setup()
         {
             m_startupShutdownUPtr
@@ -124,6 +131,9 @@ namespace test
 
             m_iDisplayerUPtr->setProgressMax(100);
 
+            const auto DELAY_AFTER_EACH_DRAW_ORIG = m_delayAfterEachDrawSec;
+            m_delayAfterEachDrawSec = 0.0f;
+
             sf::Clock timer;
             const float timeStepSec = 0.02f;
             bool isPaused = false;
@@ -151,7 +161,7 @@ namespace test
                 }
                 else if (EVENT_FLAGS & EventFlags::OtherInput)
                 {
-                    return;
+                    break;
                 }
 
                 const auto TIME_ELAPSED_SEC = timer.getElapsedTime().asSeconds();
@@ -161,6 +171,8 @@ namespace test
                     sf::sleep(sf::seconds(timeStepSec - TIME_ELAPSED_SEC));
                 }
             }
+
+            m_delayAfterEachDrawSec = DELAY_AFTER_EACH_DRAW_ORIG;
         }
 
     private:
@@ -222,7 +234,7 @@ namespace test
     private:
         static inline std::unique_ptr<game::StartupShutdown> m_startupShutdownUPtr {};
         static inline std::unique_ptr<IDisplayer> m_iDisplayerUPtr {};
-        static inline float m_delayAfterEachDrawSec = 0.0f;
+        static inline float m_delayAfterEachDrawSec { 0.0f };
         static inline std::string m_customName {};
     };
 

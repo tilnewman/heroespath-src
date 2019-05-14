@@ -433,16 +433,6 @@ BOOST_AUTO_TEST_CASE(gui_elements__text_offset_fix)
 
 BOOST_AUTO_TEST_CASE(gui_elements__fonts)
 {
-
-    //// test case
-    // M_HP_LOG_WRN(
-    //    "current_test_case=" << boost::unit_test::framework::current_test_case().full_name());
-    //
-    //// test module
-    // M_HP_LOG_WRN(
-    //    "current_auto_test_suite="
-    //    << boost::unit_test::framework::current_auto_test_suite().full_name());
-
     GameEngineGlobalFixture::displayer().beginDrawablesSet("Fonts");
     const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();
 
