@@ -53,7 +53,7 @@ using namespace heroespath;
 using namespace heroespath::test;
 using namespace heroespath::sfutil;
 
-void GameEngineGlobalFixture::setDisplayer()
+void GameEngineGlobalFixture::setupBeforeAllTests()
 {
     m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
 }

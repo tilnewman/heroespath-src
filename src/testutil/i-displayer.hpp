@@ -30,23 +30,27 @@ namespace test
         virtual ~IDisplayer() = default;
 
         virtual const std::string name() const = 0;
+
+        virtual const sf::FloatRect windowRegion() const = 0;
+        virtual const sf::FloatRect titleRegion() const = 0;
         virtual const sf::FloatRect contentRegion() const = 0;
 
-        virtual void incrememntProgress() {}
-        virtual void setProgress(const std::size_t) {}
+        virtual void incrememntProgress() = 0;
+        virtual void setProgress(const std::size_t) = 0;
+        virtual void setProgressMax(const std::size_t) = 0;
 
         virtual void setup(const sf::FloatRect & FULL_SCREEN_RECT) = 0;
         virtual void teardown() = 0;
 
         virtual void releaseAndFreeAll() = 0;
 
-        virtual void beginImageSeries(const std::string &, const std::size_t = 0) {}
-        virtual void endImageSeries() {}
-        virtual void appendImageToSeries(heroespath::gui::CachedTexture &&) {}
+        virtual void beginImageSeries(const std::string &, const std::size_t = 0) = 0;
+        virtual void endImageSeries() = 0;
+        virtual void appendImageToSeries(heroespath::gui::CachedTexture &&) = 0;
 
-        virtual void beginDrawablesSet(const std::string &) {}
-        virtual void endDrawablesSet() {}
-        virtual void appendDrawable(std::unique_ptr<sf::Drawable> &&) {}
+        virtual void beginDrawablesSet(const std::string &) = 0;
+        virtual void endDrawablesSet() = 0;
+        virtual void appendDrawable(std::unique_ptr<sf::Drawable> &&) = 0;
 
         void draw(sf::RenderTarget &, sf::RenderStates = sf::RenderStates()) const override = 0;
     };

@@ -27,7 +27,7 @@
 using namespace heroespath;
 using namespace heroespath::test;
 
-void GameEngineGlobalFixture::setDisplayer()
+void GameEngineGlobalFixture::setupBeforeAllTests()
 {
     m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
     m_delayAfterEachDrawSec = 0.01f;

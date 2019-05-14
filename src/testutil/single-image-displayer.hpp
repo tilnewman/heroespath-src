@@ -9,52 +9,20 @@
 //
 // single-image-displayer.hpp
 //
-#include "gui/cached-texture.hpp"
-#include "gui/text.hpp"
-#include "gui/texture-cache.hpp"
-#include "misc/config-file.hpp"
-#include "misc/log-macros.hpp"
-#include "sfutil/fitting.hpp"
-#include "sfutil/vector-and-rect.hpp"
-#include "testutil/i-displayer.hpp"
-
-#include <SFML/Graphics.hpp>
-
-#include <memory>
-#include <sstream>
-#include <stdexcept>
-#include <string>
+#include "testutil/displayer-base.hpp"
 
 namespace heroespath
 {
 namespace test
 {
 
-    struct SingleImageDisplayer : public IDisplayer
+    struct SingleImageDisplayer : public DisplayerBase
     {
-        virtual ~SingleImageDisplayer() { teardown(); }
+        SingleImageDisplayer()
+            : DisplayerBase("SingleImageDisplayer")
+        {}
 
-        const std::string name() const override { return "SingleImageDisplayer"; }
-
-        const sf::FloatRect contentRegion() const override { return m_imageRegion; }
-
-        void setup(const sf::FloatRect & FULL_SCREEN_RECT) override
-        {
-            m_windowRegion = FULL_SCREEN_RECT;
-
-            m_titleRegion
-                = sf::FloatRect(0.0f, 0.0f, m_windowRegion.width, (m_windowRegion.height * 0.1f));
-
-            m_imageRegion = sf::FloatRect(
-                0.0f,
-                m_titleRegion.height,
-                m_windowRegion.width,
-                (m_windowRegion.height - m_titleRegion.height));
-
-            m_text = heroespath::gui::Text("", heroespath::gui::GuiFont::Default, 100);
-        }
-
-        void teardown() override { releaseAndFreeAll(); }
+        virtual ~SingleImageDisplayer() = default;
 
         void releaseAndFreeAll() override
         {
@@ -62,48 +30,11 @@ namespace test
             m_sprites.clear();
         }
 
-        void beginImageSeries(
-            const std::string & TITLE_STR, const std::size_t EXPECTED_IMAGE_COUNT = 0) override
-        {
-            using namespace heroespath;
-
-            M_HP_LOG(
-                name() + " \"" << TITLE_STR << "\" Unit Test starting that expects to display "
-                               << EXPECTED_IMAGE_COUNT << " images.");
-
-            releaseAndFreeAll();
-
-            m_progressCounter = 0;
-            m_progressCountMax = EXPECTED_IMAGE_COUNT;
-
-            m_progressRectangle.setSize(
-                sf::Vector2f(0.0f, std::max(1.0f, (m_windowRegion.height / 600.0f))));
-
-            m_progressRectangle.setPosition(0.0f, m_titleRegion.height);
-            setupProgressBar();
-
-            if (TITLE_STR.empty())
-            {
-                m_text.setString("");
-                m_text.setFillColor(sf::Color::Transparent);
-            }
-            else
-            {
-                m_text.setString(TITLE_STR);
-                m_text.setFillColor(sf::Color::White);
-                sfutil::FitAndCenterTo(m_text, m_titleRegion);
-            }
-        }
-
-        void endImageSeries() override { releaseAndFreeAll(); }
-
         void appendImageToSeries(heroespath::gui::CachedTexture && cachedTexture) override
         {
-            setupTexture(std::move(cachedTexture));
-            setupSprite();
-
-            ++m_progressCounter;
-            setupProgressBar();
+            appendTexture(std::move(cachedTexture));
+            appendSprite();
+            incrememntProgress();
         }
 
         void draw(sf::RenderTarget & target, sf::RenderStates = sf::RenderStates()) const override
@@ -116,22 +47,11 @@ namespace test
                 }
             }
 
-            target.draw(m_text);
-            target.draw(m_progressRectangle);
+            drawCommon(target);
         }
 
     private:
-        const std::string makeErrorMessagePrefix() const
-        {
-            std::ostringstream ss;
-
-            ss << "SingleImageDisplayer:  For test set lableed \"" << m_text.getString() << "\" on "
-               << m_progressCounter << " of " << m_progressCountMax << ":  ";
-
-            return ss.str();
-        }
-
-        void setupTexture(heroespath::gui::CachedTexture && cachedTexture)
+        void appendTexture(heroespath::gui::CachedTexture && cachedTexture)
         {
             m_cachedTextureUPtrs.emplace_back(
                 std::make_unique<heroespath::gui::CachedTexture>(cachedTexture));
@@ -150,7 +70,7 @@ namespace test
             }
         }
 
-        void setupSprite()
+        void appendSprite()
         {
             if (m_cachedTextureUPtrs.empty())
             {
@@ -179,16 +99,16 @@ namespace test
                 throw std::runtime_error(ss.str());
             }
 
-            if ((SPRITE_INITIAL_GLOBAL_BOUNDS.width > m_windowRegion.width)
-                || (SPRITE_INITIAL_GLOBAL_BOUNDS.height > m_windowRegion.height))
+            if ((SPRITE_INITIAL_GLOBAL_BOUNDS.width > windowRegion().width)
+                || (SPRITE_INITIAL_GLOBAL_BOUNDS.height > windowRegion().height))
             {
-                heroespath::sfutil::Fit(sprite, heroespath::sfutil::Size(m_imageRegion));
+                heroespath::sfutil::Fit(sprite, heroespath::sfutil::Size(contentRegion()));
             }
 
-            heroespath::sfutil::CenterTo(sprite, m_imageRegion);
+            heroespath::sfutil::CenterTo(sprite, contentRegion());
 
             const auto WIDTH = sprite.getGlobalBounds().width;
-            sprite.setPosition(m_imageRegion.width, sprite.getPosition().y);
+            sprite.setPosition(contentRegion().width, sprite.getPosition().y);
 
             for (auto & otherSprite : m_sprites)
             {
@@ -196,34 +116,9 @@ namespace test
             }
         }
 
-        void setupProgressBar()
-        {
-            if (m_progressCountMax > 0)
-            {
-                m_progressRectangle.setFillColor(sf::Color::White);
-
-                const float ratio(
-                    static_cast<float>(m_progressCounter) / static_cast<float>(m_progressCountMax));
-
-                m_progressRectangle.setSize(
-                    sf::Vector2f((m_windowRegion.width * ratio), m_progressRectangle.getSize().y));
-            }
-            else
-            {
-                m_progressRectangle.setFillColor(sf::Color::Transparent);
-            }
-        }
-
     private:
         std::vector<std::unique_ptr<heroespath::gui::CachedTexture>> m_cachedTextureUPtrs;
         std::vector<sf::Sprite> m_sprites;
-        std::size_t m_progressCounter = 0;
-        std::size_t m_progressCountMax = 0;
-        sf::RectangleShape m_progressRectangle;
-        sf::FloatRect m_windowRegion;
-        sf::FloatRect m_titleRegion;
-        sf::FloatRect m_imageRegion;
-        heroespath::gui::Text m_text;
     };
 
 } // namespace test

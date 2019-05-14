@@ -28,10 +28,9 @@
 using namespace heroespath;
 using namespace heroespath::test;
 
-void GameEngineGlobalFixture::setDisplayer()
+void GameEngineGlobalFixture::setupBeforeAllTests()
 {
     m_iDisplayerUPtr = std::make_unique<DrawablesDisplayer>();
-    m_delayAfterEachDrawSec = 0.00f;
 }
 
 BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
@@ -155,7 +154,8 @@ BOOST_AUTO_TEST_CASE(gui_elements__gold_bars_version_1)
         gui::Orientation::Horiz);
 
     createGoldBarsOfAllSides(
-        sf::Vector2f((SCREEN_EDGE_PAD * 1.9f), SCREEN_EDGE_PAD), gui::Orientation::Vert);
+        sf::Vector2f((SCREEN_EDGE_PAD * 1.9f), (CONTENT_REGION.top + SCREEN_EDGE_PAD)),
+        gui::Orientation::Vert);
 
     const auto guiElementsCachedTexture = gui::CachedTexture(gui::GuiImages::PathKey());
     sf::Sprite sprite(guiElementsCachedTexture.Get());
@@ -249,16 +249,16 @@ BOOST_AUTO_TEST_CASE(gui_elements__gold_bars_version_2)
     };
 
     const auto BOTTOM_OF_FIRST_ROW { makeHorizRowOfGoldBarBoxes(
-        SCREEN_EDGE_PAD, SCREEN_EDGE_PAD, true, false) };
+        SCREEN_EDGE_PAD, (CONTENT_REGION.top + SCREEN_EDGE_PAD), true, false) };
 
     const auto BOTTOM_OF_SECOND_ROW { makeHorizRowOfGoldBarBoxes(
-        SCREEN_EDGE_PAD, BOTTOM_OF_FIRST_ROW + BETWEEN_ROW_VERT_SPACER, false, false) };
+        SCREEN_EDGE_PAD, (BOTTOM_OF_FIRST_ROW + BETWEEN_ROW_VERT_SPACER), false, false) };
 
     const auto BOTTOM_OF_THIRD_ROW { makeHorizRowOfGoldBarBoxes(
-        SCREEN_EDGE_PAD, BOTTOM_OF_SECOND_ROW + (BETWEEN_ROW_VERT_SPACER * 2.0f), true, true) };
+        SCREEN_EDGE_PAD, (BOTTOM_OF_SECOND_ROW + (BETWEEN_ROW_VERT_SPACER * 2.0f)), true, true) };
 
     makeHorizRowOfGoldBarBoxes(
-        SCREEN_EDGE_PAD, BOTTOM_OF_THIRD_ROW + BETWEEN_ROW_VERT_SPACER, false, true);
+        SCREEN_EDGE_PAD, (BOTTOM_OF_THIRD_ROW + BETWEEN_ROW_VERT_SPACER), false, true);
 
     GameEngineGlobalFixture::drawAndHoldUntilMouseOrKeyOrDuration();
     GameEngineGlobalFixture::displayer().endDrawablesSet();
@@ -362,20 +362,20 @@ BOOST_AUTO_TEST_CASE(gui_elements__border)
     };
 
     const auto BOTTOM_OF_FIRST_ROW { makeHorizRowOfBorders(
-        SCREEN_EDGE_PAD, SCREEN_EDGE_PAD, true, true, false) };
+        SCREEN_EDGE_PAD, (CONTENT_REGION.top + SCREEN_EDGE_PAD), true, true, false) };
 
     const auto BOTTOM_OF_SECOND_ROW { makeHorizRowOfBorders(
-        SCREEN_EDGE_PAD, BOTTOM_OF_FIRST_ROW + BETWEEN_ROW_VERT_SPACER, true, false, false) };
+        SCREEN_EDGE_PAD, (BOTTOM_OF_FIRST_ROW + BETWEEN_ROW_VERT_SPACER), true, false, false) };
 
     const auto BOTTOM_OF_THIRD_ROW { makeHorizRowOfBorders(
         SCREEN_EDGE_PAD,
-        BOTTOM_OF_SECOND_ROW + (BETWEEN_ROW_VERT_SPACER * 2.0f),
+        (BOTTOM_OF_SECOND_ROW + (BETWEEN_ROW_VERT_SPACER * 2.0f)),
         true,
         true,
         true) };
 
     const auto BOTTOM_OF_FOURTH_ROW { makeHorizRowOfBorders(
-        SCREEN_EDGE_PAD, BOTTOM_OF_THIRD_ROW + BETWEEN_ROW_VERT_SPACER, false, true, false) };
+        SCREEN_EDGE_PAD, (BOTTOM_OF_THIRD_ROW + BETWEEN_ROW_VERT_SPACER), false, true, false) };
 
     const auto BOTTOM_OF_FIFTH_ROW { makeHorizRowOfBorders(
         SCREEN_EDGE_PAD, BOTTOM_OF_FOURTH_ROW + BETWEEN_ROW_VERT_SPACER, false, false, false) };
@@ -433,7 +433,15 @@ BOOST_AUTO_TEST_CASE(gui_elements__text_offset_fix)
 
 BOOST_AUTO_TEST_CASE(gui_elements__fonts)
 {
-    // M_HP_LOG_WRN(boost::unit_test::framework::current_test_case().full_name());
+
+    //// test case
+    // M_HP_LOG_WRN(
+    //    "current_test_case=" << boost::unit_test::framework::current_test_case().full_name());
+    //
+    //// test module
+    // M_HP_LOG_WRN(
+    //    "current_auto_test_suite="
+    //    << boost::unit_test::framework::current_auto_test_suite().full_name());
 
     GameEngineGlobalFixture::displayer().beginDrawablesSet("Fonts");
     const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();

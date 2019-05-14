@@ -35,14 +35,16 @@ namespace test
     // all tests complete.
     struct GameEngineGlobalFixture
     {
-        GameEngineGlobalFixture() { setDisplayer(); }
-
-        static void setDisplayer();
+        // The constructor is designed to call setDisplayer() which is intentionally not defined.
+        // The point is to force the user of the class to implement it in the unit-test.cpp file and
+        // set the displayer class and any other details before calling BOOST_TEST_GLOBAL_FIXTURE.
+        GameEngineGlobalFixture() { setupBeforeAllTests(); }
+        static void setupBeforeAllTests();
 
         void setup()
         {
-            m_startupShutdownUPtr = std::make_unique<game::StartupShutdown>(
-                "HP Test Image Loading", 0, nullptr, true);
+            m_startupShutdownUPtr
+                = std::make_unique<game::StartupShutdown>("Unit Test: " + name(), 0, nullptr, true);
 
             auto & window = *gui::Display::Instance();
 
@@ -50,8 +52,7 @@ namespace test
 
             if (!window.IsOpen())
             {
-                throw std::runtime_error(
-                    "GameEngineGlobalFixture::setup() failed to open a display window.");
+                throw std::runtime_error(name() + "::setup() failed to open a display window.");
             }
 
             gui::FontManager::Instance()->Load(gui::GuiFont::Default);
@@ -59,11 +60,11 @@ namespace test
             if (!m_iDisplayerUPtr)
             {
                 throw std::runtime_error(
-                    "GameEngineGlobalFixture::setup() called when m_iDisplayerUPtr was null.  "
-                    "Implement the setDisplayer() function at the top of your "
-                    "unit-test-whatever.cpp "
-                    "file before the line "
-                    "\"BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);\".");
+                    name()
+                    + "::setup() called when m_iDisplayerUPtr was null.  "
+                      "Implement the setDisplayer() function at the top of your  "
+                      "unit-test-whatever.cpp  file before the line "
+                      "\"BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);\".");
             }
 
             m_iDisplayerUPtr->setup(window.FullScreenRect());
@@ -83,7 +84,7 @@ namespace test
             if (!m_iDisplayerUPtr)
             {
                 throw std::runtime_error(
-                    "GameEngineGlobalFixture::displayer() called when m_iDisplayerUPtr was null.");
+                    name() + "::displayer() called when m_iDisplayerUPtr was null.");
             }
 
             return *m_iDisplayerUPtr;
@@ -118,11 +119,15 @@ namespace test
 
             gui::Display::Instance()->PollEvents();
 
-            const float timeStepSec = 0.05f;
+            m_iDisplayerUPtr->setProgressMax(100);
+
+            sf::Clock timer;
+            const float timeStepSec = 0.02f;
             bool isPaused = false;
             float currentElapsedTime = 0.0f;
             while (currentElapsedTime < DURATION_SEC)
             {
+                timer.restart();
                 if (!isPaused)
                 {
                     currentElapsedTime += timeStepSec;
@@ -144,11 +149,19 @@ namespace test
                 }
 
                 draw();
-                sf::sleep(sf::seconds(timeStepSec));
+
+                const auto TIME_ELAPSED_SEC = timer.getElapsedTime().asSeconds();
+
+                if (TIME_ELAPSED_SEC < timeStepSec)
+                {
+                    sf::sleep(sf::seconds(timeStepSec - TIME_ELAPSED_SEC));
+                }
             }
         }
 
     private:
+        static const std::string name() { return "GameEngineGlobalFixture_" + m_customName + "_"; }
+
         struct EventFlags : public EnumBaseBitField<>
         {
             enum Enum : EnumUnderlying_t
@@ -166,7 +179,7 @@ namespace test
             if (!gui::Display::Instance()->IsOpen())
             {
                 throw std::runtime_error(
-                    "GameEngineGlobalFixture::checkEvents() found the window is not open anymore.");
+                    name() + "::checkEvents() found the window is not open anymore.");
             }
 
             const auto EVENTS = gui::Display::Instance()->PollEvents();
@@ -178,14 +191,15 @@ namespace test
 
                     if (EVENT.key.code == sf::Keyboard::F1)
                     {
-                        throw std::runtime_error("GameEngineGlobalFixture::checkEvents() found the "
-                                                 "secret escape key F1 pressed.");
+                        throw std::runtime_error(
+                            name() + "::checkEvents() found the secret escape key F1 pressed.");
                     }
                     else if (EVENT.key.code == sf::Keyboard::Escape)
                     {
                         throw std::runtime_error(
-                            "GameEngineGlobalFixture::checkEvents() found the "
-                            "ESCAPE key pressed.  Throwing to fail this test.");
+                            name()
+                            + "::checkEvents() found the  ESCAPE key pressed.  Throwing to fail "
+                              "this test.");
                     }
                     else if (EVENT.key.code == sf::Keyboard::P)
                     {
@@ -205,6 +219,7 @@ namespace test
         static inline std::unique_ptr<game::StartupShutdown> m_startupShutdownUPtr {};
         static inline std::unique_ptr<IDisplayer> m_iDisplayerUPtr {};
         static inline float m_delayAfterEachDrawSec = 0.0f;
+        static inline std::string m_customName {};
     };
 
 } // namespace test
