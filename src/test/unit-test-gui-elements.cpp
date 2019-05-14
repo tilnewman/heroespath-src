@@ -427,3 +427,79 @@ BOOST_AUTO_TEST_CASE(gui_elements__text_offset_fix)
     GameEngineGlobalFixture::drawAndHoldUntilMouseOrKeyOrDuration();
     GameEngineGlobalFixture::displayer().endDrawablesSet();
 }
+
+BOOST_AUTO_TEST_CASE(gui_elements__fonts)
+{
+    GameEngineGlobalFixture::displayer().beginDrawablesSet("Fonts");
+    const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();
+
+    const auto EACH_REGION_HEIGHT
+        = (CONTENT_REGION.height / static_cast<float>(gui::GuiFont::Count));
+
+    auto getDescription = [&](const gui::GuiFont::Enum ENUM) {
+        switch (ENUM)
+        {
+            case gui::GuiFont::Default:
+                return "Euler: slightly dolphin, nice and round with ample spacing";
+
+            case gui::GuiFont::DefaultBoldFlavor:
+                return "Modern-Antiqua: bold with sharp flavorful ends, bold and tall (like a bold "
+                       "Euler with more flavor)";
+
+            case gui::GuiFont::System:
+                return "Gentium-Plus: normal, tall, straight, and slightly condensed (very "
+                       "similar to GoudyBookletter but slightly wider)";
+
+            case gui::GuiFont::SystemCondensed:
+                return "Goudy-Bookletter: normal and wide but very condensed with ugly numbers "
+                       "(very similar to GentiumPlus but slightly more narrow)";
+
+            case gui::GuiFont::SignThinTallNarrow:
+                return "(Numbers) Quill-Sword: rigid calligraphy with medieval tails, very "
+                       "condensed (good "
+                       "for signs) (great flavorful numbers)";
+
+            case gui::GuiFont::SignBoldShortWide:
+                return "Queen-Country: very bold and short with medieval flavor (good for signs)";
+
+            case gui::GuiFont::Handwriting:
+                return "Valley-Forge: casual handwriting, slightly bold (good for writing on "
+                       "scrolls) (used for popup window text buttons)";
+
+            case gui::GuiFont::DialogModern: return "Square-Antiqua";
+
+            case gui::GuiFont::DialogMedieval:
+                return "Mops-Antiqua: (used for interaction text buttons)";
+
+            case gui::GuiFont::Count:
+            default: return "Error -go figure this out";
+        }
+    };
+
+    for (EnumUnderlying_t index(0); index < gui::GuiFont::Count; ++index)
+    {
+        const sf::FloatRect REGION(
+            0.0f,
+            (CONTENT_REGION.top + (static_cast<float>(index) * EACH_REGION_HEIGHT)),
+            CONTENT_REGION.width,
+            EACH_REGION_HEIGHT);
+
+        const auto ENUM = static_cast<gui::GuiFont::Enum>(index);
+
+        if (ENUM != gui::GuiFont::Default)
+        {
+            heroespath::gui::FontManager::Instance()->Load(ENUM);
+        }
+
+        std::ostringstream ss;
+        ss << NAMEOF_ENUM(ENUM) << " \"" << getDescription(ENUM) << "\" 0123456789";
+
+        gui::Text text(ss.str(), ENUM, 100);
+        sfutil::FitAndCenterTo(text, REGION);
+
+        GameEngineGlobalFixture::displayer().appendDrawable(std::make_unique<gui::Text>(text));
+    }
+
+    GameEngineGlobalFixture::drawAndHoldUntilMouseOrKeyOrDuration(10.0f);
+    GameEngineGlobalFixture::displayer().endDrawablesSet();
+}

@@ -103,7 +103,7 @@ struct GameEngineGlobalFixture
         }
     }
 
-    static void drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 3.0f)
+    static void drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 2.0f)
     {
         if (!(DURATION_SEC > 0.0f))
         {
@@ -112,20 +112,30 @@ struct GameEngineGlobalFixture
 
         heroespath::gui::Display::Instance()->PollEvents();
 
-        sf::Clock timer;
-
-        while (timer.getElapsedTime().asSeconds() < DURATION_SEC)
+        const float timeStepSec = 0.05f;
+        bool isPaused = false;
+        float currentElapsedTime = 0.0f;
+        while (currentElapsedTime < DURATION_SEC)
         {
-            const float timeElapsedPercent { (timer.getElapsedTime().asSeconds() / DURATION_SEC)
-                                             * 100.0f };
+            if (!isPaused)
+            {
+                currentElapsedTime += timeStepSec;
 
-            m_iDisplayerUPtr->setProgress(static_cast<std::size_t>(timeElapsedPercent));
+                const float timeElapsedPercent { (currentElapsedTime / DURATION_SEC) * 100.0f };
+
+                m_iDisplayerUPtr->setProgress(static_cast<std::size_t>(timeElapsedPercent));
+            }
 
             draw();
 
             for (auto const & EVENT : heroespath::gui::Display::Instance()->PollEvents())
             {
-                if ((EVENT.type == sf::Event::KeyPressed)
+                if ((EVENT.type == sf::Event::KeyPressed) && (EVENT.key.code == sf::Keyboard::P))
+                {
+                    isPaused = !isPaused;
+                }
+                else if (
+                    (EVENT.type == sf::Event::KeyPressed)
                     || (EVENT.type == sf::Event::MouseButtonPressed)
                     || (EVENT.type == sf::Event::Closed)
                     || !heroespath::gui::Display::Instance()->IsOpen())
@@ -134,7 +144,7 @@ struct GameEngineGlobalFixture
                 }
             }
 
-            sf::sleep(sf::seconds(0.05f));
+            sf::sleep(sf::seconds(timeStepSec));
         }
     }
 
