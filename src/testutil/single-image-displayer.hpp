@@ -30,7 +30,7 @@ namespace test
             m_sprites.clear();
         }
 
-        void appendImageToSeries(gui::CachedTexture && cachedTexture) override
+        void appendImageToSeries(gui::CachedTexture cachedTexture) override
         {
             appendTexture(std::move(cachedTexture));
             appendSprite();
@@ -48,9 +48,10 @@ namespace test
         }
 
     private:
-        void appendTexture(gui::CachedTexture && cachedTexture)
+        void appendTexture(gui::CachedTexture cachedTexture)
         {
-            m_cachedTextureUPtrs.emplace_back(std::make_unique<gui::CachedTexture>(cachedTexture));
+            m_cachedTextureUPtrs.emplace_back(
+                std::make_unique<gui::CachedTexture>(std::move(cachedTexture)));
 
             const auto SIZE = m_cachedTextureUPtrs.back()->Get().getSize();
 

@@ -26,7 +26,7 @@ namespace test
 
         void releaseAndFreeAll() override { m_drawables.clear(); }
 
-        void appendDrawable(std::unique_ptr<sf::Drawable> && drawableUPtr) override
+        void appendDrawable(std::unique_ptr<sf::Drawable> drawableUPtr) override
         {
             m_drawables.emplace_back(std::move(drawableUPtr));
         }

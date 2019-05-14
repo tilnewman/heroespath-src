@@ -72,7 +72,7 @@ namespace test
 
         void endImageSeries() override { endCommon(); }
 
-        void appendImageToSeries(gui::CachedTexture &&) override {}
+        void appendImageToSeries(gui::CachedTexture) override {}
 
         void beginDrawablesSet(const std::string & TITLE_STR) override
         {
@@ -81,7 +81,7 @@ namespace test
 
         void endDrawablesSet() override { endCommon(); }
 
-        void appendDrawable(std::unique_ptr<sf::Drawable> &&) override {}
+        void appendDrawable(std::unique_ptr<sf::Drawable>) override {}
 
     protected:
         void setupCommon(const sf::FloatRect & FULL_SCREEN_RECT)

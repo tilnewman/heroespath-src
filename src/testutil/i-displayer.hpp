@@ -9,6 +9,8 @@
 //
 // i-displayer.hpp
 //
+#include "gui/cached-texture.hpp"
+
 #include <cstdlib>
 #include <memory>
 #include <string>
@@ -17,11 +19,6 @@
 
 namespace heroespath
 {
-namespace gui
-{
-    class CachedTexture;
-}
-
 namespace test
 {
 
@@ -46,11 +43,11 @@ namespace test
 
         virtual void beginImageSeries(const std::string &, const std::size_t = 0) = 0;
         virtual void endImageSeries() = 0;
-        virtual void appendImageToSeries(gui::CachedTexture &&) = 0;
+        virtual void appendImageToSeries(gui::CachedTexture) = 0;
 
         virtual void beginDrawablesSet(const std::string &) = 0;
         virtual void endDrawablesSet() = 0;
-        virtual void appendDrawable(std::unique_ptr<sf::Drawable> &&) = 0;
+        virtual void appendDrawable(std::unique_ptr<sf::Drawable>) = 0;
 
         void draw(sf::RenderTarget &, sf::RenderStates = sf::RenderStates()) const override = 0;
     };
