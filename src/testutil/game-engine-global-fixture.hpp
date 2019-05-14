@@ -90,7 +90,7 @@ namespace test
             return *m_iDisplayerUPtr;
         }
 
-        static void draw()
+        static void draw(const bool WILL_CHECK_EVENTS = true)
         {
             auto & window = *gui::Display::Instance();
             window.ClearToBlack();
@@ -107,7 +107,10 @@ namespace test
                 sf::sleep(sf::seconds(m_delayAfterEachDrawSec));
             }
 
-            checkEvents();
+            if (WILL_CHECK_EVENTS)
+            {
+                checkEvents();
+            }
         }
 
         static void drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 1.5f)
@@ -128,6 +131,7 @@ namespace test
             while (currentElapsedTime < DURATION_SEC)
             {
                 timer.restart();
+
                 if (!isPaused)
                 {
                     currentElapsedTime += timeStepSec;
@@ -136,6 +140,8 @@ namespace test
 
                     m_iDisplayerUPtr->setProgress(static_cast<std::size_t>(timeElapsedPercent));
                 }
+
+                draw(false);
 
                 const auto EVENT_FLAGS = checkEvents();
 
@@ -147,8 +153,6 @@ namespace test
                 {
                     return;
                 }
-
-                draw();
 
                 const auto TIME_ELAPSED_SEC = timer.getElapsedTime().asSeconds();
 
