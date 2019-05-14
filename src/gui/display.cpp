@@ -38,19 +38,13 @@ namespace gui
     std::unique_ptr<Display> Display::instanceUPtr_;
 
     Display::Display(
-        const std::string & TITLE,
-        const sf::Uint32 STYLE,
-        const unsigned ANTIALIAS_LEVEL,
-        const bool WILL_SETUP_FOR_TESTING)
+        const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
         : winTitle_(TITLE)
         , winStyle_(STYLE)
         , frameRateLimit_(0)
         , willVerticalSync_(false)
         , winUPtr_(std::make_unique<sf::RenderWindow>(
-              EstablishVideoMode(WILL_SETUP_FOR_TESTING),
-              TITLE,
-              STYLE,
-              sf::ContextSettings(0, 0, ANTIALIAS_LEVEL)))
+              EstablishVideoMode(), TITLE, STYLE, sf::ContextSettings(0, 0, ANTIALIAS_LEVEL)))
         , fadeColoredRectSliderUPtr_()
     {
         M_HP_LOG_DBG("Subsystem Construction: Display");
@@ -86,15 +80,11 @@ namespace gui
     }
 
     void Display::Acquire(
-        const std::string & TITLE,
-        const sf::Uint32 STYLE,
-        const unsigned ANTIALIAS_LEVEL,
-        const bool WILL_SETUP_FOR_TESTING)
+        const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
     {
         if (!instanceUPtr_)
         {
-            instanceUPtr_
-                = std::make_unique<Display>(TITLE, STYLE, ANTIALIAS_LEVEL, WILL_SETUP_FOR_TESTING);
+            instanceUPtr_ = std::make_unique<Display>(TITLE, STYLE, ANTIALIAS_LEVEL);
         }
         else
         {
@@ -111,11 +101,9 @@ namespace gui
     }
 
     float Display::GetWinWidth() const { return static_cast<float>(GetWinWidthu()); }
-
     float Display::GetWinHeight() const { return static_cast<float>(GetWinHeightu()); }
 
     unsigned int Display::GetWinWidthu() const { return winUPtr_->getSize().x; }
-
     unsigned int Display::GetWinHeightu() const { return winUPtr_->getSize().y; }
 
     unsigned int Display::WinColorDepth() const { return winUPtr_->getSettings().depthBits; }

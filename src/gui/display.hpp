@@ -49,11 +49,7 @@ namespace gui
     class Display
     {
     public:
-        Display(
-            const std::string & TITLE,
-            const sf::Uint32 STYLE,
-            const unsigned ANTIALIAS_LEVEL,
-            const bool WILL_SETUP_FOR_TESTING);
+        Display(const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
 
         ~Display();
 
@@ -65,10 +61,7 @@ namespace gui
         static misc::NotNull<Display *> Instance();
 
         static void Acquire(
-            const std::string & TITLE,
-            const sf::Uint32 STYLE,
-            const unsigned ANTIALIAS_LEVEL,
-            const bool WILL_SETUP_FOR_TESTING);
+            const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
 
         static void Release();
 
@@ -181,9 +174,9 @@ namespace gui
         // returns the number of supported fullscreen video modes that were supported.
         static std::size_t ComposeSupportedFullScreenVideoModesVec(ResolutionVec_t & vec);
 
-        static const sf::VideoMode EstablishVideoMode(const bool WILL_SETUP_FOR_TESTING)
+        static const sf::VideoMode EstablishVideoMode(const bool WILL_USE_MIN_RESOLUTION = false)
         {
-            if (WILL_SETUP_FOR_TESTING)
+            if (WILL_USE_MIN_RESOLUTION)
             {
                 return EstablishVideoModeMinResolution();
             }

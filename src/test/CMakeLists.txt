@@ -2,13 +2,14 @@ project("test" VERSION 0.1.0 LANGUAGES CXX)
 
 enable_testing()
 
+file(GLOB test_header_files *.hpp)
 file(GLOB test_source_files *.cpp)
 
 foreach(test_source_file ${test_source_files})
 
     get_filename_component(test_name ${test_source_file} NAME_WE)
-
-    add_executable(${test_name} ${test_source_file})
+  
+    add_executable(${test_name} ${test_source_file} ${test_header_files})
 
     setup_target(${test_name})
 

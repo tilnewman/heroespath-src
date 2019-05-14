@@ -315,6 +315,7 @@ namespace game
         if (IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV && (IS_KEYPRESS == false)
             && (EVENT.key.code == sf::Keyboard::F1))
         {
+            M_HP_LOG_WRN("Shutting down because the testing early exit key was pressed: F1");
             iStatus_.GameExitRequest();
             iStatus_.LoopStopRequest();
             return;

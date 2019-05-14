@@ -6,12 +6,21 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
+#include "test/unit-test-test-stuff-game-engine-global-fixture.hpp"
+#include "test/unit-test-test-stuff-i-displayer.hpp"
+#include "test/unit-test-test-stuff-single-image-displayer.hpp"
+#include "unit-test-test-stuff.hpp"
+
+void GameEngineGlobalFixture::setDisplayer()
+{
+    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
+}
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_sfutil_test"
 
 #include <boost/test/unit_test.hpp>
 
-#include "unit-test-test-stuff.hpp"
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 #include "gui/display.hpp"
 #include "misc/log-macros.hpp"
@@ -1420,10 +1429,12 @@ BOOST_AUTO_TEST_CASE(DirectionTests)
 {
     BOOST_CHECK(
         DirectionFromAToB(sf::Vector2i(-1, 0), sf::Vector2i(1, 0)) == gui::Direction::Right);
+
     BOOST_CHECK(DirectionFromAToB(sf::Vector2i(1, 0), sf::Vector2i(-1, 0)) == gui::Direction::Left);
     BOOST_CHECK(DirectionFromAToB(sf::Vector2i(0, -1), sf::Vector2i(0, 1)) == gui::Direction::Down);
     BOOST_CHECK(DirectionFromAToB(sf::Vector2i(0, 1), sf::Vector2i(0, -1)) == gui::Direction::Up);
     BOOST_CHECK(DirectionFromAToB(sf::Vector2i(0, 0), sf::Vector2i(0, 0)) == gui::Direction::Count);
+
     BOOST_CHECK(
         DirectionFromAToB(sf::Vector2i(1, -1), sf::Vector2i(1, -1)) == gui::Direction::Count);
 }
@@ -1431,10 +1442,6 @@ BOOST_AUTO_TEST_CASE(DirectionTests)
 BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
 {
     // display tests
-
-    heroespath::misc::Log::Acquire();
-    heroespath::gui::Display::Acquire("HeroespathTestDisplay", sf::Style::None, 0, true);
-
     const sf::Vector2f SCREEN_SIZE_V(DisplaySize());
     const float HALF_SCALE(0.5f);
     const sf::Vector2f SCREEN_CENTER_V(SCREEN_SIZE_V * HALF_SCALE);
@@ -1492,9 +1499,6 @@ BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
         == sf::IntRect { sf::FloatRect(
                SCREEN_CENTER_V - ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F * 0.5f),
                ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F)) });
-
-    heroespath::gui::Display::Release();
-    heroespath::misc::Log::Release();
 }
 
 BOOST_AUTO_TEST_CASE(DistanceTests)
@@ -1956,6 +1960,7 @@ BOOST_AUTO_TEST_CASE(FitTests)
 
     BOOST_CHECK(
         misc::IsRealClose(ScaleThatFits(TALL_V_F.x, TALL_V_F.y, WIDE_V_I.x, WIDE_V_I.y), 0.1f));
+
     BOOST_CHECK(misc::IsRealClose(ScaleThatFits(WIDE_V_F, TALL_V_I), 0.1f));
     BOOST_CHECK(misc::IsRealClose(ScaleThatFits(TALL_RECT_F, WIDE_V_I), 0.1f));
     BOOST_CHECK(misc::IsRealClose(ScaleThatFits(TALL_V_F, WIDE_RECT_I), 0.1f));
@@ -2429,7 +2434,7 @@ BOOST_AUTO_TEST_CASE(ToStringTests)
 
 BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)
 {
-    heroespath::misc::helpers::MersenneTwister19937::Setup();
+    // heroespath::misc::helpers::MersenneTwister19937::Setup();
 
     std::vector<sf::Texture> textures;
 

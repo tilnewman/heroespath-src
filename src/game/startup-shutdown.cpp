@@ -302,7 +302,7 @@ namespace game
     {
         gui::Display::LogAllFullScreenVideoModes();
         gui::Display::LogAllSupportedFullScreenVideoModes();
-        gui::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0, WILL_SETUP_FOR_TESTING);
+        gui::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0);
 
         if (WILL_SETUP_FOR_TESTING)
         {

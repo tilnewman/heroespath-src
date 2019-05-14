@@ -6,16 +6,32 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
+#include "test/unit-test-test-stuff-game-engine-global-fixture.hpp"
+#include "test/unit-test-test-stuff-i-displayer.hpp"
+#include "test/unit-test-test-stuff-single-image-displayer.hpp"
 #include "unit-test-test-stuff.hpp"
 
-using namespace heroespath;
-using namespace heroespath::test;
+void GameEngineGlobalFixture::setDisplayer()
+{
+    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
+}
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_ImageLoad"
 
 #include <boost/test/unit_test.hpp>
 
 BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
+
+#include "creature/condition.hpp"
+#include "creature/title.hpp"
+#include "gui/combat-image-enum.hpp"
+#include "gui/image-loaders.hpp"
+#include "misc/boost-string-includes.hpp"
+#include "song/song.hpp"
+#include "spell/spell.hpp"
+
+using namespace heroespath;
+using namespace heroespath::test;
 
 template <typename EnumWrapper_t>
 void TestEnumImageLoading()
@@ -29,13 +45,13 @@ void TestEnumImageLoading()
             << NAMEOF_TYPE(EnumWrapper_t) << "> on image with index/value=" << index
             << ", enum=" << NAMEOF_ENUM(ENUM) << "...");
 
-        GameEngineGlobalFixture::displayNextImage(gui::LoadAndCacheImage(ENUM));
+        GameEngineGlobalFixture::displayer().appendImageToSeries(gui::LoadAndCacheImage(ENUM));
     }
 }
 
 BOOST_AUTO_TEST_CASE(image_loading__enum_image_loading)
 {
-    GameEngineGlobalFixture::startUnitTestSeries(
+    GameEngineGlobalFixture::displayer().beginImageSeries(
         "Enum Images Test",
         (creature::Conditions::Count + creature::Titles ::Count + gui::CombatImageType::Count
          + song::Songs ::Count + spell::Spells ::Count));
@@ -113,7 +129,7 @@ BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
         "Even though configFile.FindAllKeysWithPrefix(\"media-image-\") found keys, none of "
         "them were actual valid images.");
 
-    GameEngineGlobalFixture::startUnitTestSeries(
+    GameEngineGlobalFixture::displayer().beginImageSeries(
         "All Images in the Config File, Load and Display Test", keyPaths.size());
 
     for (const auto & KEYPATH : keyPaths)
@@ -121,6 +137,6 @@ BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
         M_HP_LOG(
             "About to test key=\"" << KEYPATH.key << "\" with path=\"" << KEYPATH.path << "\"");
 
-        GameEngineGlobalFixture::displayNextImage(gui::CachedTexture(KEYPATH.key));
+        GameEngineGlobalFixture::displayer().appendImageToSeries(gui::CachedTexture(KEYPATH.key));
     }
 }

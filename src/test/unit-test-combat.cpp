@@ -6,7 +6,15 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
+#include "test/unit-test-test-stuff-game-engine-global-fixture.hpp"
+#include "test/unit-test-test-stuff-i-displayer.hpp"
+#include "test/unit-test-test-stuff-single-image-displayer.hpp"
 #include "unit-test-test-stuff.hpp"
+
+void GameEngineGlobalFixture::setDisplayer()
+{
+    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
+}
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Game_Combat"
 
