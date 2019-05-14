@@ -501,7 +501,7 @@ BOOST_AUTO_TEST_CASE(gui_elements__fonts)
 
         if (ENUM != gui::GuiFont::Default)
         {
-            heroespath::gui::FontManager::Instance()->Load(ENUM);
+            gui::FontManager::Instance()->Load(ENUM);
         }
 
         std::ostringstream ss;

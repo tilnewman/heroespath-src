@@ -84,13 +84,13 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
         combatTree.SetEdgeType(0, 1, combat::EdgeType::Blocking), std::invalid_argument);
 
     {
-        heroespath::combat::IDVec_t ids;
+        combat::IDVec_t ids;
         combatTree.FindAdjacentByEdgeType(0, ids);
         BOOST_CHECK(ids.empty());
     }
 
     {
-        heroespath::combat::IDVec_t ids;
+        combat::IDVec_t ids;
         combatTree.FindAdjacent(0, ids);
         BOOST_CHECK(ids.empty());
     }

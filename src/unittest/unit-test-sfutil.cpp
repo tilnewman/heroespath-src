@@ -691,7 +691,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     };
     const std::vector<sf::Vector2f> POS_VEC_EMPTY;
 
-    for (heroespath::EnumUnderlying_t i(0); i <= Orientation::Count; ++i)
+    for (EnumUnderlying_t i(0); i <= Orientation::Count; ++i)
     {
         const Orientation::Enum ORIENTATION { i };
 
@@ -1576,8 +1576,8 @@ BOOST_AUTO_TEST_CASE(FitTests)
     BOOST_CHECK((FitCopy(100, 10, 10.0, 0.0) == sf::Vector2i(10, 1)));
 
     const auto TEST_RESULT_1_V { FitCopy(40.0f, 30.0f, 20.0f, 10.0f) };
-    BOOST_CHECK(heroespath::misc::IsRealClose(TEST_RESULT_1_V.x, 40.0f * (1.0f / 3.0f)));
-    BOOST_CHECK(heroespath::misc::IsRealClose(TEST_RESULT_1_V.y, 10.0f));
+    BOOST_CHECK(misc::IsRealClose(TEST_RESULT_1_V.x, 40.0f * (1.0f / 3.0f)));
+    BOOST_CHECK(misc::IsRealClose(TEST_RESULT_1_V.y, 10.0f));
 
     BOOST_CHECK((FitCopy(10.0f, 20.0f, 30.0f, 40.0f) == sf::Vector2f(20.0f, 40.0f)));
     BOOST_CHECK((FitCopy(0.0f, 20.0f, 30.0f, 40.0f) == sf::Vector2f(0.0f, 40.0f)));
@@ -2437,7 +2437,7 @@ BOOST_AUTO_TEST_CASE(ToStringTests)
 
 BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)
 {
-    // heroespath::misc::helpers::MersenneTwister19937::Setup();
+    // misc::helpers::MersenneTwister19937::Setup();
 
     std::vector<sf::Texture> textures;
 

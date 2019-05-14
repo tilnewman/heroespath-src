@@ -737,19 +737,19 @@ BOOST_AUTO_TEST_CASE(Real_IsRealZero)
 
 BOOST_AUTO_TEST_CASE(NotNull_Tests)
 {
-    // heroespath::misc::NotNull<int *> notNull; // should not compile
-    // heroespath::misc::NotNull<int *> notNull { nullptr }; // should not compile
-    // heroespath::misc::NotNull<int *> notNull { 0 }; // should not compile
+    // misc::NotNull<int *> notNull; // should not compile
+    // misc::NotNull<int *> notNull { nullptr }; // should not compile
+    // misc::NotNull<int *> notNull { 0 }; // should not compile
 
     // std::cout << "(the next line output to the console will be an exception about a NotNull "
     //             "constructor given nullptr that is expected and can be ignored)"
     //          << std::endl;
     //
     // int * p0 { nullptr };
-    // BOOST_CHECK_THROW(heroespath::misc::NotNull<int *> notNull0 { p0 }, std::exception);
+    // BOOST_CHECK_THROW(misc::NotNull<int *> notNull0 { p0 }, std::exception);
 
     int one { 1 };
-    heroespath::misc::NotNull<int *> notNull1A { &one };
+    misc::NotNull<int *> notNull1A { &one };
     BOOST_CHECK(*notNull1A == one);
     BOOST_CHECK(*notNull1A == 1);
     BOOST_CHECK(notNull1A == &one);
@@ -766,7 +766,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK((&one != notNull1A) == false);
 
     int * p1 { &one };
-    heroespath::misc::NotNull<int *> notNull1B { p1 };
+    misc::NotNull<int *> notNull1B { p1 };
     BOOST_CHECK(*notNull1B == one);
     BOOST_CHECK(*notNull1B == 1);
 
@@ -774,27 +774,27 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK(notNull1A == notNull1B);
     BOOST_CHECK(*notNull1A == *notNull1B);
 
-    heroespath::misc::NotNull<int *> notNull1C { notNull1A };
+    misc::NotNull<int *> notNull1C { notNull1A };
 
     BOOST_CHECK(notNull1A == notNull1C);
     BOOST_CHECK(notNull1A == notNull1C);
     BOOST_CHECK(*notNull1A == *notNull1C);
 
     char c { 'x' };
-    heroespath::misc::NotNull<char *> notNullC { &c };
+    misc::NotNull<char *> notNullC { &c };
 
     // BOOST_CHECK(notNull1A != notNullC); //should not compile
     // BOOST_CHECK(notNull1A != notNullC); // should not compile
 
     int * p2 { new int(2) };
-    heroespath::misc::NotNull<int *> notNull2 { p2 };
+    misc::NotNull<int *> notNull2 { p2 };
 
     BOOST_CHECK(notNull2 == p2);
     BOOST_CHECK(p2 == notNull2);
     BOOST_CHECK(notNull2 == p2);
     BOOST_CHECK(p2 == notNull2);
 
-    // heroespath::misc::NotNull<int *> notNullX{ *p2 }; // should not compile
+    // misc::NotNull<int *> notNullX{ *p2 }; // should not compile
 
     BOOST_CHECK(notNull1A != notNull2);
     BOOST_CHECK(notNull1A != notNull2);
@@ -812,7 +812,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK(notNull1B == notNull2);
     BOOST_CHECK(*notNull1B == *notNull2);
 
-    heroespath::misc::NotNull<int *> notNull3 { new int(3) };
+    misc::NotNull<int *> notNull3 { new int(3) };
 
     BOOST_CHECK(notNull2 != notNull3);
     BOOST_CHECK(notNull2 != notNull3);
@@ -827,7 +827,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     *notNull3 = 1;
     BOOST_CHECK(*notNull3 == 1);
 
-    const heroespath::misc::NotNull<const int *> NOTNULL4 { new int(4) };
+    const misc::NotNull<const int *> NOTNULL4 { new int(4) };
     BOOST_CHECK(NOTNULL4 != notNull3);
     BOOST_CHECK(NOTNULL4 != notNull3);
     BOOST_CHECK(*NOTNULL4 != *notNull3);
@@ -841,7 +841,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     delete notNull3.get();
     delete NOTNULL4.get();
 
-    boost::optional<heroespath::misc::NotNull<Thing *>> notNullThingPtrOpt { new Thing(69) };
+    boost::optional<misc::NotNull<Thing *>> notNullThingPtrOpt { new Thing(69) };
     BOOST_CHECK(notNullThingPtrOpt.value()->get() == 69);
     BOOST_CHECK((*notNullThingPtrOpt)->get() == 69);
     delete notNullThingPtrOpt.value();
@@ -935,7 +935,7 @@ BOOST_AUTO_TEST_CASE(BoostOptionalNoElementTests)
 
 BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
 {
-    using ThingPtr_t = heroespath::misc::NotNull<Thing *>;
+    using ThingPtr_t = misc::NotNull<Thing *>;
     using ThingPtrOpt_t = boost::optional<ThingPtr_t>;
 
     Thing myThing1(1);

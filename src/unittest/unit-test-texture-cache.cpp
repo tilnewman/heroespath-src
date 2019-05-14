@@ -90,13 +90,13 @@ inline const sf::Image
 inline const sf::Image
     quickLoadByKey(const std::string & KEY, const ImageOptions & OPTIONS = ImageOptions())
 {
-    return quickLoadByPath(heroespath::misc::ConfigFile::Instance()->GetMediaPath(KEY), OPTIONS);
+    return quickLoadByPath(misc::ConfigFile::Instance()->GetMediaPath(KEY), OPTIONS);
 }
 
 BOOST_AUTO_TEST_CASE(HelperFunctionTests)
 {
-    heroespath::misc::ConfigFile::Acquire();
-    heroespath::misc::ConfigFile::Instance()->Initialize();
+    misc::ConfigFile::Acquire();
+    misc::ConfigFile::Instance()->Initialize();
 
     const std::string IMAGE1_PATH_KEY("media-image-misc-todo");
     const std::string IMAGE2_PATH_KEY("media-image-misc-x");
@@ -129,8 +129,7 @@ BOOST_AUTO_TEST_CASE(HelperFunctionTests)
         == false);
 
     sf::Texture texture1;
-    LoadTexture(
-        texture1, heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY), false);
+    LoadTexture(texture1, misc::ConfigFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY), false);
 
     BOOST_CHECK(areImagesEqual(texture1, quickLoadByKey(IMAGE1_PATH_KEY)));
 
@@ -138,27 +137,27 @@ BOOST_AUTO_TEST_CASE(HelperFunctionTests)
     texture2.loadFromImage(quickLoadByKey(IMAGE1_PATH_KEY));
     BOOST_CHECK(areImagesEqual(texture1, texture2));
 
-    heroespath::misc::ConfigFile::Release();
+    misc::ConfigFile::Release();
 }
 
 BOOST_AUTO_TEST_CASE(TextureCacheTests)
 {
-    heroespath::game::StartupShutdown startStop("Heroes' Path Test", 0, nullptr, true);
+    game::StartupShutdown startStop("Heroes' Path Test", 0, nullptr, true);
 
-    TextureCache & tc = *heroespath::gui::TextureCache::Instance();
+    TextureCache & tc = *gui::TextureCache::Instance();
 
     const std::string IMAGE1_PATH_KEY("media-image-misc-todo");
     const std::string IMAGE2_PATH_KEY("media-image-misc-x");
     const std::string IMAGE3_PATH_KEY("media-image-misc-talk");
 
-    const std::string IMAGE1_PATH { heroespath::misc::filesystem::CleanPath(
+    const std::string IMAGE1_PATH { misc::filesystem::CleanPath(
         misc::ConfigFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY)) };
 
-    const std::string IMAGE2_PATH(heroespath::misc::filesystem::CleanPath(
-        heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGE2_PATH_KEY)));
+    const std::string IMAGE2_PATH(
+        misc::filesystem::CleanPath(misc::ConfigFile::Instance()->GetMediaPath(IMAGE2_PATH_KEY)));
 
-    const std::string IMAGE3_PATH(heroespath::misc::filesystem::CleanPath(
-        heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGE3_PATH_KEY)));
+    const std::string IMAGE3_PATH(
+        misc::filesystem::CleanPath(misc::ConfigFile::Instance()->GetMediaPath(IMAGE3_PATH_KEY)));
 
     const std::size_t IMAGES1_COUNT(12);
     const std::size_t IMAGES2_COUNT(6);
@@ -166,11 +165,11 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
     const std::string IMAGES1_DIR_KEY("media-image-spell-dir");
     const std::string IMAGES2_DIR_KEY("media-image-song-dir");
 
-    const std::string IMAGES1_DIR_PATH(heroespath::misc::filesystem::CleanPath(
-        heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGES1_DIR_KEY)));
+    const std::string IMAGES1_DIR_PATH(
+        misc::filesystem::CleanPath(misc::ConfigFile::Instance()->GetMediaPath(IMAGES1_DIR_KEY)));
 
-    const std::string IMAGES2_DIR_PATH(heroespath::misc::filesystem::CleanPath(
-        heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGES2_DIR_KEY)));
+    const std::string IMAGES2_DIR_PATH(
+        misc::filesystem::CleanPath(misc::ConfigFile::Instance()->GetMediaPath(IMAGES2_DIR_KEY)));
 
     const ImageOptions ALL_OPTIONS { (
         ImageOpt::Smooth | ImageOpt::FlipHoriz | ImageOpt::FlipVert | ImageOpt::Invert) };

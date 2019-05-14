@@ -30,7 +30,7 @@ namespace test
             m_sprites.clear();
         }
 
-        void appendImageToSeries(heroespath::gui::CachedTexture && cachedTexture) override
+        void appendImageToSeries(gui::CachedTexture && cachedTexture) override
         {
             appendTexture(std::move(cachedTexture));
             appendSprite();
@@ -41,20 +41,16 @@ namespace test
         {
             for (const auto & SPRITE : m_sprites)
             {
-                // if (heroespath::sfutil::Intersects(SPRITE, m_imageRegion))
-                {
-                    target.draw(SPRITE);
-                }
+                target.draw(SPRITE);
             }
 
             drawCommon(target);
         }
 
     private:
-        void appendTexture(heroespath::gui::CachedTexture && cachedTexture)
+        void appendTexture(gui::CachedTexture && cachedTexture)
         {
-            m_cachedTextureUPtrs.emplace_back(
-                std::make_unique<heroespath::gui::CachedTexture>(cachedTexture));
+            m_cachedTextureUPtrs.emplace_back(std::make_unique<gui::CachedTexture>(cachedTexture));
 
             const auto SIZE = m_cachedTextureUPtrs.back()->Get().getSize();
 
@@ -102,22 +98,33 @@ namespace test
             if ((SPRITE_INITIAL_GLOBAL_BOUNDS.width > windowRegion().width)
                 || (SPRITE_INITIAL_GLOBAL_BOUNDS.height > windowRegion().height))
             {
-                heroespath::sfutil::Fit(sprite, heroespath::sfutil::Size(contentRegion()));
+                sfutil::Fit(sprite, sfutil::Size(contentRegion()));
             }
 
-            heroespath::sfutil::CenterTo(sprite, contentRegion());
+            sfutil::CenterTo(sprite, contentRegion());
 
             const auto WIDTH = sprite.getGlobalBounds().width;
             sprite.setPosition(contentRegion().width, sprite.getPosition().y);
+
+            const auto CONTENT_REGION = contentRegion();
 
             for (auto & otherSprite : m_sprites)
             {
                 otherSprite.move(-WIDTH, 0.0f);
             }
+
+            m_sprites.erase(
+                std::remove_if(
+                    std::begin(m_sprites),
+                    std::end(m_sprites),
+                    [&CONTENT_REGION](const auto & SPRITE) {
+                        return !sfutil::Intersects(SPRITE, CONTENT_REGION);
+                    }),
+                std::end(m_sprites));
         }
 
     private:
-        std::vector<std::unique_ptr<heroespath::gui::CachedTexture>> m_cachedTextureUPtrs;
+        std::vector<std::unique_ptr<gui::CachedTexture>> m_cachedTextureUPtrs;
         std::vector<sf::Sprite> m_sprites;
     };
 

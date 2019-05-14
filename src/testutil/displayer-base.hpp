@@ -72,7 +72,7 @@ namespace test
 
         void endImageSeries() override { endCommon(); }
 
-        void appendImageToSeries(heroespath::gui::CachedTexture &&) override {}
+        void appendImageToSeries(gui::CachedTexture &&) override {}
 
         void beginDrawablesSet(const std::string & TITLE_STR) override
         {
@@ -163,10 +163,7 @@ namespace test
         }
 
     private:
-        void setupTitle()
-        {
-            m_titleText = heroespath::gui::Text("", heroespath::gui::GuiFont::Default, 100);
-        }
+        void setupTitle() { m_titleText = gui::Text("", gui::GuiFont::Default, 100); }
 
         void setupRegions(const sf::FloatRect & FULL_SCREEN_RECT)
         {
@@ -195,7 +192,7 @@ namespace test
         sf::FloatRect m_windowRegion;
         sf::FloatRect m_titleRegion;
         sf::FloatRect m_contentRegion;
-        heroespath::gui::Text m_titleText;
+        gui::Text m_titleText;
         std::string m_name;
     };
 

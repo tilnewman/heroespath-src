@@ -46,7 +46,7 @@ namespace test
 
         virtual void beginImageSeries(const std::string &, const std::size_t = 0) = 0;
         virtual void endImageSeries() = 0;
-        virtual void appendImageToSeries(heroespath::gui::CachedTexture &&) = 0;
+        virtual void appendImageToSeries(gui::CachedTexture &&) = 0;
 
         virtual void beginDrawablesSet(const std::string &) = 0;
         virtual void endDrawablesSet() = 0;
