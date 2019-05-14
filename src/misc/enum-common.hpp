@@ -68,6 +68,7 @@ struct EnumBitField_t
 template <EnumFirstValue KIND_OF_FIRST_VALUE>
 struct EnumBaseCounting
 {
+    EnumBaseCounting() = delete;
     using EnumBase_t = EnumCounting_t;
     static constexpr EnumFirstValue first_value_t = KIND_OF_FIRST_VALUE;
 };
@@ -75,6 +76,7 @@ struct EnumBaseCounting
 template <typename Separator_t = SeparatorVaries>
 struct EnumBaseBitField
 {
+    EnumBaseBitField() = delete;
     using EnumBase_t = EnumBitField_t;
     using SeparatorPolicy_t = Separator_t;
 };

@@ -6,21 +6,11 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#include "test/unit-test-test-stuff-game-engine-global-fixture.hpp"
-#include "test/unit-test-test-stuff-i-displayer.hpp"
-#include "test/unit-test-test-stuff-single-image-displayer.hpp"
-#include "unit-test-test-stuff.hpp"
-
-void GameEngineGlobalFixture::setDisplayer()
-{
-    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
-}
-
+//
+// unit-test-image-loading.cpp
+//
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_ImageLoad"
-
 #include <boost/test/unit_test.hpp>
-
-BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 #include "creature/condition.hpp"
 #include "creature/title.hpp"
@@ -29,9 +19,21 @@ BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 #include "misc/boost-string-includes.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
+#include "testutil/common.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
+#include "testutil/i-displayer.hpp"
+#include "testutil/single-image-displayer.hpp"
 
 using namespace heroespath;
 using namespace heroespath::test;
+
+void GameEngineGlobalFixture::setDisplayer()
+{
+    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
+    m_delayAfterEachDrawSec = 0.01f;
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 template <typename EnumWrapper_t>
 void TestEnumImageLoading()
@@ -46,6 +48,7 @@ void TestEnumImageLoading()
             << ", enum=" << NAMEOF_ENUM(ENUM) << "...");
 
         GameEngineGlobalFixture::displayer().appendImageToSeries(gui::LoadAndCacheImage(ENUM));
+        GameEngineGlobalFixture::draw();
     }
 }
 
@@ -61,6 +64,8 @@ BOOST_AUTO_TEST_CASE(image_loading__enum_image_loading)
     TestEnumImageLoading<gui::CombatImageType>();
     TestEnumImageLoading<song::Songs>();
     TestEnumImageLoading<spell::Spells>();
+
+    GameEngineGlobalFixture::displayer().endImageSeries();
 }
 
 BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
@@ -138,5 +143,8 @@ BOOST_AUTO_TEST_CASE(image_loading__load_each_image_found_in_config_file)
             "About to test key=\"" << KEYPATH.key << "\" with path=\"" << KEYPATH.path << "\"");
 
         GameEngineGlobalFixture::displayer().appendImageToSeries(gui::CachedTexture(KEYPATH.key));
+        GameEngineGlobalFixture::draw();
     }
+
+    GameEngineGlobalFixture::displayer().endImageSeries();
 }

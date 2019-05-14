@@ -6,21 +6,12 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#include "test/unit-test-test-stuff-drawables-displayer.hpp"
-#include "test/unit-test-test-stuff-game-engine-global-fixture.hpp"
-#include "test/unit-test-test-stuff-i-displayer.hpp"
-#include "unit-test-test-stuff.hpp"
-
-void GameEngineGlobalFixture::setDisplayer()
-{
-    m_iDisplayerUPtr = std::make_unique<DrawablesDisplayer>();
-}
-
+//
+// unit-test-gui-elements.cpp
+//
 #define BOOST_TEST_MODULE "HeroesPathTestModule__gui_elements"
 
 #include <boost/test/unit_test.hpp>
-
-BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 #include "gui/border.hpp"
 #include "gui/font-enum.hpp"
@@ -29,9 +20,21 @@ BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 #include "gui/text-info.hpp"
 #include "misc/random.hpp"
 #include "sfutil/primitives.hpp"
+#include "testutil/common.hpp"
+#include "testutil/drawables-displayer.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
+#include "testutil/i-displayer.hpp"
 
 using namespace heroespath;
 using namespace heroespath::test;
+
+void GameEngineGlobalFixture::setDisplayer()
+{
+    m_iDisplayerUPtr = std::make_unique<DrawablesDisplayer>();
+    m_delayAfterEachDrawSec = 0.00f;
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 BOOST_AUTO_TEST_CASE(gui_elements__gold_bars_version_1)
 {
@@ -430,6 +433,8 @@ BOOST_AUTO_TEST_CASE(gui_elements__text_offset_fix)
 
 BOOST_AUTO_TEST_CASE(gui_elements__fonts)
 {
+    // M_HP_LOG_WRN(boost::unit_test::framework::current_test_case().full_name());
+
     GameEngineGlobalFixture::displayer().beginDrawablesSet("Fonts");
     const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();
 
@@ -500,6 +505,6 @@ BOOST_AUTO_TEST_CASE(gui_elements__fonts)
         GameEngineGlobalFixture::displayer().appendDrawable(std::make_unique<gui::Text>(text));
     }
 
-    GameEngineGlobalFixture::drawAndHoldUntilMouseOrKeyOrDuration(10.0f);
+    GameEngineGlobalFixture::drawAndHoldUntilMouseOrKeyOrDuration();
     GameEngineGlobalFixture::displayer().endDrawablesSet();
 }

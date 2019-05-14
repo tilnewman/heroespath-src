@@ -6,21 +6,12 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#include "test/unit-test-test-stuff-game-engine-global-fixture.hpp"
-#include "test/unit-test-test-stuff-i-displayer.hpp"
-#include "test/unit-test-test-stuff-single-image-displayer.hpp"
-#include "unit-test-test-stuff.hpp"
-
-void GameEngineGlobalFixture::setDisplayer()
-{
-    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
-}
-
+//
+// unit-test-combat.cpp
+//
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Game_Combat"
 
 #include <boost/test/unit_test.hpp>
-
-BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 #include "combat/combat-node.hpp"
 #include "combat/combat-tree.hpp"
@@ -29,8 +20,20 @@ BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 #include "creature/player-party-factory.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-state-factory.hpp"
+#include "testutil/common.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
+#include "testutil/i-displayer.hpp"
+#include "testutil/single-image-displayer.hpp"
 
 using namespace heroespath;
+using namespace heroespath::test;
+
+void GameEngineGlobalFixture::setDisplayer()
+{
+    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 {

@@ -7,16 +7,17 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// Test-stuff.cpp
-//  Tests of the test_stuff helper functions()
+// unit-test-test.cpp
 //
-#include "unit-test-test-stuff.hpp"
-
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
 
 #include <boost/test/unit_test.hpp>
 
+#include "testutil/common.hpp"
+
 using namespace heroespath;
+using namespace heroespath::test;
+
 BOOST_AUTO_TEST_CASE(isUnique_CornerCases)
 {
     const std::vector<int> EMPTY;

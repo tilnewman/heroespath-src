@@ -6,21 +6,12 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#include "test/unit-test-test-stuff-game-engine-global-fixture.hpp"
-#include "test/unit-test-test-stuff-i-displayer.hpp"
-#include "test/unit-test-test-stuff-single-image-displayer.hpp"
-#include "unit-test-test-stuff.hpp"
-
-void GameEngineGlobalFixture::setDisplayer()
-{
-    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
-}
-
+//
+// unit-test-sfutil.cpp
+//
 #define BOOST_TEST_MODULE "HeroesPathTestModule_sfutil_test"
 
 #include <boost/test/unit_test.hpp>
-
-BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 #include "gui/display.hpp"
 #include "misc/log-macros.hpp"
@@ -48,6 +39,10 @@ BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 #include "sfutil/vector-math.hpp"
 #include "sfutil/vertex.hpp"
 #include "sfutil/video-mode.hpp"
+#include "testutil/common.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
+#include "testutil/i-displayer.hpp"
+#include "testutil/single-image-displayer.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -55,7 +50,15 @@ BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 #include <limits>
 
 using namespace heroespath;
+using namespace heroespath::test;
 using namespace heroespath::sfutil;
+
+void GameEngineGlobalFixture::setDisplayer()
+{
+    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 #define M_TEST_INTERSECTION(rect_a, rect_b, expected)                                              \
     {                                                                                              \

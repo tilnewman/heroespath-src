@@ -648,21 +648,21 @@ namespace sfutil
     }
 
     template <typename T1, typename T2>
-    const std::enable_if_t<has_getglobalbounds_v<T1>, sf::Rect<float>>
+    const std::enable_if_t<has_getglobalbounds_v<T1>, bool>
         Intersects(const T1 & THING, const sf::Rect<T2> & R) noexcept
     {
         return Intersects(THING.getGlobalBounds(), sf::FloatRect(R));
     }
 
     template <typename T1, typename T2>
-    const std::enable_if_t<has_getglobalbounds_v<T2>, sf::Rect<float>>
+    const std::enable_if_t<has_getglobalbounds_v<T2>, bool>
         Intersects(const sf::Rect<T1> & R, const T2 & THING) noexcept
     {
         return Intersects(sf::FloatRect(R), THING.getGlobalBounds());
     }
 
     template <typename T1, typename T2>
-    const std::enable_if_t<has_getglobalbounds_v<T1, T2>, sf::Rect<float>>
+    const std::enable_if_t<has_getglobalbounds_v<T1, T2>, bool>
         Intersects(const T1 & THING1, const T2 & THING2) noexcept
     {
         return Intersects(THING1.getGlobalBounds(), THING2.getGlobalBounds());

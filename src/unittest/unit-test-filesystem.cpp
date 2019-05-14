@@ -6,17 +6,18 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-
+//
+// unit-test-filesystem.cpp
+//
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Filesystem"
 
 #include <boost/test/unit_test.hpp>
 
+#include "misc/boost-string-includes.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/platform.hpp"
 #include "misc/strings.hpp"
 
-#include <boost/algorithm/algorithm.hpp>
-#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
 #include <algorithm>
@@ -27,6 +28,7 @@
 
 using namespace heroespath;
 using namespace heroespath::misc;
+
 namespace bfs = boost::filesystem;
 
 struct Help
@@ -368,17 +370,17 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CombinePathsAndClean)
             help.TEST_DIR_NAME_STR,
             help.TEST_DIR_NAME_STR)
         == help.PreferredSlashes(
-            filesystem::CurrentDirectory() + "/" + help.TEST_DIR_NAME_STR + "/"
-            + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR + "/"
-            + help.TEST_DIR_NAME_STR));
+               filesystem::CurrentDirectory() + "/" + help.TEST_DIR_NAME_STR + "/"
+               + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR + "/"
+               + help.TEST_DIR_NAME_STR));
 
     // test mixed cases
     BOOST_CHECK(
         filesystem::CombinePathsAndClean(
             "a", help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR)
         == help.PreferredSlashes(
-            std::string("a") + "/" + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR + "/"
-            + help.TEST_DIR_NAME_STR));
+               std::string("a") + "/" + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR + "/"
+               + help.TEST_DIR_NAME_STR));
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__AppendPathsToCurrentAndClean)
@@ -459,16 +461,16 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__AppendPathsToCurrentAndClean)
         filesystem::AppendPathsToCurrentAndClean(
             help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR)
         == help.PreferredSlashes(
-            filesystem::CurrentDirectory() + "/" + help.TEST_DIR_NAME_STR + "/"
-            + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR));
+               filesystem::CurrentDirectory() + "/" + help.TEST_DIR_NAME_STR + "/"
+               + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR));
 
     // test mixed cases
     BOOST_CHECK(
         filesystem::AppendPathsToCurrentAndClean(
             "a", help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR)
         == help.PreferredSlashes(
-            filesystem::CurrentDirectory() + std::string("/a") + "/" + help.TEST_DIR_NAME_STR + "/"
-            + help.TEST_DIR_NAME_STR));
+               filesystem::CurrentDirectory() + std::string("/a") + "/" + help.TEST_DIR_NAME_STR
+               + "/" + help.TEST_DIR_NAME_STR));
 }
 
 // BOOST_AUTO_TEST_CASE(misc_filesystem__EndsWithFileGuess)

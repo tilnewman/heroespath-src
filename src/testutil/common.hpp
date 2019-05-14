@@ -4,11 +4,10 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef TEST_TESTSTUFF_INCLUDED
-#define TEST_TESTSTUFF_INCLUDED
+#ifndef HEROESPATH_TESTUTIL_COMMON_HPP_INCLUDED
+#define HEROESPATH_TESTUTIL_COMMON_HPP_INCLUDED
 //
-// Test-stuff.hpp
-//  Helpful testing data and functions.
+// common.hpp
 //
 #include <array>
 #include <cstddef> //for std::size_t
@@ -124,7 +123,13 @@ namespace test
         return true;
     }
 
+    // only here to create a .cpp file so that cmake will work right.  I'm missing something here...
+    namespace ignore
+    {
+        int ignoreThisFunction(const int IGNORED);
+    }
+
 } // namespace test
 } // namespace heroespath
 
-#endif // TEST_TESTSTUFF_INCLUDED
+#endif // HEROESPATH_TESTUTIL_COMMON_HPP_INCLUDED

@@ -6,20 +6,19 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-
+//
+// unit-test-strings.cpp
+//
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Strings"
 
 #include <boost/test/unit_test.hpp>
-
-#include <SFML/System/Clock.hpp>
-
-#include "unit-test-test-stuff.hpp"
 
 #include "misc/nameof.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/strings.hpp"
 #include "misc/vectors.hpp"
+#include "testutil/common.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -29,7 +28,10 @@
 #include <string>
 #include <vector>
 
+#include <SFML/System/Clock.hpp>
+
 using namespace heroespath;
+using namespace heroespath::test;
 using namespace heroespath::misc;
 
 template <typename Number_t>
@@ -1457,7 +1459,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__Trim)
 BOOST_AUTO_TEST_CASE(join_when_empty_tests)
 {
     const std::vector<int> EMPTY;
-    for (const auto VALUE : test::smallValuesWorthTestingInt)
+    for (const auto VALUE : smallValuesWorthTestingInt)
     {
         const auto SIZET_VALUE { static_cast<std::size_t>(VALUE) };
 

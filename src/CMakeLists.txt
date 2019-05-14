@@ -7,24 +7,25 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 #list of library names (also the directory name)
 set(library_names
-    misc
-    gui
-    sfutil
-    popup
-    game
+    avatar
     combat
+    creature
+    game
+    gui
+    interact
     item
+    map
+    misc
+    popup
+    sfutil
     song
     spell
     stage
-    creature
-    map
-    avatar
-    interact)
+    testutil)
 
 
 #list of directories with executables
-set(executable_directory_names heroespath test)
+set(executable_directory_names heroespath unittest)
 
 
 #list of all sub-directories
@@ -39,7 +40,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
     file (READ ../build-flags/msvc.txt custom_compile_flags)
 
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
     set(custom_link_flags ${custom_link_flags} -pthread)
 
@@ -67,9 +68,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     endif()
 
 else()
-
     message(FATAL_ERROR " Unknown Compiler: ${CMAKE_CXX_COMPILER_ID}")
-
 endif()
 
 
@@ -124,18 +123,13 @@ endforeach()
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   
     foreach(executable_directory_name ${executable_directory_names})
-        
         file(COPY config.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${executable_directory_name}/Release)
-        
         file(COPY config.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${executable_directory_name}/Debug)
-        
     endforeach()
     
 else()
-
     file(COPY config.txt DESTINATION heroespath)
-    file(COPY config.txt DESTINATION test)
-
+    file(COPY config.txt DESTINATION unittest)
 endif()
 
 
@@ -149,19 +143,17 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(suppress_names "")
 
     foreach(suppress_file_name ${suppress_file_names})
-
         set(name_without_extension "")
         get_filename_component(name_without_extension ${suppress_file_name} NAME_WE)
-	set(suppress_names ${suppress_names} ${name_without_extension})
-
+	    set(suppress_names ${suppress_names} ${name_without_extension})
     endforeach()
 
     foreach(suppress_name ${suppress_names})
 
-	if(EXISTS ${CMAKE_BINARY_DIR}/${suppress_name})
+	    if(EXISTS ${CMAKE_BINARY_DIR}/${suppress_name})
             file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/${suppress_name})
         else()
-            file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/test)
+            file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/unittest)
         endif()
 
     endforeach()

@@ -6,19 +6,21 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
+//
+// unit-test-vectors.cpp
+//
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Vectors"
 
 #include <boost/test/unit_test.hpp>
 
-#include "unit-test-test-stuff.hpp"
-
 #include "misc/vectors.hpp"
+#include "testutil/common.hpp"
 
 #include <algorithm>
 
 using namespace heroespath;
-using namespace heroespath::misc;
 using namespace heroespath::test;
+using namespace heroespath::misc;
 
 using IntVec_t = std::vector<int>;
 
