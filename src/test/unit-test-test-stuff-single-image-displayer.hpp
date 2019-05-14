@@ -35,6 +35,8 @@ struct SingleImageDisplayer : public IDisplayer
 
     const std::string name() const override { return "SingleImageDisplayer"; }
 
+    const sf::FloatRect contentRegion() const override { return m_imageRegion; }
+
     void setup(const sf::FloatRect & FULL_SCREEN_RECT) override
     {
         m_windowRegion = FULL_SCREEN_RECT;
@@ -51,9 +53,9 @@ struct SingleImageDisplayer : public IDisplayer
         m_text = heroespath::gui::Text("", heroespath::gui::GuiFont::Default, 100);
     }
 
-    void teardown() override { releaseAndFreeAllTextures(); }
+    void teardown() override { releaseAndFreeAll(); }
 
-    void releaseAndFreeAllTextures() override { m_cachedTextureUPtr.reset(); }
+    void releaseAndFreeAll() override { m_cachedTextureUPtr.reset(); }
 
     void beginImageSeries(
         const std::string & TITLE_STR, const std::size_t EXPECTED_IMAGE_COUNT = 0) override
@@ -89,7 +91,7 @@ struct SingleImageDisplayer : public IDisplayer
         }
     }
 
-    void endImageSeries() override { releaseAndFreeAllTextures(); }
+    void endImageSeries() override { releaseAndFreeAll(); }
 
     void appendImageToSeries(heroespath::gui::CachedTexture && cachedTexture) override
     {

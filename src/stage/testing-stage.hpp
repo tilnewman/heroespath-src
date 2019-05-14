@@ -64,21 +64,6 @@
 #define M_TESTING_STRINGIFY(x) #x
 #define M_TESTING_TOSTRING(x) M_TESTING_STRINGIFY(x)
 
-#define M_TESTING_STAGE_TEST_WAIT(test_name)                                                       \
-    static const auto testingWaitId_##test_name { ++waitingForKeyOrClickCounter };                 \
-    static bool hasTestingWaitCompleted_##test_name { false };                                     \
-    if (false == hasTestingWaitCompleted_##test_name)                                              \
-    {                                                                                              \
-        waitingForKeyOrClickId_ = testingWaitId_##test_name;                                       \
-        hasTestingWaitCompleted_##test_name = true;                                                \
-        SetupWaitTest_##test_name();                                                               \
-        AppendWaitTestTitle(std::string(M_TESTING_TOSTRING(test_name)) + " Test");                 \
-    }                                                                                              \
-    if (testingWaitId_##test_name == waitingForKeyOrClickId_)                                      \
-    {                                                                                              \
-        return;                                                                                    \
-    }
-
 namespace heroespath
 {
 namespace gui
@@ -161,11 +146,6 @@ namespace stage
         // see comment in .cpp file
         // void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;
 
-        void SetupWaitTest_GoldBar();
-        void SetupWaitTest_GoldBar2();
-        void SetupWaitTest_Border();
-        bool SetupWaitTest_SfTextLocalOffsetProblem();
-
         void ResetWaitingForKeyOrClick();
 
         void AppendWaitTestTitle(const std::string & TITLE_STR);
@@ -194,10 +174,6 @@ namespace stage
         // all these members are drawn during waitingForKeyOrClick tests
         gui::CachedTextureVec_t waitingForKeyOrClick_CachedTextures_;
         std::vector<sf::Sprite> waitingForKeyOrClick_ToDraw_Sprites_;
-        std::vector<gui::GoldBar> waitingForKeyOrClick_ToDraw_GoldBars_;
-        std::vector<gui::Border> waitingForKeyOrClick_ToDraw_Borders_;
-        std::vector<sf::RectangleShape> waitingForKeyOrClick_ToDraw_RectangleShapes_;
-        std::vector<sf::VertexArray> waitingForKeyOrClick_ToDraw_VertexArrays_;
         std::vector<gui::Text> waitingForKeyOrClick_ToDraw_Texts_;
     };
 

@@ -132,10 +132,6 @@ namespace stage
         , isWaitingForKeyOrClickPaused_(false)
         , waitingForKeyOrClick_CachedTextures_()
         , waitingForKeyOrClick_ToDraw_Sprites_()
-        , waitingForKeyOrClick_ToDraw_GoldBars_()
-        , waitingForKeyOrClick_ToDraw_Borders_()
-        , waitingForKeyOrClick_ToDraw_RectangleShapes_()
-        , waitingForKeyOrClick_ToDraw_VertexArrays_()
         , waitingForKeyOrClick_ToDraw_Texts_()
     {}
 
@@ -154,26 +150,6 @@ namespace stage
             for (const auto & SPRITE : waitingForKeyOrClick_ToDraw_Sprites_)
             {
                 target.draw(SPRITE, states);
-            }
-
-            for (const auto & GOLDBAR : waitingForKeyOrClick_ToDraw_GoldBars_)
-            {
-                target.draw(GOLDBAR, states);
-            }
-
-            for (const auto & BORDER : waitingForKeyOrClick_ToDraw_Borders_)
-            {
-                target.draw(BORDER, states);
-            }
-
-            for (const auto & RECTANGLE_SHAPE : waitingForKeyOrClick_ToDraw_RectangleShapes_)
-            {
-                target.draw(RECTANGLE_SHAPE, states);
-            }
-
-            for (const auto & VERTEX_ARRAY : waitingForKeyOrClick_ToDraw_VertexArrays_)
-            {
-                target.draw(VERTEX_ARRAY, states);
             }
 
             for (const auto & TEXT : waitingForKeyOrClick_ToDraw_Texts_)
@@ -331,8 +307,6 @@ namespace stage
 
     void TestingStage::PerformNextTest()
     {
-        static auto waitingForKeyOrClickCounter(0);
-
         std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilliseconds_));
 
         if (IsFading())
@@ -349,11 +323,6 @@ namespace stage
         }
 
         M_TESTING_STAGE_TEST(GameDataFile);
-
-        M_TESTING_STAGE_TEST_WAIT(SfTextLocalOffsetProblem);
-        M_TESTING_STAGE_TEST_WAIT(GoldBar);
-        M_TESTING_STAGE_TEST_WAIT(GoldBar2);
-        M_TESTING_STAGE_TEST_WAIT(Border);
 
         M_TESTING_STAGE_TEST(Fonts);
         M_TESTING_STAGE_TEST(Maps);
@@ -1338,322 +1307,6 @@ namespace stage
         }
     }
 
-    void TestingStage::SetupWaitTest_GoldBar()
-    {
-        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegion().width * StageRegion().height))
-                                     * 0.092f };
-
-        const auto BETWEEN_PAD { SCREEN_EDGE_PAD * 0.025f };
-
-        auto createGoldBars = [&](const float LEFT,
-                                  const float TOP,
-                                  const gui::Orientation::Enum ORIENTATION,
-                                  const gui::Side::Enum SIDE,
-                                  const bool WILL_CAP_ENDS) {
-            float posX { LEFT };
-            float posY { TOP };
-
-            auto length { 0.0f };
-            while (((posX - LEFT) < SCREEN_EDGE_PAD) && ((posY - TOP) < SCREEN_EDGE_PAD))
-            {
-                waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(
-                    gui::GoldBar(posX, posY, length, ORIENTATION, SIDE, WILL_CAP_ENDS));
-
-                const auto REGION { waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion() };
-
-                waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfutil::MakeRectangleHollow(REGION, sf::Color::Red, 1.0f, true));
-
-                if (ORIENTATION == gui::Orientation::Horiz)
-                {
-                    posY += REGION.height + BETWEEN_PAD;
-                }
-                else
-                {
-                    posX += REGION.width + BETWEEN_PAD;
-                }
-
-                if (length < 3.0f)
-                {
-                    length += misc::Random(1.0f);
-                }
-                else
-                {
-                    length += misc::Random(1.0f, length);
-                }
-            }
-
-            return sf::Vector2f(posX, posY);
-        };
-
-        const auto BETWEEN_SERIES_PAD { BETWEEN_PAD * 2.0f };
-        const auto BETWEEN_SET_PAD { BETWEEN_SERIES_PAD * 2.0f };
-
-        auto createGoldBarsOfAllSides = [&](const sf::Vector2f & POS_V,
-                                            const gui::Orientation::Enum ORIENTATION) {
-            sf::Vector2f posV { POS_V };
-            EnumUnderlying_t flag(1);
-            while (flag <= gui::Side::Last)
-            {
-                posV = createGoldBars(posV.x, posV.y, ORIENTATION, gui::Side::Enum(flag), false);
-
-                flag <<= 1;
-
-                if (ORIENTATION == gui::Orientation::Horiz)
-                {
-                    posV.y += BETWEEN_SERIES_PAD;
-                    posV.x = POS_V.x;
-                }
-                else
-                {
-                    posV.x += BETWEEN_SERIES_PAD;
-                    posV.y = POS_V.y;
-                }
-            }
-
-            if (ORIENTATION == gui::Orientation::Horiz)
-            {
-                posV.y += BETWEEN_SET_PAD;
-                posV.x = POS_V.x;
-            }
-            else
-            {
-                posV.x += BETWEEN_SET_PAD;
-                posV.y = POS_V.y;
-            }
-
-            const auto START_POS_V { posV };
-
-            flag = 1;
-            while (flag <= gui::Side::Last)
-            {
-                posV = createGoldBars(posV.x, posV.y, ORIENTATION, gui::Side::Enum(flag), true);
-
-                flag <<= 1;
-
-                if (ORIENTATION == gui::Orientation::Horiz)
-                {
-                    posV.y += BETWEEN_SERIES_PAD;
-                    posV.x = START_POS_V.x;
-                }
-                else
-                {
-                    posV.x += BETWEEN_SERIES_PAD;
-                    posV.y = START_POS_V.y;
-                }
-            }
-        };
-
-        createGoldBarsOfAllSides(
-            sf::Vector2f(SCREEN_EDGE_PAD, SCREEN_EDGE_PAD * 1.9f), gui::Orientation::Horiz);
-
-        createGoldBarsOfAllSides(
-            sf::Vector2f(SCREEN_EDGE_PAD * 1.9f, SCREEN_EDGE_PAD), gui::Orientation::Vert);
-
-        waitingForKeyOrClick_CachedTextures_.emplace_back(
-            gui::CachedTexture(gui::GuiImages::PathKey()));
-
-        sf::Sprite sprite(waitingForKeyOrClick_CachedTextures_.back().Get());
-        sfutil::Center(sprite);
-
-        waitingForKeyOrClick_ToDraw_Sprites_.emplace_back(sprite);
-    }
-
-    void TestingStage::SetupWaitTest_GoldBar2()
-    {
-        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegion().width * StageRegion().height))
-                                     * 0.12f };
-
-        const auto BETWEEN_SPACER { SCREEN_EDGE_PAD * 0.025f };
-        const auto BETWEEN_ROW_VERT_SPACER { BETWEEN_SPACER * 4.0f };
-
-        auto makeHorizRowOfGoldBarBoxes = [&](const float LEFT,
-                                              const float TOP,
-                                              const bool WILL_MAKE_SMALL,
-                                              const bool WILL_GROW_BORDER) {
-            const auto GROWTH_MIN { 0.333f };
-            const auto GROWTH_MAX { 10.0f };
-
-            float posX { LEFT };
-            float posY { TOP };
-
-            auto width { 0.0f };
-            auto height { 0.0f };
-
-            auto horizGrowthPrev { GROWTH_MIN };
-            auto vertGrowthPrev { GROWTH_MIN };
-            while (posX < (StageRegion().width - SCREEN_EDGE_PAD))
-            {
-                const sf::FloatRect REGION_INITIAL(posX, posY, width, height);
-
-                waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(
-                    gui::GoldBar(REGION_INITIAL, gui::Orientation::Count, WILL_GROW_BORDER));
-
-                const auto REGION_OUTER {
-                    waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion()
-                };
-
-                waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfutil::MakeRectangleHollow(REGION_OUTER, sf::Color::Red, 1.0f, true));
-
-                const auto REGION_INNER {
-                    waitingForKeyOrClick_ToDraw_GoldBars_.back().InnerRegion()
-                };
-
-                waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfutil::MakeRectangleHollow(REGION_INNER, sf::Color::Green, 1.0f, true));
-
-                posX += REGION_OUTER.width + BETWEEN_SPACER;
-
-                if (WILL_MAKE_SMALL)
-                {
-                    const auto GROWTH_HORIZ { misc::Random(
-                        GROWTH_MIN, misc::Max(GROWTH_MIN, (1.0f - horizGrowthPrev))) };
-
-                    horizGrowthPrev = GROWTH_HORIZ;
-
-                    width += GROWTH_HORIZ;
-
-                    const auto GROWTH_VERT { misc::Random(
-                        GROWTH_MIN, misc::Max(GROWTH_MIN, (1.0f - vertGrowthPrev))) };
-
-                    vertGrowthPrev = GROWTH_VERT;
-
-                    height += GROWTH_VERT;
-                }
-                else
-                {
-                    width += misc::Random(1.0f, GROWTH_MAX);
-                    height += misc::Random(1.0f, GROWTH_MAX);
-                }
-            }
-
-            const auto REGION_FINAL { waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion() };
-            return TOP + REGION_FINAL.height;
-        };
-
-        const auto BOTTOM_OF_FIRST_ROW { makeHorizRowOfGoldBarBoxes(
-            SCREEN_EDGE_PAD, SCREEN_EDGE_PAD, true, false) };
-
-        const auto BOTTOM_OF_SECOND_ROW { makeHorizRowOfGoldBarBoxes(
-            SCREEN_EDGE_PAD, BOTTOM_OF_FIRST_ROW + BETWEEN_ROW_VERT_SPACER, false, false) };
-
-        const auto BOTTOM_OF_THIRD_ROW { makeHorizRowOfGoldBarBoxes(
-            SCREEN_EDGE_PAD, BOTTOM_OF_SECOND_ROW + (BETWEEN_ROW_VERT_SPACER * 2.0f), true, true) };
-
-        makeHorizRowOfGoldBarBoxes(
-            SCREEN_EDGE_PAD, BOTTOM_OF_THIRD_ROW + BETWEEN_ROW_VERT_SPACER, false, true);
-    }
-
-    void TestingStage::SetupWaitTest_Border()
-    {
-        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegion().width * StageRegion().height))
-                                     * 0.12f };
-
-        const auto BETWEEN_SPACER { SCREEN_EDGE_PAD * 0.025f };
-        const auto BETWEEN_ROW_VERT_SPACER { BETWEEN_SPACER * 4.0f };
-
-        auto makeHorizRowOfBorders = [&](const float LEFT,
-                                         const float TOP,
-                                         const bool WILL_DRAW_LINES,
-                                         const bool WILL_MAKE_SMALL,
-                                         const bool WILL_GROW_BORDER) {
-            const auto GROWTH_MIN { 0.333f };
-            const auto GROWTH_MAX { 10.0f };
-
-            float posX { LEFT };
-            float posY { TOP };
-
-            auto width { 0.0f };
-            auto height { 0.0f };
-
-            auto horizGrowthPrev { GROWTH_MIN };
-            auto vertGrowthPrev { GROWTH_MIN };
-            while (posX < (StageRegion().width - SCREEN_EDGE_PAD))
-            {
-                const sf::FloatRect REGION_INITIAL(posX, posY, width, height);
-
-                if (WILL_DRAW_LINES)
-                {
-                    waitingForKeyOrClick_ToDraw_Borders_.emplace_back(
-                        gui::Border(REGION_INITIAL, WILL_GROW_BORDER));
-                }
-                else
-                {
-                    waitingForKeyOrClick_ToDraw_Borders_.emplace_back(gui::Border(
-                        REGION_INITIAL,
-                        1.0f,
-                        sf::Color::White,
-                        sf::Color::Transparent,
-                        WILL_GROW_BORDER));
-                }
-
-                const auto REGION_OUTER {
-                    waitingForKeyOrClick_ToDraw_Borders_.back().OuterRegion()
-                };
-
-                waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfutil::MakeRectangleHollow(REGION_OUTER, sf::Color::Red, 1.0f, true));
-
-                const auto REGION_INNER {
-                    waitingForKeyOrClick_ToDraw_Borders_.back().InnerRegion()
-                };
-
-                waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfutil::MakeRectangleHollow(REGION_INNER, sf::Color::Green, 1.0f, true));
-
-                posX += REGION_OUTER.width + BETWEEN_SPACER;
-
-                if (WILL_MAKE_SMALL)
-                {
-                    const auto GROWTH_HORIZ { misc::Random(
-                        GROWTH_MIN, misc::Max(GROWTH_MIN, (1.0f - horizGrowthPrev))) };
-
-                    horizGrowthPrev = GROWTH_HORIZ;
-
-                    width += GROWTH_HORIZ;
-
-                    const auto GROWTH_VERT { misc::Random(
-                        GROWTH_MIN, misc::Max(GROWTH_MIN, (1.0f - vertGrowthPrev))) };
-
-                    vertGrowthPrev = GROWTH_VERT;
-
-                    height += GROWTH_VERT;
-                }
-                else
-                {
-                    width += misc::Random(1.0f, GROWTH_MAX);
-                    height += misc::Random(1.0f, GROWTH_MAX);
-                }
-            }
-
-            const auto REGION_FINAL { waitingForKeyOrClick_ToDraw_Borders_.back().OuterRegion() };
-            return TOP + REGION_FINAL.height;
-        };
-
-        const auto BOTTOM_OF_FIRST_ROW { makeHorizRowOfBorders(
-            SCREEN_EDGE_PAD, SCREEN_EDGE_PAD, true, true, false) };
-
-        const auto BOTTOM_OF_SECOND_ROW { makeHorizRowOfBorders(
-            SCREEN_EDGE_PAD, BOTTOM_OF_FIRST_ROW + BETWEEN_ROW_VERT_SPACER, true, false, false) };
-
-        const auto BOTTOM_OF_THIRD_ROW { makeHorizRowOfBorders(
-            SCREEN_EDGE_PAD,
-            BOTTOM_OF_SECOND_ROW + (BETWEEN_ROW_VERT_SPACER * 2.0f),
-            true,
-            true,
-            true) };
-
-        const auto BOTTOM_OF_FOURTH_ROW { makeHorizRowOfBorders(
-            SCREEN_EDGE_PAD, BOTTOM_OF_THIRD_ROW + BETWEEN_ROW_VERT_SPACER, false, true, false) };
-
-        const auto BOTTOM_OF_FIFTH_ROW { makeHorizRowOfBorders(
-            SCREEN_EDGE_PAD, BOTTOM_OF_FOURTH_ROW + BETWEEN_ROW_VERT_SPACER, false, false, false) };
-
-        makeHorizRowOfBorders(
-            SCREEN_EDGE_PAD, BOTTOM_OF_FIFTH_ROW + BETWEEN_ROW_VERT_SPACER, false, true, true);
-    }
-
     void TestingStage::ResetWaitingForKeyOrClick()
     {
         waitingForKeyOrClickId_ = 0;
@@ -1662,10 +1315,6 @@ namespace stage
 
         waitingForKeyOrClick_CachedTextures_.clear();
         waitingForKeyOrClick_ToDraw_Sprites_.clear();
-        waitingForKeyOrClick_ToDraw_GoldBars_.clear();
-        waitingForKeyOrClick_ToDraw_Borders_.clear();
-        waitingForKeyOrClick_ToDraw_RectangleShapes_.clear();
-        waitingForKeyOrClick_ToDraw_VertexArrays_.clear();
         waitingForKeyOrClick_ToDraw_Texts_.clear();
     }
 
@@ -1680,41 +1329,6 @@ namespace stage
             (StageRegion().width * 0.5f) - text.getGlobalBounds().width, 50.0f);
 
         waitingForKeyOrClick_ToDraw_Texts_.emplace_back(text);
-    }
-
-    bool TestingStage::SetupWaitTest_SfTextLocalOffsetProblem()
-    {
-        auto setupTextTest
-            = [&](const sf::FloatRect & REGION, const unsigned FONT_SIZE, const float SCALE) {
-                  waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                      sfutil::MakeRectangleHollow(REGION, sf::Color::Green));
-
-                  const gui::TextInfo TEXT_INFO(
-                      "This is text.", gui::GuiFont::SystemCondensed, FONT_SIZE);
-
-                  gui::Text text(TEXT_INFO);
-                  text.setScale(sf::Vector2f(SCALE, SCALE));
-                  text.setPosition(sfutil::Position(REGION));
-
-                  waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                      sfutil::MakeRectangleHollow(text.getGlobalBounds(), sf::Color::Yellow));
-
-                  waitingForKeyOrClick_ToDraw_Texts_.emplace_back(text);
-              };
-
-        const float OFFSET { 100.0f };
-        const sf::Vector2f OFFSET_V(OFFSET, OFFSET);
-
-        const float SIZE { 600.0f };
-        const sf::Vector2f SIZE_V(SIZE, (SIZE * 0.5f));
-
-        sf::FloatRect region(OFFSET_V, SIZE_V);
-        setupTextTest(region, 100, 1.0f);
-
-        region.left = sfutil::ScreenRatioToPixelsHoriz(0.5f);
-        setupTextTest(region, 50, 5.0f);
-
-        return true;
     }
 
 } // namespace stage

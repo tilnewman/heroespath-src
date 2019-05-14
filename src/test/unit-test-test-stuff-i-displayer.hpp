@@ -10,6 +10,7 @@
 // unit-test-test-stuff-i-displayer.hpp
 //
 #include <cstdlib>
+#include <memory>
 #include <string>
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -28,19 +29,24 @@ struct IDisplayer : public sf::Drawable
 
     virtual const std::string name() const = 0;
 
-    virtual void setup(const sf::FloatRect & FULL_SCREEN_RECT) = 0;
+    virtual const sf::FloatRect contentRegion() const = 0;
 
+    virtual void incrememntProgress() {}
+
+    virtual void setProgress(const std::size_t) {}
+
+    virtual void setup(const sf::FloatRect & FULL_SCREEN_RECT) = 0;
     virtual void teardown() = 0;
 
-    virtual void releaseAndFreeAllTextures() = 0;
+    virtual void releaseAndFreeAll() = 0;
 
-    virtual void
-        beginImageSeries(const std::string & TITLE_STR, const std::size_t EXPECTED_IMAGE_COUNT = 0)
-        = 0;
+    virtual void beginImageSeries(const std::string &, const std::size_t = 0) {}
+    virtual void endImageSeries() {}
+    virtual void appendImageToSeries(heroespath::gui::CachedTexture &&) {}
 
-    virtual void endImageSeries() = 0;
-
-    virtual void appendImageToSeries(heroespath::gui::CachedTexture && cachedTexture) = 0;
+    virtual void beginDrawablesSet(const std::string &) {}
+    virtual void endDrawablesSet() {}
+    virtual void appendDrawable(std::unique_ptr<sf::Drawable> &&) {}
 
     void draw(sf::RenderTarget &, sf::RenderStates = sf::RenderStates()) const override = 0;
 };

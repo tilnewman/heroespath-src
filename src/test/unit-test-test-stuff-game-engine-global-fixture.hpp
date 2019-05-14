@@ -97,16 +97,51 @@ struct GameEngineGlobalFixture
 
         window.DisplayFrameBuffer();
 
-        if (m_delayAfterEachImageDisplaySec > 0.0f)
+        if (m_delayAfterEachDrawSec > 0.0f)
         {
-            sf::sleep(sf::seconds(m_delayAfterEachImageDisplaySec));
+            sf::sleep(sf::seconds(m_delayAfterEachDrawSec));
+        }
+    }
+
+    static void drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 3.0f)
+    {
+        if (!(DURATION_SEC > 0.0f))
+        {
+            return;
+        }
+
+        heroespath::gui::Display::Instance()->PollEvents();
+
+        sf::Clock timer;
+
+        while (timer.getElapsedTime().asSeconds() < DURATION_SEC)
+        {
+            const float timeElapsedPercent { (timer.getElapsedTime().asSeconds() / DURATION_SEC)
+                                             * 100.0f };
+
+            m_iDisplayerUPtr->setProgress(static_cast<std::size_t>(timeElapsedPercent));
+
+            draw();
+
+            for (auto const & EVENT : heroespath::gui::Display::Instance()->PollEvents())
+            {
+                if ((EVENT.type == sf::Event::KeyPressed)
+                    || (EVENT.type == sf::Event::MouseButtonPressed)
+                    || (EVENT.type == sf::Event::Closed)
+                    || !heroespath::gui::Display::Instance()->IsOpen())
+                {
+                    return;
+                }
+            }
+
+            sf::sleep(sf::seconds(0.05f));
         }
     }
 
 private:
     static inline std::unique_ptr<heroespath::game::StartupShutdown> m_startupShutdownUPtr {};
     static inline std::unique_ptr<IDisplayer> m_iDisplayerUPtr {};
-    static inline float m_delayAfterEachImageDisplaySec = 0.0f;
+    static inline float m_delayAfterEachDrawSec = 0.0f;
 };
 
 #endif // HEROESPATH_UNIT_TEST_TEST_STUFF_GAME_ENGINE_GLOBAL_FIXTURE_INCLUDED
