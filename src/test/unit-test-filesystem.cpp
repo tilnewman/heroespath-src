@@ -17,7 +17,7 @@
 #include "misc/filesystem.hpp"
 #include "misc/platform.hpp"
 #include "misc/strings.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
 
 #include <boost/filesystem.hpp>
 

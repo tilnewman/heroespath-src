@@ -9,9 +9,6 @@
 //
 // i-displayer.hpp
 //
-#include "gui/cached-texture.hpp"
-
-#include <cstdlib>
 #include <memory>
 #include <string>
 
@@ -19,6 +16,10 @@
 
 namespace heroespath
 {
+namespace gui
+{
+    class CachedTexture;
+}
 namespace test
 {
 

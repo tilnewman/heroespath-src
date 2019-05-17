@@ -16,7 +16,7 @@
 #include "gui/sliders.hpp"
 #include "misc/nameof.hpp"
 #include "misc/real.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
 
 #include <iostream>
 #include <numeric>

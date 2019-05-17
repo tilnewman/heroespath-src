@@ -18,8 +18,8 @@
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
-#include "testutil/single-image-displayer.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
+#include "test/util/single-image-displayer.hpp"
 
 #include <cstdlib>
 #include <stdexcept>

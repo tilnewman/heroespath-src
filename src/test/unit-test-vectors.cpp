@@ -13,9 +13,10 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "game/setup-teardown.hpp"
 #include "misc/vectors.hpp"
-#include "testutil/common.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
+#include "test/util/common.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
 
 #include <algorithm>
 

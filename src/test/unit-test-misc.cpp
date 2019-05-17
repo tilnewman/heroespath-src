@@ -18,7 +18,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/real.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
 
 #include <array>
 #include <deque>

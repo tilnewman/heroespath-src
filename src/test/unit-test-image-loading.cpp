@@ -15,14 +15,19 @@
 #include "avatar/avatar-enum.hpp"
 #include "creature/condition.hpp"
 #include "creature/title.hpp"
+#include "game/setup-teardown.hpp"
 #include "gui/combat-image-enum.hpp"
 #include "gui/image-loaders.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
-#include "testutil/common.hpp"
-#include "testutil/i-displayer.hpp"
-#include "testutil/single-image-displayer-scoped.hpp"
+#include "test/util/common.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
+#include "test/util/single-image-displayer-scoped.hpp"
+#include "test/util/single-image-displayer.hpp"
+
+#include <SFML/Graphics.hpp>
 
 using namespace heroespath;
 using namespace heroespath::test;

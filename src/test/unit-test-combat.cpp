@@ -15,9 +15,9 @@
 
 #include "combat/combat-node.hpp"
 #include "combat/combat-tree.hpp"
-#include "testutil/common.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
-#include "testutil/single-image-displayer.hpp"
+#include "test/util/common.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
+#include "test/util/single-image-displayer.hpp"
 
 using namespace heroespath;
 using namespace heroespath::test;

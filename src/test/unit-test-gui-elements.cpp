@@ -15,14 +15,19 @@
 
 #include "gui/border.hpp"
 #include "gui/font-enum.hpp"
+#include "gui/font-manager.hpp"
 #include "gui/gold-bar.hpp"
 #include "gui/gui-images.hpp"
 #include "gui/text-info.hpp"
 #include "misc/random.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/fitting.hpp"
 #include "sfutil/primitives.hpp"
-#include "testutil/common.hpp"
-#include "testutil/drawables-displayer.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
+#include "test/util/common.hpp"
+#include "test/util/drawables-displayer.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
+
+#include <SFML/Graphics.hpp>
 
 using namespace heroespath;
 using namespace heroespath::test;

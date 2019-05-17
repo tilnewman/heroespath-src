@@ -20,12 +20,11 @@ set(library_names
     sfutil
     song
     spell
-    stage
-    testutil)
+    stage)
 
 
 #list of directories with executables
-set(executable_directory_names heroespath unittest)
+set(executable_directory_names heroespath test)
 
 
 #list of all sub-directories
@@ -129,7 +128,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     
 else()
     file(COPY config.txt DESTINATION heroespath)
-    file(COPY config.txt DESTINATION unittest)
+    file(COPY config.txt DESTINATION test)
 endif()
 
 
@@ -153,7 +152,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 	    if(EXISTS ${CMAKE_BINARY_DIR}/${suppress_name})
             file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/${suppress_name})
         else()
-            file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/unittest)
+            file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/test)
         endif()
 
     endforeach()

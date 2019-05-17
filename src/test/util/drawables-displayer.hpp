@@ -9,7 +9,13 @@
 //
 // drawables-displayer.hpp
 //
-#include "testutil/displayer-base.hpp"
+#include "test/util/displayer-base.hpp"
+
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+
+#include <memory>
+#include <vector>
 
 namespace heroespath
 {
@@ -18,28 +24,12 @@ namespace test
 
     struct DrawablesDisplayer : public DisplayerBase
     {
-        DrawablesDisplayer()
-            : DisplayerBase("DrawablesDisplayer")
-        {}
-
+        DrawablesDisplayer();
         virtual ~DrawablesDisplayer() = default;
 
-        void releaseAndFreeAll() override { m_drawables.clear(); }
-
-        void appendDrawable(std::unique_ptr<sf::Drawable> drawableUPtr) override
-        {
-            m_drawables.emplace_back(std::move(drawableUPtr));
-        }
-
-        void draw(sf::RenderTarget & target, sf::RenderStates = sf::RenderStates()) const override
-        {
-            for (const auto & DRAWABLE_UPTR : m_drawables)
-            {
-                target.draw(*DRAWABLE_UPTR);
-            }
-
-            drawCommon(target);
-        }
+        void releaseAndFreeAll() override;
+        void appendDrawable(std::unique_ptr<sf::Drawable> drawableUPtr) override;
+        void draw(sf::RenderTarget & target, sf::RenderStates = sf::RenderStates()) const override;
 
     private:
         std::vector<std::unique_ptr<sf::Drawable>> m_drawables;

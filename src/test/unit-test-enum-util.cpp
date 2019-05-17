@@ -17,7 +17,7 @@
 #include "misc/enum-common.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
 
 // all of the enum includes
 #include "avatar/avatar-enum.hpp"

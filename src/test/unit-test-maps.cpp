@@ -13,10 +13,13 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "game/setup-teardown.hpp"
 #include "interact/interaction-manager.hpp"
 #include "map/level-enum.hpp"
 #include "map/map.hpp"
-#include "testutil/single-image-displayer-scoped.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
+#include "test/util/single-image-displayer-scoped.hpp"
+#include "test/util/single-image-displayer.hpp"
 
 using namespace heroespath;
 using namespace heroespath::test;

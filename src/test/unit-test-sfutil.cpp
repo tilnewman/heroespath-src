@@ -36,10 +36,10 @@
 #include "sfutil/vector-math.hpp"
 #include "sfutil/vertex.hpp"
 #include "sfutil/video-mode.hpp"
-#include "testutil/common.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
-#include "testutil/i-displayer.hpp"
-#include "testutil/single-image-displayer.hpp"
+#include "test/util/common.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
+#include "test/util/i-displayer.hpp"
+#include "test/util/single-image-displayer.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>

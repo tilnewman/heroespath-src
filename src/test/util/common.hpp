@@ -10,13 +10,9 @@
 // common.hpp
 //
 #include <array>
-#include <cstddef> //for std::size_t
 #include <set>
 #include <sstream>
-#include <stdexcept>
 #include <string>
-
-#include <SFML/Graphics.hpp>
 
 namespace heroespath
 {

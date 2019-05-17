@@ -15,7 +15,7 @@
 
 #include "misc/nameof.hpp"
 #include "misc/vector-map.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
+#include "test/util/game-engine-global-fixture.hpp"
 
 #include <algorithm>
 #include <iomanip>

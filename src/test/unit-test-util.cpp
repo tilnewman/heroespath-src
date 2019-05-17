@@ -13,7 +13,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "testutil/common.hpp"
+#include "test/util/common.hpp"
 
 using namespace heroespath;
 using namespace heroespath::test;
