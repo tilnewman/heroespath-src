@@ -56,14 +56,7 @@ namespace creature
         }
     }
 
-    void EnchantmentWarehouse::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_),
-            "creature::EnchantmentWarehouse::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void EnchantmentWarehouse::Release() { instanceUPtr_.reset(); }
 
 } // namespace creature
 } // namespace heroespath

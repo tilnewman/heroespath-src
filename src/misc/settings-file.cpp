@@ -64,13 +64,7 @@ namespace misc
         }
     }
 
-    void SettingsFile::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "SettingsFile::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void SettingsFile::Release() { instanceUPtr_.reset(); }
 
     void SettingsFile::AcquireAndSave()
     {

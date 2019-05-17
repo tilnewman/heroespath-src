@@ -7,9 +7,9 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-filesystem.cpp
+// unit-test-00700-filesystem.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Filesystem"
+#define BOOST_TEST_MODULE "filesystem"
 
 #include <boost/test/unit_test.hpp>
 
@@ -17,6 +17,7 @@
 #include "misc/filesystem.hpp"
 #include "misc/platform.hpp"
 #include "misc/strings.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -27,7 +28,15 @@
 #include <vector>
 
 using namespace heroespath;
+using namespace heroespath::test;
 using namespace heroespath::misc;
+
+void GameEngineGlobalFixture::setupBeforeAllTests()
+{
+    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 namespace bfs = boost::filesystem;
 
@@ -189,7 +198,7 @@ struct Help
     const std::string TO_CREATE_DIR_FINAL_PATH_STR;
 };
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__CleanPath_A)
+BOOST_AUTO_TEST_CASE(clean_Path)
 {
     Help help;
 
@@ -283,7 +292,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CleanPath_A)
         filesystem::CleanPath("/") == filesystem::CleanPath(bfs::path("/").root_path().string()));
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__CurrentDirectory)
+BOOST_AUTO_TEST_CASE(current_directory)
 {
     BOOST_CHECK(filesystem::CurrentDirectory() == bfs::current_path().make_preferred().string());
 
@@ -292,7 +301,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CurrentDirectory)
         == bfs::canonical(bfs::current_path()).make_preferred().string());
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__CombinePathsAndClean)
+BOOST_AUTO_TEST_CASE(combine_paths_and_clean)
 {
     Help help;
 
@@ -383,7 +392,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CombinePathsAndClean)
                + help.TEST_DIR_NAME_STR));
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__AppendPathsToCurrentAndClean)
+BOOST_AUTO_TEST_CASE(append_paths_to_current_and_clean)
 {
     Help help;
 
@@ -651,7 +660,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__AppendPathsToCurrentAndClean)
 //    BOOST_CHECK(filesystem::EndsWithDirectoryGuess("foo/bar.txt\\..") == true);
 //}
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_INCLUDING_EXTENSION)
+BOOST_AUTO_TEST_CASE(filename_with_extension)
 {
     Help help;
 
@@ -740,7 +749,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_INCLUDING_EXTENSION)
     BOOST_CHECK(filesystem::Filename("foo/bar.txt\\..") == "");
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_EXLUDING_EXTENSION)
+BOOST_AUTO_TEST_CASE(filename_witout_extension)
 {
     Help help;
 
@@ -829,7 +838,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_EXLUDING_EXTENSION)
     BOOST_CHECK(filesystem::Filename("foo/bar.txt\\..", true) == "");
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_INCLUDING_DOT)
+BOOST_AUTO_TEST_CASE(extenion_with_dot)
 {
     Help help;
 
@@ -918,7 +927,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_INCLUDING_DOT)
     BOOST_CHECK(filesystem::Extension("foo/bar.txt\\..") == "");
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_EXCLUDING_DOT)
+BOOST_AUTO_TEST_CASE(extension_without_dot)
 {
     Help help;
 
@@ -1007,7 +1016,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_EXCLUDING_DOT)
     BOOST_CHECK(filesystem::Extension("foo/bar.txt\\..", true) == "");
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__Exists)
+BOOST_AUTO_TEST_CASE(exists)
 {
     Help help;
 
@@ -1022,7 +1031,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Exists)
     BOOST_CHECK(filesystem::Exists(help.TEST_DIR_PATH_STR) == true);
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsFile)
+BOOST_AUTO_TEST_CASE(exists_and_is_file)
 {
     Help help;
 
@@ -1037,7 +1046,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsFile)
     BOOST_CHECK(filesystem::ExistsAndIsFile(help.TEST_DIR_PATH_STR) == false);
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsDirectory)
+BOOST_AUTO_TEST_CASE(exists_and_is_directory)
 {
     Help help;
 
@@ -1053,7 +1062,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsDirectory)
     BOOST_CHECK(filesystem::ExistsAndIsDirectory(help.TEST_DIR_PATH_STR) == true);
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__FindFiles)
+BOOST_AUTO_TEST_CASE(find_files)
 {
     Help help;
 
@@ -1160,7 +1169,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__FindFiles)
         == help.ALL_VALID_FILES_RECURSIVE);
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__FindFirstAvailableNumberedFilenamePath)
+BOOST_AUTO_TEST_CASE(find_first_available_numbered_filename_path)
 {
     Help help;
 
@@ -1175,7 +1184,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__FindFirstAvailableNumberedFilenamePath)
         == "log-4.txt");
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__SortByLastNumberInFilename)
+BOOST_AUTO_TEST_CASE(sort_by_last_number_in_filename)
 {
     Help help;
 
@@ -1278,7 +1287,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__SortByLastNumberInFilename)
     }
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__LimitPathDept)
+BOOST_AUTO_TEST_CASE(limit_path_depth)
 {
     const std::string PATH_STR { Help::PreferredSlashes("one/two/three/file.ext") };
 
@@ -1316,7 +1325,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__LimitPathDept)
         filesystem::LimitPathDept(PATH_STR, std::numeric_limits<std::size_t>::max()) == PATH_STR);
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__CreateDirectory_and_Delete)
+BOOST_AUTO_TEST_CASE(create_directory_and_then_delete_it)
 {
     // this block is only to force ~Help() that will cleanup any mess left by these tests
     {

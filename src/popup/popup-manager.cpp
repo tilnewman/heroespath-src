@@ -75,12 +75,7 @@ namespace popup
         }
     }
 
-    void PopupManager::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "popup::PopupManager::Release() found instanceUPtr that was null.");
-        instanceUPtr_.reset();
-    }
+    void PopupManager::Release() { instanceUPtr_.reset(); }
 
     void PopupManager::SetTexturesDirectoryPaths(
         const std::string & WINDOWS_PATH, const std::string & ACCENTS_PATH)

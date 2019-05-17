@@ -7,16 +7,13 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-sfutil.cpp
+// unit-test-00800-sfutil.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_sfutil_test"
+#define BOOST_TEST_MODULE "sfutil"
 
 #include <boost/test/unit_test.hpp>
 
-#include "gui/display.hpp"
 #include "misc/log-macros.hpp"
-#include "misc/log.hpp"
-#include "misc/platform.hpp"
 #include "misc/random.hpp"
 #include "sfutil/angles.hpp"
 #include "sfutil/blend-mode.hpp"
@@ -55,6 +52,7 @@ using namespace heroespath::sfutil;
 
 void GameEngineGlobalFixture::setupBeforeAllTests()
 {
+    m_subsystemsToSetup = game::SubsystemCollection::TestAll;
     m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
 }
 
@@ -251,7 +249,7 @@ void minimallyEnclosingTestWithAndWithoutIgnore(
     minimallyEnclosingTest(RECT_A, RECT_B, true, RECT_EXPECTED, TEST_NAME + " (both=true)");
 }
 
-BOOST_AUTO_TEST_CASE(Type_Helpers_Tests)
+BOOST_AUTO_TEST_CASE(type_helpers)
 {
     BOOST_CHECK_MESSAGE(
         (misc::are_any_v<sf::Sprite, sf::Sprite, sf::Image, sf::Texture, sf::RectangleShape>),
@@ -271,7 +269,7 @@ BOOST_AUTO_TEST_CASE(Type_Helpers_Tests)
     BOOST_CHECK((has_getglobalbounds_v<sf::RectangleShape>));
 }
 
-BOOST_AUTO_TEST_CASE(SFML_Default_Values_Tests)
+BOOST_AUTO_TEST_CASE(sf_default_values)
 {
     auto areVectorValuesZero = [](const sf::Vector2f & V) {
         return !((V.x < 0.0f) || (V.x > 0.0f) || (V.y < 0.0f) || (V.y > 0.0f));
@@ -533,7 +531,7 @@ BOOST_AUTO_TEST_CASE(vector_mult)
     BOOST_CHECK(VectorMult(sf::Vector2i(-10, -1000000), sf::Vector2f(-0.1f, -0.000001f)) == V1I);
 }
 
-BOOST_AUTO_TEST_CASE(ColorMathTests)
+BOOST_AUTO_TEST_CASE(color_math)
 {
     const sf::Color C0(0, 0, 0, 0);
     const sf::Color C1(1, 1, 1, 1);
@@ -556,7 +554,7 @@ BOOST_AUTO_TEST_CASE(ColorMathTests)
     BOOST_CHECK((C0 - C255) == C0);
 }
 
-BOOST_AUTO_TEST_CASE(VectorAndRectTests)
+BOOST_AUTO_TEST_CASE(vector_and_rect)
 {
     const sf::Vector2f V0(0.0f, 0.0f);
     const sf::Vector2f V1(1.0f, 1.0f);
@@ -596,7 +594,7 @@ BOOST_AUTO_TEST_CASE(VectorAndRectTests)
     }
 }
 
-BOOST_AUTO_TEST_CASE(Vertex_Tests)
+BOOST_AUTO_TEST_CASE(vertexes)
 {
     using namespace heroespath::gui;
 
@@ -1014,7 +1012,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     BOOST_CHECK(va[11].texCoords == sf::Vector2f(10.0f, 20.0f));
 }
 
-BOOST_AUTO_TEST_CASE(ZeroOrLessTests)
+BOOST_AUTO_TEST_CASE(is_zero_or_one_or_less)
 {
     const float NEGATIVE(-0.0001f);
     const float ZERO(0.0f);
@@ -1283,7 +1281,7 @@ BOOST_AUTO_TEST_CASE(ZeroOrLessTests)
     BOOST_CHECK(IsLessThanOneAll(Size(LLR)) == false);
 }
 
-BOOST_AUTO_TEST_CASE(CenterOfTests)
+BOOST_AUTO_TEST_CASE(center_of)
 {
     BOOST_CHECK(CenterOf(sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f)) == sf::Vector2f(0.0f, 0.0f));
     BOOST_CHECK(CenterOf(sf::FloatRect(-1.0f, -1.0f, 2.0f, 2.0f)) == sf::Vector2f(0.0f, 0.0f));
@@ -1308,7 +1306,7 @@ BOOST_AUTO_TEST_CASE(CenterOfTests)
     BOOST_CHECK(CenterOf(spriteDefault) == sf::Vector2f(0.0f, 0.0f));
 }
 
-BOOST_AUTO_TEST_CASE(CenterToTests)
+BOOST_AUTO_TEST_CASE(center_to)
 {
     const float HALF { 0.5f };
     const sf::IntRect ORIGIN_WRAP_RECT_I(-1, -1, 2, 2);
@@ -1401,7 +1399,7 @@ BOOST_AUTO_TEST_CASE(CenterToTests)
     }
 }
 
-BOOST_AUTO_TEST_CASE(ColorTests)
+BOOST_AUTO_TEST_CASE(colors)
 {
     const sf::Color C1(1, 2, 3, 4);
     const sf::Color C2(5, 6, 7, 8);
@@ -1428,7 +1426,7 @@ BOOST_AUTO_TEST_CASE(ColorTests)
     BOOST_CHECK(Transition(C0, CD, 0.5f) == sf::Color(5, 10, 20, 40));
 }
 
-BOOST_AUTO_TEST_CASE(DirectionTests)
+BOOST_AUTO_TEST_CASE(directions)
 {
     BOOST_CHECK(
         DirectionFromAToB(sf::Vector2i(-1, 0), sf::Vector2i(1, 0)) == gui::Direction::Right);
@@ -1442,7 +1440,7 @@ BOOST_AUTO_TEST_CASE(DirectionTests)
         DirectionFromAToB(sf::Vector2i(1, -1), sf::Vector2i(1, -1)) == gui::Direction::Count);
 }
 
-BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
+BOOST_AUTO_TEST_CASE(display_and_display_centering)
 {
     // display tests
     const sf::Vector2f SCREEN_SIZE_V(DisplaySize());
@@ -1504,7 +1502,7 @@ BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
                ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F)) });
 }
 
-BOOST_AUTO_TEST_CASE(DistanceTests)
+BOOST_AUTO_TEST_CASE(distance)
 {
     BOOST_CHECK((Distance(sf::Vector2i(0, 0), sf::Vector2f(0.0f, 0.0f)) == 0));
     BOOST_CHECK((Distance(sf::Vector2i(-10, 0), sf::Vector2f(10.0f, 0.0f)) == 20));
@@ -1537,7 +1535,7 @@ BOOST_AUTO_TEST_CASE(DistanceTests)
     }
 }
 
-BOOST_AUTO_TEST_CASE(FitTests)
+BOOST_AUTO_TEST_CASE(fitting)
 {
     const sf::Vector2i EMPTY_V_I(0, 0);
     const sf::Vector2f EMPTY_V_F(0.0f, 0.0f);
@@ -1970,7 +1968,7 @@ BOOST_AUTO_TEST_CASE(FitTests)
     BOOST_CHECK(misc::IsRealClose(ScaleThatFits(TALL_RECT_F, WIDE_RECT_I), 0.1f));
 }
 
-BOOST_AUTO_TEST_CASE(PositionTests)
+BOOST_AUTO_TEST_CASE(position)
 {
     const sf::Vector2i POS_V_I(6, 8);
     const sf::Vector2f POS_V_F(POS_V_I);
@@ -2004,7 +2002,7 @@ BOOST_AUTO_TEST_CASE(PositionTests)
     BOOST_CHECK(misc::IsRealClose(Bottom(sprite), SUM_F));
 }
 
-BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
+BOOST_AUTO_TEST_CASE(size_and_scale)
 {
     const sf::Vector2f V0F(0.0f, 0.0f);
     const sf::Vector2i V0I(V0F);
@@ -2418,7 +2416,7 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(gsRectITemp == GS_RECT_SHRUNK_DOUBLE_I);
 }
 
-BOOST_AUTO_TEST_CASE(ToStringTests)
+BOOST_AUTO_TEST_CASE(to_string)
 {
     std::ostringstream ss;
 
@@ -2435,7 +2433,7 @@ BOOST_AUTO_TEST_CASE(ToStringTests)
     stringStreamTest(sf::VideoMode(1, 2, 8), "(1x2:8)");
 }
 
-BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)
+BOOST_AUTO_TEST_CASE(set_size_and_set_position)
 {
     // misc::helpers::MersenneTwister19937::Setup();
 
@@ -2509,7 +2507,7 @@ BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)
     }
 }
 
-BOOST_AUTO_TEST_CASE(minimally_enclosing_tests)
+BOOST_AUTO_TEST_CASE(minimally_enclosing)
 {
     // type checking up front
     {
@@ -2588,7 +2586,7 @@ BOOST_AUTO_TEST_CASE(minimally_enclosing_tests)
     }
 }
 
-BOOST_AUTO_TEST_CASE(intersects_tests)
+BOOST_AUTO_TEST_CASE(contains_intersects_intersection)
 {
     const sf::IntRect RI_0_0(0, 0, 0, 0);
     const sf::IntRect RI_1_1(1, 1, 1, 1);

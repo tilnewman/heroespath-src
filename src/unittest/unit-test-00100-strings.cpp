@@ -7,9 +7,9 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-strings.cpp
+// unit-test-00100-strings.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Strings"
+#define BOOST_TEST_MODULE "strings"
 
 #include <boost/test/unit_test.hpp>
 
@@ -19,6 +19,7 @@
 #include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 #include "testutil/common.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -34,6 +35,13 @@ using namespace heroespath;
 using namespace heroespath::test;
 using namespace heroespath::misc;
 
+void GameEngineGlobalFixture::setupBeforeAllTests()
+{
+    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
+
 template <typename Number_t>
 struct NumStr
 {
@@ -46,7 +54,7 @@ struct NumStr
     std::string str;
 };
 
-BOOST_AUTO_TEST_CASE(misc_strings__AreSameOrOnlyDifferByCase)
+BOOST_AUTO_TEST_CASE(are_same_or_only_differs_by_case)
 {
     BOOST_CHECK(AreSameOrOnlyDifferByCase('1', '1'));
 
@@ -80,7 +88,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__AreSameOrOnlyDifferByCase)
     BOOST_CHECK(!AreSameOrOnlyDifferByCase('x', 'a'));
 }
 
-BOOST_AUTO_TEST_CASE(misc_strings__ConstexprEqual_and_AreEqualCaseInsensitive)
+BOOST_AUTO_TEST_CASE(constexpr_equal_and_are_equal_case_insensitive)
 {
     auto testAreEqualCaseInsensitive = [](const auto & A, const auto & B, const bool EXPECTED) {
         {
@@ -239,16 +247,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__ConstexprEqual_and_AreEqualCaseInsensitive)
     testAreEqualCaseInsensitiveAllVariations(STR_U, STR_J, false);
 }
 
-BOOST_AUTO_TEST_CASE(misc_strings__ConstexprEqual)
-{
-    const std::string STR_J {
-        "\t \r\n 0 12 345 6789 \t \r [ ] - _ !@#$%^&*(())_+-=[]{}\\|;':\",.<> / ? `~  \n \n\r"
-    };
-
-    const std::string STR_M { "This StrinG has A mix of UPPER and lower case characters." };
-}
-
-BOOST_AUTO_TEST_CASE(misc_strings__Case)
+BOOST_AUTO_TEST_CASE(case_querries)
 {
     // test all individual chars
     for (char ch(std::numeric_limits<char>::lowest());; ++ch)
@@ -543,7 +542,7 @@ sum
 }
 */
 
-BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
+BOOST_AUTO_TEST_CASE(camel_to)
 {
     // test empty cases
     BOOST_CHECK(CamelTo("", '_') == "");
@@ -685,7 +684,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
         "complex, Both");
 }
 
-BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
+BOOST_AUTO_TEST_CASE(to_string_and_to_number)
 {
     const int ERROR_NUMBER_INT { -321 };
 
@@ -1192,7 +1191,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
     testToNumberWillFail("C:\\Program Files\\SomeApp\\SomeApp.exe");
 }
 
-BOOST_AUTO_TEST_CASE(misc_strings__NumberToStringWithOrdinalSuffix)
+BOOST_AUTO_TEST_CASE(number_to_string_with_ordinal_suffix)
 {
     BOOST_CHECK(NumberToStringWithOrdinalSuffix(0) == "0th");
 
@@ -1206,7 +1205,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__NumberToStringWithOrdinalSuffix)
     }
 }
 
-BOOST_AUTO_TEST_CASE(misc_strings__ContainsAnyOf)
+BOOST_AUTO_TEST_CASE(contains_any_of)
 {
     const std::string TEST_STRING_TO_SEARCH {
         "Now IS THE TIME FOR ALL good coders to write unit tests. 7777777 1 23 456"
@@ -1277,7 +1276,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__ContainsAnyOf)
         ContainsAnyOf(TEST_STRING_TO_SEARCH, { "xyz", "XYZ", "xYz", "NOW" }, true) == false);
 }
 
-BOOST_AUTO_TEST_CASE(misc_strings__FindNumber)
+BOOST_AUTO_TEST_CASE(find_number)
 {
     // const int ERROR_NUMBER { -1 };
 
@@ -1367,7 +1366,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__FindNumber)
     }
 }
 
-BOOST_AUTO_TEST_CASE(misc_strings__Trim)
+BOOST_AUTO_TEST_CASE(trim)
 {
     BOOST_CHECK(TrimWhitespaceCopy("") == "");
     BOOST_CHECK(TrimWhitespaceCopy(" ") == "");
@@ -1456,7 +1455,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__Trim)
     BOOST_CHECK(TrimWhitespaceCopy(str) == str);
 }
 
-BOOST_AUTO_TEST_CASE(join_when_empty_tests)
+BOOST_AUTO_TEST_CASE(join_when_empty)
 {
     const std::vector<int> EMPTY;
     for (const auto VALUE : smallValuesWorthTestingInt)
@@ -1503,7 +1502,7 @@ BOOST_AUTO_TEST_CASE(join_when_empty_tests)
         ") expected=\"" #expected_str "\", actual=\""                                              \
             << Join(vec, JoinHow(join_options, max_count, ", ")) << "\"");
 
-BOOST_AUTO_TEST_CASE(join_123_tests)
+BOOST_AUTO_TEST_CASE(join)
 {
     const std::vector<std::string> NUM_STR_VEC { "1", "2", "3" };
 

@@ -13,7 +13,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "game/startup-shutdown.hpp"
+#include "game/setup-teardown.hpp"
 #include "gui/cached-texture.hpp"
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
@@ -48,50 +48,60 @@ namespace test
             m_delayAfterEachDrawSec = NEW_DELAY;
         }
 
+        static bool hasDisplay()
+        {
+            return (
+                (m_subsystemsToSetup == game::SubsystemCollection::All)
+                || (m_subsystemsToSetup == game::SubsystemCollection::TestAll));
+        }
+
         void setup()
         {
-            m_startupShutdownUPtr
-                = std::make_unique<game::StartupShutdown>("Unit Test: " + name(), 0, nullptr, true);
+            m_startupShutdownUPtr = std::make_unique<game::SetupTeardown>(
+                "Unit Test: " + name(), m_subsystemsToSetup);
 
-            auto & window = *gui::Display::Instance();
-
-            window.PollEvents();
-
-            if (!window.IsOpen())
+            if (hasDisplay())
             {
-                throw std::runtime_error(name() + "::setup() failed to open a display window.");
+                auto & window = *gui::Display::Instance();
+
+                window.PollEvents();
+
+                gui::FontManager::Instance()->Load(gui::GuiFont::Default);
+
+                if (!m_iDisplayerUPtr)
+                {
+                    throw std::runtime_error(
+                        name()
+                        + "::setup() called when m_iDisplayerUPtr was null.  "
+                          "Implement the setDisplayer() function at the top of your  "
+                          "unit-test-whatever.cpp  file before the line "
+                          "\"BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);\".");
+                }
+
+                m_iDisplayerUPtr->setup(window.FullScreenRect());
+
+                draw();
             }
-
-            gui::FontManager::Instance()->Load(gui::GuiFont::Default);
-
-            if (!m_iDisplayerUPtr)
-            {
-                throw std::runtime_error(
-                    name()
-                    + "::setup() called when m_iDisplayerUPtr was null.  "
-                      "Implement the setDisplayer() function at the top of your  "
-                      "unit-test-whatever.cpp  file before the line "
-                      "\"BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);\".");
-            }
-
-            m_iDisplayerUPtr->setup(window.FullScreenRect());
-            draw();
-            window.PollEvents();
         }
 
         void teardown()
         {
-            gui::Display::Instance()->PollEvents();
+            if (hasDisplay())
+            {
+                gui::Display::Instance()->PollEvents();
+            }
+
             m_iDisplayerUPtr.reset();
             m_startupShutdownUPtr.reset();
         }
 
         static IDisplayer & displayer()
         {
-            if (!m_iDisplayerUPtr)
+            if (!hasDisplay() || !m_iDisplayerUPtr)
             {
                 throw std::runtime_error(
-                    name() + "::displayer() called when m_iDisplayerUPtr was null.");
+                    name()
+                    + "::displayer() called when !hasDisplay() or m_iDisplayerUPtr was null.");
             }
 
             return *m_iDisplayerUPtr;
@@ -99,13 +109,16 @@ namespace test
 
         static void draw(const bool WILL_CHECK_EVENTS = true)
         {
-            auto & window = *gui::Display::Instance();
-            window.ClearToBlack();
-
-            if (m_iDisplayerUPtr)
+            if (!hasDisplay() || !m_iDisplayerUPtr)
             {
-                window.TestDraw(*m_iDisplayerUPtr);
+                throw std::runtime_error(
+                    name() + "::draw() called when !hasDisplay() or m_iDisplayerUPtr was null.");
             }
+
+            auto & window = *gui::Display::Instance();
+
+            window.ClearToBlack();
+            window.TestDraw(*m_iDisplayerUPtr);
 
             window.DisplayFrameBuffer();
 
@@ -120,8 +133,16 @@ namespace test
             }
         }
 
-        static void drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 1.5f)
+        static void drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 0.75f)
         {
+            if (!hasDisplay() || !m_iDisplayerUPtr)
+            {
+                throw std::runtime_error(
+                    name()
+                    + "::drawAndHoldUntilMouseOrKeyOrDuration() called when !hasDisplay() or "
+                      "m_iDisplayerUPtr was null.");
+            }
+
             if (!(DURATION_SEC > 0.0f))
             {
                 return;
@@ -176,7 +197,14 @@ namespace test
         }
 
     private:
-        static const std::string name() { return "GameEngineGlobalFixture_" + m_customName + "_"; }
+        static const std::string name()
+        {
+            const auto CURRENT_TEST_MODULE_NAME
+                = boost::unit_test::framework::current_auto_test_suite().full_name();
+
+            return "GameEngineGlobalFixture_" + std::string(NAMEOF_ENUM(m_subsystemsToSetup)) + "_"
+                + CURRENT_TEST_MODULE_NAME + "_";
+        }
 
         struct EventFlags : public EnumBaseBitField<>
         {
@@ -190,15 +218,22 @@ namespace test
 
         static EventFlags::Enum checkEvents()
         {
+            if (!hasDisplay() || !m_iDisplayerUPtr)
+            {
+                return EventFlags::None;
+            }
+
+            auto & window = *gui::Display::Instance();
+
             EventFlags::Enum flags = EventFlags::None;
 
-            if (!gui::Display::Instance()->IsOpen())
+            if (!window.IsOpen())
             {
                 throw std::runtime_error(
                     name() + "::checkEvents() found the window is not open anymore.");
             }
 
-            const auto EVENTS = gui::Display::Instance()->PollEvents();
+            const auto EVENTS = window.PollEvents();
             for (auto const & EVENT : EVENTS)
             {
                 if (EVENT.type == sf::Event::KeyPressed)
@@ -232,10 +267,13 @@ namespace test
         }
 
     private:
-        static inline std::unique_ptr<game::StartupShutdown> m_startupShutdownUPtr {};
+        static inline std::unique_ptr<game::SetupTeardown> m_startupShutdownUPtr {};
         static inline std::unique_ptr<IDisplayer> m_iDisplayerUPtr {};
         static inline float m_delayAfterEachDrawSec { 0.0f };
-        static inline std::string m_customName {};
+
+        static inline game::SubsystemCollection m_subsystemsToSetup {
+            game::SubsystemCollection::TestWithOnlyLogAndConfig
+        };
     };
 
 } // namespace test

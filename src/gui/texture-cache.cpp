@@ -76,13 +76,7 @@ namespace gui
         }
     }
 
-    void TextureCache::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "gui::TextureCache::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void TextureCache::Release() { instanceUPtr_.reset(); }
 
     std::size_t TextureCache::AddByKey(
         const std::string & GAMEDATAFILE_KEY_STR, const ImageOptions & OPTIONS)

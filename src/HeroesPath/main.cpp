@@ -9,18 +9,24 @@
 //
 // main.cpp
 //
-#include "game/startup-shutdown.hpp"
+#include "game/setup-teardown.hpp"
 
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
-int main(int argc, char * argv[])
+int main(const int ARGC, const char * ARGV[])
 {
     try
     {
-        heroespath::game::StartupShutdown startStop("Heroes' Path", argc, argv, false);
-        startStop.Run();
+        const std::vector<std::string> ARGS(ARGV, ARGV + ARGC);
+
+        heroespath::game::SetupTeardown setupThenTeardown(
+            "Heroes' Path", heroespath::game::SubsystemCollection::All, ARGS);
+
+        setupThenTeardown.Play();
         return EXIT_SUCCESS;
     }
     catch (const std::exception & EXCEPTION)

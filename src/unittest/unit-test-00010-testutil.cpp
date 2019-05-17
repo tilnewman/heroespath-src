@@ -7,9 +7,9 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-test.cpp
+// unit-test-00010-testutil.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
+#define BOOST_TEST_MODULE "testutil_library"
 
 #include <boost/test/unit_test.hpp>
 
@@ -18,7 +18,10 @@
 using namespace heroespath;
 using namespace heroespath::test;
 
-BOOST_AUTO_TEST_CASE(isUnique_CornerCases)
+// this is the only unit test that does not require any of the game's subsystems, not even the
+// logger or the config file, so there is no GlobalFixture put in place here.
+
+BOOST_AUTO_TEST_CASE(is_unique_corner_cases)
 {
     const std::vector<int> EMPTY;
 
@@ -45,7 +48,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CornerCases)
         test::isUnique(PATTERN_2) == false, "pattern 2 vec=" << test::containerToString(PATTERN_2));
 }
 
-BOOST_AUTO_TEST_CASE(isUnique_SingleValues)
+BOOST_AUTO_TEST_CASE(is_unique_single_values)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
@@ -57,7 +60,7 @@ BOOST_AUTO_TEST_CASE(isUnique_SingleValues)
     }
 }
 
-BOOST_AUTO_TEST_CASE(isUnique_RepeatedValues)
+BOOST_AUTO_TEST_CASE(is_unique_repeated_values)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
@@ -69,7 +72,7 @@ BOOST_AUTO_TEST_CASE(isUnique_RepeatedValues)
     }
 }
 
-BOOST_AUTO_TEST_CASE(isUnique_CountingValues)
+BOOST_AUTO_TEST_CASE(is_unique_counting_values)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
@@ -85,7 +88,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValues)
     }
 }
 
-BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithOneDuplicate)
+BOOST_AUTO_TEST_CASE(is_unique_counting_values_with_one_duplicate)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
@@ -107,7 +110,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithOneDuplicate)
     }
 }
 
-BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithMultDuplicate)
+BOOST_AUTO_TEST_CASE(is_unique_counting_values_with_multiple_duplicate)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
@@ -125,7 +128,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithMultDuplicate)
     }
 }
 
-BOOST_AUTO_TEST_CASE(isSorted_CornerCases)
+BOOST_AUTO_TEST_CASE(is_sorted_corner_cases)
 {
     const std::vector<int> EMPTY;
 
@@ -157,7 +160,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CornerCases)
         "pattern 2 vec=" << test::containerToString(PATTERN_2));
 }
 
-BOOST_AUTO_TEST_CASE(isSorted_SingleValues)
+BOOST_AUTO_TEST_CASE(is_sorted_single_values)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
@@ -169,7 +172,7 @@ BOOST_AUTO_TEST_CASE(isSorted_SingleValues)
     }
 }
 
-BOOST_AUTO_TEST_CASE(isSorted_RepeatedValues)
+BOOST_AUTO_TEST_CASE(is_sorted_repeated_values)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
@@ -181,7 +184,7 @@ BOOST_AUTO_TEST_CASE(isSorted_RepeatedValues)
     }
 }
 
-BOOST_AUTO_TEST_CASE(isSorted_CountingValues)
+BOOST_AUTO_TEST_CASE(is_sorted_counting_values)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
@@ -197,7 +200,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValues)
     }
 }
 
-BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithOneDuplicate)
+BOOST_AUTO_TEST_CASE(is_sorted_counting_values_with_one_duplicate)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {
@@ -219,7 +222,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithOneDuplicate)
     }
 }
 
-BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithMultDuplicate)
+BOOST_AUTO_TEST_CASE(is_sorted_counting_values_with_multiple_duplicate)
 {
     for (const auto VALUE : test::smallValuesWorthTestingInt)
     {

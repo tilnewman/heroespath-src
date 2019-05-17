@@ -51,8 +51,6 @@ namespace gui
     public:
         Display(const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
 
-        ~Display();
-
         Display(const Display &) = delete;
         Display(Display &&) = delete;
         Display & operator=(const Display &) = delete;

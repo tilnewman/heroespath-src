@@ -60,13 +60,7 @@ namespace game
         }
     }
 
-    void Game::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "Game::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void Game::Release() { instanceUPtr_.reset(); }
 
     GameState & Game::State() const
     {

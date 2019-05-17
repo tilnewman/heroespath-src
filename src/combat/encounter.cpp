@@ -141,13 +141,7 @@ namespace combat
         }
     }
 
-    void Encounter::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "combat::Encounter::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void Encounter::Release() { instanceUPtr_.reset(); }
 
     bool Encounter::IsRunaway(const creature::CreaturePtr_t CREATURE_PTR) const
     {

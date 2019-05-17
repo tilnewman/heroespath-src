@@ -7,14 +7,15 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-vector-map.cpp
+// unit-test-00300-vector-map.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_VectorMap"
+#define BOOST_TEST_MODULE "vector_map"
 
 #include <boost/test/unit_test.hpp>
 
 #include "misc/nameof.hpp"
 #include "misc/vector-map.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
 
 #include <algorithm>
 #include <iomanip>
@@ -25,7 +26,15 @@
 #include <utility>
 
 using namespace heroespath;
+using namespace heroespath::test;
 using namespace heroespath::misc;
+
+void GameEngineGlobalFixture::setupBeforeAllTests()
+{
+    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 using Test_t = int;
 using VectorMap_t = VectorMap<Test_t, Test_t>;
@@ -285,7 +294,7 @@ inline void relationalTestsAll(const Vector_t & A, const Vector_t & B)
     relationalTests(VMA_REV, VMB_REV, PVA_REV, PVB_REV, FAIL_MESSAGE + " AR-BR");
 }
 
-BOOST_AUTO_TEST_CASE(Misc_VectorMap_Tests)
+BOOST_AUTO_TEST_CASE(vector_map_all)
 {
     const std::size_t TEST_SIZE(123);
 

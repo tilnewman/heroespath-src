@@ -77,9 +77,6 @@ namespace game
 
     void GameController::Release()
     {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "GameController::Release() found instanceUPtr that was null.");
-
         instanceUPtr_.reset();
     }
 

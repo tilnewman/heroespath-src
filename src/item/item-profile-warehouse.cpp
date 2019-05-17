@@ -74,14 +74,7 @@ namespace item
         }
     }
 
-    void ItemProfileWarehouse::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_),
-            "creature::ItemProfileWarehouse::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void ItemProfileWarehouse::Release() { instanceUPtr_.reset(); }
 
     void ItemProfileWarehouse::Initialize()
     {

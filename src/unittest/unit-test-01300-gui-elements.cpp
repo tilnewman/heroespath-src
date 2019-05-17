@@ -4,12 +4,12 @@
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
 // can do whatever you want with this stuff. If we meet some day, and you think
-// this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
+// this stuff is worth it, you can buy me a beer sin return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-gui-elements.cpp
+// unit-test-01300-gui-elements.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule__gui_elements"
+#define BOOST_TEST_MODULE "gui_elements"
 
 #include <boost/test/unit_test.hpp>
 
@@ -23,19 +23,19 @@
 #include "testutil/common.hpp"
 #include "testutil/drawables-displayer.hpp"
 #include "testutil/game-engine-global-fixture.hpp"
-#include "testutil/i-displayer.hpp"
 
 using namespace heroespath;
 using namespace heroespath::test;
 
 void GameEngineGlobalFixture::setupBeforeAllTests()
 {
+    m_subsystemsToSetup = game::SubsystemCollection::TestAll;
     m_iDisplayerUPtr = std::make_unique<DrawablesDisplayer>();
 }
 
 BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
-BOOST_AUTO_TEST_CASE(gui_elements__gold_bars_version_1)
+BOOST_AUTO_TEST_CASE(gold_bars_version_1)
 {
     GameEngineGlobalFixture::displayer().beginDrawablesSet("Gold Bars Version #1");
     const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();
@@ -166,7 +166,7 @@ BOOST_AUTO_TEST_CASE(gui_elements__gold_bars_version_1)
     GameEngineGlobalFixture::displayer().endDrawablesSet();
 }
 
-BOOST_AUTO_TEST_CASE(gui_elements__gold_bars_version_2)
+BOOST_AUTO_TEST_CASE(gold_bars_version_2)
 {
     GameEngineGlobalFixture::displayer().beginDrawablesSet("Gold Bars Version 2");
     const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();
@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_CASE(gui_elements__gold_bars_version_2)
     GameEngineGlobalFixture::displayer().endDrawablesSet();
 }
 
-BOOST_AUTO_TEST_CASE(gui_elements__border)
+BOOST_AUTO_TEST_CASE(border)
 {
     GameEngineGlobalFixture::displayer().beginDrawablesSet("Borders");
     const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();
@@ -387,7 +387,7 @@ BOOST_AUTO_TEST_CASE(gui_elements__border)
     GameEngineGlobalFixture::displayer().endDrawablesSet();
 }
 
-BOOST_AUTO_TEST_CASE(gui_elements__text_offset_fix)
+BOOST_AUTO_TEST_CASE(text_offset_fix)
 {
     GameEngineGlobalFixture::displayer().beginDrawablesSet("Text Offset Fix");
     const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();
@@ -431,7 +431,7 @@ BOOST_AUTO_TEST_CASE(gui_elements__text_offset_fix)
     GameEngineGlobalFixture::displayer().endDrawablesSet();
 }
 
-BOOST_AUTO_TEST_CASE(gui_elements__fonts)
+BOOST_AUTO_TEST_CASE(fonts)
 {
     GameEngineGlobalFixture::displayer().beginDrawablesSet("Fonts");
     const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();

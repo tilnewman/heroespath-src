@@ -7,23 +7,32 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-sliders.cpp
+// unit-test-00600-sliders.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_gui_sliders_test"
+#define BOOST_TEST_MODULE "sliders"
 
 #include <boost/test/unit_test.hpp>
 
 #include "gui/sliders.hpp"
 #include "misc/nameof.hpp"
 #include "misc/real.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
 
 #include <iostream>
 #include <numeric>
 #include <stdexcept>
 
 using namespace heroespath;
+using namespace heroespath::test;
 using namespace heroespath::misc;
 using namespace heroespath::gui;
+
+void GameEngineGlobalFixture::setupBeforeAllTests()
+{
+    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 template <typename Value_t, typename Slider_t>
 void testSlider(
@@ -103,7 +112,7 @@ void testSlider(
     }
 }
 
-BOOST_AUTO_TEST_CASE(SliderZeroToOne_Tests)
+BOOST_AUTO_TEST_CASE(zero_to_one)
 {
     // should not compile
     // SliderZeroToOne<int> slider;
@@ -339,7 +348,7 @@ BOOST_AUTO_TEST_CASE(SliderZeroToOne_Tests)
     }
 }
 
-BOOST_AUTO_TEST_CASE(SliderFromTo_Tests)
+BOOST_AUTO_TEST_CASE(from_to)
 {
     // should not compile
     // SliderFromTo<int> slider;

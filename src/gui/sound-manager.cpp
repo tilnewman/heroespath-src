@@ -72,13 +72,7 @@ namespace gui
         }
     }
 
-    void SoundManager::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "gui::SoundManager::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void SoundManager::Release() { instanceUPtr_.reset(); }
 
     void SoundManager::Initialize()
     {

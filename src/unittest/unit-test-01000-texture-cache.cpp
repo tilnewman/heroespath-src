@@ -7,25 +7,35 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-texture-cache.cpp
+// unit-test-01000-texture-cache.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_gui_texture_cache_test"
+#define BOOST_TEST_MODULE "texture_cache"
 
 #include <boost/test/unit_test.hpp>
 
-#include "game/startup-shutdown.hpp"
 #include "gui/cached-texture.hpp"
 #include "gui/texture-cache.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
+#include "testutil/single-image-displayer.hpp"
 
 #include <cstdlib>
 #include <stdexcept>
 
 using namespace heroespath;
+using namespace heroespath::test;
 using namespace heroespath::gui;
 using namespace heroespath::misc;
+
+void GameEngineGlobalFixture::setupBeforeAllTests()
+{
+    m_subsystemsToSetup = game::SubsystemCollection::TestAll;
+    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 inline void
     LoadTexture(sf::Texture & texture, const std::string & PATH_STR_ORIG, const bool WILL_SMOOTH)
@@ -93,11 +103,8 @@ inline const sf::Image
     return quickLoadByPath(misc::ConfigFile::Instance()->GetMediaPath(KEY), OPTIONS);
 }
 
-BOOST_AUTO_TEST_CASE(HelperFunctionTests)
+BOOST_AUTO_TEST_CASE(helper_functions)
 {
-    misc::ConfigFile::Acquire();
-    misc::ConfigFile::Instance()->Initialize();
-
     const std::string IMAGE1_PATH_KEY("media-image-misc-todo");
     const std::string IMAGE2_PATH_KEY("media-image-misc-x");
 
@@ -136,14 +143,10 @@ BOOST_AUTO_TEST_CASE(HelperFunctionTests)
     sf::Texture texture2;
     texture2.loadFromImage(quickLoadByKey(IMAGE1_PATH_KEY));
     BOOST_CHECK(areImagesEqual(texture1, texture2));
-
-    misc::ConfigFile::Release();
 }
 
-BOOST_AUTO_TEST_CASE(TextureCacheTests)
+BOOST_AUTO_TEST_CASE(all_texture_cache_tests)
 {
-    game::StartupShutdown startStop("Heroes' Path Test", 0, nullptr, true);
-
     TextureCache & tc = *gui::TextureCache::Instance();
 
     const std::string IMAGE1_PATH_KEY("media-image-misc-todo");

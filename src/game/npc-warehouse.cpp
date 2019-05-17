@@ -52,13 +52,7 @@ namespace game
         }
     }
 
-    void NpcWarehouse::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "creature::NpcWarehouse::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void NpcWarehouse::Release() { instanceUPtr_.reset(); }
 
 } // namespace game
 } // namespace heroespath

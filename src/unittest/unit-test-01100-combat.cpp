@@ -7,22 +7,16 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-combat.cpp
+// unit-test-01100-combat.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Game_Combat"
+#define BOOST_TEST_MODULE "combat"
 
 #include <boost/test/unit_test.hpp>
 
 #include "combat/combat-node.hpp"
 #include "combat/combat-tree.hpp"
-#include "combat/encounter.hpp"
-#include "creature/creature.hpp"
-#include "creature/player-party-factory.hpp"
-#include "creature/player-party.hpp"
-#include "game/game-state-factory.hpp"
 #include "testutil/common.hpp"
 #include "testutil/game-engine-global-fixture.hpp"
-#include "testutil/i-displayer.hpp"
 #include "testutil/single-image-displayer.hpp"
 
 using namespace heroespath;
@@ -30,12 +24,13 @@ using namespace heroespath::test;
 
 void GameEngineGlobalFixture::setupBeforeAllTests()
 {
+    m_subsystemsToSetup = game::SubsystemCollection::TestAll;
     m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
 }
 
 BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
-BOOST_AUTO_TEST_CASE(CombatTree_Construction)
+BOOST_AUTO_TEST_CASE(combat_tree_default_construction)
 {
     combat::CombatTree combatTree;
 
@@ -108,12 +103,12 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 }
 
 /*
-BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
+BOOST_AUTO_TEST_CASE(combat_tree_with_default_party)
 {
     std::cout << "begin" << std::endl;
     BOOST_CHECK_MESSAGE(
-        StartupShutdown::Setup("Heroes' Path Unit Tests", 0, nullptr),
-        "StartupShutdown::Setup() failed");
+        SetupTeardown::Setup("Heroes' Path Unit Tests", 0, nullptr),
+        "SetupTeardown::Setup() failed");
 
     std::cout << "1" << std::endl;
     //setup the default party
@@ -426,7 +421,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
         BOOST_CHECK(combatNodePtrs.empty());
     }
 
-    StartupShutdown::Teardown();
+    SetupTeardown::Teardown();
 
     std::cout << "end" << std::endl;
 }

@@ -7,18 +7,18 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-misc.cpp
+// unit-test-00200-misc.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
+#define BOOST_TEST_MODULE "misc"
 
 #include <boost/test/unit_test.hpp>
 
 #include "game/strong-types.hpp"
 #include "gui/list-no-element.hpp"
 #include "misc/boost-optional-that-throws.hpp"
-#include "misc/config-file.hpp"
 #include "misc/not-null.hpp"
 #include "misc/real.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
 
 #include <array>
 #include <deque>
@@ -31,11 +31,19 @@
 #include <type_traits>
 #include <vector>
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 using namespace heroespath;
+using namespace heroespath::test;
 using namespace heroespath::gui;
 using namespace heroespath::misc;
+
+void GameEngineGlobalFixture::setupBeforeAllTests()
+{
+    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 // a simple class used to test working with non-POD
 class Thing
@@ -407,7 +415,7 @@ void isRealTestsForType()
         M_ITER_TYPE_TESTS_FOR_CONT(IS_INPUT_AND_HAS_RANDOM_ACCESS, which, std::multiset);          \
     }
 
-BOOST_AUTO_TEST_CASE(Type_Helpers_Tests_CompileTime)
+BOOST_AUTO_TEST_CASE(type_helpers_compile_time)
 {
     static_assert((are_same_v<int, int>), "are_same_v<int, int> should be true");
     static_assert((!are_same_v<int, char>), "are_same_v<int, char> should be false");
@@ -491,7 +499,7 @@ BOOST_AUTO_TEST_CASE(Type_Helpers_Tests_CompileTime)
     static_assert((are_none_v<int, char, char>), "are_none_v<int, int, int> should be true");
 }
 
-BOOST_AUTO_TEST_CASE(Type_Helpers_Tests_Runtime)
+BOOST_AUTO_TEST_CASE(type_helpers_run_time)
 {
     BOOST_CHECK_MESSAGE((are_same_v<int, int>), "are_same_v<int, int> should be true");
     BOOST_CHECK_MESSAGE((!are_same_v<int, char>), "are_same_v<int, char> should be false");
@@ -583,7 +591,147 @@ BOOST_AUTO_TEST_CASE(Type_Helpers_Tests_Runtime)
     BOOST_CHECK_MESSAGE((are_none_v<int, char, char>), "are_none_v<int, int, int> should be true");
 }
 
-BOOST_AUTO_TEST_CASE(iterator_type_tests)
+BOOST_AUTO_TEST_CASE(type_helpers_are_number)
+{
+    // fundamental number types
+    BOOST_CHECK((are_arithmetic_nobool_v<char>));
+    BOOST_CHECK((are_arithmetic_nobool_v<short>));
+    BOOST_CHECK((are_arithmetic_nobool_v<int>));
+    BOOST_CHECK((are_arithmetic_nobool_v<long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<long long>));
+
+    // repeat above only unsigned
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned char>));
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned short>));
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned int>));
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<unsigned long long>));
+
+    // repeat BOTH above only with const
+    BOOST_CHECK((are_arithmetic_nobool_v<const char>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const short>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const int>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const long long>));
+    //
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned char>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned short>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned int>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned long>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const unsigned long long>));
+
+    // standard library types
+    BOOST_CHECK((are_arithmetic_nobool_v<std::int8_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::int16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::int32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::int64_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<char16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<char32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<wchar_t>));
+
+    // repeat above only unsigned
+    BOOST_CHECK((are_arithmetic_nobool_v<std::uint8_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::uint16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::uint32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<std::uint64_t>));
+
+    // repeat BOTH above only with const
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::int8_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::int16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::int32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::int64_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const char16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const char32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const wchar_t>));
+    //
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::uint8_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::uint16_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::uint32_t>));
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::uint64_t>));
+
+    // floating point types
+    BOOST_CHECK((are_arithmetic_nobool_v<float>));
+    BOOST_CHECK((are_arithmetic_nobool_v<double>));
+    BOOST_CHECK((are_arithmetic_nobool_v<long double>));
+
+    // misc fail cases
+    BOOST_CHECK((are_arithmetic_nobool_v<bool>) == false);
+    BOOST_CHECK((are_arithmetic_nobool_v<const bool>) == false);
+    BOOST_CHECK((are_arithmetic_nobool_v<std::string>) == false);
+    BOOST_CHECK((are_arithmetic_nobool_v<const std::string>) == false);
+}
+
+BOOST_AUTO_TEST_CASE(type_helpers_are_integral)
+{
+    // fundamental number types
+    BOOST_CHECK((are_integral_v<char>));
+    BOOST_CHECK((are_integral_v<short>));
+    BOOST_CHECK((are_integral_v<int>));
+    BOOST_CHECK((are_integral_v<long>));
+    BOOST_CHECK((are_integral_v<long long>));
+
+    // repeat above only unsigned
+    BOOST_CHECK((are_integral_v<unsigned char>));
+    BOOST_CHECK((are_integral_v<unsigned short>));
+    BOOST_CHECK((are_integral_v<unsigned int>));
+    BOOST_CHECK((are_integral_v<unsigned long>));
+    BOOST_CHECK((are_integral_v<unsigned long long>));
+
+    // repeat BOTH above only with const
+    BOOST_CHECK((are_integral_v<const char>));
+    BOOST_CHECK((are_integral_v<const short>));
+    BOOST_CHECK((are_integral_v<const int>));
+    BOOST_CHECK((are_integral_v<const long>));
+    BOOST_CHECK((are_integral_v<const long long>));
+    //
+    BOOST_CHECK((are_integral_v<const unsigned char>));
+    BOOST_CHECK((are_integral_v<const unsigned short>));
+    BOOST_CHECK((are_integral_v<const unsigned int>));
+    BOOST_CHECK((are_integral_v<const unsigned long>));
+    BOOST_CHECK((are_integral_v<const unsigned long long>));
+
+    // standard library types
+    BOOST_CHECK((are_integral_v<std::int8_t>));
+    BOOST_CHECK((are_integral_v<std::int16_t>));
+    BOOST_CHECK((are_integral_v<std::int32_t>));
+    BOOST_CHECK((are_integral_v<std::int64_t>));
+    BOOST_CHECK((are_integral_v<char16_t>));
+    BOOST_CHECK((are_integral_v<char32_t>));
+    BOOST_CHECK((are_integral_v<wchar_t>));
+
+    // repeat above only unsigned
+    BOOST_CHECK((are_integral_v<std::uint8_t>));
+    BOOST_CHECK((are_integral_v<std::uint16_t>));
+    BOOST_CHECK((are_integral_v<std::uint32_t>));
+    BOOST_CHECK((are_integral_v<std::uint64_t>));
+
+    // repeat BOTH above only with const
+    BOOST_CHECK((are_integral_v<const std::int8_t>));
+    BOOST_CHECK((are_integral_v<const std::int16_t>));
+    BOOST_CHECK((are_integral_v<const std::int32_t>));
+    BOOST_CHECK((are_integral_v<const std::int64_t>));
+    BOOST_CHECK((are_integral_v<const char16_t>));
+    BOOST_CHECK((are_integral_v<const char32_t>));
+    BOOST_CHECK((are_integral_v<const wchar_t>));
+    //
+    BOOST_CHECK((are_integral_v<const std::uint8_t>));
+    BOOST_CHECK((are_integral_v<const std::uint16_t>));
+    BOOST_CHECK((are_integral_v<const std::uint32_t>));
+    BOOST_CHECK((are_integral_v<const std::uint64_t>));
+
+    // floating point types (should always return false)
+    BOOST_CHECK((are_integral_v<float>) == false);
+    BOOST_CHECK((are_integral_v<double>) == false);
+    BOOST_CHECK((are_integral_v<long double>) == false);
+
+    // misc fail cases
+    BOOST_CHECK((are_integral_nobool_v<bool>) == false);
+    BOOST_CHECK((are_integral_nobool_v<const bool>) == false);
+    BOOST_CHECK((are_integral_v<std::string>) == false);
+    BOOST_CHECK((are_integral_v<const std::string>) == false);
+}
+
+BOOST_AUTO_TEST_CASE(type_helpers_iterators)
 {
     M_ITER_TYPE_TEST_ALL(are_iterator_v, true, true);
     M_ITER_TYPE_TEST_ALL(are_input_iterator_v, true, true);
@@ -593,7 +741,7 @@ BOOST_AUTO_TEST_CASE(iterator_type_tests)
     M_ITER_TYPE_TEST_ALL(are_random_access_iterator_v, true, false);
 }
 
-BOOST_AUTO_TEST_CASE(Real_Abs)
+BOOST_AUTO_TEST_CASE(custom_abs)
 {
     BOOST_CHECK(Abs(0) == 0);
     BOOST_CHECK(Abs(1) == 1);
@@ -612,7 +760,7 @@ BOOST_AUTO_TEST_CASE(Real_Abs)
     BOOST_CHECK(isExact(Abs(-123.456), 123.456));
 }
 
-BOOST_AUTO_TEST_CASE(Real_MinMin)
+BOOST_AUTO_TEST_CASE(min_max)
 {
     BOOST_CHECK(Min(0, 0) == 0);
     BOOST_CHECK(Min(1, 1) == 1);
@@ -713,7 +861,7 @@ BOOST_AUTO_TEST_CASE(Real_MinMin)
     BOOST_CHECK(Max(0, 1, 2) == 2);
 }
 
-BOOST_AUTO_TEST_CASE(Real_IsRealZero)
+BOOST_AUTO_TEST_CASE(is_real_close)
 {
     BOOST_CHECK(IsRealClose(0, 0));
     BOOST_CHECK(IsRealClose(1, 1));
@@ -736,7 +884,7 @@ BOOST_AUTO_TEST_CASE(Real_IsRealZero)
     M_FUNCTION_CALL_EXPANDER_TYPES_NUMERIC(isRealTestsForType);
 }
 
-BOOST_AUTO_TEST_CASE(NotNull_Tests)
+BOOST_AUTO_TEST_CASE(not_null_ptr_wrapper)
 {
     // misc::NotNull<int *> notNull; // should not compile
     // misc::NotNull<int *> notNull { nullptr }; // should not compile
@@ -848,7 +996,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     delete notNullThingPtrOpt.value();
 }
 
-BOOST_AUTO_TEST_CASE(BoostOptionalThrowOnUninitTests)
+BOOST_AUTO_TEST_CASE(boost_optional_that_throws_when_it_should_throw)
 {
     // In this codebase <boost/optional.hpp> is not included directly, instead a wrapper include
     // is used "misc/boost-optional-that-throws.hpp". This forces any attempted access of an
@@ -868,7 +1016,7 @@ BOOST_AUTO_TEST_CASE(BoostOptionalThrowOnUninitTests)
     BOOST_CHECK(optional.value_or(Thing(0)) == Thing(0));
 }
 
-BOOST_AUTO_TEST_CASE(BoostOptionalNoElementTests)
+BOOST_AUTO_TEST_CASE(boost_optional_that_throws_when_contains_no_element)
 {
     // first test that NoElement works as expected
     BOOST_CHECK(NoElement_t() == NoElement_t());
@@ -934,7 +1082,7 @@ BOOST_AUTO_TEST_CASE(BoostOptionalNoElementTests)
     BOOST_CHECK(noOptInit.value() == noOptInit2.value());
 }
 
-BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
+BOOST_AUTO_TEST_CASE(boost_optional_that_throws_comparrisons)
 {
     using ThingPtr_t = misc::NotNull<Thing *>;
     using ThingPtrOpt_t = boost::optional<ThingPtr_t>;
@@ -965,7 +1113,7 @@ BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
     BOOST_CHECK(optExtra == thingPtr1);
 }
 
-BOOST_AUTO_TEST_CASE(strong_numeric_type_tests)
+BOOST_AUTO_TEST_CASE(strong_numeric_type)
 {
     // using Health_t as a test because it's value_type is int...less typing
 
@@ -1291,7 +1439,8 @@ BOOST_AUTO_TEST_CASE(strong_numeric_type_tests)
 }
 
 /*
-
+ * TODO -these config keys were found in the code and should be sanity checked
+ *
 -dir
 -desc
 -ratio

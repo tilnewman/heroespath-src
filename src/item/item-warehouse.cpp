@@ -52,13 +52,7 @@ namespace item
         }
     }
 
-    void ItemWarehouse::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "item::ItemWarehouse::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void ItemWarehouse::Release() { instanceUPtr_.reset(); }
 
 } // namespace item
 } // namespace heroespath

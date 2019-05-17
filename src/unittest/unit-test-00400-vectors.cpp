@@ -7,14 +7,15 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-vectors.cpp
+// unit-test-00400-vectors.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Vectors"
+#define BOOST_TEST_MODULE "vectors_library"
 
 #include <boost/test/unit_test.hpp>
 
 #include "misc/vectors.hpp"
 #include "testutil/common.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
 
 #include <algorithm>
 
@@ -22,9 +23,16 @@ using namespace heroespath;
 using namespace heroespath::test;
 using namespace heroespath::misc;
 
+void GameEngineGlobalFixture::setupBeforeAllTests()
+{
+    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
+
 using IntVec_t = std::vector<int>;
 
-BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToSingle)
+BOOST_AUTO_TEST_CASE(append_nothing_to_single)
 {
     const IntVec_t EMPTY;
 
@@ -50,7 +58,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToSingle)
     }
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToMultiple)
+BOOST_AUTO_TEST_CASE(append_nothing_to_multiple)
 {
     const IntVec_t EMPTY;
 
@@ -84,7 +92,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToMultiple)
     }
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
+BOOST_AUTO_TEST_CASE(append_nothing_to_reverse_duplicated_counting)
 {
     const IntVec_t EMPTY;
 
@@ -127,7 +135,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
     }
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Append_CornerCases)
+BOOST_AUTO_TEST_CASE(append_corner_cases)
 {
     IntVec_t a;
     IntVec_t b;
@@ -196,7 +204,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_CornerCases)
             << ", result=" << containerToString(b));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Add_AB_NoSort)
+BOOST_AUTO_TEST_CASE(add_ab_no_sort)
 {
     const IntVec_t A = { 1, 1, 2, 3 };
     const IntVec_t B = { 4, 5, 6, 6 };
@@ -210,7 +218,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_AB_NoSort)
                                                          << containerToString(AB_NOSORT_EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Add_AB_SortAndUnique)
+BOOST_AUTO_TEST_CASE(add_ab_sort_and_unique)
 {
     const IntVec_t A = { 1, 1, 2, 3 };
     const IntVec_t B = { 4, 5, 6, 6 };
@@ -225,7 +233,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_AB_SortAndUnique)
             << ", expected=" << containerToString(AB_SORTANDUNIQUE_EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Add_BA_NoSort)
+BOOST_AUTO_TEST_CASE(add_ba_no_sort)
 {
     const IntVec_t A = { 1, 1, 2, 3 };
     const IntVec_t B = { 4, 5, 6, 6 };
@@ -239,7 +247,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_BA_NoSort)
                                                          << containerToString(BA_NOSORT_EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)
+BOOST_AUTO_TEST_CASE(add_ba_sort_and_unique)
 {
     const IntVec_t A = { 1, 1, 2, 3 };
     const IntVec_t B = { 4, 5, 6, 6 };
@@ -254,7 +262,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)
             << ", expected=" << containerToString(BA_SORTANDUNIQUE_EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptyEmpty)
+BOOST_AUTO_TEST_CASE(exclude_empty_from_empty)
 {
     const IntVec_t EMPTY;
     const auto EMPTYEMPTY_RESULT { Vector::Exclude(EMPTY, EMPTY) };
@@ -264,7 +272,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptyEmpty)
         "two empty vecs, result=" << containerToString(EMPTYEMPTY_RESULT) << ", expected empty");
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Exclude_SomethingEmpty)
+BOOST_AUTO_TEST_CASE(exclude_full_from_empty)
 {
     const IntVec_t EMPTY;
     const IntVec_t A = { 1, 2, 3 };
@@ -276,7 +284,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_SomethingEmpty)
                                    << ", expected=" << containerToString(A));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptySomething)
+BOOST_AUTO_TEST_CASE(exclude_empty_from_full)
 {
     const IntVec_t EMPTY;
     const IntVec_t A = { 1, 2, 3 };
@@ -289,7 +297,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptySomething)
                                    << ", expected=" << containerToString(EMPTY));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Exclude_Duplicate)
+BOOST_AUTO_TEST_CASE(exclude_duplicate)
 {
     const IntVec_t EMPTY;
     const IntVec_t A = { 1, 2, 3 };
@@ -302,7 +310,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_Duplicate)
                                      << ", expected=" << containerToString(EMPTY));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Exclude_Single)
+BOOST_AUTO_TEST_CASE(exclude_single)
 {
     const IntVec_t A = { 1, 2, 2, 3, 3, 3 };
     const int B { 2 };
@@ -315,7 +323,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_Single)
                                          << ", expected=" << containerToString(EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_Exclude_Multiple)
+BOOST_AUTO_TEST_CASE(exclude_multiple)
 {
     const IntVec_t A = { 1, 2, 2, 3, 3, 3 };
     const IntVec_t B = { 1, 1, 3 };
@@ -328,7 +336,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_Multiple)
                                              << ", expected=" << containerToString(EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Single)
+BOOST_AUTO_TEST_CASE(select_random_single)
 {
     for (std::size_t i { 0 }; i < randomRetryCount; ++i)
     {
@@ -339,7 +347,7 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Single)
     }
 }
 
-BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Duplicates)
+BOOST_AUTO_TEST_CASE(select_random_duplicates)
 {
     for (std::size_t i { 0 }; i < randomRetryCount; ++i)
     {
@@ -351,7 +359,7 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Duplicates)
     }
 }
 
-BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Multiple)
+BOOST_AUTO_TEST_CASE(select_random_multiple)
 {
     for (std::size_t i { 0 }; i < randomRetryCount; ++i)
     {
@@ -364,7 +372,7 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Multiple)
     }
 }
 
-BOOST_AUTO_TEST_CASE(Vector_OrderlessCompare_Empty)
+BOOST_AUTO_TEST_CASE(orderless_compare_empty)
 {
     const IntVec_t EMPTY;
     BOOST_CHECK(Vector::OrderlessCompareEqual(EMPTY, EMPTY));
@@ -374,7 +382,7 @@ BOOST_AUTO_TEST_CASE(Vector_OrderlessCompare_Empty)
     BOOST_CHECK(Vector::OrderlessCompareEqual(A, EMPTY) == false);
 }
 
-BOOST_AUTO_TEST_CASE(Vector_OrderlessCompare_123)
+BOOST_AUTO_TEST_CASE(orderless_compare_123)
 {
     const IntVec_t A = { 1, 2, 3 };
     const IntVec_t B = { 1, 3, 2 };

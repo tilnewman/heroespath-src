@@ -84,13 +84,7 @@ namespace gui
         }
     }
 
-    void FontManager::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "gui::FontManager::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void FontManager::Release() { instanceUPtr_.reset(); }
 
     const FontPtr_t FontManager::GetFont(const GuiFont::Enum FONT)
     {

@@ -7,9 +7,9 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-enum-util.cpp
+// unit-test-00500-enum-util.cpp
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_EnumUtil"
+#define BOOST_TEST_MODULE "enum_util"
 
 #include <boost/test/unit_test.hpp>
 
@@ -17,6 +17,7 @@
 #include "misc/enum-common.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
+#include "testutil/game-engine-global-fixture.hpp"
 
 // all of the enum includes
 #include "avatar/avatar-enum.hpp"
@@ -84,7 +85,15 @@
 #include <type_traits>
 
 using namespace heroespath;
+using namespace heroespath::test;
 using namespace heroespath::misc;
+
+void GameEngineGlobalFixture::setupBeforeAllTests()
+{
+    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 template <typename EnumWrapper_t>
 void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STRING_TO_BE_EMPTY)
@@ -848,8 +857,5 @@ BOOST_AUTO_TEST_CASE(Case_4_MiscEnumUtil_ActualEnums_Bitfield_Tests)
     TestBitFieldEnum<item::element_type>();
     TestBitFieldEnum<item::weapon_type>();
     TestBitFieldEnum<popup::PopupButtons>();
-
-    M_HP_LOG_WRN("The big long bitfield enum test: combat::strategy::SelectType:  START");
     TestBitFieldEnum<combat::strategy::SelectType>();
-    M_HP_LOG_WRN("The big long bitfield enum test: combat::strategy::SelectType:  FINISHED");
 }

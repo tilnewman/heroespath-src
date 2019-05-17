@@ -69,8 +69,6 @@ namespace gui
         }
     }
 
-    Display::~Display() { Close(); }
-
     misc::NotNull<Display *> Display::Instance()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -92,13 +90,7 @@ namespace gui
         }
     }
 
-    void Display::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "gui::Display::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void Display::Release() { instanceUPtr_.reset(); }
 
     float Display::GetWinWidth() const { return static_cast<float>(GetWinWidthu()); }
     float Display::GetWinHeight() const { return static_cast<float>(GetWinHeightu()); }

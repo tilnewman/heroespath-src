@@ -10,14 +10,10 @@
 // vectors.hpp
 //  A set of helper functions for working with vectors
 //
-#include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 
 #include <algorithm>
-#include <iomanip>
 #include <numeric>
-#include <string>
-#include <vector>
 
 namespace heroespath
 {

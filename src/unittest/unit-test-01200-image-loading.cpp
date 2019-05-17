@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-image-loading.cpp
+// unit-test-01200-image-loading.cpp
 //
 #define BOOST_TEST_MODULE "image_loading"
 #include <boost/test/unit_test.hpp>
@@ -21,7 +21,6 @@
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 #include "testutil/common.hpp"
-#include "testutil/game-engine-global-fixture.hpp"
 #include "testutil/i-displayer.hpp"
 
 #include "testutil/single-image-displayer-scoped.hpp"

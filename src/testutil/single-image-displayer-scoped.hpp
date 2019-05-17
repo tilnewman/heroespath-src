@@ -21,8 +21,8 @@ namespace test
 
     void GameEngineGlobalFixture::setupBeforeAllTests()
     {
+        m_subsystemsToSetup = game::SubsystemCollection::TestAll;
         m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
-        m_delayAfterEachDrawSec = 0.01f;
     }
 
     struct SingleImageDisplayerScoped

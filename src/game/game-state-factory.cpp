@@ -79,13 +79,7 @@ namespace game
         }
     }
 
-    void GameStateFactory::Release()
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "GameStateFactory::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
+    void GameStateFactory::Release() { instanceUPtr_.reset(); }
 
     GameStateUPtr_t GameStateFactory::MakeForNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR) const
     {

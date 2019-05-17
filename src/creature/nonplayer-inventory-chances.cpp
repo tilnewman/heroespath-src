@@ -113,15 +113,7 @@ namespace creature
             }
         }
 
-        void ChanceFactory::Release()
-        {
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (instanceUPtr_),
-                "nonplayerChanceFactory::Release() "
-                    << "found instanceUPtr that was null.");
-
-            instanceUPtr_.reset();
-        }
+        void ChanceFactory::Release() { instanceUPtr_.reset(); }
 
         void ChanceFactory::Initialize()
         {
