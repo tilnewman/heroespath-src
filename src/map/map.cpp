@@ -319,11 +319,16 @@ namespace map
                    "they are all there and correct.  Since there is no known valid point in "
                    "the map to place the player, crashing.");
 
-        M_HP_LOG_ERR(
-            errorSS.str() << "  Placing the player into the first entry transition point found, "
-                             "which is for map "
-                          << NAMEOF_ENUM(FOUND_ITER->WhichLevel())
-                          << ", which is better than crashing I guess.");
+        // this if the LEVEL_FROM is invalid because that can only happen during unit tests
+        if (LEVEL_FROM != Level::Count)
+        {
+            M_HP_LOG_ERR(
+                errorSS.str()
+                << "  Placing the player into the first entry transition point found, "
+                   "which is for map "
+                << NAMEOF_ENUM(FOUND_ITER->WhichLevel())
+                << ", which is better than crashing I guess.");
+        }
 
         return sfutil::CenterOf(FOUND_ITER->Rect());
     }

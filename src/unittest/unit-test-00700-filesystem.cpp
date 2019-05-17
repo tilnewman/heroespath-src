@@ -33,6 +33,7 @@ using namespace heroespath::misc;
 
 void GameEngineGlobalFixture::setupBeforeAllTests()
 {
+    m_unitTestFilename = __FILE__;
     m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
 }
 
@@ -164,19 +165,6 @@ struct Help
 
         std::sort(std::begin(filenameVec), std::end(filenameVec));
         return filenameVec;
-    }
-
-    static void
-        coutVectorOfStrings(const std::vector<std::string> & VEC, const std::string & TITLE = "")
-    {
-        std::cout << TITLE << ":";
-
-        for (const auto & STRING : VEC)
-        {
-            std::cout << "\n\t\"" << STRING << "\"";
-        }
-
-        std::cout << std::endl << std::endl;
     }
 
     const std::string JUNK_WHITESPACE_STR;
@@ -1096,26 +1084,6 @@ BOOST_AUTO_TEST_CASE(find_files)
     BOOST_CHECK(
         help.KeepOnlyFilenameAndStdSort(filesystem::FindFiles(false, help.NON_EMPTY_DIR_PATH_STR))
         == help.ALL_FILES_IN_FIRST_DIR_ONLY);
-
-    for (const auto & FILE : filesystem::FindFiles(false, help.NON_EMPTY_DIR_PATH_STR))
-    {
-        std::cout << "\n" << FILE;
-    }
-
-    std::cout << std::endl;
-
-    for (const auto & FILE :
-         help.KeepOnlyFilenameAndStdSort(filesystem::FindFiles(false, help.NON_EMPTY_DIR_PATH_STR)))
-    {
-        std::cout << "\n" << FILE;
-    }
-
-    std::cout << std::endl;
-
-    for (const auto & FILE : help.ALL_FILES_IN_FIRST_DIR_ONLY)
-    {
-        std::cout << "\n" << FILE;
-    }
 
     BOOST_CHECK(
         help.KeepOnlyFilenameAndStdSort(

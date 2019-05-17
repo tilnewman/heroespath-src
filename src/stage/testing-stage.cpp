@@ -324,8 +324,6 @@ namespace stage
 
         M_TESTING_STAGE_TEST(GameDataFile);
 
-        M_TESTING_STAGE_TEST(Fonts);
-        M_TESTING_STAGE_TEST(Maps);
         M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(ItemFactory, item::ItemFactory);
         M_TESTING_STAGE_TEST(ItemProfileReport);
         M_TESTING_STAGE_TEST(InventoryFactory);
@@ -668,148 +666,6 @@ namespace stage
         return true;
     }
 
-    bool TestingStage::PerformTest_Maps()
-    {
-        static interact::InteractionManager interactionManager;
-
-        static auto hasInitialPrompt { false };
-        if (false == hasInitialPrompt)
-        {
-            hasInitialPrompt = true;
-            TestingStrAppend("stage::TestingStage::TestMaps() Starting Tests.  Please wait...");
-            return false;
-        }
-
-        using MapLevelVec_t = std::vector<map::Level::Enum>;
-
-        struct MapAndTransitions
-        {
-            explicit MapAndTransitions(
-                const map::Level::Enum LEVEL = map::Level::Count,
-                const MapLevelVec_t & ENTRY_LEVELS = MapLevelVec_t(),
-                const MapLevelVec_t & EXIT_LEVELS = MapLevelVec_t())
-                : level(LEVEL)
-                , entry_levels(ENTRY_LEVELS)
-                , exit_levels(EXIT_LEVELS)
-            {}
-
-            map::Level::Enum level;
-            MapLevelVec_t entry_levels;
-            MapLevelVec_t exit_levels;
-        };
-
-        static misc::VectorMap<map::Level::Enum, MapAndTransitions> transitions;
-
-        const auto ParseMap { [](const map::Level::Enum LEVEL_ENUM, const std::string & ERROR_MSG) {
-            map::MapUPtr_t mapUPtr { std::make_unique<map::Map>(
-                sf::FloatRect(0.0f, 0.0f, 128.0f, 256.0f), interactionManager) };
-
-            try
-            {
-                mapUPtr->Load(LEVEL_ENUM, map::Level::Count, true);
-            }
-            catch (const std::exception &)
-            {
-                M_HP_LOG_FAT(
-                    "TestingStage::TestMaps() threw an exception while \""
-                    << ERROR_MSG << "\" for map \"" << NAMEOF_ENUM(LEVEL_ENUM) << "\"");
-
-                throw;
-            }
-
-            MapLevelVec_t entryLevels;
-            MapLevelVec_t exitLevels;
-            mapUPtr->EntryAndExitLevels(entryLevels, exitLevels);
-            return MapAndTransitions(LEVEL_ENUM, entryLevels, exitLevels);
-        } };
-
-        static auto hasFirstPassLoad { false };
-        if (false == hasFirstPassLoad)
-        {
-            static EnumUnderlying_t mapIndex { 0 };
-            if (mapIndex < map::Level::Count)
-            {
-                const auto WHICH_LEVEL { static_cast<map::Level::Enum>(mapIndex) };
-
-                TestingStrAppend(
-                    "TestMaps() Testing \"" + NAMEOF_ENUM_STR(WHICH_LEVEL)
-                    + "\" Map in First Pass Loading");
-
-                transitions[WHICH_LEVEL] = ParseMap(WHICH_LEVEL, "initial parse");
-
-                ++mapIndex;
-            }
-            else
-            {
-                hasFirstPassLoad = true;
-            }
-
-            return false;
-        }
-
-        static auto hasTestedTransitions { false };
-        if (false == hasTestedTransitions)
-        {
-            static auto transitionIter { std::begin(transitions) };
-            if (transitionIter == std::end(transitions))
-            {
-                hasTestedTransitions = true;
-            }
-            else
-            {
-                const auto CURRENT_LEVEL { transitionIter->first };
-
-                TestingStrAppend(
-                    "TestMaps() Testing \"" + NAMEOF_ENUM_STR(CURRENT_LEVEL)
-                    + "\" Map's transitions");
-
-                for (const auto ENTRY_LEVEL : transitionIter->second.entry_levels)
-                {
-                    const auto ENTRY_TRANSITIONS { transitions[ENTRY_LEVEL] };
-
-                    const auto WAS_FOUND { std::find(
-                                               std::begin(ENTRY_TRANSITIONS.exit_levels),
-                                               std::end(ENTRY_TRANSITIONS.exit_levels),
-                                               CURRENT_LEVEL)
-                                           != std::end(ENTRY_TRANSITIONS.exit_levels) };
-
-                    M_HP_ASSERT_OR_LOG_AND_THROW(
-                        (WAS_FOUND),
-                        "TestingStage::TestMaps() found a map \""
-                            << NAMEOF_ENUM(CURRENT_LEVEL)
-                            << "\" that had an entry level from map \"" << NAMEOF_ENUM(ENTRY_LEVEL)
-                            << "\", but that map did not have an exit level to match.");
-                }
-
-                for (const auto EXIT_LEVEL : transitionIter->second.exit_levels)
-                {
-                    const auto EXIT_TRANSITIONS { transitions[EXIT_LEVEL] };
-
-                    const auto WAS_FOUND { std::find(
-                                               std::begin(EXIT_TRANSITIONS.entry_levels),
-                                               std::end(EXIT_TRANSITIONS.entry_levels),
-                                               CURRENT_LEVEL)
-                                           != std::end(EXIT_TRANSITIONS.entry_levels) };
-
-                    M_HP_ASSERT_OR_LOG_AND_THROW(
-                        (WAS_FOUND),
-                        "TestingStage::TestMaps() found a map \""
-                            << NAMEOF_ENUM(CURRENT_LEVEL) << "\" that had an exit level to map \""
-                            << NAMEOF_ENUM(EXIT_LEVEL)
-                            << "\", but that map did not have an entry level to match.");
-                }
-
-                ++transitionIter;
-            }
-
-            return false;
-        }
-
-        TestingStrAppend("stage::TestingStage::TestMaps() ALL Tests Passed.");
-
-        return true;
-    }
-
     bool TestingStage::PerformTest_GameDataFile()
     {
         static auto hasInitialPrompt { false };
@@ -1139,32 +995,6 @@ namespace stage
         }
 
         return (outlineDetectedCount >= 4);
-    }
-
-    bool TestingStage::PerformTest_Fonts()
-    {
-        static auto hasInitialPrompt { false };
-        if (false == hasInitialPrompt)
-        {
-            hasInitialPrompt = true;
-            TestingStrAppend("stage::TestingStage::PerformTest_Fonts() Starting Tests...");
-            return false;
-        }
-
-        static EnumUnderlying_t fontIndex { 0 };
-
-        if (fontIndex < gui::GuiFont::Count)
-        {
-            const auto FONT_ENUM { static_cast<gui::GuiFont::Enum>(fontIndex) };
-            gui::Text text("asdf", FONT_ENUM, 30);
-            ++fontIndex;
-            return false;
-        }
-        else
-        {
-            TestingStrAppend("stage::TestingStage::PerformTest_Fonts() Finished.");
-            return true;
-        }
     }
 
     void TestingStage::DrawNormal(sf::RenderTarget & target, sf::RenderStates states) const

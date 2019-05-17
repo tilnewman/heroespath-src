@@ -29,6 +29,7 @@ using namespace heroespath::gui;
 
 void GameEngineGlobalFixture::setupBeforeAllTests()
 {
+    m_unitTestFilename = __FILE__;
     m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
 }
 

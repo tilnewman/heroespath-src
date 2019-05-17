@@ -38,7 +38,7 @@ namespace misc
         const LogPriority::Enum LOWEST_PRI_TO_CONSOLE_ECHO,
         const std::size_t FILE_APPEND_COUNT_BEFORE_FLUSH,
         const std::size_t CONSOLE_APPEND_COUNT_BEFORE_FLUSH)
-        : fileName_(FILE_NAME)
+        : fileName_((unitTestName_.empty()) ? FILE_NAME : unitTestName_)
         , fileNameExtension_(FILE_EXT)
         , lowestPriToConsoleEcho_(LOWEST_PRI_TO_CONSOLE_ECHO)
         , fileStreamUPtr_(std::make_unique<std::ofstream>())

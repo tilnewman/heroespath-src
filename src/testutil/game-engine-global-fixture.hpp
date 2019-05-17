@@ -19,7 +19,9 @@
 #include "gui/font-manager.hpp"
 #include "gui/texture-cache.hpp"
 #include "misc/config-file.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/log.hpp"
 #include "sfutil/keyboard.hpp"
 #include "testutil/i-displayer.hpp"
 
@@ -57,6 +59,9 @@ namespace test
 
         void setup()
         {
+            misc::Log::setUnitTestName(
+                "log-" + misc::filesystem::Filename(m_unitTestFilename, true));
+
             m_startupShutdownUPtr = std::make_unique<game::SetupTeardown>(
                 "Unit Test: " + name(), m_subsystemsToSetup);
 
@@ -270,11 +275,12 @@ namespace test
         static inline std::unique_ptr<game::SetupTeardown> m_startupShutdownUPtr {};
         static inline std::unique_ptr<IDisplayer> m_iDisplayerUPtr {};
         static inline float m_delayAfterEachDrawSec { 0.0f };
+        static inline std::string m_unitTestFilename {};
 
         static inline game::SubsystemCollection m_subsystemsToSetup {
             game::SubsystemCollection::TestWithOnlyLogAndConfig
         };
-    };
+    }; // namespace test
 
 } // namespace test
 } // namespace heroespath

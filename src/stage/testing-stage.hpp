@@ -124,12 +124,10 @@ namespace stage
         bool PerformTest_IndividualImages();
         bool PerformTest_DirectoryImages();
         bool PerformTest_CharacterImageSet();
-        bool PerformTest_Maps();
         bool PerformTest_GameDataFile();
         bool PerformTest_Animations();
         bool PerformTest_InventoryFactory();
         bool DoesImageHaveOutline(const sf::Texture & TEXTURE) const;
-        bool PerformTest_Fonts();
         bool PerformTest_Spells();
         bool PerformTest_Songs();
         bool PerformTest_Conditions();

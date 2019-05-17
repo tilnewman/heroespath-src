@@ -19,12 +19,6 @@ namespace heroespath
 namespace test
 {
 
-    void GameEngineGlobalFixture::setupBeforeAllTests()
-    {
-        m_subsystemsToSetup = game::SubsystemCollection::TestAll;
-        m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
-    }
-
     struct SingleImageDisplayerScoped
     {
         SingleImageDisplayerScoped(

@@ -31,6 +31,7 @@ using namespace heroespath::misc;
 
 void GameEngineGlobalFixture::setupBeforeAllTests()
 {
+    m_unitTestFilename = __FILE__;
     m_subsystemsToSetup = game::SubsystemCollection::TestAll;
     m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
 }

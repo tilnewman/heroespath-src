@@ -61,6 +61,11 @@ namespace misc
 
         std::size_t LineCount() const { return lineCount_; }
 
+        static void setUnitTestName(const std::string & UNIT_TEST_NAME)
+        {
+            unitTestName_ = UNIT_TEST_NAME;
+        }
+
     private:
         void OpenFile();
 
@@ -89,6 +94,7 @@ namespace misc
         static const int LINE_NUMBER_INVALID_ = -1; // anything less than zero works here
         static constexpr std::string_view SEPARATOR_STR_ = "  ";
         static std::unique_ptr<Log> instanceUPtr_;
+        static inline std::string unitTestName_ {};
 
         std::string fileName_;
         std::string fileNameExtension_; // must include the dot if not empty

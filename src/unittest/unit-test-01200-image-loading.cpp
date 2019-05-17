@@ -22,11 +22,17 @@
 #include "spell/spell.hpp"
 #include "testutil/common.hpp"
 #include "testutil/i-displayer.hpp"
-
 #include "testutil/single-image-displayer-scoped.hpp"
 
 using namespace heroespath;
 using namespace heroespath::test;
+
+void GameEngineGlobalFixture::setupBeforeAllTests()
+{
+    m_unitTestFilename = __FILE__;
+    m_subsystemsToSetup = game::SubsystemCollection::TestAll;
+    m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
+}
 
 BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
