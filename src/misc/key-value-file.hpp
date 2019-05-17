@@ -101,7 +101,6 @@ namespace misc
         // true if Empty() and an empty file resulted, details are logged if false is returned
         bool DeleteReCreateSave() const;
 
-        // returns an empty string if KEY is empty
         const std::string
             Value(const std::string & KEY, const std::string & RETURN_IF_NOT_FOUND = "") const;
 
@@ -123,14 +122,12 @@ namespace misc
             {
                 const auto VALUE_STR_CLEANED { TrimWhitespaceCopy(ToLowerCopy(VALUE_STR)) };
 
-                if ((VALUE_STR_CLEANED == "yes") || (VALUE_STR_CLEANED == "1")
-                    || (VALUE_STR_CLEANED == "true"))
+                if ((VALUE_STR_CLEANED == "yes") || (VALUE_STR_CLEANED == "true"))
                 {
                     return true;
                 }
 
-                if ((VALUE_STR_CLEANED == "no") || (VALUE_STR_CLEANED == "0")
-                    || (VALUE_STR_CLEANED == "false"))
+                if ((VALUE_STR_CLEANED == "no") || (VALUE_STR_CLEANED == "false"))
                 {
                     return false;
                 }
@@ -245,6 +242,9 @@ namespace misc
 
         // returns empty if PREFIX is empty
         const std::vector<std::string> FindAllKeysWith(
+            const std::string & SEARCH_FOR, const bool IS_CASE_SENSITIVE = true) const;
+
+        const std::vector<std::pair<std::string, std::string>> FindAllKeyValuePairsWithValuesWith(
             const std::string & SEARCH_FOR, const bool IS_CASE_SENSITIVE = true) const;
 
     private:

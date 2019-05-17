@@ -56,7 +56,7 @@ namespace stage
                 gui::GuiFont::Number,
                 gui::GuiFont::Handwriting })
         , stageTitle_(gui::MenuImage::Count)
-        , campfireCachedTexture_("media-image-campfire")
+        , campfireCachedTexture_("media-image-misc-campfire")
         , campfireSprite_(campfireCachedTexture_.Get())
         , backgroundBox_(
               "CampStage'sBackground",

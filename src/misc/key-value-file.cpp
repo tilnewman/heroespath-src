@@ -185,11 +185,6 @@ namespace misc
     const std::string
         KeyValueFile::Value(const std::string & KEY, const std::string & RETURN_IF_NOT_FOUND) const
     {
-        if (KEY.empty())
-        {
-            return "";
-        }
-
         for (const auto & LINE : lines_)
         {
             if (LINE.IsKeyValue() && (LINE.key == KEY))
@@ -374,6 +369,43 @@ namespace misc
         }
 
         return keys;
+    }
+
+    const std::vector<std::pair<std::string, std::string>>
+        KeyValueFile::FindAllKeyValuePairsWithValuesWith(
+            const std::string & SEARCH_FOR, const bool IS_CASE_SENSITIVE) const
+    {
+        std::vector<std::pair<std::string, std::string>> results;
+
+        if (SEARCH_FOR.empty())
+        {
+            return results;
+        }
+
+        for (const auto & LINE : lines_)
+        {
+            if (!LINE.IsKeyValue())
+            {
+                continue;
+            }
+
+            if (IS_CASE_SENSITIVE)
+            {
+                if (boost::algorithm::contains(LINE.value, SEARCH_FOR))
+                {
+                    results.emplace_back(LINE.key, LINE.value);
+                }
+            }
+            else
+            {
+                if (boost::algorithm::icontains(LINE.value, SEARCH_FOR))
+                {
+                    results.emplace_back(LINE.key, LINE.value);
+                }
+            }
+        }
+
+        return results;
     }
 
     const KeyValueLine KeyValueFile::MakeKeyValueLine(

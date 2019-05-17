@@ -16,6 +16,8 @@
 #include "game/strong-types.hpp"
 #include "gui/list-no-element.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/config-file.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/not-null.hpp"
 #include "misc/real.hpp"
 #include "test/util/game-engine-global-fixture.hpp"
@@ -32,6 +34,7 @@
 #include <vector>
 
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 using namespace heroespath;
 using namespace heroespath::test;
@@ -1338,261 +1341,427 @@ BOOST_AUTO_TEST_CASE(strong_numeric_type)
     //
     // none of these should compile
     //
-    // Coin_t coin;
-    //++123_health;
-    // 123_health ++;
-    //--123_health;
-    // 321_health --;
-    // 321_health += 123_health;
-    // 321_health -= 123_health;
-    // 321_health *= 123_health;
-    // 321_health /= 123_health;
-    // Health_t d1(int(123));
-    // Health_t d2(Health_t::value_type(123));
-    // Health_t e1 = int(123);
-    // Health_t e2 = Health_t::value_type();
-    // Health_t f = Health_t::Make(a);
-    // Health_t g(coin);
-    // auto b5 = (a == int(123));
-    // auto b6 = (a == int());
-    // auto b7 = (a == Health_t::value_type("1234"));
-    // auto b8 = (a == Health_t::value_type());
-    //{
-    //    auto bb1 = (a == coin);
-    //    auto bb2 = (a != coin);
-    //    auto bb3 = (a < coin);
-    //    auto bb4 = (a <= coin);
-    //    auto bb5 = (a > coin);
-    //    auto bb6 = (a >= coin);
-    //    auto mm1 = (a + coin);
-    //    auto mm2 = (a - coin);
-    //    auto mm3 = (a / coin);
-    //    auto mm4 = (a * coin);
-    //    a += coin;
-    //    a -= coin;
-    //    a *= coin;
-    //    a /= coin;
-    //}
-    //{
-    //    auto bb1 = (a == int(123));
-    //    auto bb2 = (a != int(123));
-    //    auto bb3 = (a < int(123));
-    //    auto bb4 = (a <= int(123));
-    //    auto bb5 = (a > int(123));
-    //    auto bb6 = (a >= int(123));
-    //    auto mm1 = (a + int(123));
-    //    auto mm2 = (a - int(123));
-    //    auto mm3 = (a / int(123));
-    //    auto mm4 = (a * int(123));
-    //    a += int(123);
-    //    a -= int(123);
-    //    a *= int(123);
-    //    a /= int(123);
-    //}
-    //{
-    //    auto bb1 = (a == int());
-    //    auto bb2 = (a != int());
-    //    auto bb3 = (a < int());
-    //    auto bb4 = (a <= int());
-    //    auto bb5 = (a > int());
-    //    auto bb6 = (a >= int());
-    //    auto mm1 = (a + int());
-    //    auto mm2 = (a - int());
-    //    auto mm3 = (a / int());
-    //    auto mm4 = (a * int());
-    //    a += int();
-    //    a -= int();
-    //    a *= int();
-    //    a /= int();
-    //}
-    //{
-    //    auto bb1 = (a == Health_t::value_type(123));
-    //    auto bb2 = (a != Health_t::value_type(123));
-    //    auto bb3 = (a < Health_t::value_type(123));
-    //    auto bb4 = (a <= Health_t::value_type(123));
-    //    auto bb5 = (a > Health_t::value_type(123));
-    //    auto bb6 = (a >= Health_t::value_type(123));
-    //    auto mm1 = (a + Health_t::value_type(123));
-    //    auto mm2 = (a - Health_t::value_type(123));
-    //    auto mm3 = (a / Health_t::value_type(123));
-    //    auto mm4 = (a * Health_t::value_type(123));
-    //    a += Health_t::value_type(123);
-    //    a -= Health_t::value_type(123);
-    //    a *= Health_t::value_type(123);
-    //    a /= Health_t::value_type(123);
-    //}
-    //{
-    //    auto bb1 = (a == Health_t::value_type());
-    //    auto bb2 = (a != Health_t::value_type());
-    //    auto bb3 = (a < Health_t::value_type());
-    //    auto bb4 = (a <= Health_t::value_type());
-    //    auto bb5 = (a > Health_t::value_type());
-    //    auto bb6 = (a >= Health_t::value_type());
-    //    auto mm1 = (a + Health_t::value_type());
-    //    auto mm2 = (a - Health_t::value_type());
-    //    auto mm3 = (a / Health_t::value_type());
-    //    auto mm4 = (a * Health_t::value_type());
-    //    a += Health_t::value_type();
-    //    a -= Health_t::value_type();
-    //    a *= Health_t::value_type();
-    //    a /= Health_t::value_type();
-    //}
+    /*
+     Coin_t coin;
+    ++123_health;
+     123_health ++;
+    --123_health;
+     321_health --;
+     321_health += 123_health;
+     321_health -= 123_health;
+     321_health *= 123_health;
+     321_health /= 123_health;
+     Health_t d1(int(123));
+     Health_t d2(Health_t::value_type(123));
+     Health_t e1 = int(123);
+     Health_t e2 = Health_t::value_type();
+     Health_t f = Health_t::Make(a);
+     Health_t g(coin);
+     auto b5 = (a == int(123));
+     auto b6 = (a == int());
+     auto b7 = (a == Health_t::value_type("1234"));
+     auto b8 = (a == Health_t::value_type());
+    {
+        auto bb1 = (a == coin);
+        auto bb2 = (a != coin);
+        auto bb3 = (a < coin);
+        auto bb4 = (a <= coin);
+        auto bb5 = (a > coin);
+        auto bb6 = (a >= coin);
+        auto mm1 = (a + coin);
+        auto mm2 = (a - coin);
+        auto mm3 = (a / coin);
+        auto mm4 = (a * coin);
+        a += coin;
+        a -= coin;
+        a *= coin;
+        a /= coin;
+    }
+    {
+        auto bb1 = (a == int(123));
+        auto bb2 = (a != int(123));
+        auto bb3 = (a < int(123));
+        auto bb4 = (a <= int(123));
+        auto bb5 = (a > int(123));
+        auto bb6 = (a >= int(123));
+        auto mm1 = (a + int(123));
+        auto mm2 = (a - int(123));
+        auto mm3 = (a / int(123));
+        auto mm4 = (a * int(123));
+        a += int(123);
+        a -= int(123);
+        a *= int(123);
+        a /= int(123);
+    }
+    {
+        auto bb1 = (a == int());
+        auto bb2 = (a != int());
+        auto bb3 = (a < int());
+        auto bb4 = (a <= int());
+        auto bb5 = (a > int());
+        auto bb6 = (a >= int());
+        auto mm1 = (a + int());
+        auto mm2 = (a - int());
+        auto mm3 = (a / int());
+        auto mm4 = (a * int());
+        a += int();
+        a -= int();
+        a *= int();
+        a /= int();
+    }
+    {
+        auto bb1 = (a == Health_t::value_type(123));
+        auto bb2 = (a != Health_t::value_type(123));
+        auto bb3 = (a < Health_t::value_type(123));
+        auto bb4 = (a <= Health_t::value_type(123));
+        auto bb5 = (a > Health_t::value_type(123));
+        auto bb6 = (a >= Health_t::value_type(123));
+        auto mm1 = (a + Health_t::value_type(123));
+        auto mm2 = (a - Health_t::value_type(123));
+        auto mm3 = (a / Health_t::value_type(123));
+        auto mm4 = (a * Health_t::value_type(123));
+        a += Health_t::value_type(123);
+        a -= Health_t::value_type(123);
+        a *= Health_t::value_type(123);
+        a /= Health_t::value_type(123);
+    }
+    {
+        auto bb1 = (a == Health_t::value_type());
+        auto bb2 = (a != Health_t::value_type());
+        auto bb3 = (a < Health_t::value_type());
+        auto bb4 = (a <= Health_t::value_type());
+        auto bb5 = (a > Health_t::value_type());
+        auto bb6 = (a >= Health_t::value_type());
+        auto mm1 = (a + Health_t::value_type());
+        auto mm2 = (a - Health_t::value_type());
+        auto mm3 = (a / Health_t::value_type());
+        auto mm4 = (a * Health_t::value_type());
+        a += Health_t::value_type();
+        a -= Health_t::value_type();
+        a *= Health_t::value_type();
+        a /= Health_t::value_type();
+    }
+    */
 }
 
-/*
- * TODO -these config keys were found in the code and should be sanity checked
- *
--dir
--desc
--ratio
-based-on-role
-fight-archer-projectile-accuracy-bonus-ratio
-fight-archer-projectile-rank-bonus-ratio
-fight-block-defend-speed-bonus-ratio
-fight-chance-conditions-added-from-damage-ratio
-fight-chance-daunted-will-retreat
-fight-chance-enemies-ignore-unconscious
-fight-chance-panicked-will-retreat
-fight-damage-strength-bonus-ratio
-fight-hit-critical-chance-ratio
-fight-hit-power-chance-ratio
-fight-hit-special-damage-min
-fight-hit-special-damage-min
-fight-pixie-damage-adj-ratio
-fight-pixie-damage-floor
-fight-pixie-defend-speed-rank-bonus-ratio
-fight-rank-damage-bonus-ratio
-fight-stats-amazing-ratio
-fight-stats-base-high-val
-fight-stats-luck-adj-ratio
-fight-stats-rank-bonus-ratio
-fight-stats-value-floor
-filesystem-test-stuff
-intro-text1
-intro-text2
-intro-text3
-intro-text4
-intro-text5
-intro-text6
-intro-text7
-intro-text8
-intro-text9
-inventory-clothing-chance-max
-inventory-clothing-chance-min
-item-secondary-material-armor-adj-ratio
-media-font-dir
-media-image-accent-dir
-media-image-animation-dir
-media-image-avatar-dir
-media-image-avatar-shadow
-media-image-background-dir
-media-image-background-paper-dark
-media-image-background-paper-large-gold
-media-image-background-paper-popup-banner
-media-image-background-paper-popup-large
-media-image-background-paper-popup-large-bar
-media-image-background-paper-popup-medium
-media-image-background-paper-popup-medium-bar
-media-image-background-paper-popup-music-sheet
-media-image-background-paper-popup-spell-book
-media-image-background-tile-darkknot
-media-image-background-tile-runes
-media-image-background-tile-wood
-media-image-bone-pile-bat
-media-image-bone-pile-beetle
-media-image-bone-pile-cat
-media-image-bone-pile-cave-crawler
-media-image-bone-pile-griffin
-media-image-bone-pile-skull-bog
-media-image-bone-pile-skull-demon
-media-image-bone-pile-skull-giant
-media-image-bone-pile-skull-goblin
-media-image-bone-pile-skull-humanoid
-media-image-bone-pile-skull-minotaur
-media-image-bone-pile-skull-orc
-media-image-bone-pile-skull-snake
-media-image-bone-pile-three-headed-hound
-media-image-bone-pile-wolfen
-media-image-campfire
-media-image-candle
-media-image-combat-crossbones
-media-image-combat-crossswords
-media-image-combat-run
-media-image-combat-wing
-media-image-condition-dir
-media-image-creature-dir
-media-image-item-dir
-media-image-map-dir
-media-image-misc-abc
-media-image-misc-chest-closed
-media-image-misc-chest-open
-media-image-misc-coins
-media-image-misc-door-locked
-media-image-misc-error
-media-image-misc-gear-lit
-media-image-misc-gear-normal
-media-image-misc-gui-elements
-media-image-misc-lock
-media-image-misc-lockbox-closed
-media-image-misc-lockbox-open
-media-image-misc-logos-openfontlicense
-media-image-misc-logos-sfml
-media-image-misc-logos-sound
-media-image-misc-logos-terrain
-media-image-misc-logos-tiled
-media-image-misc-money-bag
-media-image-misc-ouroboros
-media-image-misc-splash
-media-image-misc-system-error
-media-image-misc-talk
-media-image-misc-todo
-media-image-misc-weight
-media-image-misc-x
-media-image-song-dir
-media-image-spell-dir
-media-image-title-dir
-media-image-trap
-media-maps-dir
-media-music-dir
-media-sound-dir
-non-empty-directory
-nonplayer-ownershipprofile-collectortype-chance-base
-nonplayer-ownershipprofile-collectortype-chance-maximum
-nonplayer-ownershipprofile-collectortype-chance-minimum
-nonplayer-ownershipprofile-ownsmagictype-chance-max
-nonplayer-ownershipprofile-ownsmagictype-chance-min
-sound-map-animsfx-distance-max
-sound-map-animsfx-distance-min
-sound-map-animsfx-min-volume-ratio
-sound-map-sfx-time-between-updates
-sound-map-walk-sfx-volume-ratio
-stats-race-bonus-base-adj-ratio
-stats-race-bonus-minor-adj-ratio
-stats-reduce-ratio
-stats-role-bonus-base-adj-ratio
-stats-role-bonus-minor-adj-ratio
-stats-stat-desc_Strength
-sword-long-ratio
-system-audio-music-volume-min
-system-items-will-create-items-at-startup
-system-media-dir-linux
-system-media-dir-win
-system-revision
-system-ui-stage-change-non-popup-fade-speed-in
-system-ui-stage-change-non-popup-fade-speed-out
-system-ui-stage-change-popup-fade-alpha
-system-ui-stage-change-popup-fade-speed-in
-system-ui-stage-change-popup-fade-speed-out
-system-window-frame-rate-limit
-system-window-sync
-treasure-coin-base
-treasure-coin-mult
-treasure-gem-base
-treasure-gem-mult
-treasure-lockbox-coin-max
-treasure-magic-base
-treasure-magic-mult
-treasure-religious-base
-treasure-religious-mult
+// I just grep'd the code for keys and made quick tests for them here
+BOOST_AUTO_TEST_CASE(config_keys_found_in_the_codebase_directories)
+{
+    auto & configFile = *misc::ConfigFile::Instance();
 
-*/
+    const std::string NOT_FOUND_ERROR_STR("NOT_FOUND_ERROR_STR");
+
+    const std::vector<std::string> directoryKeys
+        = { "media-font-dir",           "media-image-background-dir",
+            "media-image-accent-dir",   "media-image-animation-dir",
+            "media-image-avatar-dir",   "media-image-condition-dir",
+            "media-image-creature-dir", "media-image-item-dir",
+            "media-image-map-dir",      "media-image-song-dir",
+            "media-image-spell-dir",    "media-image-title-dir",
+            "media-maps-dir",           "media-music-dir",
+            "media-sound-dir",          "media-image-dir" };
+
+    for (const auto & KEY : directoryKeys)
+    {
+        BOOST_TEST(
+            (configFile.Value(KEY, NOT_FOUND_ERROR_STR) != NOT_FOUND_ERROR_STR),
+            "key=\"" << KEY << "\" was not found.");
+
+        const std::string PATH = configFile.GetMediaPath(KEY);
+
+        BOOST_TEST(
+            !PATH.empty(),
+            "key=\"" << KEY << "\" when interpreted as a media path (dir) it was an empty string.");
+
+        BOOST_TEST(
+            misc::filesystem::Exists(PATH),
+            "key=\"" << KEY << "\" when interpreted as a media path (dir) \"" << PATH
+                     << "\" does not exist.");
+
+        BOOST_TEST(
+            misc::filesystem::ExistsAndIsDirectory(PATH),
+            "key=\"" << KEY << "\" when interpreted as a media path (dir) \"" << PATH
+                     << "\" does exist but is not a directory.");
+    }
+}
+
+// I just grep'd the code for keys and made quick tests for them here
+BOOST_AUTO_TEST_CASE(config_keys_found_in_the_codebase_images)
+{
+    auto & configFile = *misc::ConfigFile::Instance();
+
+    const std::string NOT_FOUND_ERROR_STR("NOT_FOUND_ERROR_STR");
+
+    const std::vector<std::string> imageKeys = { "media-image-avatar-shadow",
+                                                 "media-image-background-paper-dark",
+                                                 "media-image-background-paper-large-gold",
+                                                 "media-image-background-paper-popup-banner",
+                                                 "media-image-background-paper-popup-large",
+                                                 "media-image-background-paper-popup-large-bar",
+                                                 "media-image-background-paper-popup-medium",
+                                                 "media-image-background-paper-popup-medium-bar",
+                                                 "media-image-background-paper-popup-music-sheet",
+                                                 "media-image-background-paper-popup-spell-book",
+                                                 "media-image-background-tile-darkknot",
+                                                 "media-image-background-tile-runes",
+                                                 "media-image-background-tile-wood",
+                                                 "media-image-bone-pile-bat",
+                                                 "media-image-bone-pile-beetle",
+                                                 "media-image-bone-pile-cat",
+                                                 "media-image-bone-pile-cave-crawler",
+                                                 "media-image-bone-pile-griffin",
+                                                 "media-image-bone-pile-skull-bog",
+                                                 "media-image-bone-pile-skull-demon",
+                                                 "media-image-bone-pile-skull-giant",
+                                                 "media-image-bone-pile-skull-goblin",
+                                                 "media-image-bone-pile-skull-humanoid",
+                                                 "media-image-bone-pile-skull-minotaur",
+                                                 "media-image-bone-pile-skull-orc",
+                                                 "media-image-bone-pile-skull-snake",
+                                                 "media-image-bone-pile-three-headed-hound",
+                                                 "media-image-bone-pile-wolfen",
+                                                 "media-image-combat-crossbones",
+                                                 "media-image-combat-crossswords",
+                                                 "media-image-combat-run",
+                                                 "media-image-combat-wing",
+                                                 "media-image-misc-abc",
+                                                 "media-image-misc-campfire",
+                                                 "media-image-misc-candle",
+                                                 "media-image-misc-chest-closed",
+                                                 "media-image-misc-chest-open",
+                                                 "media-image-misc-coins",
+                                                 "media-image-misc-door-locked",
+                                                 "media-image-misc-error",
+                                                 "media-image-misc-gear-lit",
+                                                 "media-image-misc-gear-normal",
+                                                 "media-image-misc-gui-elements",
+                                                 "media-image-misc-lock",
+                                                 "media-image-misc-lockbox-closed",
+                                                 "media-image-misc-lockbox-open",
+                                                 "media-image-misc-logos-openfontlicense",
+                                                 "media-image-misc-logos-sfml",
+                                                 "media-image-misc-logos-sound",
+                                                 "media-image-misc-logos-terrain",
+                                                 "media-image-misc-logos-tiled",
+                                                 "media-image-misc-money-bag",
+                                                 "media-image-misc-ouroboros",
+                                                 "media-image-misc-splash",
+                                                 "media-image-misc-system-error",
+                                                 "media-image-misc-talk",
+                                                 "media-image-misc-trap",
+                                                 "media-image-misc-todo",
+                                                 "media-image-misc-weight",
+                                                 "media-image-misc-x" };
+
+    sf::Texture texture;
+
+    for (const auto & KEY : imageKeys)
+    {
+        BOOST_TEST(
+            (configFile.Value(KEY, NOT_FOUND_ERROR_STR) != NOT_FOUND_ERROR_STR),
+            "key=\"" << KEY << "\" was not found.");
+
+        const std::string PATH = configFile.GetMediaPath(KEY);
+
+        BOOST_TEST(
+            !PATH.empty(),
+            "key=\"" << KEY
+                     << "\" when interpreted as a media path (file) it was an empty string.");
+
+        BOOST_TEST(
+            misc::filesystem::Exists(PATH),
+            "key=\"" << KEY << "\" when interpreted as a media path (file) \"" << PATH
+                     << "\" does not exist.");
+
+        BOOST_TEST(
+            misc::filesystem::ExistsAndIsFile(PATH),
+            "key=\"" << KEY << "\" when interpreted as a media path (file) \"" << PATH
+                     << "\" does exist but is not a file.");
+
+        BOOST_TEST(
+            texture.loadFromFile(PATH),
+            "key=\"" << KEY << "\" when interpreted as a media path (file) \"" << PATH
+                     << "\" could not be loaded as a valid image file.");
+    }
+}
+
+// I just grep'd the code for keys and made quick tests for them here
+BOOST_AUTO_TEST_CASE(config_keys_found_in_the_codebase_strings)
+{
+    auto & configFile = *misc::ConfigFile::Instance();
+
+    const std::string NOT_FOUND_ERROR_STR("NOT_FOUND_ERROR_STR");
+
+    const std::vector<std::string> stringKeys = { "system-revision",
+                                                  "intro-text1",
+                                                  "intro-text2",
+                                                  "intro-text3",
+                                                  "intro-text4",
+                                                  "intro-text5",
+                                                  "intro-text6",
+                                                  "intro-text7",
+                                                  "intro-text8",
+                                                  "intro-text9",
+                                                  "stats-stat-desc_Strength",
+                                                  "stats-stat-desc_Accuracy",
+                                                  "stats-stat-desc_Charm",
+                                                  "stats-stat-desc_Luck",
+                                                  "stats-stat-desc_Speed",
+                                                  "stats-stat-desc_Intelligence" };
+
+    for (const auto & KEY : stringKeys)
+    {
+        const std::string VALUE = configFile.Value(KEY, NOT_FOUND_ERROR_STR);
+        BOOST_TEST((VALUE != NOT_FOUND_ERROR_STR), "key=\"" << KEY << "\" was not found.");
+        BOOST_TEST(!VALUE.empty(), "key=\"" << KEY << "\" was an empty string.");
+    }
+}
+
+// I just grep'd the code for keys and made quick tests for them here
+BOOST_AUTO_TEST_CASE(config_keys_found_in_the_codebase_bools)
+{
+    auto & configFile = *misc::ConfigFile::Instance();
+
+    const std::string NOT_FOUND_ERROR_STR("NOT_FOUND_ERROR_STR");
+
+    const std::vector<std::string> boolKeys
+        = { "system-window-sync", "system-items-will-create-items-at-startup" };
+
+    for (const auto & KEY : boolKeys)
+    {
+        BOOST_TEST(
+            (configFile.Value(KEY, NOT_FOUND_ERROR_STR) != NOT_FOUND_ERROR_STR),
+            "key=\"" << KEY << "\" was not found.");
+
+        const std::string VALUE = misc::ToLowerCopy(configFile.Value(KEY, NOT_FOUND_ERROR_STR));
+
+        BOOST_TEST(
+            ((VALUE == "true") || (VALUE == "false") || (VALUE == "no") || (VALUE == "yes")),
+            "key=\"" << KEY << "\" was not a bool, it was \"" << VALUE << "\"");
+    }
+}
+
+// I just grep'd the code for keys and made quick tests for them here
+BOOST_AUTO_TEST_CASE(config_keys_found_in_the_codebase_numbers)
+{
+    auto & configFile = *misc::ConfigFile::Instance();
+
+    const std::string NOT_FOUND_ERROR_STR("NOT_FOUND_ERROR_STR");
+
+    const std::vector<std::string> numberKeys
+        = { "fight-archer-projectile-accuracy-bonus-ratio",
+            "fight-archer-projectile-rank-bonus-ratio",
+            "fight-block-defend-speed-bonus-ratio",
+            "fight-chance-conditions-added-from-damage-ratio",
+            "system-window-frame-rate-limit",
+            "fight-chance-daunted-will-retreat",
+            "fight-chance-enemies-ignore-unconscious",
+            "fight-chance-panicked-will-retreat",
+            "fight-damage-strength-bonus-ratio",
+            "fight-hit-critical-chance-ratio",
+            "fight-hit-power-chance-ratio",
+            "fight-hit-special-damage-min",
+            "fight-pixie-damage-adj-ratio",
+            "fight-pixie-damage-floor",
+            "fight-pixie-defend-speed-rank-bonus-ratio",
+            "fight-rank-damage-bonus-ratio",
+            "fight-stats-amazing-ratio",
+            "fight-stats-base-high-val",
+            "fight-stats-luck-adj-ratio",
+            "fight-stats-rank-bonus-ratio",
+            "fight-stats-value-floor",
+            "inventory-clothing-chance-max",
+            "inventory-clothing-chance-min",
+            "item-secondary-material-armor-adj-ratio",
+            "nonplayer-ownershipprofile-collectortype-chance-base",
+            "nonplayer-ownershipprofile-collectortype-chance-maximum",
+            "nonplayer-ownershipprofile-collectortype-chance-minimum",
+            "nonplayer-ownershipprofile-ownsmagictype-chance-max",
+            "nonplayer-ownershipprofile-ownsmagictype-chance-min",
+            "sound-map-animsfx-distance-max",
+            "sound-map-animsfx-distance-min",
+            "sound-map-animsfx-min-volume-ratio",
+            "sound-map-sfx-time-between-updates",
+            "sound-map-walk-sfx-volume-ratio",
+            "stats-race-bonus-base-adj-ratio",
+            "stats-race-bonus-minor-adj-ratio",
+            "stats-reduce-ratio",
+            "stats-role-bonus-base-adj-ratio",
+            "stats-role-bonus-minor-adj-ratio",
+            "system-audio-music-volume-min",
+            "system-ui-stage-change-non-popup-fade-speed-in",
+            "system-ui-stage-change-non-popup-fade-speed-out",
+            "system-ui-stage-change-popup-fade-alpha",
+            "system-ui-stage-change-popup-fade-speed-in",
+            "system-ui-stage-change-popup-fade-speed-out",
+            "treasure-coin-base",
+            "treasure-coin-mult",
+            "treasure-gem-base",
+            "treasure-gem-mult",
+            "treasure-lockbox-coin-max",
+            "treasure-magic-base",
+            "treasure-magic-mult",
+            "treasure-religious-base",
+            "treasure-religious-mult" };
+
+    const float NOT_FOUND_ERROR(-123.456f);
+    const float CONVERSION_ERROR(-987.654f);
+
+    for (const auto & KEY : numberKeys)
+    {
+        const float VALUE = configFile.ValueAs(KEY, NOT_FOUND_ERROR, CONVERSION_ERROR);
+
+        BOOST_TEST(!IsRealClose(VALUE, NOT_FOUND_ERROR), "key=\"" << KEY << "\" was not found.");
+
+        BOOST_TEST(
+            !IsRealClose(VALUE, CONVERSION_ERROR),
+            "key=\"" << KEY << "\" was not a float, it was \""
+                     << configFile.Value(KEY, NOT_FOUND_ERROR_STR) << "\"");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(config_keys_for_all_images_in_specific_directories)
+{
+    auto & configFile = *misc::ConfigFile::Instance();
+
+    const std::string NOT_FOUND_ERROR_STR("NOT_FOUND_ERROR_STR");
+
+    const std::vector<std::string> imageDirNames = { "background", "bone-pile", "combat", "misc" };
+
+    for (const auto & DIR_NAME : imageDirNames)
+    {
+        const std::string DIR_PATH(
+            misc::filesystem::CombinePaths(configFile.GetMediaPath("media-image-dir"), DIR_NAME));
+
+        BOOST_TEST(
+            misc::filesystem::Exists(DIR_PATH), "DIR_PATH=\"" << DIR_PATH << "\" does not exist.");
+
+        BOOST_TEST(
+            misc::filesystem::ExistsAndIsDirectory(DIR_PATH),
+            "DIR_PATH=\"" << DIR_PATH << "\" does exist but is not a directory.");
+
+        const auto FILE_PATHS = filesystem::FindFiles(
+            false, DIR_PATH, "", "", filesystem::COMMON_FILE_NAME_PARTS_TO_EXCLUDE_VEC_);
+
+        BOOST_TEST(
+            !FILE_PATHS.empty(),
+            "DIR_PATH=\"" << DIR_PATH
+                          << "\" does exist and is a directory but was unable to find any non-junk "
+                             "files inside of it.");
+
+        for (const auto & FILE_PATH : FILE_PATHS)
+        {
+            const std::string FILE_NAME = misc::filesystem::Filename(FILE_PATH);
+
+            BOOST_TEST(
+                !FILE_NAME.empty(),
+                "FILE_PATH=\"" << FILE_PATH
+                               << "\" has no filename in it, at least, none was able to be found.");
+
+            BOOST_TEST(
+                !configFile.FindAllKeyValuePairsWithValuesWith(FILE_NAME, false).empty(),
+                "FILE_NAME=\"" << FILE_NAME << "\" is an image in the media directory=\""
+                               << DIR_PATH << "\" but it is not in the config file.");
+        }
+    }
+}

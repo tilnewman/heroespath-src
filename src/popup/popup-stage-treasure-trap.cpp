@@ -93,7 +93,7 @@ namespace popup
 
     void PopupStageTreasureTrap::SetupAccentImage()
     {
-        accent1CachedTextureOpt_ = gui::CachedTexture("media-image-trap");
+        accent1CachedTextureOpt_ = gui::CachedTexture("media-image-misc-trap");
         accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
         sfutil::FitAndReCenter(

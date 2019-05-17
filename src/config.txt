@@ -64,6 +64,7 @@ system-media-dir-win                    Z:\build\heroespath-media
 media-font-dir                          font
 media-sound-dir                         sound
 media-music-dir                         sound/music
+media-image-dir                         image
 media-image-accent-dir                  image/accent
 media-image-animation-dir               image/animation
 media-image-background-dir              image/background
@@ -215,6 +216,7 @@ media-image-misc-trap                           image/misc/trap.png
 media-image-misc-gui-elements                   image/misc/gui-elements.png
 media-image-misc-ouroboros                      image/misc/ouroboros.png
 media-image-misc-campfire                       image/misc/campfire.png
+media-image-misc-candle                         image/misc/candle.png
 #
 media-image-misc-menu-new-normal                image/misc/menu.png
 media-image-misc-menu-new-lit                   image/misc/menu.png
