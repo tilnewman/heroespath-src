@@ -23,6 +23,8 @@ namespace test
 
     SingleImageDisplayer::SingleImageDisplayer()
         : DisplayerBase("SingleImageDisplayer")
+        , m_cachedTextureUPtrs()
+        , m_sprites()
     {}
 
     SingleImageDisplayer::~SingleImageDisplayer() {}
@@ -81,48 +83,136 @@ namespace test
             throw std::runtime_error(ss.str());
         }
 
-        m_sprites.emplace_back(sf::Sprite(m_cachedTextureUPtrs.back()->Get()));
+        const auto WINDOW_REGION = windowRegion();
 
-        auto & sprite = m_sprites.back();
-        const auto SPRITE_INITIAL_GLOBAL_BOUNDS = sprite.getGlobalBounds();
+        const auto CONTENT_REGION { contentRegion() };
+        const auto CONTENT_REGION_RIGHT { CONTENT_REGION.left + CONTENT_REGION.width };
+        const auto CONTENT_REGION_BOTTOM { CONTENT_REGION.top + CONTENT_REGION.height };
 
-        if (!(SPRITE_INITIAL_GLOBAL_BOUNDS.width > 0.0f)
-            || !(SPRITE_INITIAL_GLOBAL_BOUNDS.height > 0.0f))
+        sf::Sprite sprite(m_cachedTextureUPtrs.back()->Get());
+
         {
-            std::ostringstream ss;
+            const auto SPRITE_INITIAL_GLOBAL_BOUNDS = sprite.getGlobalBounds();
 
-            ss << makeErrorMessagePrefix() << "setupSprite() created sprite with invalid bounds="
-               << SPRITE_INITIAL_GLOBAL_BOUNDS;
+            if (!(SPRITE_INITIAL_GLOBAL_BOUNDS.width > 0.0f)
+                || !(SPRITE_INITIAL_GLOBAL_BOUNDS.height > 0.0f))
+            {
+                std::ostringstream ss;
 
-            throw std::runtime_error(ss.str());
+                ss << makeErrorMessagePrefix()
+                   << "appendSprite() created sprite with invalid bounds="
+                   << SPRITE_INITIAL_GLOBAL_BOUNDS;
+
+                throw std::runtime_error(ss.str());
+            }
+
+            if (willEnsureAllImagesSameSize() && !m_sprites.empty())
+            {
+                const auto CURR_SPRITE_SIZE = sfutil::Size(SPRITE_INITIAL_GLOBAL_BOUNDS);
+                const auto PREV_SPRITE_SIZE = sfutil::Size(m_sprites.back().getGlobalBounds());
+                const auto SPRITE_SIZE_DIFF { CURR_SPRITE_SIZE - PREV_SPRITE_SIZE };
+
+                if (!(misc::Abs(SPRITE_SIZE_DIFF.x) < 1.0f)
+                    || !(misc::Abs(SPRITE_SIZE_DIFF.y) < 1.0f))
+                {
+                    std::ostringstream ss;
+
+                    ss << makeErrorMessagePrefix()
+                       << "appendSprite() created sprite with size=" << CURR_SPRITE_SIZE
+                       << ", but that was different from all previous that had size="
+                       << PREV_SPRITE_SIZE << ", and that is not allowed in this image set.";
+
+                    throw std::runtime_error(ss.str());
+                }
+            }
+
+            const sf::Vector2f SPRITE_MAX_SIZE(
+                (WINDOW_REGION.width * 0.49f), (WINDOW_REGION.height * 0.49f));
+
+            if ((SPRITE_INITIAL_GLOBAL_BOUNDS.width > SPRITE_MAX_SIZE.x)
+                || (SPRITE_INITIAL_GLOBAL_BOUNDS.height > SPRITE_MAX_SIZE.y))
+            {
+                sfutil::Fit(sprite, SPRITE_MAX_SIZE);
+            }
         }
 
-        if ((SPRITE_INITIAL_GLOBAL_BOUNDS.width > windowRegion().width)
-            || (SPRITE_INITIAL_GLOBAL_BOUNDS.height > windowRegion().height))
+        if (m_sprites.empty())
         {
-            sfutil::Fit(sprite, sfutil::Size(contentRegion()));
+            sprite.setPosition(sfutil::Position(CONTENT_REGION));
+        }
+        else
+        {
+            auto shiftSpritesAndRemoveAnyOffscreen = [&](const float SHIFT) {
+                for (auto & otherSprite : m_sprites)
+                {
+                    otherSprite.move(SHIFT, 0.0f);
+                }
+
+                m_sprites.erase(
+                    std::remove_if(
+                        std::begin(m_sprites),
+                        std::end(m_sprites),
+                        [&CONTENT_REGION](const auto & SPRITE) {
+                            return !sfutil::Intersects(SPRITE, CONTENT_REGION);
+                        }),
+                    std::end(m_sprites));
+            };
+
+            const auto SPRITE_BOUNDS = sprite.getGlobalBounds();
+
+            const auto PREV_SPRITE_BOUNDS = m_sprites.back().getGlobalBounds();
+            const auto PREV_SPRITE_BOTTOM { PREV_SPRITE_BOUNDS.top + PREV_SPRITE_BOUNDS.height };
+
+            const bool CAN_FIT_VERTICALLY_UNDER_PREV_SPRITE(
+                (PREV_SPRITE_BOTTOM + SPRITE_BOUNDS.height) < CONTENT_REGION_BOTTOM);
+
+            float left = 0.0f;
+            float top = 0.0f;
+
+            if (CAN_FIT_VERTICALLY_UNDER_PREV_SPRITE)
+            {
+                left = PREV_SPRITE_BOUNDS.left;
+                top = PREV_SPRITE_BOTTOM;
+            }
+            else
+            {
+                left = (PREV_SPRITE_BOUNDS.left + PREV_SPRITE_BOUNDS.width);
+                top = CONTENT_REGION.top;
+
+                // if we don't fit under the previous then we are being placed on top
+                // and so now the previous sprite is NOT the sprite to our left
+                // so this loop finds the right-most end of all the sprites to our left
+                for (auto iter = std::rbegin(m_sprites); iter != std::rend(m_sprites); ++iter)
+                {
+                    const auto REV_BOUNDS = iter->getGlobalBounds();
+                    if (misc::IsRealClose(PREV_SPRITE_BOUNDS.left, REV_BOUNDS.left))
+                    {
+                        const float REV_BOUNDS_RIGHT { REV_BOUNDS.left + REV_BOUNDS.width };
+                        if (REV_BOUNDS_RIGHT > left)
+                        {
+                            left = REV_BOUNDS_RIGHT;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            const bool CAN_FIT_HORIZONTALLY((left + SPRITE_BOUNDS.width) < CONTENT_REGION_RIGHT);
+
+            if (!CAN_FIT_HORIZONTALLY)
+            {
+                const float HORIZ_SHIFT { CONTENT_REGION_RIGHT - (left + SPRITE_BOUNDS.width) };
+                shiftSpritesAndRemoveAnyOffscreen(HORIZ_SHIFT);
+                left = (CONTENT_REGION_RIGHT - SPRITE_BOUNDS.width);
+            }
+
+            sprite.setPosition(left, top);
         }
 
-        sfutil::CenterTo(sprite, contentRegion());
-
-        const auto WIDTH = sprite.getGlobalBounds().width;
-        sprite.setPosition(contentRegion().width, sprite.getPosition().y);
-
-        const auto CONTENT_REGION = contentRegion();
-
-        for (auto & otherSprite : m_sprites)
-        {
-            otherSprite.move(-WIDTH, 0.0f);
-        }
-
-        m_sprites.erase(
-            std::remove_if(
-                std::begin(m_sprites),
-                std::end(m_sprites),
-                [&CONTENT_REGION](const auto & SPRITE) {
-                    return !sfutil::Intersects(SPRITE, CONTENT_REGION);
-                }),
-            std::end(m_sprites));
+        m_sprites.emplace_back(sprite);
     }
 
 } // namespace test

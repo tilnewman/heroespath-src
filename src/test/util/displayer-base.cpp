@@ -61,6 +61,7 @@ namespace test
     void DisplayerBase::endCommon()
     {
         M_HP_LOG(name() + " \"" << m_titleText.getString() << "\" ending the set.");
+        m_willEnsureAllImagesAreSameSize = false;
         releaseAndFreeAll();
     }
 

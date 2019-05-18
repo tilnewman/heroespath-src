@@ -12,6 +12,8 @@
 #include <cstdlib>
 #include <string>
 
+#include <SFML/Graphics/Drawable.hpp>
+
 namespace heroespath
 {
 namespace gui
@@ -25,8 +27,9 @@ namespace test
     {
         // negative DELAY_AFTER_EACH_DRAW means "no change"
         SingleImageDisplayerScoped(
+            const std::string & NAME_OF_IMAGE_SET,
             const std::size_t EXPECTED_IMAGE_COUNT,
-            const std::string & EXTRA_NAME_OR_INFO = "",
+            const bool WILL_ENSURE_ALL_IMAGES_HAVE_SAME_SIZE = false,
             const float DELAY_AFTER_EACH_DRAW = -1.0f);
 
         ~SingleImageDisplayerScoped();

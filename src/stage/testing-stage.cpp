@@ -335,8 +335,6 @@ namespace stage
         M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(gui, ItemImagePaths);
         M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(gui, CreatureImagePaths);
 
-        M_TESTING_STAGE_TEST(Animations);
-
         if (willInspectImages_)
         {
             isInspectingImages_ = true;
@@ -502,49 +500,6 @@ namespace stage
             TestingStrAppend(ss.str());
         }
         */
-    }
-
-    bool TestingStage::PerformTest_Animations()
-    {
-        static auto hasInitialPrompt { false };
-        if (false == hasInitialPrompt)
-        {
-            hasInitialPrompt = true;
-            TestingStrAppend("stage::TestingStage::PerformTest_Animations() Starting Tests...");
-            return false;
-        }
-
-        const long ANIM_FRAME_SLEEP_MS { 1 };
-
-        static std::size_t animIndex { 0 };
-
-        if (animIndex < gui::Animations::Count)
-        {
-            if (!animUPtr_)
-            {
-                const auto ENUM { static_cast<gui::Animations::Enum>(animIndex) };
-
-                TestingStrAppend("PerformTest_Animations() \"" + NAMEOF_ENUM_STR(ENUM) + "\"");
-
-                animUPtr_ = gui::AnimationFactory::Make(
-                    static_cast<gui::Animations::Enum>(animIndex),
-                    sf::FloatRect(0.0f, 0.0f, 512.0f, 512.0f));
-            }
-
-            if (animUPtr_->UpdateTime(0.02f))
-            {
-                animUPtr_.reset();
-                ++animIndex;
-            }
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(ANIM_FRAME_SLEEP_MS));
-
-            return false;
-        }
-
-        TestingStrAppend("stage::TestingStage::PerformTest_Animations() ALL Tests Passed.");
-
-        return true;
     }
 
     bool TestingStage::PerformTest_InventoryFactory()

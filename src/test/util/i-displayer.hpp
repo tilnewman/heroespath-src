@@ -28,7 +28,7 @@ namespace test
         virtual ~IDisplayer() = default;
 
         virtual const std::string name() const = 0;
-
+        virtual bool willEnsureAllImagesSameSize() const = 0;
         virtual const sf::FloatRect windowRegion() const = 0;
         virtual const sf::FloatRect titleRegion() const = 0;
         virtual const sf::FloatRect contentRegion() const = 0;
@@ -42,7 +42,12 @@ namespace test
 
         virtual void releaseAndFreeAll() = 0;
 
-        virtual void beginImageSeries(const std::string &, const std::size_t = 0) = 0;
+        virtual void beginImageSeries(
+            const std::string &,
+            const std::size_t = 0,
+            const bool WILL_ENSURE_ALL_IMAGES_HAVE_SAME_SIZE = false)
+            = 0;
+
         virtual void endImageSeries() = 0;
         virtual void appendImageToSeries(gui::CachedTexture) = 0;
 

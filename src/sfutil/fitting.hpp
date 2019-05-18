@@ -304,14 +304,14 @@ namespace sfutil
         Fit(orig, Size(LIMIT), SCALE);
     }
 
-    // rescales s (local) to fit LIMIT, if either size of s or LIMIT is <= 0 it is ignored
+    // rescales s to fit LIMIT, if either size of s or LIMIT is <= 0 it is ignored
     template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
     void Fit(T & thing, const sf::Vector2f & LIMIT) noexcept
     {
         thing.setScale(thing.getScale() * ScaleThatFits(Size(thing.getGlobalBounds()), LIMIT));
     }
 
-    // rescales s (local) to fit LIMIT, if either size of s or LIMIT is <= 0 it is ignored
+    // rescales s to fit LIMIT, if either size of s or LIMIT is <= 0 it is ignored
     template <typename T1, typename T2, typename = std::enable_if_t<has_getglobalbounds_v<T1>>>
     void Fit(T1 & thing, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT)
     {
@@ -422,7 +422,7 @@ namespace sfutil
         FitAndReCenter(orig, Size(LIMIT), SCALE);
     }
 
-    // rescales s (local) to the maximum size that fits within LIMIT and then recenters to s's
+    // rescales s to the maximum size that fits within LIMIT and then recenters to s's
     // original center, if either LIMIT or s is <= zero then that dimension is ignored, if both
     // LIMITs are <= zero then fitting is skipped
     template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
@@ -435,7 +435,7 @@ namespace sfutil
             (ORIG_CENTER_V - Half(Size(thing.getGlobalBounds()))) + thing.getOrigin());
     }
 
-    // rescales s (local) to the maximum size that fits within LIMIT and then recenters to s's
+    // rescales s to the maximum size that fits within LIMIT and then recenters to s's
     // original center, if either LIMIT or s is <= zero then that dimension is ignored, if both
     // LIMITs are <= zero then fitting is skipped
     template <typename T1, typename T2, typename = std::enable_if_t<has_getglobalbounds_v<T1>>>
@@ -444,7 +444,7 @@ namespace sfutil
         FitAndReCenter(thing, sf::Vector2f(sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT)));
     }
 
-    // rescales s (local) to the maximum size that fits within the size of LIMIT and then
+    // rescales s to the maximum size that fits within the size of LIMIT and then
     // recenters to s's original center, if either LIMIT or s is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
     template <typename T1, typename T2, typename = std::enable_if_t<has_getglobalbounds_v<T1>>>
@@ -453,7 +453,7 @@ namespace sfutil
         FitAndReCenter(thing, sf::Vector2f(Size(LIMIT)));
     }
 
-    // rescales s (local) to the maximum size that fits within the size (global) of LIMIT and
+    // rescales s to the maximum size that fits within the size of LIMIT and
     // then recenters to s's original center, if either dimension of LIMIT is <= zero then that
     // dimension is ignored, if both LIMITs are <= zero then fitting is skipped
     template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
@@ -464,8 +464,8 @@ namespace sfutil
 
     // FitAndReCenterTo()
 
-    // returns ORIG scaled to fit LIMIT and then re-centered to the center of LIMIT, if any ORIG
-    // or LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
+    // scales orig to fit LIMIT and then re-centers to LIMIT, if any orig or LIMIT is <= 0 then that
+    // dimension is not fit but SCALE is ALWAYS applied
     template <typename T1, typename T2>
     void FitAndCenterTo(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT) noexcept
     {
@@ -473,9 +473,19 @@ namespace sfutil
         CenterTo(orig, LIMIT);
     }
 
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE and then re-centered to the
-    // center of LIMIT, if any ORIG or LIMIT is <= 0 then that dimension is not fit but SCALE is
-    // ALWAYS applied
+    // returns a copy of ORIG scaled to fit LIMIT and then centered to LIMIT, if any ORIG or LIMIT
+    // is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
+    template <typename T1, typename T2>
+    const sf::Rect<T1>
+        FitAndCenterToCopy(const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT) noexcept
+    {
+        sf::Rect<T1> copy(ORIG);
+        FitAndCenterTo(copy, LIMIT);
+        return copy;
+    }
+
+    // scales orig to fit LIMIT, then re-scales by SCALE, and then centers to LIMIT, if any ORIG or
+    // LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
     template <typename T1, typename T2, typename Scale_t>
     void FitAndCenterTo(
         sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
@@ -484,10 +494,19 @@ namespace sfutil
         CenterTo(orig, LIMIT);
     }
 
-    // rescales s (local) to the maximum size that fits within the size of LIMIT and then
-    // centers s in LIMIT, if either LIMIT or s is <= zero then that dimension is ignored, if
-    // both LIMITs are
-    // <= zero then fitting is skipped
+    // returns a copy of ORIG scaled to fit LIMIT, re-scaled to SCALE, and then centered to LIMIT,
+    // if any ORIG or LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
+    template <typename T1, typename T2, typename Scale_t>
+    const sf::Rect<T1> FitAndCenterToCopy(
+        const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
+    {
+        sf::Rect<T1> copy(ORIG);
+        FitAndCenterTo(copy, LIMIT, SCALE);
+        return copy;
+    }
+
+    // fits and then centers to LIMIT, if either LIMIT or s is <= 0 then that dimension is ignored,
+    // if both LIMITs are <= zero then fitting is skipped
     template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
     void FitAndCenterTo(T & thing, const sf::FloatRect & LIMIT_RECT) noexcept
     {
@@ -497,13 +516,31 @@ namespace sfutil
             (CenterOf(LIMIT_RECT) - Half(Size(thing.getGlobalBounds()))) + thing.getOrigin());
     }
 
-    // rescales s (local) to the maximum size that fits within the size of LIMIT (global) and
-    // then centers s in LIMIT, if either LIMIT or s is <= zero then that dimension is ignored,
+    // fits to LIMIT, re-scales to SCALE, and then centers to LIMIT, if either LIMIT or s is <= 0
+    // then that dimension is ignored, if both LIMITs are <= zero then fitting is skipped
+    template <typename T, typename Scale_t, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
+    void FitAndCenterTo(T & thing, const sf::FloatRect & LIMIT_RECT, const Scale_t SCALE) noexcept
+    {
+        Fit(thing, Size(LIMIT_RECT, SCALE));
+
+        thing.setPosition(
+            (CenterOf(LIMIT_RECT) - Half(Size(thing.getGlobalBounds()))) + thing.getOrigin());
+    }
+
+    // fits and then centers to LIMIT, if either LIMIT or s is <= 0 then that dimension is ignored,
     // if both LIMITs are <= zero then fitting is skipped
     template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
     void FitAndCenterTo(T & thing, const T & LIMIT) noexcept
     {
         FitAndCenterTo(thing, LIMIT.getGlobalBounds());
+    }
+
+    // fits to LIMIT, re-scales to SCALE, and then centers to LIMIT, if either LIMIT or s is <= 0
+    // then that dimension is ignored, if both LIMITs are <= zero then fitting is skipped
+    template <typename T, typename Scale_t, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
+    void FitAndCenterTo(T & thing, const T & LIMIT, const Scale_t SCALE) noexcept
+    {
+        FitAndCenterTo(thing, LIMIT.getGlobalBounds(), SCALE);
     }
 
 } // namespace sfutil

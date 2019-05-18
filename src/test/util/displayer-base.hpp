@@ -33,7 +33,7 @@ namespace test
         virtual ~DisplayerBase() = default;
 
         const std::string name() const final { return m_name; }
-
+        bool willEnsureAllImagesSameSize() const final { return m_willEnsureAllImagesAreSameSize; }
         const sf::FloatRect windowRegion() const final { return m_windowRegion; }
         const sf::FloatRect titleRegion() const final { return m_titleRegion; }
         const sf::FloatRect contentRegion() const final { return m_contentRegion; }
@@ -64,8 +64,11 @@ namespace test
         void teardown() override { teardownCommon(); }
 
         void beginImageSeries(
-            const std::string & TITLE_STR, const std::size_t EXPECTED_IMAGE_COUNT = 0) override
+            const std::string & TITLE_STR,
+            const std::size_t EXPECTED_IMAGE_COUNT = 0,
+            const bool WILL_ENSURE_ALL_IMAGES_HAVE_SAME_SIZE = false) override
         {
+            m_willEnsureAllImagesAreSameSize = WILL_ENSURE_ALL_IMAGES_HAVE_SAME_SIZE;
             beginCommon(TITLE_STR, EXPECTED_IMAGE_COUNT);
         }
 
@@ -114,6 +117,7 @@ namespace test
         sf::FloatRect m_contentRegion;
         gui::Text m_titleText;
         std::string m_name;
+        bool m_willEnsureAllImagesAreSameSize = false;
     };
 
 } // namespace test

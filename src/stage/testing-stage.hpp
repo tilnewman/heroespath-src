@@ -121,7 +121,6 @@ namespace stage
             const creature::StatSet & ACTUAL,
             const creature::StatSet & EXPECTED);
 
-        bool PerformTest_Animations();
         bool PerformTest_InventoryFactory();
         bool DoesImageHaveOutline(const sf::Texture & TEXTURE) const;
         bool PerformTest_Spells();

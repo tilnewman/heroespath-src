@@ -30,6 +30,7 @@ namespace test
 
         void releaseAndFreeAll() override;
         void appendImageToSeries(gui::CachedTexture cachedTexture) override;
+
         void draw(sf::RenderTarget &, sf::RenderStates = sf::RenderStates()) const override;
 
     private:

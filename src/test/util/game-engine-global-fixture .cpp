@@ -79,6 +79,11 @@ namespace test
         m_startupShutdownUPtr.reset();
     }
 
+    void GameEngineGlobalFixture::setDisplayer(std::unique_ptr<IDisplayer> displayerUPtr)
+    {
+        m_iDisplayerUPtr = std::move(displayerUPtr);
+    }
+
     IDisplayer & GameEngineGlobalFixture::displayer()
     {
         if (!hasDisplay() || !m_iDisplayerUPtr)
@@ -102,7 +107,6 @@ namespace test
 
         window.ClearToBlack();
         window.TestDraw(*m_iDisplayerUPtr);
-
         window.DisplayFrameBuffer();
 
         if (m_delayAfterEachDrawSec > 0.0f)
@@ -188,9 +192,9 @@ namespace test
             + CURRENT_TEST_MODULE_NAME + "_";
     }
 
-    GameEngineGlobalFixture::EventFlags::Enum GameEngineGlobalFixture::checkEvents()
+    EventFlags::Enum GameEngineGlobalFixture::checkEvents()
     {
-        if (!hasDisplay() || !m_iDisplayerUPtr)
+        if (!hasDisplay())
         {
             return EventFlags::None;
         }

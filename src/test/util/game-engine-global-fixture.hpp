@@ -26,6 +26,16 @@ namespace test
 {
     struct IDisplayer;
 
+    struct EventFlags
+    {
+        enum Enum : EnumUnderlying_t
+        {
+            None = 0,
+            PauseKey = 1 << 0,
+            OtherInput = 1 << 1
+        };
+    };
+
     // this fixture can be decalred in any unit-test.cpp file and it will cause the game engine to
     // fully start up before all the tests (including the display window) and then shutdown after
     // all tests complete.
@@ -49,26 +59,16 @@ namespace test
         void setup();
         void teardown();
 
+        static void setDisplayer(std::unique_ptr<IDisplayer>);
         static IDisplayer & displayer();
         static void draw(const bool WILL_CHECK_EVENTS = true);
-        static void drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 0.75f);
-
-    private:
-        static const std::string name();
-
-        struct EventFlags
-        {
-            enum Enum : EnumUnderlying_t
-            {
-                None = 0,
-                PauseKey = 1 << 0,
-                OtherInput = 1 << 1
-            };
-        };
+        static void drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 0.5f);
 
         static EventFlags::Enum checkEvents();
 
     private:
+        static const std::string name();
+
         static inline std::unique_ptr<game::SetupTeardown> m_startupShutdownUPtr {};
         static inline std::unique_ptr<IDisplayer> m_iDisplayerUPtr {};
         static inline float m_delayAfterEachDrawSec { 0.0f };

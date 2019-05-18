@@ -96,7 +96,7 @@ namespace sfutil
         r = ScaleAndReCenterCopy(r, SCALE);
     }
 
-    // sets s's scale (local) to SCALE_V and then re-centers
+    // sets s's scale to SCALE_V and then re-centers
     template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
     void SetScaleAndReCenter(T & thing, const sf::Vector2f & SCALE_V) noexcept
     {
@@ -105,14 +105,14 @@ namespace sfutil
         thing.setPosition((ORIG_CENTER - Half(Size(thing.getGlobalBounds()))) + thing.getOrigin());
     }
 
-    // sets s's scale (local) to SCALE and then re-centers
+    // sets s's scale to SCALE and then re-centers
     template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
     void SetScaleAndReCenter(T & thing, const float SCALE) noexcept
     {
         SetScaleAndReCenter(thing, sf::Vector2f(SCALE, SCALE));
     }
 
-    // multiplies s's scale (global) by SCALE_V and then re-centers
+    // multiplies s's scale by SCALE_V and then re-centers
     template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
     void ScaleAndReCenter(T & thing, const sf::Vector2f & SCALE_V) noexcept
     {
@@ -121,7 +121,7 @@ namespace sfutil
         thing.setPosition((ORIG_CENTER - Half(Size(thing.getGlobalBounds()))) + thing.getOrigin());
     }
 
-    // multiplies s's scale (global) by SCALE and then re-centers
+    // multiplies s's scale by SCALE and then re-centers
     template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
     void ScaleAndReCenter(T & thing, const float SCALE) noexcept
     {

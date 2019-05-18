@@ -21,8 +21,9 @@ namespace test
 {
 
     SingleImageDisplayerScoped::SingleImageDisplayerScoped(
+        const std::string & NAME_OF_IMAGE_SET,
         const std::size_t EXPECTED_IMAGE_COUNT,
-        const std::string & EXTRA_NAME_OR_INFO,
+        const bool WILL_ENSURE_ALL_IMAGES_HAVE_SAME_SIZE,
         const float DELAY_AFTER_EACH_DRAW)
         : m_delayAfterDrawOrigToRestore(GameEngineGlobalFixture::delayAfterEachDraw())
     {
@@ -37,8 +38,9 @@ namespace test
         }
 
         GameEngineGlobalFixture::displayer().beginImageSeries(
-            CURRENT_TEST_MODULE_NAME + "__" + CURRENT_TEST_NAME + "__" + EXTRA_NAME_OR_INFO,
-            EXPECTED_IMAGE_COUNT);
+            CURRENT_TEST_MODULE_NAME + "__" + CURRENT_TEST_NAME + "__" + NAME_OF_IMAGE_SET + "__",
+            EXPECTED_IMAGE_COUNT,
+            WILL_ENSURE_ALL_IMAGES_HAVE_SAME_SIZE);
     }
 
     SingleImageDisplayerScoped::~SingleImageDisplayerScoped()

@@ -16,13 +16,19 @@
 #include "creature/condition.hpp"
 #include "creature/title.hpp"
 #include "game/setup-teardown.hpp"
+#include "gui/animation-factory.hpp"
+#include "gui/animation.hpp"
 #include "gui/combat-image-enum.hpp"
+#include "gui/display.hpp"
 #include "gui/image-loaders.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/scale.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 #include "test/util/common.hpp"
+#include "test/util/drawables-displayer.hpp"
 #include "test/util/game-engine-global-fixture.hpp"
 #include "test/util/single-image-displayer-scoped.hpp"
 #include "test/util/single-image-displayer.hpp"
@@ -42,8 +48,13 @@ void GameEngineGlobalFixture::setupBeforeAllTests()
 BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 template <typename EnumWrapper_t>
-void TestEnumImageLoading(SingleImageDisplayerScoped & displayerScoped)
+void TestEnumImageLoading(const bool WILL_ENSURE_ALL_IMAGES_SAME_SIZE)
 {
+    SingleImageDisplayerScoped displayerScoped(
+        std::string(NAMEOF_TYPE(EnumWrapper_t)) + "::Enum",
+        EnumWrapper_t::Count,
+        WILL_ENSURE_ALL_IMAGES_SAME_SIZE);
+
     for (EnumUnderlying_t index(0); index < EnumWrapper_t::Count; ++index)
     {
         const auto ENUM { static_cast<typename EnumWrapper_t::Enum>(index) };
@@ -58,23 +69,17 @@ void TestEnumImageLoading(SingleImageDisplayerScoped & displayerScoped)
 
 BOOST_AUTO_TEST_CASE(enums)
 {
-    const auto IMAGE_COUNT_TOTAL = static_cast<std::size_t>(
-        creature::Conditions::Count + creature::Titles::Count + gui::CombatImageType::Count
-        + song::Songs::Count + spell::Spells::Count + gui::CombatImageType::Count);
-
-    SingleImageDisplayerScoped displayerScoped(IMAGE_COUNT_TOTAL);
-
-    TestEnumImageLoading<creature::Conditions>(displayerScoped);
-    TestEnumImageLoading<creature::Titles>(displayerScoped);
-    TestEnumImageLoading<gui::CombatImageType>(displayerScoped);
-    TestEnumImageLoading<song::Songs>(displayerScoped);
-    TestEnumImageLoading<spell::Spells>(displayerScoped);
-    TestEnumImageLoading<gui::CombatImageType>(displayerScoped);
+    TestEnumImageLoading<creature::Conditions>(true);
+    TestEnumImageLoading<creature::Titles>(true);
+    TestEnumImageLoading<song::Songs>(true);
+    TestEnumImageLoading<spell::Spells>(true);
+    TestEnumImageLoading<gui::CombatImageType>(false);
 }
 
 BOOST_AUTO_TEST_CASE(avatar_enums)
 {
-    SingleImageDisplayerScoped displayerScoped(static_cast<std::size_t>(avatar::Avatar::Count));
+    SingleImageDisplayerScoped displayerScoped(
+        "avatar::Avatar::Enum", static_cast<std::size_t>(avatar::Avatar::Count), true);
 
     for (EnumUnderlying_t index(0); index < avatar::Avatar::Count; ++index)
     {
@@ -146,7 +151,7 @@ BOOST_AUTO_TEST_CASE(all_media_image_in_config_file)
         "Even though configFile.FindAllKeysWithPrefix(\"media-image-\") found keys, none of "
         "them were actual valid images.");
 
-    SingleImageDisplayerScoped displayerScoped(keyPaths.size());
+    SingleImageDisplayerScoped displayerScoped("AllMediaImageConfigKeys", keyPaths.size());
 
     for (const auto & KEYPATH : keyPaths)
     {
@@ -155,5 +160,58 @@ BOOST_AUTO_TEST_CASE(all_media_image_in_config_file)
                                    << "\", path=\"" << KEYPATH.path << "\"...");
 
         displayerScoped.appendImage(gui::CachedTexture(KEYPATH.key));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(animations)
+{
+
+    for (EnumUnderlying_t index(0); index < gui::Animations::Count; ++index)
+    {
+        const auto ENUM { static_cast<typename gui::Animations::Enum>(index) };
+        const std::string ENUM_STR { NAMEOF_ENUM(ENUM) };
+        const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();
+
+        auto animUPtr = gui::AnimationFactory::Make(static_cast<gui::Animations::Enum>(index));
+
+        SingleImageDisplayerScoped displayerScoped(ENUM_STR, gui::Animations::Count, true);
+
+        animUPtr->SetEntityRegion(
+            sfutil::FitAndCenterToCopy(animUPtr->GetEntityRegion(), CONTENT_REGION, 0.5f));
+
+        M_HP_LOG(
+            displayerScoped.name()
+            << ", about to load and display animation #" << index << ", enum=\"" << ENUM_STR
+            << "\", entity=\"" << animUPtr->GetEntityName() << "\", which has "
+            << animUPtr->FrameCount() << " frames...");
+
+        bool isPaused = false;
+        std::size_t frameCounter = animUPtr->CurrentFrame();
+        auto & window = *gui::Display::Instance();
+        do
+        {
+            window.ClearToBlack();
+            window.TestDraw(GameEngineGlobalFixture::displayer());
+            window.TestDraw(*animUPtr);
+            window.DisplayFrameBuffer();
+
+            if (GameEngineGlobalFixture::checkEvents() & EventFlags::PauseKey)
+            {
+                isPaused = !isPaused;
+            }
+
+            if (!isPaused)
+            {
+                while ((animUPtr->CurrentFrame() == frameCounter) && !animUPtr->IsFinished())
+                {
+                    animUPtr->UpdateTime(animUPtr->TimePerFrame() + 0.001f);
+                }
+
+                frameCounter = animUPtr->CurrentFrame();
+            }
+
+            GameEngineGlobalFixture::displayer().incrememntProgress();
+            sf::sleep(sf::seconds(GameEngineGlobalFixture::delayAfterEachDraw()));
+        } while (!animUPtr->IsFinished());
     }
 }
