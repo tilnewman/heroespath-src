@@ -116,20 +116,13 @@ namespace stage
         void PerformNextTest() override;
 
     private:
-        void TestStatSetsCurrentAndNormal(
-            const std::string & TEST_NAME,
-            const creature::StatSet & ACTUAL,
-            const creature::StatSet & EXPECTED);
-
         bool PerformTest_InventoryFactory();
-        bool DoesImageHaveOutline(const sf::Texture & TEXTURE) const;
         bool PerformTest_Spells();
         bool PerformTest_Songs();
         bool PerformTest_Conditions();
         bool PerformTest_Titles();
         bool PerformTest_PopupManager();
         bool PerformTest_SoundManager();
-        bool PerformTest_FontSizes();
         bool PerformTest_ItemProfileReport();
         bool PerformTest_ArmorRatings();
 
@@ -140,7 +133,6 @@ namespace stage
         // void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;
 
         void ResetWaitingForKeyOrClick();
-
         void AppendWaitTestTitle(const std::string & TITLE_STR);
 
     public:

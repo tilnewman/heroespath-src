@@ -36,7 +36,6 @@ namespace test
         void draw(sf::RenderTarget &, sf::RenderStates = sf::RenderStates()) const override;
 
     private:
-        void appendTexture(gui::CachedTexture cachedTexture);
         const std::tuple<bool, sf::Vector2f> prevSizeIfAny() const;
         const sf::Vector2f verifyCurrentSizeCalcNewSize(const sf::Vector2f & CURR_SIZE) const;
         void moveAllAndRemoveOffscreen(const sf::Vector2f & MOVE);

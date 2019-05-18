@@ -8,7 +8,7 @@
 // ----------------------------------------------------------------------------
 //
 // unit-test-01200-image-loading.cpp
-//
+
 #define BOOST_TEST_MODULE "image_loading"
 #include <boost/test/unit_test.hpp>
 
@@ -23,6 +23,7 @@
 #include "gui/image-loaders.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
+#include "misc/filesystem.hpp"
 #include "sfutil/fitting.hpp"
 #include "sfutil/scale.hpp"
 #include "song/song.hpp"
@@ -172,7 +173,6 @@ BOOST_AUTO_TEST_CASE(all_media_image_in_config_file)
 
 BOOST_AUTO_TEST_CASE(animations)
 {
-
     for (EnumUnderlying_t index(0); index < gui::Animations::Count; ++index)
     {
         const auto ENUM { static_cast<typename gui::Animations::Enum>(index) };
@@ -180,7 +180,7 @@ BOOST_AUTO_TEST_CASE(animations)
 
         auto animUPtr = gui::AnimationFactory::Make(ENUM);
 
-        SingleImageDisplayerScoped displayerScoped(ENUM_STR, gui::Animations::Count, true);
+        SingleImageDisplayerScoped displayerScoped(ENUM_STR, animUPtr->FrameCount(), true);
 
         const auto CONTENT_REGION = displayerScoped.get().contentRegion();
 
@@ -212,5 +212,37 @@ BOOST_AUTO_TEST_CASE(animations)
             }
 
         } while (!animUPtr->IsFinished());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(all_images_in_media_directory)
+{
+    const auto IMAGE_DIR_PATHS = misc::filesystem::FindDirectories(
+        true, misc::ConfigFile::Instance()->GetMediaPath("media-image-dir"));
+
+    BOOST_TEST(!IMAGE_DIR_PATHS.empty());
+
+    for (const auto & DIR_PATH_STR : IMAGE_DIR_PATHS)
+    {
+        const auto IMAGE_FILE_PATHS = misc::filesystem::FindFiles(
+            false, DIR_PATH_STR, "", "", misc::filesystem::COMMON_FILE_NAME_PARTS_TO_EXCLUDE_VEC_);
+
+        SingleImageDisplayerScoped displayerScoped(DIR_PATH_STR, IMAGE_FILE_PATHS.size(), false);
+        GameEngineGlobalFixture::delayAfterEachDrawSet(0.0f);
+
+        if (IMAGE_FILE_PATHS.empty())
+        {
+            M_HP_LOG_WRN(
+                displayerScoped.get().name()
+                << ", found an image directory with no images in it: \"" << DIR_PATH_STR << "\"");
+        }
+
+        for (const auto & FILE_PATH_STR : IMAGE_FILE_PATHS)
+        {
+            displayerScoped.get().appendImageToSeries(
+                gui::CachedTexture(PathWrapper(FILE_PATH_STR)));
+
+            displayerScoped.draw();
+        }
     }
 }

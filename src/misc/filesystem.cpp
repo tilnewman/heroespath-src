@@ -293,6 +293,52 @@ namespace misc
         return filePathStrings;
     }
 
+    const std::vector<std::string> filesystem::FindDirectories(
+        const bool IS_RECURSIVE, const std::string & DIR_PATH, const std::string & DIR_NAME_PREFIX)
+    {
+        if (DIR_PATH.empty() || !ExistsAndIsDirectory(DIR_PATH))
+        {
+            return {};
+        }
+
+        const bfs::path BOOST_PATH { DIR_PATH };
+
+        std::vector<std::string> dirPathStrings;
+        dirPathStrings.reserve(VECTOR_RESERVE_SIZE);
+
+        for (const auto & DIR_ENTRY : bfs::directory_iterator(BOOST_PATH))
+        {
+            const auto ENTRY_BOOST_PATH { DIR_ENTRY.path() };
+
+            if (IS_RECURSIVE && bfs::is_directory(ENTRY_BOOST_PATH))
+            {
+                for (const std::string & SUB_DIR_FILE_PATH :
+                     FindDirectories(true, ENTRY_BOOST_PATH.string(), DIR_NAME_PREFIX))
+                {
+                    dirPathStrings.emplace_back(SUB_DIR_FILE_PATH);
+                }
+            }
+
+            if (!bfs::is_directory(ENTRY_BOOST_PATH))
+            {
+                continue;
+            }
+
+            const auto DIR_NAME { ENTRY_BOOST_PATH.leaf().string() };
+
+            namespace ba = boost::algorithm;
+
+            if (!DIR_NAME_PREFIX.empty() && !ba::starts_with(DIR_NAME, DIR_NAME_PREFIX))
+            {
+                continue;
+            }
+
+            dirPathStrings.emplace_back(ENTRY_BOOST_PATH.string());
+        }
+
+        return dirPathStrings;
+    }
+
     const std::string filesystem::FindFirstAvailableNumberedFilenamePath(
         const std::string & DIR_PATH,
         const std::string & FILE_NAME,

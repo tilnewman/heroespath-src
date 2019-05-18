@@ -11,6 +11,8 @@
 
 #include "gui/cached-texture.hpp"
 #include "gui/entity.hpp"
+#include "misc/enum-util.hpp"
+#include "misc/log-macros.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/fitting.hpp"
 #include "sfutil/vector-and-rect.hpp"
@@ -39,7 +41,8 @@ namespace test
 
     void SingleImageDisplayer::appendImageToSeries(gui::CachedTexture cachedTexture)
     {
-        appendTexture(std::move(cachedTexture));
+        m_cachedTextureUPtrs.emplace_back(
+            std::make_unique<gui::CachedTexture>(std::move(cachedTexture)));
 
         sf::Sprite sprite(m_cachedTextureUPtrs.back()->Get());
         const auto REGION = tileImagesAndReturnNextImageRegion(sfutil::Size(sprite));
@@ -67,25 +70,6 @@ namespace test
         }
 
         drawCommon(target);
-    }
-
-    void SingleImageDisplayer::appendTexture(gui::CachedTexture cachedTexture)
-    {
-        m_cachedTextureUPtrs.emplace_back(
-            std::make_unique<gui::CachedTexture>(std::move(cachedTexture)));
-
-        const auto SIZE = m_cachedTextureUPtrs.back()->Get().getSize();
-
-        if ((SIZE.x == 0) || (SIZE.y == 0))
-        {
-            std::ostringstream ss;
-            ss << makeErrorMessagePrefix()
-               << "setupTexture(cachedTexture.Path=\"" + cachedTexture.Path()
-                    + "\") Created a CachedTexture with an invalid size="
-               << SIZE;
-
-            throw std::runtime_error(ss.str());
-        }
     }
 
     const std::tuple<bool, sf::Vector2f> SingleImageDisplayer::prevSizeIfAny() const
@@ -116,6 +100,14 @@ namespace test
                << ") given invalid size";
 
             throw std::runtime_error(ss.str());
+        }
+
+        if ((CountBitsSet(static_cast<std::uint32_t>(CURR_SIZE.x)) != 1)
+            || (CountBitsSet(static_cast<std::uint32_t>(CURR_SIZE.y)) != 1))
+        {
+            M_HP_LOG_WRN(
+                makeErrorMessagePrefix() << "verifyCurrentSizeAndGetNewSize(CURR_SIZE=" << CURR_SIZE
+                                         << ") given invalid size that was not a power of two.");
         }
 
         const auto [HAS_PREV, PREV_SIZE] = prevSizeIfAny();

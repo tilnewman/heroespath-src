@@ -332,6 +332,28 @@ namespace helpers
 
 } // namespace helpers
 
+constexpr std::size_t CountBitsSet(std::uint32_t x)
+{
+    x = x - ((x >> 1) & 0x55555555);
+    x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+    return (((x + (x >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+
+    // std::size_t count { 0 };
+    // EnumUnderlying_t flag { 1 };
+    //
+    // while (flag <= EnumWrapper_t::Last)
+    //{
+    //    if (ENUM_VALUE & flag)
+    //    {
+    //        ++count;
+    //    }
+    //
+    //    flag <<= 1;
+    //}
+    //
+    // return count;
+}
+
 // helper template for common enumeration operations
 template <typename EnumWrapper_t>
 struct EnumUtil
@@ -429,23 +451,9 @@ struct EnumUtil
         }
     }
 
-    // Responsible for common operations of enums that are used as bit flags
     static constexpr std::size_t CountBitsSet(const EnumUnderlying_t ENUM_VALUE)
     {
-        std::size_t count { 0 };
-        EnumUnderlying_t flag { 1 };
-
-        while (flag <= EnumWrapper_t::Last)
-        {
-            if (ENUM_VALUE & flag)
-            {
-                ++count;
-            }
-
-            flag <<= 1;
-        }
-
-        return count;
+        return heroespath::CountBitsSet(static_cast<std::uint32_t>(ENUM_VALUE));
     }
 };
 
