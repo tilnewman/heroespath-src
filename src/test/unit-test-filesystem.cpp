@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-00700-filesystem.cpp
+// unit-test-filesystem.cpp
 //
 #define BOOST_TEST_MODULE "filesystem"
 
@@ -367,17 +367,17 @@ BOOST_AUTO_TEST_CASE(combine_paths_and_clean)
             help.TEST_DIR_NAME_STR,
             help.TEST_DIR_NAME_STR)
         == help.PreferredSlashes(
-               filesystem::CurrentDirectory() + "/" + help.TEST_DIR_NAME_STR + "/"
-               + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR + "/"
-               + help.TEST_DIR_NAME_STR));
+            filesystem::CurrentDirectory() + "/" + help.TEST_DIR_NAME_STR + "/"
+            + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR + "/"
+            + help.TEST_DIR_NAME_STR));
 
     // test mixed cases
     BOOST_CHECK(
         filesystem::CombinePathsAndClean(
             "a", help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR)
         == help.PreferredSlashes(
-               std::string("a") + "/" + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR + "/"
-               + help.TEST_DIR_NAME_STR));
+            std::string("a") + "/" + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR + "/"
+            + help.TEST_DIR_NAME_STR));
 }
 
 BOOST_AUTO_TEST_CASE(append_paths_to_current_and_clean)
@@ -458,16 +458,16 @@ BOOST_AUTO_TEST_CASE(append_paths_to_current_and_clean)
         filesystem::AppendPathsToCurrentAndClean(
             help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR)
         == help.PreferredSlashes(
-               filesystem::CurrentDirectory() + "/" + help.TEST_DIR_NAME_STR + "/"
-               + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR));
+            filesystem::CurrentDirectory() + "/" + help.TEST_DIR_NAME_STR + "/"
+            + help.TEST_DIR_NAME_STR + "/" + help.TEST_DIR_NAME_STR));
 
     // test mixed cases
     BOOST_CHECK(
         filesystem::AppendPathsToCurrentAndClean(
             "a", help.TEST_DIR_NAME_STR, help.TEST_DIR_NAME_STR)
         == help.PreferredSlashes(
-               filesystem::CurrentDirectory() + std::string("/a") + "/" + help.TEST_DIR_NAME_STR
-               + "/" + help.TEST_DIR_NAME_STR));
+            filesystem::CurrentDirectory() + std::string("/a") + "/" + help.TEST_DIR_NAME_STR + "/"
+            + help.TEST_DIR_NAME_STR));
 }
 
 // BOOST_AUTO_TEST_CASE(misc_filesystem__EndsWithFileGuess)

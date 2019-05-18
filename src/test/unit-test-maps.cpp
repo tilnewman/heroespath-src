@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer sin return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-01400-maps.cpp
+// unit-test-maps.cpp
 //
 #define BOOST_TEST_MODULE "maps"
 

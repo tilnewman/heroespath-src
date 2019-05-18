@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-01100-combat.cpp
+// unit-test-combat.cpp
 //
 #define BOOST_TEST_MODULE "combat"
 

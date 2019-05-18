@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-00200-misc.cpp
+// unit-test-misc.cpp
 //
 #define BOOST_TEST_MODULE "misc"
 
@@ -107,16 +107,18 @@ void isRealTestIdentity(const std::vector<T> & VALUES)
 
         BOOST_CHECK(
             IsRealZero(VALUE)
-            == !((VALUE < -std::numeric_limits<T>::epsilon())
-                 || (VALUE > std::numeric_limits<T>::epsilon())));
+            == !(
+                (VALUE < -std::numeric_limits<T>::epsilon())
+                || (VALUE > std::numeric_limits<T>::epsilon())));
 
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
         BOOST_CHECK(
             IsRealOne(VALUE)
-            == !((VALUE < (T(1) - std::numeric_limits<T>::epsilon()))
-                 || (VALUE > (T(1) + std::numeric_limits<T>::epsilon()))));
+            == !(
+                (VALUE < (T(1) - std::numeric_limits<T>::epsilon()))
+                || (VALUE > (T(1) + std::numeric_limits<T>::epsilon()))));
 
         if constexpr (!std::is_floating_point_v<T>)
         {

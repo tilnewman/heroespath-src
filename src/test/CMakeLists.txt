@@ -30,6 +30,7 @@ setup_test("unit-test-texture-cache.cpp")
 setup_test("unit-test-combat.cpp")
 setup_test("unit-test-image-loading.cpp")
 setup_test("unit-test-gui-elements.cpp")
+setup_test("unit-test-holders.cpp")
 setup_test("unit-test-maps.cpp")
 
 #copy testing files

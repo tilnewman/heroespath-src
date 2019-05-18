@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-00600-sliders.cpp
+// unit-test-sliders.cpp
 //
 #define BOOST_TEST_MODULE "sliders"
 

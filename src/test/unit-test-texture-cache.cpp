@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-01000-texture-cache.cpp
+// unit-test-texture-cache.cpp
 //
 #define BOOST_TEST_MODULE "texture_cache"
 

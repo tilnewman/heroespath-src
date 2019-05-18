@@ -18,13 +18,6 @@
 
 namespace heroespath
 {
-
-namespace stage
-{
-    struct IStage;
-    using IStagePtr_t = misc::NotNull<IStage *>;
-} // namespace stage
-
 namespace creature
 {
 
@@ -40,7 +33,6 @@ namespace creature
         public:
             static void Fill();
             static void Empty();
-            static bool Test(stage::IStagePtr_t iStagePtr);
             static TitlePtr_t Get(const Titles::Enum);
 
         private:

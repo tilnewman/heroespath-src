@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer sin return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-01300-gui-elements.cpp
+// unit-test-gui-elements.cpp
 //
 #define BOOST_TEST_MODULE "gui_elements"
 

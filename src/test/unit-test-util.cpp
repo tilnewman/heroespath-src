@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-00010-testutil.cpp
+// unit-test-testutil.cpp
 //
 #define BOOST_TEST_MODULE "testutil_library"
 

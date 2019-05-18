@@ -103,19 +103,19 @@ namespace stage
 
     TestingStage::TestingStage()
         : StageBase(
-              "Testing",
-              {
-                  gui::GuiFont::Default,
-                  gui::GuiFont::DefaultBoldFlavor,
-                  gui::GuiFont::System,
-                  gui::GuiFont::Number,
-                  gui::GuiFont::SystemCondensed,
-                  gui::GuiFont::SignThinTallNarrow,
-                  gui::GuiFont::SignBoldShortWide,
-                  gui::GuiFont::Handwriting,
-                  gui::GuiFont::DialogModern,
-                  gui::GuiFont::DialogMedieval,
-              })
+            "Testing",
+            {
+                gui::GuiFont::Default,
+                gui::GuiFont::DefaultBoldFlavor,
+                gui::GuiFont::System,
+                gui::GuiFont::Number,
+                gui::GuiFont::SystemCondensed,
+                gui::GuiFont::SignThinTallNarrow,
+                gui::GuiFont::SignBoldShortWide,
+                gui::GuiFont::Handwriting,
+                gui::GuiFont::DialogModern,
+                gui::GuiFont::DialogMedieval,
+            })
         , textures_()
         , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("TestingStage's"))
         , testingBlurbsVec_()
@@ -326,12 +326,7 @@ namespace stage
         M_TESTING_STAGE_TEST(ItemProfileReport);
         M_TESTING_STAGE_TEST(InventoryFactory);
         M_TESTING_STAGE_TEST(ArmorRatings);
-        M_TESTING_STAGE_TEST(Spells);
-        M_TESTING_STAGE_TEST(Songs);
-        M_TESTING_STAGE_TEST(Conditions);
-        M_TESTING_STAGE_TEST(Titles);
         M_TESTING_STAGE_TEST(PopupManager);
-
         M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(gui, ItemImagePaths);
         M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(gui, CreatureImagePaths);
 
@@ -344,20 +339,6 @@ namespace stage
 
         std::cout << "ALL TESTS PASSED" << std::endl;
         TransitionTo(stage::Stage::Exit);
-    }
-
-    bool TestingStage::PerformTest_Spells() { return spell::Holder::Test(misc::MakeNotNull(this)); }
-
-    bool TestingStage::PerformTest_Songs() { return song::Holder::Test(misc::MakeNotNull(this)); }
-
-    bool TestingStage::PerformTest_Conditions()
-    {
-        return creature::condition::Holder::Test(misc::MakeNotNull(this));
-    }
-
-    bool TestingStage::PerformTest_Titles()
-    {
-        return creature::title::Holder::Test(misc::MakeNotNull(this));
     }
 
     bool TestingStage::PerformTest_SoundManager()
@@ -417,19 +398,19 @@ namespace stage
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                  "creature-dragon-class-rank-min-Elder");
+                                "creature-dragon-class-rank-min-Elder");
                     }
                     else if (RACE_ENUM == creature::race::Wolfen)
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                  "creature-wolfen-class-rank-min-Elder");
+                                "creature-wolfen-class-rank-min-Elder");
                     }
                     else
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                  "rankclass-Master-rankmax");
+                                "rankclass-Master-rankmax");
                     }
                 }() };
 

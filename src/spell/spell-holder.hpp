@@ -17,13 +17,6 @@
 
 namespace heroespath
 {
-
-namespace stage
-{
-    struct IStage;
-    using IStagePtr_t = misc::NotNull<IStage *>;
-} // namespace stage
-
 namespace spell
 {
 
@@ -38,7 +31,6 @@ namespace spell
     {
         static void Fill();
         static void Empty();
-        static bool Test(stage::IStagePtr_t iStagePtr);
         static const SpellPtr_t Get(const Spells::Enum);
 
     private:

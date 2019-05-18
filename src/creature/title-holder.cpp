@@ -1892,62 +1892,6 @@ namespace creature
             return TitlePtr_t { titleUVec_[INDEX].get() };
         }
 
-        bool Holder::Test(stage::IStagePtr_t iStagePtr)
-        {
-            static auto hasInitialPrompt { false };
-            if (false == hasInitialPrompt)
-            {
-                hasInitialPrompt = true;
-                iStagePtr->TestingStrAppend("creature::Titles::Holder::Test() Starting Tests...");
-            }
-
-            static EnumUnderlying_t titleIndex { 0 };
-            if (titleIndex < Titles::Count)
-            {
-                const auto NEXT_ENUM(static_cast<Titles::Enum>(titleIndex));
-                auto TITLE_PTR { Get(NEXT_ENUM) };
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (TITLE_PTR->Desc().empty() == false),
-                    "creature::Titles::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
-                                                        << "\") resulted in an empty Desc().");
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (TITLE_PTR->LongDesc().empty() == false),
-                    "creature::Titles::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
-                                                        << "\") resulted in an empty LongDesc().");
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (TITLE_PTR->ImageFilename().empty() == false),
-                    "creature::Titles::Holder::Test(\""
-                        << NAMEOF_ENUM(NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (TITLE_PTR->RolesCopy().empty() == false),
-                    "creature::Titles::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
-                                                        << "\") resulted in an empty RolesVec().");
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (TITLE_PTR->Which() == NEXT_ENUM),
-                    "creature::Titles::Holder::Test(\""
-                        << NAMEOF_ENUM(NEXT_ENUM)
-                        << "\") resulted in a Title with a different tile::Enum (\""
-                        << NAMEOF_ENUM(TITLE_PTR->Which()) << "\")");
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (TITLE_PTR->Name() == Titles::Name(NEXT_ENUM)),
-                    "creature::Titles::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
-                                                        << "\") Title is out of order.");
-
-                iStagePtr->TestingStrIncrement("Title Test #");
-                ++titleIndex;
-                return false;
-            }
-
-            iStagePtr->TestingStrAppend("creature::Titles::Holder::Test()  ALL TESTS PASSED.");
-            return true;
-        }
-
     } // namespace title
 } // namespace creature
 } // namespace heroespath

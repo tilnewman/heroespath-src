@@ -146,60 +146,6 @@ namespace creature
 
         void Holder::Empty() { conditionsUVec_.clear(); }
 
-        bool Holder::Test(stage::IStagePtr_t iStagePtr)
-        {
-            static auto hasInitialPrompt { false };
-            if (false == hasInitialPrompt)
-            {
-                hasInitialPrompt = true;
-                iStagePtr->TestingStrAppend(
-                    "creature::condition::Holder::Test() Starting Tests...");
-            }
-
-            static EnumUnderlying_t condIndex { 0 };
-            if (condIndex < creature::Conditions::Count)
-            {
-                const auto NEXT_ENUM { static_cast<creature::Conditions::Enum>(condIndex) };
-                const auto CONDITION_PTR { Get(NEXT_ENUM) };
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (CONDITION_PTR->Desc().empty() == false),
-                    "creature::condition::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
-                                                           << "\") resulted in an empty Desc().");
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (CONDITION_PTR->LongDesc().empty() == false),
-                    "creature::condition::Holder::Test(\""
-                        << NAMEOF_ENUM(NEXT_ENUM) << "\") resulted in an empty LongDesc().");
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (CONDITION_PTR->ToString().empty() == false),
-                    "creature::condition::Holder::Test(\""
-                        << NAMEOF_ENUM(NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (CONDITION_PTR->Name().empty() == false),
-                    "creature::condition::Holder::Test(\"" << NAMEOF_ENUM(NEXT_ENUM)
-                                                           << "\") resulted in an empty Name().");
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (CONDITION_PTR->Name() == Conditions::Name(NEXT_ENUM)),
-                    "creature::condition::Holder::Test(ptr=\""
-                        << CONDITION_PTR->Name() << "\", enum=\"" << NAMEOF_ENUM(NEXT_ENUM)
-                        << "\") Condition is out of order.");
-
-                ++condIndex;
-
-                iStagePtr->TestingStrIncrement("Condition Test \"" + CONDITION_PTR->Name() + "\"");
-
-                return false;
-            }
-
-            iStagePtr->TestingStrAppend("creature::title::Holder::Test()  ALL TESTS PASSED.");
-
-            return true;
-        }
-
         const ConditionPtr_t Holder::Get(const Conditions::Enum ENUM)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(

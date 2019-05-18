@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-00400-vectors.cpp
+// unit-test-vectors.cpp
 //
 #define BOOST_TEST_MODULE "vectors_library"
 
@@ -215,9 +215,8 @@ BOOST_AUTO_TEST_CASE(add_ab_no_sort)
 
     BOOST_CHECK_MESSAGE(
         (AB_NOSORT_RESULT == AB_NOSORT_EXPECTED),
-        "add 1,1,2,3 + 4,5,6,6 No_SortAndUnique result=" << containerToString(AB_NOSORT_RESULT)
-                                                         << ", expected="
-                                                         << containerToString(AB_NOSORT_EXPECTED));
+        "add 1,1,2,3 + 4,5,6,6 No_SortAndUnique result=" << containerToString(
+            AB_NOSORT_RESULT) << ", expected=" << containerToString(AB_NOSORT_EXPECTED));
 }
 
 BOOST_AUTO_TEST_CASE(add_ab_sort_and_unique)
@@ -244,9 +243,8 @@ BOOST_AUTO_TEST_CASE(add_ba_no_sort)
 
     BOOST_CHECK_MESSAGE(
         (BA_NOSORT_RESULT == BA_NOSORT_EXPECTED),
-        "add 4,5,6,6 + 1,1,2,3 No_SortAndUnique result=" << containerToString(BA_NOSORT_RESULT)
-                                                         << ", expected="
-                                                         << containerToString(BA_NOSORT_EXPECTED));
+        "add 4,5,6,6 + 1,1,2,3 No_SortAndUnique result=" << containerToString(
+            BA_NOSORT_RESULT) << ", expected=" << containerToString(BA_NOSORT_EXPECTED));
 }
 
 BOOST_AUTO_TEST_CASE(add_ba_sort_and_unique)

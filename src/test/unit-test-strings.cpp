@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-00100-strings.cpp
+// unit-test-strings.cpp
 //
 #define BOOST_TEST_MODULE "strings"
 

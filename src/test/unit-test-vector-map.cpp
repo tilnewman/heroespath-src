@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-00300-vector-map.cpp
+// unit-test-vector-map.cpp
 //
 #define BOOST_TEST_MODULE "vector_map"
 

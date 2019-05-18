@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// unit-test-00500-enum-util.cpp
+// unit-test-enum-util.cpp
 //
 #define BOOST_TEST_MODULE "enum_util"
 
