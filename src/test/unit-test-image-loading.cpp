@@ -43,6 +43,7 @@ void GameEngineGlobalFixture::setupBeforeAllTests()
     m_unitTestFilename = __FILE__;
     m_subsystemsToSetup = game::SubsystemCollection::TestAll;
     m_iDisplayerUPtr = std::make_unique<SingleImageDisplayer>();
+    // m_delayAfterEachDrawSec = 0.25f;
 }
 
 BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
@@ -60,10 +61,12 @@ void TestEnumImageLoading(const bool WILL_ENSURE_ALL_IMAGES_SAME_SIZE)
         const auto ENUM { static_cast<typename EnumWrapper_t::Enum>(index) };
 
         M_HP_LOG(
-            displayerScoped.name() << ", about to load and display " << NAMEOF_TYPE(EnumWrapper_t)
-                                   << " #" << index << " \"" << NAMEOF_ENUM(ENUM) << "\"...");
+            displayerScoped.get().name()
+            << ", about to load and display " << NAMEOF_TYPE(EnumWrapper_t) << " #" << index
+            << " \"" << NAMEOF_ENUM(ENUM) << "\"...");
 
-        displayerScoped.appendImage(gui::LoadAndCacheImage(ENUM));
+        displayerScoped.get().appendImageToSeries(gui::LoadAndCacheImage(ENUM));
+        displayerScoped.draw();
     }
 }
 
@@ -86,11 +89,14 @@ BOOST_AUTO_TEST_CASE(avatar_enums)
         const auto ENUM { static_cast<typename avatar::Avatar::Enum>(index) };
 
         M_HP_LOG(
-            displayerScoped.name() << ", about to load and display " << NAMEOF_TYPE(avatar::Avatar)
-                                   << " #" << index << " \"" << NAMEOF_ENUM(ENUM) << "\"...");
+            displayerScoped.get().name()
+            << ", about to load and display " << NAMEOF_TYPE(avatar::Avatar) << " #" << index
+            << " \"" << NAMEOF_ENUM(ENUM) << "\"...");
 
-        displayerScoped.appendImage(
+        displayerScoped.get().appendImageToSeries(
             gui::CachedTexture(PathWrapper(avatar::Avatar::ImagePath(ENUM))));
+
+        displayerScoped.draw();
     }
 }
 
@@ -156,10 +162,11 @@ BOOST_AUTO_TEST_CASE(all_media_image_in_config_file)
     for (const auto & KEYPATH : keyPaths)
     {
         M_HP_LOG(
-            displayerScoped.name() << ", about to load and display key=\"" << KEYPATH.key
-                                   << "\", path=\"" << KEYPATH.path << "\"...");
+            displayerScoped.get().name() << ", about to load and display key=\"" << KEYPATH.key
+                                         << "\", path=\"" << KEYPATH.path << "\"...");
 
-        displayerScoped.appendImage(gui::CachedTexture(KEYPATH.key));
+        displayerScoped.get().appendImageToSeries(gui::CachedTexture(KEYPATH.key));
+        displayerScoped.draw();
     }
 }
 
@@ -170,48 +177,40 @@ BOOST_AUTO_TEST_CASE(animations)
     {
         const auto ENUM { static_cast<typename gui::Animations::Enum>(index) };
         const std::string ENUM_STR { NAMEOF_ENUM(ENUM) };
-        const auto CONTENT_REGION = GameEngineGlobalFixture::displayer().contentRegion();
 
-        auto animUPtr = gui::AnimationFactory::Make(static_cast<gui::Animations::Enum>(index));
+        auto animUPtr = gui::AnimationFactory::Make(ENUM);
 
         SingleImageDisplayerScoped displayerScoped(ENUM_STR, gui::Animations::Count, true);
+
+        const auto CONTENT_REGION = displayerScoped.get().contentRegion();
 
         animUPtr->SetEntityRegion(
             sfutil::FitAndCenterToCopy(animUPtr->GetEntityRegion(), CONTENT_REGION, 0.5f));
 
         M_HP_LOG(
-            displayerScoped.name()
+            displayerScoped.get().name()
             << ", about to load and display animation #" << index << ", enum=\"" << ENUM_STR
             << "\", entity=\"" << animUPtr->GetEntityName() << "\", which has "
             << animUPtr->FrameCount() << " frames...");
 
-        bool isPaused = false;
-        std::size_t frameCounter = animUPtr->CurrentFrame();
-        auto & window = *gui::Display::Instance();
+        displayerScoped.get().appendEntity(gui::IEntityPtr_t(animUPtr.get()));
+
         do
         {
-            window.ClearToBlack();
-            window.TestDraw(GameEngineGlobalFixture::displayer());
-            window.TestDraw(*animUPtr);
-            window.DisplayFrameBuffer();
+            displayerScoped.draw(true);
 
-            if (GameEngineGlobalFixture::checkEvents() & EventFlags::PauseKey)
+            if (!displayerScoped.isPaused())
             {
-                isPaused = !isPaused;
-            }
+                std::size_t frameCounter = animUPtr->CurrentFrame();
 
-            if (!isPaused)
-            {
                 while ((animUPtr->CurrentFrame() == frameCounter) && !animUPtr->IsFinished())
                 {
                     animUPtr->UpdateTime(animUPtr->TimePerFrame() + 0.001f);
                 }
 
-                frameCounter = animUPtr->CurrentFrame();
+                displayerScoped.get().incrememntProgress();
             }
 
-            GameEngineGlobalFixture::displayer().incrememntProgress();
-            sf::sleep(sf::seconds(GameEngineGlobalFixture::delayAfterEachDraw()));
         } while (!animUPtr->IsFinished());
     }
 }

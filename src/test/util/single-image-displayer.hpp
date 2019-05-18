@@ -14,6 +14,8 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
+#include <tuple>
+
 namespace heroespath
 {
 namespace gui
@@ -30,12 +32,17 @@ namespace test
 
         void releaseAndFreeAll() override;
         void appendImageToSeries(gui::CachedTexture cachedTexture) override;
-
+        void appendEntity(const gui::IEntityPtr_t ENTITY_PTR) override;
         void draw(sf::RenderTarget &, sf::RenderStates = sf::RenderStates()) const override;
 
     private:
         void appendTexture(gui::CachedTexture cachedTexture);
-        void appendSprite();
+        const std::tuple<bool, sf::Vector2f> prevSizeIfAny() const;
+        const sf::Vector2f verifyCurrentSizeCalcNewSize(const sf::Vector2f & CURR_SIZE) const;
+        void moveAllAndRemoveOffscreen(const sf::Vector2f & MOVE);
+        const sf::FloatRect prevImageBounds() const;
+        const sf::FloatRect boundsOfImageFurthestRight() const;
+        const sf::FloatRect tileImagesAndReturnNextImageRegion(const sf::Vector2f & ORIG_SIZE);
 
     private:
         std::vector<std::unique_ptr<gui::CachedTexture>> m_cachedTextureUPtrs;

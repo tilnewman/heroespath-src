@@ -70,6 +70,11 @@ namespace test
     {
         target.draw(m_titleText);
         target.draw(m_progressRectangle);
+
+        for (const auto & ENTITY_PTR : m_entityPtrs)
+        {
+            target.draw(*ENTITY_PTR);
+        }
     }
 
     void DisplayerBase::updateProgressBar()

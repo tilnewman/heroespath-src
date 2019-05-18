@@ -9,6 +9,7 @@
 //
 // displayer-base.hpp
 //
+#include "gui/i-entity.hpp"
 #include "gui/text.hpp"
 #include "test/util/i-displayer.hpp"
 
@@ -37,6 +38,9 @@ namespace test
         const sf::FloatRect windowRegion() const final { return m_windowRegion; }
         const sf::FloatRect titleRegion() const final { return m_titleRegion; }
         const sf::FloatRect contentRegion() const final { return m_contentRegion; }
+
+        const sf::Color backgroundColor() const final { return m_backgroundColor; }
+        void backgroundColor(const sf::Color & COLOR) final { m_backgroundColor = COLOR; }
 
         void incrememntProgress() final
         {
@@ -85,6 +89,11 @@ namespace test
 
         void appendDrawable(std::unique_ptr<sf::Drawable>) override;
 
+        void appendEntity(const gui::IEntityPtr_t ENTITY_PTR) override
+        {
+            m_entityPtrs.emplace_back(ENTITY_PTR);
+        }
+
     protected:
         void setupCommon(const sf::FloatRect & FULL_SCREEN_RECT)
         {
@@ -97,7 +106,7 @@ namespace test
         void beginCommon(const std::string & TITLE_STR, const std::size_t PROGRESS_COUNT_MAX);
         void endCommon();
 
-        // only draws the title and progress bar
+        // draws the title, progress bar, and all entitys
         void drawCommon(sf::RenderTarget & target) const;
 
         void updateProgressBar();
@@ -118,6 +127,10 @@ namespace test
         gui::Text m_titleText;
         std::string m_name;
         bool m_willEnsureAllImagesAreSameSize = false;
+        sf::Color m_backgroundColor = sf::Color(50, 50, 50);
+
+    protected:
+        std::vector<gui::IEntityPtr_t> m_entityPtrs;
     };
 
 } // namespace test

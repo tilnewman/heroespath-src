@@ -200,7 +200,7 @@ namespace gui
 
     bool Display::IsOpen() const { return winUPtr_->isOpen(); }
 
-    void Display::ClearToBlack() { winUPtr_->clear(sf::Color::Black); }
+    void Display::ClearTo(const sf::Color & COLOR) { winUPtr_->clear(COLOR); }
 
     void Display::DisplayFrameBuffer() { winUPtr_->display(); }
 

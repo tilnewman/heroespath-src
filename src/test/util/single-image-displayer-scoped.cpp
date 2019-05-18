@@ -49,15 +49,18 @@ namespace test
         GameEngineGlobalFixture::delayAfterEachDrawSet(m_delayAfterDrawOrigToRestore);
     }
 
-    const std::string SingleImageDisplayerScoped::name() const
+    IDisplayer & SingleImageDisplayerScoped::get() { return GameEngineGlobalFixture::displayer(); }
+
+    EventFlags::Enum SingleImageDisplayerScoped::draw(const bool WILL_CHECK_EVENTS)
     {
-        return GameEngineGlobalFixture::displayer().name();
+        return GameEngineGlobalFixture::draw(WILL_CHECK_EVENTS);
     }
 
-    void SingleImageDisplayerScoped::appendImage(gui::CachedTexture cachedTexture)
+    bool SingleImageDisplayerScoped::isPaused() { return GameEngineGlobalFixture::isPaused(); }
+
+    void SingleImageDisplayerScoped::isPaused(const bool IS_PAUSED)
     {
-        GameEngineGlobalFixture::displayer().appendImageToSeries(std::move(cachedTexture));
-        GameEngineGlobalFixture::draw();
+        GameEngineGlobalFixture::isPaused(IS_PAUSED);
     }
 
 } // namespace test

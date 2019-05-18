@@ -9,17 +9,10 @@
 //
 // single-image-displayer-scoped.hpp
 //
-#include <cstdlib>
-#include <string>
-
-#include <SFML/Graphics/Drawable.hpp>
+#include "test/util/i-displayer.hpp"
 
 namespace heroespath
 {
-namespace gui
-{
-    class CachedTexture;
-}
 namespace test
 {
 
@@ -34,8 +27,12 @@ namespace test
 
         ~SingleImageDisplayerScoped();
 
-        const std::string name() const;
-        void appendImage(gui::CachedTexture cachedTexture);
+        IDisplayer & get();
+
+        EventFlags::Enum draw(const bool WILL_CHECK_EVENTS = true);
+
+        bool isPaused();
+        void isPaused(const bool IS_PAUSED);
 
     private:
         float m_delayAfterDrawOrigToRestore;

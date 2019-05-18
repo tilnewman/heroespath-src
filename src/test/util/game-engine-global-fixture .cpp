@@ -95,7 +95,7 @@ namespace test
         return *m_iDisplayerUPtr;
     }
 
-    void GameEngineGlobalFixture::draw(const bool WILL_CHECK_EVENTS)
+    EventFlags::Enum GameEngineGlobalFixture::draw(const bool WILL_CHECK_EVENTS)
     {
         if (!hasDisplay() || !m_iDisplayerUPtr)
         {
@@ -105,7 +105,7 @@ namespace test
 
         auto & window = *gui::Display::Instance();
 
-        window.ClearToBlack();
+        window.ClearTo(m_iDisplayerUPtr->backgroundColor());
         window.TestDraw(*m_iDisplayerUPtr);
         window.DisplayFrameBuffer();
 
@@ -116,11 +116,16 @@ namespace test
 
         if (WILL_CHECK_EVENTS)
         {
-            checkEvents();
+            return checkEvents();
+        }
+        else
+        {
+            return EventFlags::None;
         }
     }
 
-    void GameEngineGlobalFixture::drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC)
+    EventFlags::Enum
+        GameEngineGlobalFixture::drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC)
     {
         if (!hasDisplay() || !m_iDisplayerUPtr)
         {
@@ -132,7 +137,7 @@ namespace test
 
         if (!(DURATION_SEC > 0.0f))
         {
-            return;
+            return EventFlags::None;
         }
 
         gui::Display::Instance()->PollEvents();
@@ -142,15 +147,16 @@ namespace test
         const auto DELAY_AFTER_EACH_DRAW_ORIG = m_delayAfterEachDrawSec;
         m_delayAfterEachDrawSec = 0.0f;
 
+        EventFlags::Enum eventFlags = EventFlags::None;
         sf::Clock timer;
         const float timeStepSec = 0.02f;
-        bool isPaused = false;
+        m_isPaused = false;
         float currentElapsedTime = 0.0f;
         while (currentElapsedTime < DURATION_SEC)
         {
             timer.restart();
 
-            if (!isPaused)
+            if (!m_isPaused)
             {
                 currentElapsedTime += timeStepSec;
 
@@ -161,13 +167,8 @@ namespace test
 
             draw(false);
 
-            const auto EVENT_FLAGS = checkEvents();
-
-            if (EVENT_FLAGS & EventFlags::PauseKey)
-            {
-                isPaused = !isPaused;
-            }
-            else if (EVENT_FLAGS & EventFlags::OtherInput)
+            eventFlags = checkEvents();
+            if (eventFlags & EventFlags::OtherInput)
             {
                 break;
             }
@@ -181,6 +182,8 @@ namespace test
         }
 
         m_delayAfterEachDrawSec = DELAY_AFTER_EACH_DRAW_ORIG;
+
+        return eventFlags;
     }
 
     const std::string GameEngineGlobalFixture::name()
@@ -231,6 +234,7 @@ namespace test
                 else if (EVENT.key.code == sf::Keyboard::P)
                 {
                     flags |= EventFlags::PauseKey;
+                    m_isPaused = !m_isPaused;
                 }
             }
             else if (EVENT.type == sf::Event::MouseButtonPressed)

@@ -140,6 +140,38 @@ namespace sfutil
     }
 
     template <typename T>
+    void Abs(sf::Vector2<T> & v) noexcept
+    {
+        v.x = misc::Abs(v.x);
+        v.y = misc::Abs(v.y);
+    }
+
+    template <typename T>
+    const sf::Vector2<T> AbsCopy(const sf::Vector2<T> & V) noexcept
+    {
+        sf::Vector2<T> copy(V);
+        Abs(copy);
+        return copy;
+    }
+
+    template <typename T>
+    void Abs(sf::Rect<T> & r) noexcept
+    {
+        r.left = misc::Abs(r.left);
+        r.top = misc::Abs(r.top);
+        r.width = misc::Abs(r.width);
+        r.height = misc::Abs(r.height);
+    }
+
+    template <typename T>
+    const sf::Rect<T> AbsCopy(const sf::Rect<T> & R) noexcept
+    {
+        sf::Rect<T> copy(R);
+        Abs(copy);
+        return copy;
+    }
+
+    template <typename T>
     const T Left(const sf::Rect<T> & RECT) noexcept
     {
         return RECT.left;
@@ -522,6 +554,21 @@ namespace sfutil
     bool IsLessThanOneAll(const sf::Rect<T> & R) noexcept
     {
         return ((R.left < T(1)) && (R.top < T(1)) && (R.width < T(1)) && (R.height < T(1)));
+    }
+
+    template <typename T>
+    bool IsOneOrGreaterAny(const sf::Vector2<T> & V) noexcept
+    {
+        return (misc::IsRealGreaterOrClose(V.x, T(1)) || misc::IsRealGreaterOrClose(V.y, T(1)));
+    }
+
+    template <typename T>
+    bool IsOneOrGreaterAny(const sf::Rect<T> & R) noexcept
+    {
+        return (
+            misc::IsRealGreaterOrClose(R.left, T(1)) || misc::IsRealGreaterOrClose(R.top, T(1))
+            || misc::IsRealGreaterOrClose(R.width, T(1))
+            || misc::IsRealGreaterOrClose(R.height, T(1)));
     }
 
     template <typename T>

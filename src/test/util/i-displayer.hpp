@@ -9,19 +9,37 @@
 //
 // i-displayer.hpp
 //
+#include "misc/enum-common.hpp"
+#include "misc/not-null.hpp"
+
 #include <memory>
 #include <string>
 
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 
 namespace heroespath
 {
 namespace gui
 {
+    class IEntity;
+    using IEntityPtr_t = misc::NotNull<IEntity *>;
+
     class CachedTexture;
-}
+} // namespace gui
+
 namespace test
 {
+
+    struct EventFlags
+    {
+        enum Enum : EnumUnderlying_t
+        {
+            None = 0,
+            PauseKey = 1 << 0,
+            OtherInput = 1 << 1
+        };
+    };
 
     struct IDisplayer : public sf::Drawable
     {
@@ -32,6 +50,9 @@ namespace test
         virtual const sf::FloatRect windowRegion() const = 0;
         virtual const sf::FloatRect titleRegion() const = 0;
         virtual const sf::FloatRect contentRegion() const = 0;
+
+        virtual const sf::Color backgroundColor() const = 0;
+        virtual void backgroundColor(const sf::Color &) = 0;
 
         virtual void incrememntProgress() = 0;
         virtual void setProgress(const std::size_t) = 0;
@@ -54,6 +75,8 @@ namespace test
         virtual void beginDrawablesSet(const std::string &) = 0;
         virtual void endDrawablesSet() = 0;
         virtual void appendDrawable(std::unique_ptr<sf::Drawable>) = 0;
+
+        virtual void appendEntity(const gui::IEntityPtr_t) = 0;
 
         void draw(sf::RenderTarget &, sf::RenderStates = sf::RenderStates()) const override = 0;
     };

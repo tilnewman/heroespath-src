@@ -104,7 +104,8 @@ namespace gui
 
         bool IsOpen() const;
 
-        void ClearToBlack();
+        void ClearToBlack() { ClearTo(sf::Color::Black); }
+        void ClearTo(const sf::Color & COLOR);
 
         void DisplayFrameBuffer();
 

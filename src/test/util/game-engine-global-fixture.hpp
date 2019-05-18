@@ -24,18 +24,6 @@ namespace game
 
 namespace test
 {
-    struct IDisplayer;
-
-    struct EventFlags
-    {
-        enum Enum : EnumUnderlying_t
-        {
-            None = 0,
-            PauseKey = 1 << 0,
-            OtherInput = 1 << 1
-        };
-    };
-
     // this fixture can be decalred in any unit-test.cpp file and it will cause the game engine to
     // fully start up before all the tests (including the display window) and then shutdown after
     // all tests complete.
@@ -61,10 +49,15 @@ namespace test
 
         static void setDisplayer(std::unique_ptr<IDisplayer>);
         static IDisplayer & displayer();
-        static void draw(const bool WILL_CHECK_EVENTS = true);
-        static void drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 0.5f);
+        static EventFlags::Enum draw(const bool WILL_CHECK_EVENTS = true);
+
+        static EventFlags::Enum
+            drawAndHoldUntilMouseOrKeyOrDuration(const float DURATION_SEC = 0.5f);
 
         static EventFlags::Enum checkEvents();
+
+        static bool isPaused() { return m_isPaused; }
+        static void isPaused(const bool IS_PAUSED) { m_isPaused = IS_PAUSED; }
 
     private:
         static const std::string name();
@@ -77,6 +70,8 @@ namespace test
         static inline game::SubsystemCollection m_subsystemsToSetup {
             game::SubsystemCollection::TestWithOnlyLogAndConfig
         };
+
+        static inline bool m_isPaused = false;
     };
 
 } // namespace test
