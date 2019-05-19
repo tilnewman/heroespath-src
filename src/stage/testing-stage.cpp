@@ -322,12 +322,7 @@ namespace stage
             return;
         }
 
-        M_TESTING_STAGE_TEST(ItemProfileReport);
-        M_TESTING_STAGE_TEST(InventoryFactory);
-        M_TESTING_STAGE_TEST(ArmorRatings);
-        M_TESTING_STAGE_TEST(PopupManager);
-        M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(gui, ItemImagePaths);
-        M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(gui, CreatureImagePaths);
+        // M_TESTING_STAGE_TEST(PopupManager);
 
         if (willInspectImages_)
         {
@@ -341,125 +336,6 @@ namespace stage
     bool TestingStage::PerformTest_PopupManager()
     {
         return popup::PopupManager::Instance()->Test(misc::MakeNotNull(this));
-    }
-
-    bool TestingStage::PerformTest_ItemProfileReport()
-    {
-        item::ItemProfilesReporter::LogReport();
-        return true;
-    }
-
-    bool TestingStage::PerformTest_ArmorRatings()
-    {
-        item::ArmorRatings armorRatings;
-        armorRatings.LogCommonArmorRatings();
-        return true;
-    }
-
-    bool TestingStage::PerformTest_InventoryFactory()
-    {
-        static auto didPostInitial { false };
-        if (false == didPostInitial)
-        {
-            didPostInitial = true;
-            TestingStrAppend(
-                "stage::TestingStage::PerformTest_InventoryFactory() Starting Tests...");
-
-            return false;
-        }
-
-        static creature::nonplayer::InventoryFactory inventoryFactory;
-
-        static EnumUnderlying_t raceIndex { 0 };
-        static EnumUnderlying_t roleIndex { 0 };
-
-        if (raceIndex < static_cast<int>(creature::race::Count))
-        {
-            const auto RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
-            const auto RACE_STR { NAMEOF_ENUM(RACE_ENUM) };
-            const auto ROLE_VEC { creature::race::Roles(RACE_ENUM) };
-
-            if (roleIndex < static_cast<EnumUnderlying_t>(ROLE_VEC.size()))
-            {
-                const auto ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
-                const auto ROLE_STR { NAMEOF_ENUM(ROLE_ENUM) };
-
-                const int RANK_BASE { 50 };
-                const int RANK_MAX { [&]() {
-                    if (RACE_ENUM == creature::race::Dragon)
-                    {
-                        return RANK_BASE
-                            + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                "creature-dragon-class-rank-min-Elder");
-                    }
-                    else if (RACE_ENUM == creature::race::Wolfen)
-                    {
-                        return RANK_BASE
-                            + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                "creature-wolfen-class-rank-min-Elder");
-                    }
-                    else
-                    {
-                        return RANK_BASE
-                            + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                "rankclass-Master-rankmax");
-                    }
-                }() };
-
-                {
-                    std::string str;
-                    str.reserve(128);
-                    str += "InventoryFactory Testing: race=";
-                    str += RACE_STR;
-                    str += " and role=";
-                    str += ROLE_STR;
-                    str += "...";
-                    TestingStrAppend(str);
-                }
-
-                for (int rankIndex(1); rankIndex <= RANK_MAX; ++rankIndex)
-                {
-                    std::string str;
-                    str.reserve(128);
-                    str += "Name_";
-                    str += RACE_STR;
-                    str += '_';
-                    str += ROLE_STR;
-                    str += '_';
-                    str += std::to_string(rankIndex);
-
-                    const std::string NAME_STR(str);
-
-                    creature::Creature character(
-                        false,
-                        NAME_STR,
-                        ((misc::RandomBool()) ? creature::sex::Female : creature::sex::Male),
-                        RACE_ENUM,
-                        ROLE_ENUM,
-                        creature::StatSet(10_str, 10_acc, 10_cha, 10_lck, 10_spd, 10_int),
-                        "",
-                        10_health,
-                        Rank_t::Make(rankIndex),
-                        Experience_t::Make(rankIndex * 10000));
-
-                    inventoryFactory.SetupCreatureInventory(misc::MakeNotNull(&character));
-                }
-
-                ++roleIndex;
-                return false;
-            }
-
-            roleIndex = 0;
-            ++raceIndex;
-            return false;
-        }
-
-        TestingStrAppend("stage::TestingStage::PerformTest_InventoryFactory()  ALL TESTS PASSED.");
-
-        raceIndex = 0;
-        roleIndex = 0;
-
-        return true;
     }
 
     void TestingStage::DrawNormal(sf::RenderTarget & target, sf::RenderStates states) const

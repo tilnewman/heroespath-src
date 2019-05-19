@@ -18,12 +18,6 @@
 
 namespace heroespath
 {
-namespace stage
-{
-    struct IStage;
-    using IStagePtr_t = misc::NotNull<IStage *>;
-} // namespace stage
-
 namespace item
 {
     class Item;
@@ -49,15 +43,15 @@ namespace gui
         ItemImagePaths() = delete;
 
         static void SetupFilesystemPaths();
-
-        static bool Test(stage::IStagePtr_t iStagePtr);
-
         static const std::string PathFromFilename(const std::string & FILE_NAME);
-
         static const std::string Filename(const item::Item & ITEM, const bool WILL_RANDOMIZE);
+        static const std::vector<std::string> Filenames(const item::Item & ITEM);
+
+        static const std::string
+            Filename(const item::weapon::WeaponTypeWrapper & WEAPON_INFO, const bool IS_JEWELED);
 
     private:
-        static const std::vector<std::string> Filenames(
+        static const std::vector<std::string> MiscFilenames(
             const item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool IS_BONE);
 
         static const std::string Filename(
@@ -67,11 +61,6 @@ namespace gui
             const bool WILL_RANDOMIZE);
 
         static const std::string GetSkinImageFilename(const item::material::Enum);
-
-        static const std::string
-            Filename(const item::weapon::WeaponTypeWrapper & WEAPON_INFO, const bool IS_JEWELED);
-
-        static const std::string Filename(const item::armor::ArmorTypeWrapper & ARMOR_INFO);
 
         static const std::vector<std::string> MakeFilenames(
             const std::string & PREFIX, const int LAST_NUMBER, const int FIRST_NUMBER = 1);

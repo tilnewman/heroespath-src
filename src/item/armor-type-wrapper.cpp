@@ -53,15 +53,15 @@ namespace item
 
             if (false
                 == SetupWithSpecificTypeName<cover_type>(
-                       SYSTEM_NAME, armor_type::Covering, BASE_TYPE))
+                    SYSTEM_NAME, armor_type::Covering, BASE_TYPE))
             {
                 if (false
                     == SetupWithSpecificTypeName<helm_type>(
-                           SYSTEM_NAME, armor_type::Helm, BASE_TYPE))
+                        SYSTEM_NAME, armor_type::Helm, BASE_TYPE))
                 {
                     if (false
                         == SetupWithSpecificTypeName<shield_type>(
-                               SYSTEM_NAME, armor_type::Shield, BASE_TYPE))
+                            SYSTEM_NAME, armor_type::Shield, BASE_TYPE))
                     {
                         if (SYSTEM_NAME == GLOVES_NAME_)
                         {
@@ -71,7 +71,7 @@ namespace item
                         }
                         else
                         {
-                            for (EnumUnderlying_t i(0); i <= armor_type::Skin; ++i)
+                            for (EnumUnderlying_t i(0); i < armor_type::Count; ++i)
                             {
                                 const auto ARMOR_TYPE_ENUM { static_cast<armor_type::Enum>(i) };
                                 if (NAMEOF_ENUM(ARMOR_TYPE_ENUM) == SYSTEM_NAME)
@@ -362,12 +362,18 @@ namespace item
                 imageFilenameStr += NAMEOF_ENUM(base_);
             }
 
+            // special cases because we don't have all the images we wish we did
+            if (IsPants() || IsBracers() || IsAventail())
+            {
+                imageFilenameStr = specificName_;
+            }
+
             imageFilenameStr += EXTENSION;
 
             misc::ToLower(imageFilenameStr);
 
             return imageFilenameStr;
-        }
+        } // namespace armor
 
         bool ArmorTypeWrapper::IsGeneralNameAlmostSpecificName() const
         {
@@ -519,7 +525,9 @@ namespace item
 
                 case armor_type::Not:
                 case armor_type::Count:
-                default: { break;
+                default:
+                {
+                    break;
                 }
             }
 
@@ -561,7 +569,9 @@ namespace item
                 case armor_type::Bracers:
                 case armor_type::Shirt:
                 case armor_type::Boots:
-                case armor_type::Pants: { return (base_type::Count != base_);
+                case armor_type::Pants:
+                {
+                    return (base_type::Count != base_);
                 }
 
                 case armor_type::Shield:
@@ -585,12 +595,16 @@ namespace item
                         && (boost::get<cover_type::Enum>(variant_) != cover_type::Count));
                 }
 
-                case armor_type::Skin: { return true;
+                case armor_type::Skin:
+                {
+                    return true;
                 }
 
                 case armor_type::Not:
                 case armor_type::Count:
-                default: { return false;
+                default:
+                {
+                    return false;
                 }
             }
         }
@@ -654,7 +668,9 @@ namespace item
                         }
                         case shield_type::Buckler:
                         case shield_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -691,7 +707,9 @@ namespace item
                         }
                         case helm_type::Leather:
                         case helm_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -719,7 +737,9 @@ namespace item
                 case armor_type::Skin:
                 case armor_type::Not:
                 case armor_type::Count:
-                default: { break;
+                default:
+                {
+                    break;
                 }
             }
 

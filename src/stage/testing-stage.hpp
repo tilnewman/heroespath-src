@@ -26,44 +26,6 @@
 #include <utility>
 #include <vector>
 
-#define M_TESTING_STAGE_TEST_WITH_FUNCTION(test_name, test_function_name)                          \
-    static bool hasTestingCompleted_##test_name { false };                                         \
-    if (false == hasTestingCompleted_##test_name)                                                  \
-    {                                                                                              \
-        hasTestingCompleted_##test_name = ##test_function_name();                                  \
-        return;                                                                                    \
-    }
-
-#define M_TESTING_STAGE_TEST(test_name)                                                            \
-    static bool hasTestingCompleted_##test_name { false };                                         \
-    if (false == hasTestingCompleted_##test_name)                                                  \
-    {                                                                                              \
-        hasTestingCompleted_##test_name = PerformTest_##test_name();                               \
-        return;                                                                                    \
-    }
-
-#define M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(space_name, test_name)                      \
-    static bool hasTestingTypeAndCallCompleted_##test_name { false };                              \
-    if (false == hasTestingTypeAndCallCompleted_##test_name)                                       \
-    {                                                                                              \
-        hasTestingTypeAndCallCompleted_##test_name                                                 \
-            = space_name::test_name::Test(misc::MakeNotNull(this));                                \
-                                                                                                   \
-        return;                                                                                    \
-    }
-
-#define M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(test_name, type_name)                         \
-    static bool hasTestingTypeAndCallCompleted_##test_name { false };                              \
-    if (false == hasTestingTypeAndCallCompleted_##test_name)                                       \
-    {                                                                                              \
-        static type_name thing;                                                                    \
-        hasTestingTypeAndCallCompleted_##test_name = thing.Test(misc::MakeNotNull(this));          \
-        return;                                                                                    \
-    }
-
-#define M_TESTING_STRINGIFY(x) #x
-#define M_TESTING_TOSTRING(x) M_TESTING_STRINGIFY(x)
-
 namespace heroespath
 {
 namespace gui
@@ -116,16 +78,10 @@ namespace stage
         void PerformNextTest() override;
 
     private:
-        bool PerformTest_InventoryFactory();
         bool PerformTest_PopupManager();
-        bool PerformTest_ItemProfileReport();
-        bool PerformTest_ArmorRatings();
 
         void DrawNormal(sf::RenderTarget &, sf::RenderStates) const;
         void DrawImageInspect(sf::RenderTarget &, sf::RenderStates) const;
-
-        // see comment in .cpp file
-        // void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;
 
         void ResetWaitingForKeyOrClick();
         void AppendWaitTestTitle(const std::string & TITLE_STR);

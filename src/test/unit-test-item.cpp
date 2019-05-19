@@ -13,9 +13,14 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "creature/creature.hpp"
+#include "creature/nonplayer-inventory-factory.hpp"
 #include "game/setup-teardown.hpp"
 #include "gui/cached-texture.hpp"
+#include "gui/creature-image-paths.hpp"
 #include "gui/display.hpp"
+#include "gui/item-image-paths.hpp"
+#include "item/armor-ratings.hpp"
 #include "item/inventory.hpp"
 #include "item/item-cache.hpp"
 #include "item/item-factory.hpp"
@@ -23,6 +28,8 @@
 #include "item/item-profiles-reporter.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
+#include "misc/config-file.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "test/util/common.hpp"
 #include "test/util/drawables-displayer.hpp"
@@ -42,6 +49,64 @@ void GameEngineGlobalFixture::setupBeforeAllTests()
 }
 
 BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
+
+class ImageFilenames
+{
+public:
+    ImageFilenames(const std::string & DIR_CONFIG_KEY)
+        : original()
+        , remaining()
+    {
+        original.reserve(1024);
+
+        const auto FULL_PATHS = misc::filesystem::FindFiles(
+            false,
+            misc::ConfigFile::Instance()->GetMediaPath(DIR_CONFIG_KEY),
+            "",
+            "",
+            misc::filesystem::COMMON_FILE_NAME_PARTS_TO_EXCLUDE_VEC_);
+
+        for (const auto & FULL_PATH : FULL_PATHS)
+        {
+            original.emplace_back(misc::filesystem::Filename(FULL_PATH));
+        }
+
+        std::sort(std::begin(original), std::end(original));
+        remaining = original;
+    }
+
+    ~ImageFilenames()
+    {
+        BOOST_TEST(
+            (remaining.empty()),
+            "Out of " << totalCount() << " images, " << remaining.size()
+                      << " were NEVER used during what is supposed to be an exhaustive pass: \n\t"
+                      << misc::Join(remaining, misc::JoinHow("\n\t")));
+    }
+
+    void remove(const std::vector<std::string> & FILENAMES)
+    {
+        for (const auto & FILENAME : FILENAMES)
+        {
+            BOOST_TEST(
+                (std::find(std::begin(original), std::end(original), FILENAME)
+                 != std::end(original)),
+                "asked a generated image filename does not exist in the dir: \"" << FILENAME
+                                                                                 << "\"");
+
+            remaining.erase(
+                std::remove(
+                    std::begin(remaining), std::end(remaining), misc::ToLowerCopy(FILENAME)),
+                std::end(remaining));
+        }
+    }
+
+    std::size_t totalCount() const { return original.size(); }
+
+private:
+    std::vector<std::string> original;
+    std::vector<std::string> remaining;
+};
 
 inline void TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFILE)
 {
@@ -425,10 +490,102 @@ inline void TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFIL
     }
 }
 
-BOOST_AUTO_TEST_CASE(all_item_tests)
+inline const std::vector<std::string> getCreatureImageFilenames(
+    const creature::race::Enum RACE_ENUM, const creature::role::Enum ROLE_ENUM)
+{
+    std::vector<std::string> imageFilenames;
+    imageFilenames.reserve(32);
+
+    for (EnumUnderlying_t sexIndex(0); sexIndex < creature::sex::Count; ++sexIndex)
+    {
+        const auto SEX_ENUM { static_cast<typename creature::sex::Enum>(sexIndex) };
+
+        if (RACE_ENUM == creature::race::Dragon)
+        {
+            for (EnumUnderlying_t dragonIndex(0); dragonIndex < creature::dragon_class::Count;
+                 ++dragonIndex)
+            {
+                const auto DRAGON_CLASS_ENUM { static_cast<typename creature::dragon_class::Enum>(
+                    dragonIndex) };
+
+                for (const auto & FILENAME_STR : gui::CreatureImagePaths::Filenames(
+                         RACE_ENUM,
+                         ROLE_ENUM,
+                         SEX_ENUM,
+                         creature::wolfen_class::Count,
+                         DRAGON_CLASS_ENUM))
+                {
+                    imageFilenames.emplace_back(FILENAME_STR);
+                }
+            }
+        }
+        else if (RACE_ENUM == creature::race::Wolfen)
+        {
+            for (EnumUnderlying_t wolfenIndex(0); wolfenIndex < creature::wolfen_class::Count;
+                 ++wolfenIndex)
+            {
+                const auto WOLFEN_CLASS_ENUM { static_cast<typename creature::wolfen_class::Enum>(
+                    wolfenIndex) };
+
+                for (const auto & FILENAME_STR : gui::CreatureImagePaths::Filenames(
+                         RACE_ENUM,
+                         ROLE_ENUM,
+                         SEX_ENUM,
+                         WOLFEN_CLASS_ENUM,
+                         creature::dragon_class::Count))
+                {
+                    imageFilenames.emplace_back(FILENAME_STR);
+                }
+            }
+        }
+        else
+        {
+            for (const auto & FILENAME_STR : gui::CreatureImagePaths::Filenames(
+                     RACE_ENUM,
+                     ROLE_ENUM,
+                     SEX_ENUM,
+                     creature::wolfen_class::Count,
+                     creature::dragon_class::Count))
+            {
+                imageFilenames.emplace_back(FILENAME_STR);
+            }
+        }
+    }
+
+    const std::string CONFIG_STR { "Creature configuration race="
+                                   + std::string(NAMEOF_ENUM(RACE_ENUM))
+                                   + ", role=" + std::string(NAMEOF_ENUM(ROLE_ENUM)) };
+
+    BOOST_TEST(!imageFilenames.empty(), CONFIG_STR << " has no images.");
+
+    const std::size_t ORIG_COUNT { imageFilenames.size() };
+
+    std::sort(std::begin(imageFilenames), std::end(imageFilenames));
+
+    imageFilenames.erase(
+        std::unique(std::begin(imageFilenames), std::end(imageFilenames)),
+        std::end(imageFilenames));
+
+    const std::size_t UNIQUE_COUNT { imageFilenames.size() };
+
+    M_HP_LOG(
+        CONFIG_STR << " has " << UNIQUE_COUNT << " images with " << (ORIG_COUNT - UNIQUE_COUNT)
+                   << " duplicates.");
+
+    return imageFilenames;
+}
+
+BOOST_AUTO_TEST_CASE(item_profiles_and_individual_tests)
 {
     ItemProfileVec_t profiles;
+    ImageFilenames allItemImageFilenames("media-image-item-dir");
 
+    // This code block puts the complete set of all items into the profiles vector EXCEPT for
+    // body parts, which never have Profiles because they can never be acquired during game
+    // play.  They can only be put in place when a creature is constructed.
+    //
+    // This means that when all tests are complete that were based on profiles we will still
+    // need to test all weapon and armor items because they will include all the body parts.
     {
         SingleImageDisplayerScoped displayerScoped("Starting all item profile collection...", 0);
         displayerScoped.draw();
@@ -510,7 +667,7 @@ BOOST_AUTO_TEST_CASE(all_item_tests)
         }
     };
 
-    std::vector<item::ItemPtr_t> itemPtrs;
+    std::vector<ItemPtr_t> itemPtrs;
     itemPtrs.reserve(profiles.size());
 
     misc::VectorMap<std::string, ItemProfile> imageFilenameProfileMap;
@@ -535,7 +692,15 @@ BOOST_AUTO_TEST_CASE(all_item_tests)
         const auto ITEM_PTR_COUNT = itemPtrs.size();
         for (std::size_t i(0); i < ITEM_PTR_COUNT; ++i)
         {
-            imageFilenameProfileMap.AppendIfKeyNotFound(itemPtrs[i]->ImagePath(), profiles[i]);
+            const auto IMAGE_FILENAMES = gui::ItemImagePaths::Filenames(*itemPtrs[i]);
+
+            allItemImageFilenames.remove(IMAGE_FILENAMES);
+
+            for (const auto & IMAGE_FILENAME_STR : IMAGE_FILENAMES)
+            {
+                imageFilenameProfileMap.AppendIfKeyNotFound(IMAGE_FILENAME_STR, profiles[i]);
+            }
+
             countAndDraw(displayerScoped);
         }
 
@@ -552,8 +717,8 @@ BOOST_AUTO_TEST_CASE(all_item_tests)
 
         for (const auto & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
         {
-            displayerScoped.get().appendImageToSeries(
-                gui::CachedTexture(PathWrapper(FILENAME_PROFILE_PAIR.first)));
+            displayerScoped.get().appendImageToSeries(gui::CachedTexture(
+                PathWrapper(gui::ItemImagePaths::PathFromFilename(FILENAME_PROFILE_PAIR.first))));
 
             displayerScoped.draw();
         }
@@ -573,7 +738,7 @@ BOOST_AUTO_TEST_CASE(all_item_tests)
         std::string str;
         str.reserve(4096);
 
-        std::vector<item::ItemPtr_t> selectedPtrs;
+        std::vector<ItemPtr_t> selectedPtrs;
         selectedPtrs.reserve(profiles.size());
 
         auto appendProfileNamesIf { [&](auto ifLambda,
@@ -721,5 +886,166 @@ BOOST_AUTO_TEST_CASE(all_item_tests)
         }
 
         itemPtrs.clear();
+    }
+
+    ItemProfilesReporter::LogReport();
+
+    // All the items tested above were based on ItemProfiles which do not include body parts.
+    // The comment above explains why.  We can't test those items in the same was as we did
+    // above becuase they cannot be created without details about the creature they are a body
+    // part of, so we just check that their images are correct.
+    for (const auto & WEAPON_TYPE_WRAPPER : item::weapon::WeaponTypeWrapper::MakeCompleteSet())
+    {
+        if (!WEAPON_TYPE_WRAPPER.IsBodyPart())
+        {
+            continue;
+        }
+
+        const std::vector<std::string> IMAGE_FILENAMES
+            = { gui::ItemImagePaths::Filename(WEAPON_TYPE_WRAPPER, false),
+                gui::ItemImagePaths::Filename(WEAPON_TYPE_WRAPPER, true) };
+
+        allItemImageFilenames.remove(IMAGE_FILENAMES);
+    }
+
+    ArmorRatings armorRatings;
+    armorRatings.LogCommonArmorRatings();
+}
+
+BOOST_AUTO_TEST_CASE(inventory_factory_tests)
+{
+    ImageFilenames allCreatureImageFilenames("media-image-creature-dir");
+
+    creature::nonplayer::InventoryFactory inventoryFactory;
+
+    const int RANK_MAX_OVERSHOOT { 10 };
+
+    const int RANK_MAX_DRAGON { misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                                    "creature-dragon-class-rank-min-Elder")
+                                + RANK_MAX_OVERSHOOT };
+
+    const int RANK_MAX_WOLFEN { misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                                    "creature-wolfen-class-rank-min-Elder")
+                                + RANK_MAX_OVERSHOOT };
+
+    const int RANK_MAX_OTHER { misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                                   "rankclass-Master-rankmax")
+                               + RANK_MAX_OVERSHOOT };
+
+    const int RANK_MAX_MAX { misc::Max(RANK_MAX_DRAGON, RANK_MAX_WOLFEN, RANK_MAX_OTHER) };
+
+    std::string raceRoleStr;
+    raceRoleStr.reserve(64);
+
+    std::vector<creature::CreatureUPtr_t> characterUPtrs;
+    characterUPtrs.reserve(static_cast<std::size_t>(RANK_MAX_MAX + 2));
+
+    std::vector<std::string> raceRoleStrings;
+    raceRoleStrings.reserve(1024);
+
+    const std::size_t iterationsBeforeDraw = 10;
+    std::size_t counter = 0;
+
+    auto resetCounter = [&]() { counter = 0; };
+
+    auto countAndDraw = [&](SingleImageDisplayerScoped & displayer) {
+        if (++counter >= iterationsBeforeDraw)
+        {
+            displayer.get().incrememntProgress();
+            displayer.draw();
+            resetCounter();
+        }
+    };
+
+    for (EnumUnderlying_t raceIndex(0); raceIndex < creature::race::Count; ++raceIndex)
+    {
+        const auto RACE_ENUM { static_cast<typename creature::race::Enum>(raceIndex) };
+
+        const int RANK_MAX { [&]() {
+            if (RACE_ENUM == creature::race::Dragon)
+            {
+                return RANK_MAX_DRAGON;
+            }
+            else if (RACE_ENUM == creature::race::Wolfen)
+            {
+                return RANK_MAX_WOLFEN;
+            }
+            else
+            {
+                return RANK_MAX_OTHER;
+            }
+        }() };
+
+        for (const auto & ROLE_ENUM : creature::race::Roles(RACE_ENUM))
+        {
+            raceRoleStr.clear();
+            raceRoleStr += NAMEOF_ENUM(RACE_ENUM);
+            raceRoleStr += '_';
+            raceRoleStr += NAMEOF_ENUM(ROLE_ENUM);
+            raceRoleStr += '_';
+
+            raceRoleStrings.emplace_back(raceRoleStr);
+
+            SingleImageDisplayerScoped displayerScoped(
+                "Inventory Factory Test___" + raceRoleStr + "___up to rank "
+                    + std::to_string(RANK_MAX) + "...",
+                (static_cast<std::size_t>(RANK_MAX * 3) / iterationsBeforeDraw));
+
+            {
+                const auto IMAGE_FILENAMES = getCreatureImageFilenames(RACE_ENUM, ROLE_ENUM);
+
+                allCreatureImageFilenames.remove(IMAGE_FILENAMES);
+
+                for (const auto & IMAGE_FILENAME : IMAGE_FILENAMES)
+                {
+                    displayerScoped.get().appendImageToSeries(gui::CachedTexture(
+                        PathWrapper(gui::CreatureImagePaths::PathFromFilename(IMAGE_FILENAME))));
+
+                    displayerScoped.draw();
+                }
+            }
+
+            for (int rankIndex(1); rankIndex <= RANK_MAX; rankIndex += 1)
+            {
+                characterUPtrs.emplace_back(std::make_unique<creature::Creature>(
+                    false,
+                    raceRoleStr + std::to_string(rankIndex),
+                    ((misc::RandomBool()) ? creature::sex::Female : creature::sex::Male),
+                    RACE_ENUM,
+                    ROLE_ENUM,
+                    creature::StatSet(10_str, 10_acc, 10_cha, 10_lck, 10_spd, 10_int),
+                    "",
+                    10_health,
+                    Rank_t::Make(rankIndex),
+                    Experience_t::Make(rankIndex * 10000)));
+
+                countAndDraw(displayerScoped);
+            }
+
+            for (const auto & CHARACTER_UPTR : characterUPtrs)
+            {
+                inventoryFactory.SetupCreatureInventory(misc::MakeNotNull(CHARACTER_UPTR.get()));
+                countAndDraw(displayerScoped);
+            }
+
+            while (!characterUPtrs.empty())
+            {
+                characterUPtrs.pop_back();
+                countAndDraw(displayerScoped);
+            }
+        }
+    }
+
+    // there were 166 race/role combinations on 2019-5-19
+    {
+        std::ostringstream ss;
+        ss << "There are " << raceRoleStrings.size() << " total race/role combinations:";
+
+        for (const auto & RACE_ROLE_STR : raceRoleStrings)
+        {
+            ss << "\n\t" << RACE_ROLE_STR;
+        }
+
+        M_HP_LOG(ss.str());
     }
 }

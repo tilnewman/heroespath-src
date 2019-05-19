@@ -29,13 +29,6 @@ class Texture;
 
 namespace heroespath
 {
-
-namespace stage
-{
-    struct IStage;
-    using IStagePtr_t = misc::NotNull<IStage *>;
-} // namespace stage
-
 namespace creature
 {
     class Creature;
@@ -51,11 +44,7 @@ namespace gui
         CreatureImagePaths() = delete;
 
         static void SetupFilesystemPaths();
-
-        static bool Test(stage::IStagePtr_t iStagePtr);
-
         static const std::string PathFromFilename(const std::string & FILENAME);
-
         static const std::string FilenameRandom(const creature::Creature &);
 
         static const std::vector<std::string> Filenames(

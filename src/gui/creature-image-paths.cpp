@@ -42,261 +42,6 @@ namespace gui
                 + M_HP_VAR_STR(imageDirectoryPath_));
     }
 
-    bool CreatureImagePaths::Test(stage::IStagePtr_t iStagePtr)
-    {
-        static auto didPostInitial { false };
-        if (false == didPostInitial)
-        {
-            didPostInitial = true;
-            iStagePtr->TestingStrAppend("gui::CreatureImagePaths::Test() Starting Tests...");
-        }
-
-        static auto allPaths { misc::filesystem::FindFiles(
-            false, imageDirectoryPath_, "", ".png") };
-
-        for (auto & pathStr : allPaths)
-        {
-            misc::ToLower(pathStr);
-        }
-
-        static EnumUnderlying_t raceIndex { 0 };
-        if (raceIndex < creature::race::Count)
-        {
-            const auto RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
-            const auto RACE_STR { NAMEOF_ENUM(RACE_ENUM) };
-            const auto ROLE_VEC { creature::race::Roles(RACE_ENUM) };
-
-            static EnumUnderlying_t roleIndex { 0 };
-            if (roleIndex < ROLE_VEC.size())
-            {
-                const auto ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
-                const auto ROLE_STR { NAMEOF_ENUM(ROLE_ENUM) };
-
-                static EnumUnderlying_t sexIndex { 0 };
-                if (sexIndex < creature::sex::Count)
-                {
-                    const auto SEX_ENUM { static_cast<creature::sex::Enum>(sexIndex) };
-                    const auto SEX_STR { NAMEOF_ENUM(SEX_ENUM) };
-
-                    // test to ensure that BodyType maker will not throw
-                    creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM);
-
-                    static EnumUnderlying_t classIndex { 0 };
-                    static std::size_t fileIndex { 0 };
-                    if (RACE_ENUM == creature::race::Wolfen)
-                    {
-                        if (classIndex < creature::wolfen_class::Count)
-                        {
-                            const auto CLASS_ENUM { static_cast<creature::wolfen_class::Enum>(
-                                classIndex) };
-
-                            const auto CLASS_STR { NAMEOF_ENUM(CLASS_ENUM) };
-
-                            const auto FILENAMES { Filenames(
-                                RACE_ENUM,
-                                ROLE_ENUM,
-                                SEX_ENUM,
-                                CLASS_ENUM,
-                                creature::dragon_class::Count) };
-
-                            M_HP_ASSERT_OR_LOG_AND_THROW(
-                                (FILENAMES.empty() == false),
-                                "gui::CreatureImagePaths() (wolfen_classes) race="
-                                    << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
-                                    << ", wolfen_class=" << CLASS_STR
-                                    << ", GetFilenames() failed to return anything.");
-
-                            if (fileIndex < FILENAMES.size())
-                            {
-                                const auto FILENAME { FILENAMES.at(fileIndex) };
-                                const auto PATH { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
-                                CachedTexture cachedTexture { PathWrapper(PATH) };
-
-                                auto imagePathFoundIter { std::find(
-                                    std::begin(allPaths), std::end(allPaths), PATH) };
-
-                                if (imagePathFoundIter != std::end(allPaths))
-                                {
-                                    iStagePtr->TestingImageSet(PATH);
-                                    allPaths.erase(imagePathFoundIter);
-                                }
-
-                                std::string str;
-                                str.reserve(128);
-                                str += " CreatureImagePaths Tested race=";
-                                str += RACE_STR;
-                                str += " role=";
-                                str += ROLE_STR;
-                                str += " sex=";
-                                str += SEX_STR;
-                                str += " wolfen_class=";
-                                str += CLASS_STR;
-                                str += " filename=";
-                                str += FILENAME;
-
-                                iStagePtr->TestingStrAppend(str);
-
-                                allPaths.erase(
-                                    std::remove(std::begin(allPaths), std::end(allPaths), PATH),
-                                    std::end(allPaths));
-
-                                ++fileIndex;
-                                return false;
-                            }
-
-                            fileIndex = 0;
-                            ++classIndex;
-                            return false;
-                        }
-                    }
-                    else if (RACE_ENUM == creature::race::Dragon)
-                    {
-                        if (classIndex < creature::dragon_class::Count)
-                        {
-                            const auto CLASS_ENUM { static_cast<creature::dragon_class::Enum>(
-                                classIndex) };
-
-                            const auto CLASS_STR { NAMEOF_ENUM(CLASS_ENUM) };
-
-                            const auto FILENAMES { Filenames(
-                                RACE_ENUM,
-                                ROLE_ENUM,
-                                SEX_ENUM,
-                                creature::wolfen_class::Count,
-                                CLASS_ENUM) };
-
-                            M_HP_ASSERT_OR_LOG_AND_THROW(
-                                (FILENAMES.empty() == false),
-                                "gui::CreatureImagePaths() (dragon_classes) race="
-                                    << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
-                                    << ", dragon_class=" << CLASS_STR
-                                    << ", GetFilenames() failed to return anything.");
-
-                            if (fileIndex < FILENAMES.size())
-                            {
-                                const auto FILENAME { FILENAMES.at(fileIndex) };
-                                const auto PATH { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
-                                CachedTexture cachedTexture { PathWrapper(PATH) };
-
-                                auto imagePathFoundIter { std::find(
-                                    std::begin(allPaths), std::end(allPaths), PATH) };
-
-                                if (imagePathFoundIter != std::end(allPaths))
-                                {
-                                    iStagePtr->TestingImageSet(PATH);
-                                    allPaths.erase(imagePathFoundIter);
-                                }
-
-                                std::string str;
-                                str.reserve(128);
-                                str += " CreatureImagePaths Tested race=";
-                                str += RACE_STR;
-                                str += " role=";
-                                str += ROLE_STR;
-                                str += " sex=";
-                                str += SEX_STR;
-                                str += " dragon_cla+=";
-                                str += CLASS_STR;
-                                str += " filename=";
-                                str += FILENAME;
-
-                                iStagePtr->TestingStrAppend(str);
-
-                                allPaths.erase(
-                                    std::remove(std::begin(allPaths), std::end(allPaths), PATH),
-                                    std::end(allPaths));
-
-                                ++fileIndex;
-                                return false;
-                            }
-
-                            fileIndex = 0;
-                            ++classIndex;
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        const auto FILENAMES { Filenames(
-                            RACE_ENUM,
-                            ROLE_ENUM,
-                            SEX_ENUM,
-                            creature::wolfen_class::Count,
-                            creature::dragon_class::Count) };
-
-                        M_HP_ASSERT_OR_LOG_AND_THROW(
-                            (FILENAMES.empty() == false),
-                            "gui::CreatureImagePaths() race="
-                                << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
-                                << ", GetFilenames() failed to return anything.");
-
-                        if (fileIndex < FILENAMES.size())
-                        {
-                            const auto FILENAME { FILENAMES.at(fileIndex) };
-                            const auto PATH { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
-                            CachedTexture cachedTexture { PathWrapper(PATH) };
-
-                            auto imagePathFoundIter { std::find(
-                                std::begin(allPaths), std::end(allPaths), PATH) };
-
-                            if (imagePathFoundIter != std::end(allPaths))
-                            {
-                                iStagePtr->TestingImageSet(PATH);
-                                allPaths.erase(imagePathFoundIter);
-                            }
-
-                            std::string str;
-                            str.reserve(128);
-                            str += " CreatureImagePaths Tested race=";
-                            str += RACE_STR;
-                            str += " role=";
-                            str += ROLE_STR;
-                            str += " sex=";
-                            str += SEX_STR;
-                            str += " filename=";
-                            str += FILENAME;
-
-                            iStagePtr->TestingStrAppend(str);
-
-                            allPaths.erase(
-                                std::remove(std::begin(allPaths), std::end(allPaths), PATH),
-                                std::end(allPaths));
-
-                            ++fileIndex;
-                            return false;
-                        }
-                    }
-
-                    fileIndex = 0;
-                    classIndex = 0;
-                    ++sexIndex;
-                    return false;
-                }
-
-                sexIndex = 0;
-                ++roleIndex;
-                return false;
-            }
-
-            roleIndex = 0;
-            ++raceIndex;
-            return false;
-        }
-
-        std::sort(std::begin(allPaths), std::end(allPaths));
-
-        for (const auto & PATH : allPaths)
-        {
-            M_HP_LOG_WRN(
-                "gui::CreatureImagePaths::Test() found the following item image "
-                "unused: "
-                << PATH);
-        }
-
-        iStagePtr->TestingStrAppend("gui::CreatureImagePaths::Test()  ALL TESTS PASSED.");
-        return true;
-    }
-
     const std::string CreatureImagePaths::PathFromFilename(const std::string & FILENAME)
     {
         return misc::filesystem::CombinePaths(imageDirectoryPath_, FILENAME);
@@ -1000,24 +745,42 @@ namespace gui
             {
                 switch (DRAGON_CLASS)
                 {
-                    case creature::dragon_class::Hatchling: { return { "dragon-fb-hatchling.png" };
+                    case creature::dragon_class::Hatchling:
+                    {
+                        return { "dragon-fb-hatchling.png" };
                     }
-                    case creature::dragon_class::Whelp: { return { "dragon-fb-whelp.png" };
+                    case creature::dragon_class::Whelp:
+                    {
+                        return { "dragon-fb-whelp.png" };
                     }
-                    case creature::dragon_class::Fledgling: { return { "dragon-fb-fledgling.png" };
+                    case creature::dragon_class::Fledgling:
+                    {
+                        return { "dragon-fb-fledgling.png" };
                     }
-                    case creature::dragon_class::Juvenile: { return { "dragon-fb-juvenile.png" };
+                    case creature::dragon_class::Juvenile:
+                    {
+                        return { "dragon-fb-juvenile.png" };
                     }
-                    case creature::dragon_class::Adult: { return { "dragon-fb-adult.png" };
+                    case creature::dragon_class::Adult:
+                    {
+                        return { "dragon-fb-adult.png" };
                     }
-                    case creature::dragon_class::Wyrm: { return { "dragon-fb-wyrm.png" };
+                    case creature::dragon_class::Wyrm:
+                    {
+                        return { "dragon-fb-wyrm.png" };
                     }
-                    case creature::dragon_class::Skycaster: { return { "dragon-fb-skycaster.png" };
+                    case creature::dragon_class::Skycaster:
+                    {
+                        return { "dragon-fb-skycaster.png" };
                     }
-                    case creature::dragon_class::Elder: { return { "dragon-fb-elder.png" };
+                    case creature::dragon_class::Elder:
+                    {
+                        return { "dragon-fb-elder.png" };
                     }
                     case creature::dragon_class::Count:
-                    default: { break;
+                    default:
+                    {
+                        break;
                     }
                 }
             }
@@ -1026,24 +789,42 @@ namespace gui
             {
                 switch (DRAGON_CLASS)
                 {
-                    case creature::dragon_class::Hatchling: { return { "dragon-syl-hatchling.png" };
+                    case creature::dragon_class::Hatchling:
+                    {
+                        return { "dragon-syl-hatchling.png" };
                     }
-                    case creature::dragon_class::Whelp: { return { "dragon-syl-whelp.png" };
+                    case creature::dragon_class::Whelp:
+                    {
+                        return { "dragon-syl-whelp.png" };
                     }
-                    case creature::dragon_class::Fledgling: { return { "dragon-syl-fledgling.png" };
+                    case creature::dragon_class::Fledgling:
+                    {
+                        return { "dragon-syl-fledgling.png" };
                     }
-                    case creature::dragon_class::Juvenile: { return { "dragon-syl-juvenile.png" };
+                    case creature::dragon_class::Juvenile:
+                    {
+                        return { "dragon-syl-juvenile.png" };
                     }
-                    case creature::dragon_class::Adult: { return { "dragon-syl-adult.png" };
+                    case creature::dragon_class::Adult:
+                    {
+                        return { "dragon-syl-adult.png" };
                     }
-                    case creature::dragon_class::Wyrm: { return { "dragon-syl-wyrm.png" };
+                    case creature::dragon_class::Wyrm:
+                    {
+                        return { "dragon-syl-wyrm.png" };
                     }
-                    case creature::dragon_class::Skycaster: { return { "dragon-syl-skycaster.png" };
+                    case creature::dragon_class::Skycaster:
+                    {
+                        return { "dragon-syl-skycaster.png" };
                     }
-                    case creature::dragon_class::Elder: { return { "dragon-syl-elder.png" };
+                    case creature::dragon_class::Elder:
+                    {
+                        return { "dragon-syl-elder.png" };
                     }
                     case creature::dragon_class::Count:
-                    default: { break;
+                    default:
+                    {
+                        break;
                     }
                 }
             }
@@ -1451,20 +1232,34 @@ namespace gui
             {
                 switch (WOLFEN_CLASS)
                 {
-                    case creature::wolfen_class::Pup: { return { "wolfen-pup.png" };
+                    case creature::wolfen_class::Pup:
+                    {
+                        return { "wolfen-pup.png" };
                     }
-                    case creature::wolfen_class::Juvenile: { return { "wolfen-juvenile.png" };
+                    case creature::wolfen_class::Juvenile:
+                    {
+                        return { "wolfen-juvenile.png" };
                     }
-                    case creature::wolfen_class::Adult: { return { "wolfen-adult.png" };
+                    case creature::wolfen_class::Adult:
+                    {
+                        return { "wolfen-adult.png" };
                     }
-                    case creature::wolfen_class::Noble: { return { "wolfen-noble.png" };
+                    case creature::wolfen_class::Noble:
+                    {
+                        return { "wolfen-noble.png" };
                     }
-                    case creature::wolfen_class::Highborn: { return { "wolfen-highborn.png" };
+                    case creature::wolfen_class::Highborn:
+                    {
+                        return { "wolfen-highborn.png" };
                     }
-                    case creature::wolfen_class::Elder: { return { "wolfen-elder.png" };
+                    case creature::wolfen_class::Elder:
+                    {
+                        return { "wolfen-elder.png" };
                     }
                     case creature::wolfen_class::Count:
-                    default: { break;
+                    default:
+                    {
+                        break;
                     }
                 }
             }
