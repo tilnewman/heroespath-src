@@ -127,10 +127,6 @@ namespace stage
 
         void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) override;
 
-        void TestingStrAppend(const std::string &) override;
-        void TestingStrIncrement(const std::string &) override;
-        void TestingImageSet(const std::string &) override;
-
         void PerformNextTest() override {}
         void ClearAllEntities() override;
 

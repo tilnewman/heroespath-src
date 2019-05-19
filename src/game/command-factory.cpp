@@ -73,8 +73,7 @@ namespace game
         ExecuteCommandOpt_t executeCommandOpt { MakeCommandForStateChangeExecute(
             STAGE_SETUP_COMMAND.stage) };
 
-        if ((HAS_CURRENT_STAGE == false) || (STAGE_SETUP_COMMAND.stage == stage::Stage::Intro)
-            || (STAGE_SETUP_COMMAND.stage == stage::Stage::Test))
+        if ((HAS_CURRENT_STAGE == false) || (STAGE_SETUP_COMMAND.stage == stage::Stage::Intro))
         {
             fadeOutCommandOpt = boost::none;
         }
@@ -176,18 +175,26 @@ namespace game
     {
         switch (STAGE)
         {
-            case stage::Stage::Settings: { return MusicCommand(gui::music::All, gui::music::Theme);
+            case stage::Stage::Settings:
+            {
+                return MusicCommand(gui::music::All, gui::music::Theme);
             }
-            case stage::Stage::Menu: { return MusicCommand(gui::music::Wind, gui::music::Theme);
+            case stage::Stage::Menu:
+            {
+                return MusicCommand(gui::music::Wind, gui::music::Theme);
             }
             case stage::Stage::Intro:
             {
                 // do not start theme music because IntroStage will do that after some custom timing
                 return boost::none;
             }
-            case stage::Stage::Exit: { return MusicCommand::MakeToStopAllMusic();
+            case stage::Stage::Exit:
+            {
+                return MusicCommand::MakeToStopAllMusic();
             }
-            case stage::Stage::Credits: { return MusicCommand(gui::music::All, gui::music::Credits);
+            case stage::Stage::Credits:
+            {
+                return MusicCommand(gui::music::All, gui::music::Credits);
             }
             case stage::Stage::Party:
             {
@@ -200,7 +207,9 @@ namespace game
 
                 return MusicCommand(gui::music::All, gui::music::Theme, MUSIC_VOLUME_MIN);
             }
-            case stage::Stage::Character: { return MusicCommand(gui::music::All, gui::music::Wind);
+            case stage::Stage::Character:
+            {
+                return MusicCommand(gui::music::All, gui::music::Wind);
             }
             case stage::Stage::Inventory:
             {
@@ -216,10 +225,11 @@ namespace game
             case stage::Stage::Help:
             case stage::Stage::Inn:
             case stage::Stage::Combat:
-            case stage::Stage::Test:
             case stage::Stage::Treasure:
             case stage::Stage::Count:
-            default: { return boost::none;
+            default:
+            {
+                return boost::none;
             }
         }
     }

@@ -117,11 +117,6 @@ namespace stage
 
         virtual void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) = 0;
 
-        // all of these testing functions are temp until all tests are moved to unit tests
-        virtual void TestingStrAppend(const std::string &) = 0;
-        virtual void TestingStrIncrement(const std::string &) = 0;
-        virtual void TestingImageSet(const std::string & PATH_STR) = 0;
-
         virtual void PerformNextTest() = 0;
 
         virtual void ClearAllEntities() = 0;

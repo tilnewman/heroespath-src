@@ -39,7 +39,6 @@ namespace stage
             Exit,
             Inventory,
             Treasure,
-            Test,
             Previous,
             Next,
             Save,

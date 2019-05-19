@@ -44,7 +44,6 @@
 #include "stage/main-menu-stage.hpp"
 #include "stage/party-stage.hpp"
 #include "stage/settings-stage.hpp"
-#include "stage/testing-stage.hpp"
 #include "stage/treasure-display-stage.hpp"
 #include "stage/treasure-stage.hpp"
 
@@ -152,11 +151,6 @@ namespace stage
                 stageVec.emplace_back(std::move(viewStageUPtr));
                 stageVec.emplace_back(std::move(modelStageUPtr));
 
-                break;
-            }
-            case stage::Stage::Test:
-            {
-                stageVec.emplace_back(std::make_unique<stage::TestingStage>());
                 break;
             }
             case stage::Stage::Treasure:

@@ -349,21 +349,6 @@ namespace stage
         }
     }
 
-    void StageBase::TestingStrAppend(const std::string & MESSAGE)
-    {
-        game::GameController::Instance()->TestingStrAppend(MESSAGE);
-    }
-
-    void StageBase::TestingStrIncrement(const std::string & MESSAGE)
-    {
-        game::GameController::Instance()->TestingStrIncrement(MESSAGE);
-    }
-
-    void StageBase::TestingImageSet(const std::string & MESSAGE)
-    {
-        game::GameController::Instance()->TestingImageSet(MESSAGE);
-    }
-
     void StageBase::ClearAllEntities()
     {
         entityWithFocusPtrOpt_ = boost::none;

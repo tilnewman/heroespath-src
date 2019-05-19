@@ -79,9 +79,6 @@ namespace game
 
                 gui::Display::Instance()->ClearToBlack();
 
-                // TODO TEMP REMOVE remove this crap once all testing is in unit tests
-                ExecuteNextTest();
-
                 frameMouseInfo_ = UpdateMouseInfo();
                 StopMouseHover(frameMouseInfo_.has_moved);
                 HandleMouseMove();
@@ -470,16 +467,6 @@ namespace game
     {
         // M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexDisplay_);
         gui::Display::Instance()->DisplayFrameBuffer();
-    }
-
-    void Loop::ExecuteNextTest()
-    {
-        auto handlePerformNextTest = [](stage::IStagePtr_t iStagePtr) {
-            iStagePtr->PerformNextTest();
-            return boost::none;
-        };
-
-        stages_.ExecuteOnNonPopupStages(handlePerformNextTest);
     }
 
     void Loop::UpdateTimeAudio(const float FRAME_TIME_SEC)

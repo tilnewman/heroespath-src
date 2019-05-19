@@ -86,11 +86,6 @@ namespace game
             const gui::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL);
 
-        // TODO TEMP REMOVE remove this crap once all testing is in unit tests
-        void TestingStrAppend(const std::string & MESSAGE);
-        void TestingStrIncrement(const std::string & MESSAGE);
-        void TestingImageSet(const std::string & PATH_STR);
-
     private:
         void ExecptionLogging(const Command & COMMAND) const;
         void ExecuteGameCommand(const Command &);

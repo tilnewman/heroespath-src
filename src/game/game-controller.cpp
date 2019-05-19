@@ -75,10 +75,7 @@ namespace game
         }
     }
 
-    void GameController::Release()
-    {
-        instanceUPtr_.reset();
-    }
+    void GameController::Release() { instanceUPtr_.reset(); }
 
     void GameController::Initialize()
     {
@@ -94,9 +91,6 @@ namespace game
                 "command line specified which stage to start at \""
                 << startupStageName_ << "\" (" << NAMEOF_ENUM(STARTUP_STAGE_ENUM)
                 << ").  Jumping to that stage now.");
-
-            // TEMP TODO REMOVE -once done testing
-            Game::Instance()->MakeNewForTestingAndSet();
 
             instanceUPtr_->TransitionTo(stage::SetupPacket(STARTUP_STAGE_ENUM));
         }
@@ -475,36 +469,6 @@ namespace game
         SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
 
         return RESULT;
-    }
-
-    void GameController::TestingStrAppend(const std::string & MESSAGE)
-    {
-        auto handleTestStringAppend = [MESSAGE](stage::IStagePtr_t iStagePtr) {
-            iStagePtr->TestingStrAppend(MESSAGE);
-            return boost::none;
-        };
-
-        activeStages_.ExecuteOnNonPopupStages(handleTestStringAppend);
-    }
-
-    void GameController::TestingStrIncrement(const std::string & MESSAGE)
-    {
-        auto handleTestStringIncrement = [MESSAGE](stage::IStagePtr_t iStagePtr) {
-            iStagePtr->TestingStrIncrement(MESSAGE);
-            return boost::none;
-        };
-
-        activeStages_.ExecuteOnNonPopupStages(handleTestStringIncrement);
-    }
-
-    void GameController::TestingImageSet(const std::string & PATH_STR)
-    {
-        auto handleTestImageSet = [PATH_STR](stage::IStagePtr_t iStagePtr) {
-            iStagePtr->TestingImageSet(PATH_STR);
-            return boost::none;
-        };
-
-        activeStages_.ExecuteOnNonPopupStages(handleTestImageSet);
     }
 
     void GameController::StageChangePostPopupSpawn(const PopupReplaceCommand & POPUP_ADD_COMMAND)

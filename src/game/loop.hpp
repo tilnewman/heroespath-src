@@ -71,7 +71,6 @@ namespace game
     private:
         void ExecuteCleanup();
         const MouseThisFrame UpdateMouseInfo();
-        void ExecuteNextTest();
 
         void UpdateTimeStages(const float FRAME_TIME_SEC);
         void UpdateTimeFade(const float FRAME_TIME_SEC);

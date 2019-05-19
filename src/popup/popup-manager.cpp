@@ -84,20 +84,6 @@ namespace popup
         accentTextureDirectoryPath_ = ACCENTS_PATH;
     }
 
-    bool PopupManager::Test(stage::IStagePtr_t iStagePtr)
-    {
-        static auto hasInitialPrompt { false };
-        if (false == hasInitialPrompt)
-        {
-            hasInitialPrompt = true;
-            iStagePtr->TestingStrAppend("popup::PopupManager::Test() Starting Tests...");
-        }
-
-        // TODO
-        iStagePtr->TestingStrAppend("popup::PopupManager::Test()  ALL TESTS PASSED.");
-        return true;
-    }
-
     const gui::TextInfo PopupManager::TextInfoDefault(
         const std::string & TEXT,
         const gui::Justified::Enum JUSTIFIED,
