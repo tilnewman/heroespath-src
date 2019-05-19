@@ -11,6 +11,7 @@
 
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log.hpp"
 #include "sfutil/keyboard.hpp"
@@ -70,9 +71,14 @@ namespace test
 
     void GameEngineGlobalFixture::teardown()
     {
-        if (hasDisplay())
+        // make sure to stop all audio
+        GameEngineGlobalFixture::checkEvents();
+        gui::SoundManager::Instance()->ClearSoundEffectsCache(true);
+        gui::SoundManager::Instance()->MusicStop(gui::music::All);
+        for (int i(0); i < 10; ++i)
         {
-            gui::Display::Instance()->PollEvents();
+            GameEngineGlobalFixture::checkEvents();
+            gui::SoundManager::Instance()->UpdateTime(10.0f);
         }
 
         m_iDisplayerUPtr.reset();

@@ -82,9 +82,6 @@ namespace gui
         static void SetSoundsDirectory(
             const std::string & SOUND_DIR_PATH, const std::string & MUSIC_DIR_PATH);
 
-        bool Test(stage::IStagePtr_t iStagePtr);
-        bool TestSfxSet(SfxSet &, const std::size_t INDEX);
-
         void LoadSoundSets();
 
         // throws range_error on invalid enum input.

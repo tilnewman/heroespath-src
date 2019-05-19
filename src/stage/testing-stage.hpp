@@ -118,7 +118,6 @@ namespace stage
     private:
         bool PerformTest_InventoryFactory();
         bool PerformTest_PopupManager();
-        bool PerformTest_SoundManager();
         bool PerformTest_ItemProfileReport();
         bool PerformTest_ArmorRatings();
 

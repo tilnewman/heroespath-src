@@ -32,6 +32,7 @@ setup_test("unit-test-image-loading.cpp")
 setup_test("unit-test-gui-elements.cpp")
 setup_test("unit-test-holders.cpp")
 setup_test("unit-test-maps.cpp")
+setup_test("unit-test-audio.cpp")
 
 #copy testing files
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

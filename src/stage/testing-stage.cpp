@@ -335,15 +335,8 @@ namespace stage
             isInspectingImages_ = true;
         }
 
-        M_TESTING_STAGE_TEST(SoundManager);
-
         std::cout << "ALL TESTS PASSED" << std::endl;
         TransitionTo(stage::Stage::Exit);
-    }
-
-    bool TestingStage::PerformTest_SoundManager()
-    {
-        return gui::SoundManager::Instance()->Test(misc::MakeNotNull(this));
     }
 
     bool TestingStage::PerformTest_PopupManager()

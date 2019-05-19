@@ -295,7 +295,8 @@ namespace gui
         const float VOLUME_TO_USE((VOLUME < 0.0f) ? musicVolume_ : VOLUME);
 
         // Create the MusicSet object here, before we know if it is needed, because its
-        // constructor is where the CurrentlyPlaying() song must be selected from among WHICH_VEC.
+        // constructor is where the CurrentlyPlaying() song must be selected from among
+        // WHICH_VEC.
         MusicSet musicSet(
             WHICH_VEC, WILL_RANDOMIZE, WILL_START_AT_RANDOM, FADE_MULT, VOLUME_TO_USE, WILL_LOOP);
 
@@ -615,9 +616,9 @@ namespace gui
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
-            "SoundManager::OpenMusic(\""
-                << PATH_STR_COMPLETE
-                << "\") failed because that file either does not exist or is not a regular file.");
+            "SoundManager::OpenMusic(\"" << PATH_STR_COMPLETE
+                                         << "\") failed because that file either does not "
+                                            "exist or is not a regular file.");
 
         auto musicUPtr { std::make_unique<sf::Music>() };
 
@@ -706,157 +707,6 @@ namespace gui
         musicOperator.Play();
 
         return musicOperator;
-    }
-
-    bool SoundManager::Test(stage::IStagePtr_t iStagePtr)
-    {
-        static auto hasInitialPrompt { false };
-        if (false == hasInitialPrompt)
-        {
-            hasInitialPrompt = true;
-            iStagePtr->TestingStrAppend("gui::SoundManager::Test() Starting Tests...");
-        }
-
-        static auto counter { 0 };
-        static auto playOrStop { false };
-        static const auto MUSIC_COUNT_MAX { 200 };
-
-        // test sound effects individually
-        {
-            static auto hasSFXPromptedStart { false };
-            if (false == hasSFXPromptedStart)
-            {
-                iStagePtr->TestingStrIncrement("SoundManager SFX Tests starting...");
-                hasSFXPromptedStart = true;
-            }
-
-            static EnumUnderlying_t sfxIndex { 0 };
-            if (sfxIndex < sound_effect::Count)
-            {
-                const auto ENUM { static_cast<sound_effect::Enum>(sfxIndex) };
-                const auto ENUM_STR { NAMEOF_ENUM_STR(ENUM) };
-
-                iStagePtr->TestingStrIncrement("SoundManager SFX Test \"" + ENUM_STR + "\"");
-
-                SoundEffectPlay(ENUM);
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                ++sfxIndex;
-                return false;
-            }
-
-            static auto hasSFXPromptedEnd { false };
-            if (false == hasSFXPromptedEnd)
-            {
-                iStagePtr->TestingStrIncrement("SoundManager SFX Tests finished.  All Passed.");
-                hasSFXPromptedEnd = true;
-                ClearSoundEffectsCache();
-            }
-        }
-
-        // test sound effects through SfxSet interface
-        {
-            static auto hasStaticSFXPromptedStart { false };
-            if (false == hasStaticSFXPromptedStart)
-            {
-                iStagePtr->TestingStrIncrement("SoundManager SfxSet SFX Tests starting...");
-
-                hasStaticSFXPromptedStart = true;
-            }
-
-            static EnumUnderlying_t sfxSetIndex { 0 };
-            if (static_cast<std::size_t>(sfxSetIndex) < sfxSetVec_.size())
-            {
-                static std::size_t sfxSetInnerIndex { 0 };
-
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (sfxSetVec_.at(static_cast<std::size_t>(sfxSetIndex)).IsValid()),
-                    "gui::SoundManager::Test() While testing SoudEffectsSets #"
-                        << sfxSetIndex
-                        << ", enum=" << NAMEOF_ENUM(static_cast<sound_effect::Enum>(sfxSetIndex))
-                        << " found IsValid()==false.");
-
-                if (false
-                    == TestSfxSet(
-                           sfxSetVec_.at(static_cast<std::size_t>(sfxSetIndex)), sfxSetInnerIndex))
-                {
-                    ++sfxSetInnerIndex;
-                    return false;
-                }
-                else
-                {
-                    iStagePtr->TestingStrIncrement(
-                        "SoundManager SfxSet SFX Tested Set #" + std::to_string(sfxSetIndex));
-
-                    sfxSetInnerIndex = 0;
-                    ++sfxSetIndex;
-                }
-
-                return false;
-            }
-
-            static auto hasStaticSFXPromptedEnd { false };
-            if (false == hasStaticSFXPromptedEnd)
-            {
-                iStagePtr->TestingStrIncrement(
-                    "SoundManager SfxSet SFX Tests finished.  All Passed.");
-
-                hasStaticSFXPromptedEnd = true;
-                ClearSoundEffectsCache();
-            }
-        }
-
-        // test regular music
-        static EnumUnderlying_t musicIndex { 0 };
-        {
-            if (musicIndex < music::Count)
-            {
-                const std::string MUSIC_INDEX_STR = std::to_string(musicIndex);
-
-                auto NEXT_ENUM(static_cast<music::Enum>(musicIndex));
-
-                if (false == playOrStop)
-                {
-                    MusicStart(NEXT_ENUM);
-                    playOrStop = true;
-                    counter = 0;
-                    return false;
-                }
-
-                if (counter < MUSIC_COUNT_MAX)
-                {
-                    iStagePtr->TestingStrIncrement(
-                        "SoundManager Music Test #" + MUSIC_INDEX_STR + " Delay...");
-
-                    ++counter;
-                    return false;
-                }
-
-                {
-                    MusicStop(NEXT_ENUM);
-                    playOrStop = false;
-                    ++musicIndex;
-                    iStagePtr->TestingStrIncrement("SoundManager Music Test #" + MUSIC_INDEX_STR);
-                    return false;
-                }
-            }
-        }
-
-        iStagePtr->TestingStrAppend("gui::SoundManager::Test() ALL TESTS PASSED");
-        return true;
-    }
-
-    bool SoundManager::TestSfxSet(SfxSet & soundEffectsSet, const std::size_t INDEX)
-    {
-        if (INDEX < soundEffectsSet.Size())
-        {
-            soundEffectsSet.PlayAt(INDEX);
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            return false;
-        }
-        else
-        {
-            return true;
-        }
     }
 
     void SoundManager::SongsUpdate(const float ELAPSED_TIME_SECONDS)
