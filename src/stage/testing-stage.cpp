@@ -322,7 +322,6 @@ namespace stage
             return;
         }
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(ItemFactory, item::ItemFactory);
         M_TESTING_STAGE_TEST(ItemProfileReport);
         M_TESTING_STAGE_TEST(InventoryFactory);
         M_TESTING_STAGE_TEST(ArmorRatings);

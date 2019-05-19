@@ -8,7 +8,7 @@
 // ----------------------------------------------------------------------------
 //
 // unit-test-image-loading.cpp
-
+//
 #define BOOST_TEST_MODULE "image_loading"
 #include <boost/test/unit_test.hpp>
 

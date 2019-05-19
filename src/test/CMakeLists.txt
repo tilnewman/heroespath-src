@@ -31,6 +31,7 @@ setup_test("unit-test-combat.cpp")
 setup_test("unit-test-image-loading.cpp")
 setup_test("unit-test-gui-elements.cpp")
 setup_test("unit-test-holders.cpp")
+setup_test("unit-test-item.cpp")
 setup_test("unit-test-maps.cpp")
 setup_test("unit-test-audio.cpp")
 
