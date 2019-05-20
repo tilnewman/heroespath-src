@@ -17,9 +17,9 @@
 #include "creature/summon-info.hpp"
 #include "game/strong-types.hpp"
 #include "item/armor-type-wrapper.hpp"
+#include "item/item-creation-packet.hpp"
 #include "item/item-profile.hpp"
 #include "item/item-type-enum.hpp"
-#include "item/item-type-wrapper.hpp"
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
@@ -40,19 +40,12 @@ namespace item
         explicit Item(
             const std::string & NAME = "",
             const std::string & DESC = "",
-            const category::Enum CATEGORY = category::None,
-            const material::Enum MATERIAL_PRIMARY = material::Nothing,
-            const material::Enum MATERIAL_SECONDARY = material::Nothing,
-            const Coin_t & PRICE = 0_coin,
-            const Weight_t & WEIGHT = 0_weight,
+            const ItemCreationPacket & PACKET = ItemCreationPacket(),
+            const weapon::WeaponTypeWrapper & WEAPON_INFO = weapon::WeaponTypeWrapper(),
             const Health_t & DAMAGE_MIN = 0_health,
             const Health_t & DAMAGE_MAX = 0_health,
-            const Armor_t & ARMOR_RATING = 0_armor,
-            const TypeWrapper & TYPE_WRAPPER = TypeWrapper(),
-            const weapon::WeaponTypeWrapper & WEAPON_INFO = weapon::WeaponTypeWrapper(),
             const armor::ArmorTypeWrapper & ARMOR_INFO = armor::ArmorTypeWrapper(),
-            const bool IS_PIXIE_ITEM = false,
-            const creature::role::Enum EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE = creature::role::Count);
+            const Armor_t & ARMOR_RATING = 0_armor);
 
         ~Item();
 

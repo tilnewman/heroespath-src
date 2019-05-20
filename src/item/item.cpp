@@ -31,51 +31,38 @@ namespace item
     Item::Item(
         const std::string & NAME,
         const std::string & DESC,
-        const category::Enum CATEGORY,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const Coin_t & PRICE,
-        const Weight_t & WEIGHT,
+        const ItemCreationPacket & PACKET,
+        const weapon::WeaponTypeWrapper & WEAPON_INFO,
         const Health_t & DAMAGE_MIN,
         const Health_t & DAMAGE_MAX,
-        const Armor_t & ARMOR_RATING,
-        const TypeWrapper & TYPE_WRAPPER,
-        const weapon::WeaponTypeWrapper & WEAPON_INFO,
         const armor::ArmorTypeWrapper & ARMOR_INFO,
-        const bool IS_PIXIE_ITEM,
-        const creature::role::Enum EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE)
+        const Armor_t & ARMOR_RATING)
         : name_(NAME)
         , desc_(DESC)
-        , price_(PRICE)
-        , weight_(WEIGHT)
+        , price_(PACKET.price)
+        , weight_(PACKET.weight)
         , damageMin_(DAMAGE_MIN)
         , damageMax_(DAMAGE_MAX)
         , armorRating_(ARMOR_RATING)
         // if valid the role restriction based on Misc or Set type is used, otherwise the role
         // restriction based on item type is used.
-        , exclusiveToRole_(
-              ((TYPE_WRAPPER.roleRestriction != creature::role::Count)
-                   ? TYPE_WRAPPER.roleRestriction
-                   : EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE))
-        , category_(CATEGORY)
-        , miscType_(TYPE_WRAPPER.misc)
-        , materialPri_(MATERIAL_PRIMARY)
-        , materialSec_(MATERIAL_SECONDARY)
+        , exclusiveToRole_(PACKET.role_restriction)
+        , category_(PACKET.category_enum)
+        , miscType_(PACKET.misc_enum)
+        , materialPri_(PACKET.material_pri)
+        , materialSec_(PACKET.material_sec)
         , weaponInfo_(WEAPON_INFO)
         , armorInfo_(ARMOR_INFO)
-        , isPixie_(IS_PIXIE_ITEM)
-        , setType_(TYPE_WRAPPER.set)
-        , namedType_(TYPE_WRAPPER.name)
-        , elementType_(TYPE_WRAPPER.element)
-        , summonInfo_(TYPE_WRAPPER.summon)
+        , isPixie_(PACKET.is_pixie)
+        , setType_(PACKET.set_enum)
+        , namedType_(PACKET.named_enum)
+        , elementType_(PACKET.element_enum)
+        , summonInfo_(PACKET.summon_info)
         , enchantmentsPVec_()
         , imageFilename_()
         , imageFullPath_()
     {
-        creature::EnchantmentFactory enchantmentFactory;
-
-        enchantmentsPVec_ = enchantmentFactory.MakeAndStore(
-            TYPE_WRAPPER, MATERIAL_PRIMARY, MATERIAL_SECONDARY, IsWeapon(), IsArmor());
+        enchantmentsPVec_ = creature::EnchantmentFactory::MakeAndStore(*this);
     }
 
     Item::~Item() { creature::EnchantmentWarehouse::Access().Free(enchantmentsPVec_); }
@@ -343,23 +330,23 @@ namespace item
                 L.summonInfo_,
                 L.elementType_)
             < std::tie(
-                  R.price_,
-                  R.weight_,
-                  R.damageMin_,
-                  R.damageMax_,
-                  R.armorRating_,
-                  R.exclusiveToRole_,
-                  R.category_,
-                  R.miscType_,
-                  R.materialPri_,
-                  R.materialSec_,
-                  R.weaponInfo_,
-                  R.armorInfo_,
-                  R.isPixie_,
-                  R.setType_,
-                  R.namedType_,
-                  R.summonInfo_,
-                  R.elementType_))
+                R.price_,
+                R.weight_,
+                R.damageMin_,
+                R.damageMax_,
+                R.armorRating_,
+                R.exclusiveToRole_,
+                R.category_,
+                R.miscType_,
+                R.materialPri_,
+                R.materialSec_,
+                R.weaponInfo_,
+                R.armorInfo_,
+                R.isPixie_,
+                R.setType_,
+                R.namedType_,
+                R.summonInfo_,
+                R.elementType_))
         {
             return true;
         }
@@ -391,23 +378,23 @@ namespace item
                 L.summonInfo_,
                 L.elementType_)
             != std::tie(
-                   R.price_,
-                   R.weight_,
-                   R.damageMin_,
-                   R.damageMax_,
-                   R.armorRating_,
-                   R.exclusiveToRole_,
-                   R.category_,
-                   R.miscType_,
-                   R.materialPri_,
-                   R.materialSec_,
-                   R.weaponInfo_,
-                   R.armorInfo_,
-                   R.isPixie_,
-                   R.setType_,
-                   R.namedType_,
-                   R.summonInfo_,
-                   R.elementType_))
+                R.price_,
+                R.weight_,
+                R.damageMin_,
+                R.damageMax_,
+                R.armorRating_,
+                R.exclusiveToRole_,
+                R.category_,
+                R.miscType_,
+                R.materialPri_,
+                R.materialSec_,
+                R.weaponInfo_,
+                R.armorInfo_,
+                R.isPixie_,
+                R.setType_,
+                R.namedType_,
+                R.summonInfo_,
+                R.elementType_))
         {
             return false;
         }

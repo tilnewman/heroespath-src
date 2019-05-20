@@ -779,10 +779,7 @@ namespace item
 
     private:
         Score_t score_;
-
-        // this is a ratio of how religious the item is
-        float religiousRatio_;
-
+        float religiousRatio_; // just how religious is this item?
         category::Enum category_;
         ItemProfileThin thinProfile_;
         set_type::Enum set_;

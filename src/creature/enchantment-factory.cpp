@@ -27,39 +27,42 @@ namespace heroespath
 namespace creature
 {
 
-    const EnchantmentPVec_t EnchantmentFactory::MakeAndStore(
-        const item::TypeWrapper & TYPE_WRAPPER,
-        const item::material::Enum MATERIAL_PRIMARY,
-        const item::material::Enum MATERIAL_SECONDARY,
-        const bool IS_WEAPON,
-        const bool IS_ARMOR) const
+    const EnchantmentPVec_t EnchantmentFactory::MakeAndStore(const item::Item & ITEM)
     {
-        if (TYPE_WRAPPER.set != item::set_type::Not)
+        if ((ITEM.SetType() != item::set_type::Not) && (ITEM.SetType() < item::set_type::Count))
         {
             // if part of a set, then only the set enchantments will apply
-            return { NewFromSetType(TYPE_WRAPPER.set) };
+            return { NewFromSetType(ITEM.SetType()) };
         }
         else
         {
             EnchantmentPVec_t enchantmentsPVec;
 
-            if (TYPE_WRAPPER.element != item::element_type::None)
+            if (ITEM.ElementType() != item::element_type::None)
             {
                 enchantmentsPVec.emplace_back(NewFromElementType(
-                    TYPE_WRAPPER.element, IS_WEAPON, MATERIAL_PRIMARY, MATERIAL_SECONDARY));
+                    ITEM.ElementType(),
+                    ITEM.IsWeapon(),
+                    ITEM.MaterialPrimary(),
+                    ITEM.MaterialSecondary()));
             }
 
-            if ((TYPE_WRAPPER.name != item::named_type::Not)
-                && (TYPE_WRAPPER.name != item::named_type::Count))
+            if ((ITEM.NamedType() != item::named_type::Not)
+                && (ITEM.NamedType() < item::named_type::Count))
             {
                 enchantmentsPVec.emplace_back(NewFromNamedType(
-                    TYPE_WRAPPER.name, MATERIAL_PRIMARY, MATERIAL_SECONDARY, IS_ARMOR, IS_WEAPON));
+                    ITEM.NamedType(),
+                    ITEM.MaterialPrimary(),
+                    ITEM.MaterialSecondary(),
+                    ITEM.IsWeapon(),
+                    ITEM.IsArmor()));
             }
 
-            if (TYPE_WRAPPER.misc != item::misc_type::Not)
+            if ((ITEM.MiscType() != item::misc_type::Not)
+                && (ITEM.MiscType() < item::misc_type::Count))
             {
-                for (const auto & ENCHANTMENT_PTR :
-                     NewFromMiscType(TYPE_WRAPPER.misc, MATERIAL_PRIMARY, MATERIAL_SECONDARY))
+                for (const auto & ENCHANTMENT_PTR : NewFromMiscType(
+                         ITEM.MiscType(), ITEM.MaterialPrimary(), ITEM.MaterialSecondary()))
                 {
                     enchantmentsPVec.emplace_back(ENCHANTMENT_PTR);
                 }
@@ -72,7 +75,7 @@ namespace creature
     Score_t EnchantmentFactory::TreasureScore(
         const item::misc_type::Enum MISC_TYPE,
         const item::material::Enum MATERIAL_PRIMARY,
-        const item::material::Enum MATERIAL_SECONDARY) const
+        const item::material::Enum MATERIAL_SECONDARY)
     {
         Score_t score { 0_score };
 
@@ -134,7 +137,7 @@ namespace creature
         return score;
     }
 
-    Score_t EnchantmentFactory::TreasureScore(const item::set_type::Enum ENUM) const
+    Score_t EnchantmentFactory::TreasureScore(const item::set_type::Enum ENUM)
     {
         if ((ENUM == item::set_type::Not) || (ENUM == item::set_type::Count))
         {
@@ -151,7 +154,7 @@ namespace creature
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY,
         const bool IS_WEAPON,
-        const bool IS_ARMOR) const
+        const bool IS_ARMOR)
     {
         if ((NAMED_ENUM == item::named_type::Not) || (NAMED_ENUM == item::named_type::Count))
         {
@@ -169,7 +172,7 @@ namespace creature
         const item::element_type::Enum ELEMENT_TYPE,
         const bool IS_WEAPON,
         const item::material::Enum MATERIAL_PRIMARY,
-        const item::material::Enum MATERIAL_SECONDARY) const
+        const item::material::Enum MATERIAL_SECONDARY)
     {
         if (ELEMENT_TYPE == item::element_type::None)
         {
@@ -183,14 +186,12 @@ namespace creature
     }
 
     const EnchantmentPtr_t EnchantmentFactory::Make(
-        const EnchantmentType::Enum TYPE,
-        const TraitSet & TRAIT_SET,
-        const UseInfo & USE_INFO) const
+        const EnchantmentType::Enum TYPE, const TraitSet & TRAIT_SET, const UseInfo & USE_INFO)
     {
         return Make(Enchantment(TYPE, TRAIT_SET, USE_INFO));
     }
 
-    const EnchantmentPtr_t EnchantmentFactory::Make(const Enchantment & ENCHANTMENT) const
+    const EnchantmentPtr_t EnchantmentFactory::Make(const Enchantment & ENCHANTMENT)
     {
         return EnchantmentWarehouse::Access().Store(std::make_unique<Enchantment>(ENCHANTMENT));
     }
@@ -198,7 +199,7 @@ namespace creature
     const EnchantmentPVec_t EnchantmentFactory::NewFromMiscType(
         const item::misc_type::Enum MISC_TYPE,
         const item::material::Enum MATERIAL_PRIMARY,
-        const item::material::Enum MATERIAL_SECONDARY) const
+        const item::material::Enum MATERIAL_SECONDARY)
     {
         EnchantmentPVec_t enchantmentPtrs;
 
@@ -214,7 +215,7 @@ namespace creature
     const EnchantmentVec_t EnchantmentFactory::MakeFromMiscType(
         const item::misc_type::Enum MISC_TYPE,
         const item::material::Enum MATERIAL_PRIMARY,
-        const item::material::Enum MATERIAL_SECONDARY) const
+        const item::material::Enum MATERIAL_SECONDARY)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             ((MATERIAL_PRIMARY != item::material::Count)
@@ -1596,17 +1597,19 @@ namespace creature
 
             case item::misc_type::Not:
             case item::misc_type::Count:
-            default: { return {};
+            default:
+            {
+                return {};
             }
         }
     }
 
-    const EnchantmentPtr_t EnchantmentFactory::NewFromSetType(const item::set_type::Enum ENUM) const
+    const EnchantmentPtr_t EnchantmentFactory::NewFromSetType(const item::set_type::Enum ENUM)
     {
         return Make(MakeFromSetType(ENUM));
     }
 
-    const Enchantment EnchantmentFactory::MakeFromSetType(const item::set_type::Enum ENUM) const
+    const Enchantment EnchantmentFactory::MakeFromSetType(const item::set_type::Enum ENUM)
     {
         switch (ENUM)
         {
@@ -2007,7 +2010,7 @@ namespace creature
             default:
             {
                 std::ostringstream ss;
-                ss << "creature::EnchantmentFactory::NewFromSetType(set_type=" << ENUM
+                ss << "creature::EnchantmentFactory::NewFromSetType(set_type=" << NAMEOF_ENUM(ENUM)
                    << ") was unable to create with these arguments.";
 
                 throw std::runtime_error(ss.str());
@@ -2016,13 +2019,12 @@ namespace creature
     }
 
     const EnchantmentPtr_t
-        EnchantmentFactory::NewFromSetCompleteType(const item::set_type::Enum ENUM) const
+        EnchantmentFactory::NewFromSetCompleteType(const item::set_type::Enum ENUM)
     {
         return Make(MakeFromSetCompleteType(ENUM));
     }
 
-    const Enchantment
-        EnchantmentFactory::MakeFromSetCompleteType(const item::set_type::Enum ENUM) const
+    const Enchantment EnchantmentFactory::MakeFromSetCompleteType(const item::set_type::Enum ENUM)
     {
         switch (ENUM)
         {
@@ -2449,8 +2451,8 @@ namespace creature
             default:
             {
                 std::ostringstream ss;
-                ss << "creature::EnchantmentFactory::NewFromSetCompleteType(set_type=" << ENUM
-                   << ") was unable to create with these arguments.";
+                ss << "creature::EnchantmentFactory::NewFromSetCompleteType(set_type="
+                   << NAMEOF_ENUM(ENUM) << ") was unable to create with these arguments.";
 
                 throw std::runtime_error(ss.str());
             }
@@ -2461,7 +2463,7 @@ namespace creature
         const item::element_type::Enum ENUM,
         const bool IS_WEAPON,
         const item::material::Enum MATERIAL_PRIMARY,
-        const item::material::Enum MATERIAL_SECONDARY) const
+        const item::material::Enum MATERIAL_SECONDARY)
     {
         return Make(MakeFromElementType(ENUM, IS_WEAPON, MATERIAL_PRIMARY, MATERIAL_SECONDARY));
     }
@@ -2470,13 +2472,13 @@ namespace creature
         const item::element_type::Enum ENUM,
         const bool IS_WEAPON,
         const item::material::Enum MATERIAL_PRIMARY,
-        const item::material::Enum MATERIAL_SECONDARY) const
+        const item::material::Enum MATERIAL_SECONDARY)
     {
         if (ENUM == item::element_type::None)
         {
             std::ostringstream ss;
-            ss << "creature::EnchantmentFactory::NewFromElementType(element_type=" << ENUM
-               << ", is_weapon=" << std::boolalpha << IS_WEAPON << ", mat_pri="
+            ss << "creature::EnchantmentFactory::NewFromElementType(element_type="
+               << NAMEOF_ENUM(ENUM) << ", is_weapon=" << std::boolalpha << IS_WEAPON << ", mat_pri="
                << ((MATERIAL_PRIMARY == item::material::Count) ? "Count"
                                                                : NAMEOF_ENUM(MATERIAL_PRIMARY))
                << ", mat_sec="
@@ -2612,7 +2614,7 @@ namespace creature
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY,
         const bool IS_WEAPON,
-        const bool IS_ARMOR) const
+        const bool IS_ARMOR)
     {
         return Make(MakeFromNamedType(
             NAMED_ENUM, MATERIAL_PRIMARY, MATERIAL_SECONDARY, IS_WEAPON, IS_ARMOR));
@@ -2623,7 +2625,7 @@ namespace creature
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY,
         const bool IS_WEAPON,
-        const bool IS_ARMOR) const
+        const bool IS_ARMOR)
     {
         switch (NAMED_ENUM)
         {

@@ -337,21 +337,6 @@ constexpr std::size_t CountBitsSet(std::uint32_t x)
     x = x - ((x >> 1) & 0x55555555);
     x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
     return (((x + (x >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
-
-    // std::size_t count { 0 };
-    // EnumUnderlying_t flag { 1 };
-    //
-    // while (flag <= EnumWrapper_t::Last)
-    //{
-    //    if (ENUM_VALUE & flag)
-    //    {
-    //        ++count;
-    //    }
-    //
-    //    flag <<= 1;
-    //}
-    //
-    // return count;
 }
 
 // helper template for common enumeration operations

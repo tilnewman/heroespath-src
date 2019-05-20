@@ -11,7 +11,6 @@
 //
 #include "creature/traits-set.hpp"
 #include "game/strong-types.hpp"
-#include "item/item-profile-thin-factory.hpp"
 #include "item/item-profile-thin.hpp"
 #include "item/item-profile.hpp"
 #include "item/materials-factory.hpp"
@@ -117,7 +116,6 @@ namespace item
         static std::unique_ptr<ItemProfileWarehouse> instanceUPtr_;
 
         MaterialFactory materialFactory_;
-        ItemProfileThinFactory thinProfileFactory_;
 
         // these are the fat profiles that are stored here for use by the Treasure Stage when
         // deciding which items to give the players after defeating creatures in combat.

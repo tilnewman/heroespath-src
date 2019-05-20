@@ -15,6 +15,7 @@
 #include "creature/summon-info.hpp"
 #include "item/armor-details.hpp"
 #include "item/armor-type-wrapper.hpp"
+#include "item/item-creation-packet.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item-profile.hpp"
 #include "item/item-warehouse.hpp"
@@ -90,19 +91,15 @@ namespace item
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
             nameFactory_.MakeNonBodyPartName(PROFILE),
             nameFactory_.MakeNonBodyPartDescription(PROFILE, ARMOR_DETAILS.description),
-            PROFILE.Category(),
-            PROFILE.MaterialPrimary(),
-            PROFILE.MaterialSecondary(),
-            CalculatePrice(PROFILE, ARMOR_DETAILS.price),
-            CalculateWeight(PROFILE, ARMOR_DETAILS.weight),
+            ItemCreationPacket(
+                PROFILE,
+                CalculatePrice(PROFILE, ARMOR_DETAILS.price),
+                CalculateWeight(PROFILE, ARMOR_DETAILS.weight)),
+            weapon::WeaponTypeWrapper(),
             0_health,
             0_health,
-            CalculateArmorRating(PROFILE, ARMOR_DETAILS.armor_rating),
-            TypeWrapper(PROFILE),
-            PROFILE.WeaponInfo(),
             ARMOR_TYPE_WRAPPER,
-            PROFILE.IsPixie(),
-            PROFILE.RoleRestriction()));
+            CalculateArmorRating(PROFILE, ARMOR_DETAILS.armor_rating)));
     }
 
     const ItemPtr_t ItemFactory::MakeArmor(
@@ -138,18 +135,18 @@ namespace item
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
             nameFactory_.MakeArmorBodyPartName(MATERIALS_PAIR, CREATURE_PTR),
             nameFactory_.MakeArmorBodyPartDescription(MATERIALS_PAIR),
-            static_cast<category::Enum>(category::Equipable | category::BodyPart),
-            MATERIALS_PAIR.first,
-            MATERIALS_PAIR.second,
-            0_coin,
-            WEIGHT,
-            0_health,
-            0_health,
-            ARMOR_RATING,
-            TypeWrapper(),
+            ItemCreationPacket(
+                static_cast<category::Enum>(category::Equipable | category::BodyPart),
+                MATERIALS_PAIR.first,
+                MATERIALS_PAIR.second,
+                0_coin,
+                WEIGHT,
+                CREATURE_PTR->IsPixie()),
             weapon::WeaponTypeWrapper(),
+            0_health,
+            0_health,
             ARMOR_TYPE_WRAPPER,
-            CREATURE_PTR->IsPixie()));
+            ARMOR_RATING));
     }
 
     const ItemPtr_t ItemFactory::MakeWeapon(const ItemProfile & PROFILE) const
@@ -162,19 +159,13 @@ namespace item
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
             nameFactory_.MakeNonBodyPartName(PROFILE),
             nameFactory_.MakeNonBodyPartDescription(PROFILE, WEAPON_DETAILS.description),
-            PROFILE.Category(),
-            PROFILE.MaterialPrimary(),
-            PROFILE.MaterialSecondary(),
-            CalculatePrice(PROFILE, WEAPON_DETAILS.price),
-            CalculateWeight(PROFILE, WEAPON_DETAILS.weight),
-            WEAPON_DETAILS.damage_min,
-            WEAPON_DETAILS.damage_max,
-            0_armor,
-            TypeWrapper(PROFILE),
+            ItemCreationPacket(
+                PROFILE,
+                CalculatePrice(PROFILE, WEAPON_DETAILS.price),
+                CalculateWeight(PROFILE, WEAPON_DETAILS.weight)),
             WEAPON_TYPE_WRAPPER,
-            PROFILE.ArmorInfo(),
-            PROFILE.IsPixie(),
-            PROFILE.RoleRestriction()));
+            WEAPON_DETAILS.damage_min,
+            WEAPON_DETAILS.damage_max));
     }
 
     const ItemPtr_t ItemFactory::MakeWeapon(
@@ -229,40 +220,28 @@ namespace item
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
             nameFactory_.MakeWeaponBodyPartName(CREATURE_PTR, WEAPON_TYPE_WRAPPER.ReadableName()),
             nameFactory_.MakeWeaponBodyPartDescription(WEAPON_DETAILS.description, CREATURE_PTR),
-            ItemProfile::CategoryWeaponBodypart(BODY_PART),
-            MATERIALS.first,
-            MATERIALS.second,
-            WEAPON_DETAILS.price,
-            WEAPON_DETAILS.weight,
-            WEAPON_DETAILS.damage_min,
-            WEAPON_DETAILS.damage_max,
-            0_armor,
-            TypeWrapper(),
+            ItemCreationPacket(
+                ItemProfile::CategoryWeaponBodypart(BODY_PART),
+                MATERIALS.first,
+                MATERIALS.second,
+                WEAPON_DETAILS.price,
+                WEAPON_DETAILS.weight,
+                CREATURE_PTR->IsPixie()),
             WEAPON_TYPE_WRAPPER,
-            armor::ArmorTypeWrapper(),
-            CREATURE_PTR->IsPixie()));
+            WEAPON_DETAILS.damage_min,
+            WEAPON_DETAILS.damage_max));
     }
 
     const ItemPtr_t ItemFactory::MakeMisc(const ItemProfile & PROFILE) const
     {
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
-            // "" is okay in both places because there is special misc_type logic inside
             nameFactory_.MakeNonBodyPartName(PROFILE),
             nameFactory_.MakeNonBodyPartDescription(PROFILE, PROFILE.ReadableName()),
-            PROFILE.Category(),
-            PROFILE.MaterialPrimary(),
-            PROFILE.MaterialSecondary(),
-            // zero is okay in both places because there is special misc_type logic inside
-            CalculatePrice(PROFILE),
-            CalculateWeight(PROFILE),
-            0_health,
-            0_health,
-            0_armor,
-            TypeWrapper(PROFILE),
+            ItemCreationPacket(PROFILE, CalculatePrice(PROFILE), CalculateWeight(PROFILE)),
             PROFILE.WeaponInfo(),
-            PROFILE.ArmorInfo(),
-            PROFILE.IsPixie(),
-            PROFILE.RoleRestriction()));
+            0_health,
+            0_health,
+            PROFILE.ArmorInfo()));
     }
 
     Coin_t ItemFactory::CalculatePrice(

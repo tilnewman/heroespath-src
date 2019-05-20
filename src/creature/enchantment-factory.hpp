@@ -14,9 +14,11 @@
 #include "creature/enchantment.hpp"
 #include "creature/trait.hpp"
 #include "creature/traits-set.hpp"
+#include "item/item-creation-packet.hpp"
 #include "item/item-type-enum.hpp"
-#include "item/item-type-wrapper.hpp"
 #include "misc/not-null.hpp"
+
+#include <string>
 
 namespace heroespath
 {
@@ -39,96 +41,83 @@ namespace creature
     // Unique_types cannot be weapons or armor, they must be misc_types.  If an item is unique_type
     // then it will have Enchantments specifically for that unique_type and no Enchantments from the
     // misc_type will be applied.
-    class EnchantmentFactory
+    struct EnchantmentFactory
     {
-    public:
-        EnchantmentFactory(const EnchantmentFactory &) = delete;
-        EnchantmentFactory(EnchantmentFactory &&) = delete;
-        EnchantmentFactory & operator=(const EnchantmentFactory &) = delete;
-        EnchantmentFactory & operator=(EnchantmentFactory &&) = delete;
-
-        EnchantmentFactory() = default;
+        EnchantmentFactory() = delete;
 
         // If part of a set, then only the set enchantments will apply.
         // If unique, then only the unique_type enchantments will be applied.
         // All unique_types are also misc_types but their enchantments are mutually exclusive.
         // Enchantments from element_types, named_types, and misc_types can combine.
-        const EnchantmentPVec_t MakeAndStore(
-            const item::TypeWrapper &,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY,
-            const bool IS_WEAPON,
-            const bool IS_ARMOR) const;
+        static const EnchantmentPVec_t MakeAndStore(const item::Item &);
 
-        Score_t TreasureScore(
+        static Score_t TreasureScore(
             const item::misc_type::Enum,
             const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY) const;
+            const item::material::Enum MATERIAL_SECONDARY);
 
-        Score_t TreasureScore(const item::set_type::Enum) const;
+        static Score_t TreasureScore(const item::set_type::Enum);
 
-        Score_t TreasureScore(
+        static Score_t TreasureScore(
             const item::named_type::Enum,
             const item::material::Enum MATERIAL_PRIMARY,
             const item::material::Enum MATERIAL_SECONDARY,
             const bool IS_WEAPON,
-            const bool IS_ARMOR) const;
+            const bool IS_ARMOR);
 
-        Score_t TreasureScore(
+        static Score_t TreasureScore(
             const item::element_type::Enum,
             const bool IS_WEAPON,
             const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY) const;
+            const item::material::Enum MATERIAL_SECONDARY);
 
     private:
-        const EnchantmentPtr_t Make(
-            const EnchantmentType::Enum TYPE,
-            const TraitSet & TRAIT_SET,
-            const UseInfo & USE_INFO) const;
+        static const EnchantmentPtr_t Make(
+            const EnchantmentType::Enum TYPE, const TraitSet & TRAIT_SET, const UseInfo & USE_INFO);
 
-        const EnchantmentPtr_t Make(const Enchantment &) const;
+        static const EnchantmentPtr_t Make(const Enchantment &);
 
-        const EnchantmentVec_t MakeFromMiscType(
+        static const EnchantmentVec_t MakeFromMiscType(
             const item::misc_type::Enum,
             const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY) const;
+            const item::material::Enum MATERIAL_SECONDARY);
 
-        const EnchantmentPVec_t NewFromMiscType(
+        static const EnchantmentPVec_t NewFromMiscType(
             const item::misc_type::Enum,
             const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY) const;
+            const item::material::Enum MATERIAL_SECONDARY);
 
-        const Enchantment MakeFromSetType(const item::set_type::Enum) const;
-        const EnchantmentPtr_t NewFromSetType(const item::set_type::Enum) const;
+        static const Enchantment MakeFromSetType(const item::set_type::Enum);
+        static const EnchantmentPtr_t NewFromSetType(const item::set_type::Enum);
 
-        const Enchantment MakeFromSetCompleteType(const item::set_type::Enum) const;
-        const EnchantmentPtr_t NewFromSetCompleteType(const item::set_type::Enum) const;
+        static const Enchantment MakeFromSetCompleteType(const item::set_type::Enum);
+        static const EnchantmentPtr_t NewFromSetCompleteType(const item::set_type::Enum);
 
-        const Enchantment MakeFromElementType(
+        static const Enchantment MakeFromElementType(
             const item::element_type::Enum,
             const bool IS_WEAPON,
             const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY) const;
+            const item::material::Enum MATERIAL_SECONDARY);
 
-        const EnchantmentPtr_t NewFromElementType(
+        static const EnchantmentPtr_t NewFromElementType(
             const item::element_type::Enum,
             const bool IS_WEAPON,
             const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY) const;
+            const item::material::Enum MATERIAL_SECONDARY);
 
-        const Enchantment MakeFromNamedType(
+        static const Enchantment MakeFromNamedType(
             const item::named_type::Enum,
             const item::material::Enum MATERIAL_PRIMARY,
             const item::material::Enum MATERIAL_SECONDARY,
             const bool IS_WEAPON,
-            const bool IS_ARMOR) const;
+            const bool IS_ARMOR);
 
-        const EnchantmentPtr_t NewFromNamedType(
+        static const EnchantmentPtr_t NewFromNamedType(
             const item::named_type::Enum,
             const item::material::Enum MATERIAL_PRIMARY,
             const item::material::Enum MATERIAL_SECONDARY,
             const bool IS_WEAPON,
-            const bool IS_ARMOR) const;
+            const bool IS_ARMOR);
     };
 
 } // namespace creature

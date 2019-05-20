@@ -14,6 +14,7 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/traits-set.hpp"
+#include "item/item-profile-thin-factory.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
@@ -35,7 +36,6 @@ namespace item
 
     ItemProfileWarehouse::ItemProfileWarehouse()
         : materialFactory_()
-        , thinProfileFactory_()
         , profiles_()
         , religiousProfiles_()
         , questItemProfilesMap_()
@@ -89,13 +89,14 @@ namespace item
         // As of 2018-5-2 236585 (reduced the number of element enchantments)
         // As oF 2018-5-8 59370
         // 2018-5-17 44057 (fixed a bug in materials factory that was allowing invalid materials)
+        // 2019-5-19 43775 ?
         profiles_.reserve(45000);
 
         // As of 2018-3-19 there were 251 religious profiles.
         // As of 2018-4-28 107
         // As of 2018-5-2 392
         // As of 2018-5-8 313
-        // 2018-5-17 317
+        // 2019-5-19 317
         religiousProfiles_.reserve(320);
 
         sf::Clock jobClock;
@@ -153,12 +154,12 @@ namespace item
 
     void ItemProfileWarehouse::Setup_StandardEquipment()
     {
-        for (const auto & WEAPON_THIN_PROFILE : thinProfileFactory_.MakeAllWeapons())
+        for (const auto & WEAPON_THIN_PROFILE : ItemProfileThinFactory::MakeAllWeapons())
         {
             MakeLoopOverMaterialsAndElementsForEquipment(WEAPON_THIN_PROFILE);
         }
 
-        for (const auto & ARMOR_THIN_PROFILE : thinProfileFactory_.MakeAllArmor())
+        for (const auto & ARMOR_THIN_PROFILE : ItemProfileThinFactory::MakeAllArmor())
         {
             MakeLoopOverMaterialsAndElementsForEquipment(ARMOR_THIN_PROFILE);
         }
@@ -186,7 +187,8 @@ namespace item
         {
             const auto NAMED_TYPE { static_cast<named_type::Enum>(i) };
 
-            for (const auto & NAMED_THINPROFILE : thinProfileFactory_.MakeAllNamedTypes(NAMED_TYPE))
+            for (const auto & NAMED_THINPROFILE :
+                 ItemProfileThinFactory::MakeAllNamedTypes(NAMED_TYPE))
             {
                 MakeLoopOverMaterialsAndElementsForEquipment(
                     NAMED_THINPROFILE, NAMED_TYPE, set_type::Not);
@@ -200,7 +202,7 @@ namespace item
         {
             const auto SET_TYPE { static_cast<set_type::Enum>(i) };
 
-            for (const auto & SET_THINPROFILE : thinProfileFactory_.MakeAllSetTypes(SET_TYPE))
+            for (const auto & SET_THINPROFILE : ItemProfileThinFactory::MakeAllSetTypes(SET_TYPE))
             {
                 MakeLoopOverMaterialsAndElementsForEquipment(
                     SET_THINPROFILE, named_type::Not, SET_TYPE);
@@ -560,7 +562,9 @@ namespace item
                 case armor_type::Skin:
                 case armor_type::Not:
                 case armor_type::Count:
-                default: { break;
+                default:
+                {
+                    break;
                 }
             }
 
