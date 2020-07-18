@@ -8,20 +8,11 @@
 #define HEROESPATH_ITEM_ITEM_HPP_INCLUDED
 //
 // item.hpp
-//  A base class for all items.
 //
-#include "misc/boost-serialize-includes.hpp"
-
 #include "creature/enchantment.hpp"
-#include "creature/role-enum.hpp"
-#include "creature/summon-info.hpp"
-#include "game/strong-types.hpp"
-#include "item/armor-type-wrapper.hpp"
-#include "item/item-creation-packet.hpp"
 #include "item/item-profile.hpp"
-#include "item/item-type-enum.hpp"
-#include "item/weapon-type-wrapper.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 
 #include <memory>
@@ -33,20 +24,11 @@ namespace heroespath
 namespace item
 {
 
-    // Responsible for all state and operation of all items in the game.
     class Item
     {
     public:
-        explicit Item(
-            const std::string & NAME = "",
-            const std::string & DESC = "",
-            const ItemCreationPacket & PACKET = ItemCreationPacket(),
-            const weapon::WeaponTypeWrapper & WEAPON_INFO = weapon::WeaponTypeWrapper(),
-            const Health_t & DAMAGE_MIN = 0_health,
-            const Health_t & DAMAGE_MAX = 0_health,
-            const armor::ArmorTypeWrapper & ARMOR_INFO = armor::ArmorTypeWrapper(),
-            const Armor_t & ARMOR_RATING = 0_armor);
-
+        Item() = default;
+        Item(const std::string & NAME, const std::string & DESC, const ItemProfile & PROFILE);
         ~Item();
 
         Item(const Item &) = delete;
@@ -55,112 +37,127 @@ namespace item
         Item & operator=(Item &&) = delete;
 
         const std::string Name() const;
-
-        // similar to Name() but without "Pixie" or materials.
-        const std::string ShortName() const;
-
-        // the shortest answer to "what is it", with no unique/set/named type names
-        const std::string BaseName() const;
-
         const std::string Desc() const;
+        const std::string ShortName() const; // Name() without "Pixie" or materials
+        const std::string BaseName() const;
+        const std::string ImagePath() const { return imageFullPath_; }
+        const std::string ToString() const;
 
-        const std::string ImagePath() const;
+        constexpr Category::Enum Category() const noexcept { return category_; }
+        constexpr bool IsBroken() const noexcept { return HasCategory(Category::Broken); }
+        constexpr bool IsUseable() const noexcept { return HasCategory(Category::Useable); }
+        constexpr bool IsEquipable() const noexcept { return HasCategory(Category::Equipable); }
+        constexpr bool IsWearable() const noexcept { return HasCategory(Category::Wearable); }
+        constexpr bool IsOneHanded() const noexcept { return HasCategory(Category::OneHanded); }
+        constexpr bool IsTwoHanded() const noexcept { return HasCategory(Category::TwoHanded); }
 
-        const weapon::WeaponTypeWrapper & WeaponInfo() const { return weaponInfo_; }
-        const armor::ArmorTypeWrapper & ArmorInfo() const { return armorInfo_; }
-
-        category::Enum Category() const { return category_; }
-        material::Enum MaterialPrimary() const { return materialPri_; }
-        material::Enum MaterialSecondary() const { return materialSec_; }
-        weapon_type::Enum WeaponType() const { return weaponInfo_.Type(); }
-        armor_type::Enum ArmorType() const { return armorInfo_.Type(); }
-        misc_type::Enum MiscType() const { return miscType_; }
-        set_type::Enum SetType() const { return setType_; }
-        named_type::Enum NamedType() const { return namedType_; }
-        element_type::Enum ElementType() const { return elementType_; }
-
-        Coin_t Price() const { return price_; }
-        Weight_t Weight() const { return weight_; }
-
-        Health_t DamageMin() const { return damageMin_; }
-        Health_t DamageMax() const { return damageMax_; }
-        Armor_t ArmorRating() const { return armorRating_; }
-
-        bool HasCategoryType(const category::Enum CATEGORY) const
+        constexpr bool HasCategory(const Category::Enum CATEGORY) const noexcept
         {
             return ((category_ & CATEGORY) > 0);
         }
 
-        bool HasWeaponType(const weapon_type::Enum WEAPON_TYPE) const
+        void AddCategory(const Category::Enum ENUM)
         {
-            return ((weaponInfo_.Type() & WEAPON_TYPE) > 0);
+            category_ = static_cast<Category::Enum>(category_ | ENUM);
         }
 
-        bool IsQuestItem() const { return misc_type::IsQuestItem(miscType_); }
-
-        bool IsBroken() const { return (category_ & category::Broken); }
-        bool IsWearable() const { return (category_ & category::Wearable); }
-        bool IsOneHanded() const { return (category_ & category::OneHanded); }
-        bool IsTwoHanded() const { return (category_ & category::TwoHanded); }
-        bool IsBodypart() const { return (category_ & category::BodyPart); }
-        bool IsArmor() const { return (armorInfo_.IsTypeValid()); }
-        bool IsWeapon() const { return weaponInfo_.IsTypeValid(); }
-
-        bool IsSet() const { return (set_type::Count != setType_) && (set_type::Not != setType_); }
-
-        bool IsNamed() const
+        constexpr bool IsRigid() const noexcept
         {
-            return (named_type::Count != namedType_) && (named_type::Not != namedType_);
+            return Material::IsRigid(profile_.MaterialPrimary());
         }
 
-        bool IsMisc() const
+        constexpr bool IsBloody() const noexcept
         {
-            return (misc_type::Count != miscType_) && (misc_type::Not != miscType_);
+            return Material::IsBloody(profile_.MaterialPrimary(), profile_.MaterialSecondary());
         }
 
-        bool IsUnique() const { return misc_type::IsUnique(miscType_); }
-
-        bool IsElemental() const { return (elementType_ != element_type::None); }
-
-        bool IsRigid() const { return material::IsRigid(materialPri_); }
-
-        bool IsBloody() const { return material::IsBloody(materialPri_, materialSec_); }
-
-        float FireDamageRatio() const
+        constexpr float FireDamageRatio() const noexcept
         {
-            return material::FireDamageRatio(materialPri_, materialSec_);
+            return Material::FireDamageRatio(
+                profile_.MaterialPrimary(), profile_.MaterialSecondary());
         }
 
-        bool IsMetal() const { return material::IsMetal(materialPri_); }
+        constexpr bool IsMetal() const noexcept
+        {
+            return Material::IsMetal(profile_.MaterialPrimary());
+        }
 
-        creature::role::Enum ExclusiveRole() const { return exclusiveToRole_; }
+        constexpr bool IsJeweled() const noexcept
+        {
+            return Material::IsFancyJewel(profile_.MaterialSecondary());
+        }
 
-        bool IsJeweled() const { return material::IsFancyJewel(materialSec_); }
-
-        bool IsPixie() const { return isPixie_; }
-
-        bool MustBePixieVersionForPixiesToEquip() const;
-
+        bool HasEnchantments() const { return !enchantmentsPVec_.empty(); }
         const creature::EnchantmentPVec_t & Enchantments() const { return enchantmentsPVec_; }
-
-        void AddCategory(const category::Enum ENUM)
-        {
-            category_ = static_cast<category::Enum>(category_ | ENUM);
-        }
-
-        const creature::SummonInfo & SummonInfo() const { return summonInfo_; }
-
-        bool HasEnchantments() const { return (enchantmentsPVec_.empty() == false); }
 
         bool IsMagical() const
         {
-            return (
-                (IsBroken() == false)
-                && (HasEnchantments() || summonInfo_.CanSummon() || IsElemental() || IsSet()
-                    || IsNamed() || IsUnique()));
+            return (!IsBroken() && (HasEnchantments() || profile_.IsMagical()));
         }
 
-        const std::string ToString() const;
+        constexpr bool IsPixie() const noexcept { return profile_.IsPixie(); }
+        constexpr Set::Enum SetType() const noexcept { return profile_.SetType(); }
+        constexpr Named::Enum NamedType() const noexcept { return profile_.NamedType(); }
+        constexpr Element::Enum ElementType() const noexcept { return profile_.ElementType(); }
+        constexpr Misc::Enum MiscType() const noexcept { return profile_.MiscType(); }
+        constexpr bool IsQuest() const noexcept { return profile_.IsQuest(); }
+        constexpr bool IsWeapon() const noexcept { return profile_.IsWeapon(); }
+        constexpr bool IsArmor() const noexcept { return profile_.IsArmor(); }
+        constexpr bool IsMisc() const noexcept { return profile_.IsMisc(); }
+        constexpr bool IsUnique() const noexcept { return profile_.IsUnique(); }
+        constexpr bool IsNamed() const noexcept { return profile_.IsNamed(); }
+        constexpr bool IsSet() const noexcept { return profile_.IsSet(); }
+        constexpr bool IsElemental() const noexcept { return profile_.IsElemental(); }
+        constexpr bool IsBodyPart() const noexcept { return profile_.IsBodyPart(); }
+        constexpr Armor_t ArmorRating() const noexcept { return profile_.ArmorRating(); }
+        constexpr Coin_t Price() const noexcept { return profile_.Price(); }
+        constexpr Weight_t Weight() const noexcept { return profile_.Weight(); }
+        constexpr bool IsReligious() const noexcept { return profile_.IsReligious(); }
+        constexpr Health_t DamageMin() const noexcept { return profile_.DamageMin(); }
+        constexpr Health_t DamageMax() const noexcept { return profile_.DamageMax(); }
+        constexpr Armor::Enum ArmorType() const noexcept { return profile_.ArmorType(); }
+        constexpr Weapon::Enum WeaponType() const noexcept { return profile_.WeaponType(); }
+
+        constexpr bool CanSummon() const noexcept { return profile_.CanSummon(); }
+
+        constexpr bool HasElementType(const Element::Enum ENUM) const noexcept
+        {
+            return profile_.HasElementType(ENUM);
+        }
+
+        constexpr Material::Enum MaterialPrimary() const noexcept
+        {
+            return profile_.MaterialPrimary();
+        }
+
+        constexpr Material::Enum MaterialSecondary() const noexcept
+        {
+            return profile_.MaterialSecondary();
+        }
+
+        constexpr const creature::SummonInfo SummoningInfo() const noexcept
+        {
+            return profile_.SummoningInfo();
+        }
+
+        constexpr bool MustBePixieVersionForPixiesToEquip() const noexcept
+        {
+            return profile_.MustBePixieVersionForPixiesToEquip();
+        }
+
+        constexpr const WeaponTemplate & WeaponInfo() const noexcept
+        {
+            return profile_.WeaponInfo();
+        }
+
+        constexpr const ArmorTemplate & ArmorInfo() const noexcept { return profile_.ArmorInfo(); }
+
+        constexpr MaterialNameStyle::Enum GetMaterialNameStyle() const noexcept
+        {
+            return profile_.GetMaterialNameStyle();
+        }
+
+        constexpr const ItemProfile & Profile() const noexcept { return profile_; }
 
         void BeforeSerialize();
         void AfterSerialize();
@@ -174,36 +171,21 @@ namespace item
         const std::string ComposeName(const std::string & ROOT_NAME) const;
 
     protected:
-        std::string name_;
-        std::string desc_;
-        Coin_t price_;
-        Weight_t weight_;
-        Health_t damageMin_;
-        Health_t damageMax_;
-        Armor_t armorRating_;
-        creature::role::Enum exclusiveToRole_;
-        category::Enum category_;
-        misc_type::Enum miscType_;
-        material::Enum materialPri_;
-        material::Enum materialSec_;
-        weapon::WeaponTypeWrapper weaponInfo_;
-        armor::ArmorTypeWrapper armorInfo_;
-        bool isPixie_;
-        set_type::Enum setType_;
-        named_type::Enum namedType_;
-        element_type::Enum elementType_;
-        creature::SummonInfo summonInfo_;
+        std::string name_ = {};
+        std::string desc_ = {};
+        ItemProfile profile_ = {};
+        Category::Enum category_ = Category::None;
 
         // The Item class owns the Enchantment objects and is responsible
         // for their lifetimes, but misc::NotNulls cannot be serialized so
         // a separate vector of raw pointers is needed.
-        creature::EnchantmentPVec_t enchantmentsPVec_;
-        std::vector<creature::Enchantment *> enchantmentsToSerializePVec_;
+        creature::EnchantmentPVec_t enchantmentsPVec_ = {};
+        std::vector<creature::Enchantment *> enchantmentsToSerializePVec_ = {};
 
         // these are mutable so that we can set them when requested for the first time by a const
         // getter functions (lazy evaluation)
-        mutable std::string imageFilename_;
-        mutable std::string imageFullPath_;
+        mutable std::string imageFilename_ = {};
+        mutable std::string imageFullPath_ = {};
 
     private:
         friend class boost::serialization::access;
@@ -212,30 +194,14 @@ namespace item
         {
             ar & name_;
             ar & desc_;
-            ar & price_;
-            ar & weight_;
-            ar & damageMin_;
-            ar & damageMax_;
-            ar & armorRating_;
-            ar & exclusiveToRole_;
+            ar & profile_;
             ar & category_;
-            ar & miscType_;
-            ar & materialPri_;
-            ar & materialSec_;
+            ar & enchantmentsToSerializePVec_;
 
             // don't save imageFullPath_ because that might change when a game is loaded after a
             // re-install, but the filename can be random so we want to keep that so each time
             // a game loads the player sees the image they are familiar with
             ar & imageFilename_;
-
-            ar & weaponInfo_;
-            ar & armorInfo_;
-            ar & isPixie_;
-            ar & setType_;
-            ar & namedType_;
-            ar & elementType_;
-            ar & summonInfo_;
-            ar & enchantmentsToSerializePVec_;
         }
     };
 
@@ -244,11 +210,14 @@ namespace item
     using ItemUPtr_t = std::unique_ptr<Item>;
     using ItemUVec_t = std::vector<ItemUPtr_t>;
 
-    bool operator<(const Item & L, const Item & R);
-
+    // ignore name_/desc_/imageFilename_/imageFullPath_ since random or change betweeen load/save
     bool operator==(const Item & L, const Item & R);
 
+    // ignore name_/desc_/imageFilename_/imageFullPath_ since random or change betweeen load/save
     inline bool operator!=(const Item & L, const Item & R) { return !(L == R); }
+
+    // ignore name_/desc_/imageFilename_/imageFullPath_ since random or change betweeen load/save
+    bool operator<(const Item & L, const Item & R);
 
 } // namespace item
 } // namespace heroespath

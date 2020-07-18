@@ -52,7 +52,7 @@ namespace creature
         , healthBonus_(HEALTH_BONUS)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (TITLE != Titles::Count),
+            (TITLE < Titles::Count),
             "creature::Title::Title(title_enum=role::Count"
                 << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
                 << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
@@ -73,7 +73,7 @@ namespace creature
                 << ", exp_bonus=" << EXPERIENCE_BONUS << ") was given an empty role vector.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (ACHIEVEMENT_TYPE != AchievementType::Count),
+            (ACHIEVEMENT_TYPE < AchievementType::Count),
             "creature::Title::Title(title=" << NAMEOF_ENUM(TITLE)
                                             << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count="
                                             << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
@@ -89,8 +89,7 @@ namespace creature
 
         fileName_.reserve(128);
 
-        if ((ACHIEVEMENT_TYPE == AchievementType::Count)
-            || (ACHIEVEMENT_TYPE == AchievementType::None))
+        if (ACHIEVEMENT_TYPE >= AchievementType::None)
         {
             fileName_ += NAMEOF_ENUM(TITLE);
         }
@@ -264,13 +263,13 @@ namespace creature
                 L.statBonus_,
                 L.fileName_)
             < std::tie(
-                  R.title_,
-                  R.achievementCount_,
-                  R.achievementIndex_,
-                  R.rankBonus_,
-                  R.expBonus_,
-                  R.statBonus_,
-                  R.fileName_))
+                R.title_,
+                R.achievementCount_,
+                R.achievementIndex_,
+                R.rankBonus_,
+                R.expBonus_,
+                R.statBonus_,
+                R.fileName_))
         {
             return true;
         }
@@ -291,13 +290,13 @@ namespace creature
                 L.statBonus_,
                 L.fileName_)
             != std::tie(
-                   R.title_,
-                   R.achievementCount_,
-                   R.achievementIndex_,
-                   R.rankBonus_,
-                   R.expBonus_,
-                   R.statBonus_,
-                   R.fileName_))
+                R.title_,
+                R.achievementCount_,
+                R.achievementIndex_,
+                R.rankBonus_,
+                R.expBonus_,
+                R.statBonus_,
+                R.fileName_))
         {
             return false;
         }

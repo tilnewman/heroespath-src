@@ -209,7 +209,7 @@ namespace gui
         const Orientation::Enum ORIENTATION_PARAM, const Side::Enum SIDE) const
     {
         const auto ORIENTATION { (
-            (ORIENTATION_PARAM == Orientation::Count) ? Orientation::Horiz : ORIENTATION_PARAM) };
+            (ORIENTATION_PARAM >= Orientation::Count) ? Orientation::Horiz : ORIENTATION_PARAM) };
 
         sf::FloatRect topOrLeftRect;
         sf::FloatRect botOrRightRect;
@@ -257,7 +257,7 @@ namespace gui
         const bool WILL_CAP_ENDS)
     {
         const auto ORIENTATION { (
-            (ORIENTATION_PARAM == Orientation::Count) ? Orientation::Horiz : ORIENTATION_PARAM) };
+            (ORIENTATION_PARAM >= Orientation::Count) ? Orientation::Horiz : ORIENTATION_PARAM) };
 
         const auto LENGTH = [&]() {
             if (LENGTH_ORIG < 0.0f)

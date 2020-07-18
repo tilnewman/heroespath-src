@@ -71,17 +71,23 @@ namespace test
 
     void GameEngineGlobalFixture::teardown()
     {
-        // make sure to stop all audio
+        M_HP_LOG_DBG("Fixture Teardown Starting...");
         GameEngineGlobalFixture::checkEvents();
-        gui::SoundManager::Instance()->ClearSoundEffectsCache(true);
-        gui::SoundManager::Instance()->MusicStop(gui::music::All);
-        for (int i(0); i < 10; ++i)
+
+        if (game::SubsystemCollection::TestWithOnlyLogAndConfig != m_subsystemsToSetup)
         {
-            GameEngineGlobalFixture::checkEvents();
-            gui::SoundManager::Instance()->UpdateTime(10.0f);
+            gui::SoundManager::Instance()->ClearSoundEffectsCache(true);
+            gui::SoundManager::Instance()->MusicStop(gui::music::All);
+            for (int i(0); i < 10; ++i)
+            {
+                GameEngineGlobalFixture::checkEvents();
+                gui::SoundManager::Instance()->UpdateTime(10.0f);
+            }
         }
 
         m_iDisplayerUPtr.reset();
+
+        M_HP_LOG_DBG("Fixture Teardown Finishing.");
         m_startupShutdownUPtr.reset();
     }
 

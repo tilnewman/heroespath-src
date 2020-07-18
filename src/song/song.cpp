@@ -14,6 +14,7 @@
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/random.hpp"
 #include "misc/strings.hpp"
 
@@ -111,7 +112,7 @@ namespace song
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
                         " because "
                             + std::string(
-                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is already emboldened.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -149,7 +150,7 @@ namespace song
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
                                 + std::string(
-                                      creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                    creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -197,7 +198,7 @@ namespace song
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
                         " because "
                             + std::string(
-                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " already has full mana.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -230,7 +231,7 @@ namespace song
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
                         " because "
                             + std::string(
-                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " did not need rousing.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -259,7 +260,7 @@ namespace song
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
                         " because "
                             + std::string(
-                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is already tripped.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -274,7 +275,7 @@ namespace song
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
                         " because "
                             + std::string(
-                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is flying.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -318,7 +319,7 @@ namespace song
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
                                 + std::string(
-                                      creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                    creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -335,7 +336,7 @@ namespace song
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
                         " because "
                             + std::string(
-                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is already panicked.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -379,7 +380,7 @@ namespace song
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
                                 + std::string(
-                                      creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                    creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -397,7 +398,7 @@ namespace song
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
                         " because "
                             + std::string(
-                                  creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                             + " is already sleeping.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -436,7 +437,7 @@ namespace song
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
                                 + std::string(
-                                      creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                    creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -541,13 +542,21 @@ namespace song
         {
             switch (misc::Random(3))
             {
-                case 1: { return "melody";
+                case 1:
+                {
+                    return "melody";
                 }
-                case 2: { return "tune";
+                case 2:
+                {
+                    return "tune";
                 }
-                case 3: { return "song";
+                case 3:
+                {
+                    return "song";
                 }
-                default: { return "strumming";
+                default:
+                {
+                    return "strumming";
                 }
             }
         }
@@ -555,13 +564,21 @@ namespace song
         {
             switch (misc::Random(3))
             {
-                case 1: { return "drumming";
+                case 1:
+                {
+                    return "drumming";
                 }
-                case 2: { return "pounding";
+                case 2:
+                {
+                    return "pounding";
                 }
-                case 3: { return "rapping";
+                case 3:
+                {
+                    return "rapping";
                 }
-                default: { return "tapping";
+                default:
+                {
+                    return "tapping";
                 }
             }
         }
@@ -573,11 +590,17 @@ namespace song
         {
             switch (misc::Random(2))
             {
-                case 1: { return "melody";
+                case 1:
+                {
+                    return "melody";
                 }
-                case 2: { return "tune";
+                case 2:
+                {
+                    return "tune";
                 }
-                default: { return "song";
+                default:
+                {
+                    return "song";
                 }
             }
         }

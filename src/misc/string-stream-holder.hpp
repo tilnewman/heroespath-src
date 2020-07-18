@@ -11,42 +11,37 @@
 //
 #include "misc/log-pri-enum.hpp"
 
-#include <iosfwd>
-#include <memory>
-#include <string>
+#include <sstream>
 
 namespace heroespath
 {
 namespace misc
 {
 
-    struct stringStreamHolder
+    struct StringStreamHolder
     {
         static void init();
         static void reset();
 
-        static const std::string toString();
+        // static const std::string toString();
 
-        static std::ostream & ostreamer();
+        // static std::ostringstream & get();
+
+        // static void
+        //    log(const misc::LogPriority::Enum PRIORITY,
+        //        const std::string FILE,
+        //        const std::string FUNCTION,
+        //        const int LINE);
 
         static void
-            log(const bool WILL_THROW,
-                const misc::LogPriority::Enum PRIORITY,
-                const std::string & FILE,
-                const std::string & FUNCTION,
-                const int LINE);
-
-        static void
-            log(const bool WILL_THROW,
-                const misc::LogPriority::Enum PRIORITY,
-                const std::string & FILE,
-                const std::string & FUNCTION,
+            log(const misc::LogPriority::Enum PRIORITY,
+                const std::string FILE,
+                const std::string FUNCTION,
                 const int LINE,
-                const std::string & MESSAGE);
+                const std::string MESSAGE);
 
     private:
-        static std::unique_ptr<std::ostringstream> ss_uptr;
-        static bool hasInitAlready;
+        // static std::ostringstream ss;
     };
 
 } // namespace misc

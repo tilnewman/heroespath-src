@@ -21,7 +21,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Footstep : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Footstep : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -34,7 +34,7 @@ namespace gui
         };
     };
 
-    struct sound_effect : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct sound_effect : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

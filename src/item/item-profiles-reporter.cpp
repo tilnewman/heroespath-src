@@ -12,6 +12,7 @@
 #include "item-profiles-reporter.hpp"
 
 #include "item-profile-warehouse.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 
 #include <algorithm>
@@ -66,7 +67,9 @@ namespace item
         std::ostringstream ss;
         ss << "\n\n*** Item Profile Report ***\n";
 
-        const auto & NORMAL_PROFILES { ItemProfileWarehouse::Instance()->GetNormalProfiles() };
+        ItemProfileWarehouse::Instance()->Initialize();
+
+        const auto & NORMAL_PROFILES { ItemProfileWarehouse::Instance()->Normal() };
 
         const auto NORMAL_PROFILES_COUNT { NORMAL_PROFILES.size() };
 
@@ -74,13 +77,9 @@ namespace item
             std::begin(NORMAL_PROFILES),
             std::end(NORMAL_PROFILES),
             0_score,
-            [](const auto SUBTOTAL, const auto & PROFILE) {
-                return SUBTOTAL + PROFILE.TreasureScore();
-            }) };
+            [](const auto SUBTOTAL, const auto & PROFILE) { return SUBTOTAL + PROFILE.Score(); }) };
 
-        const auto & RELIGIOUS_PROFILES {
-            ItemProfileWarehouse::Instance()->GetReligiousProfiles()
-        };
+        const auto & RELIGIOUS_PROFILES { ItemProfileWarehouse::Instance()->Religious() };
 
         const auto RELIGIOUS_PROFILES_COUNT { RELIGIOUS_PROFILES.size() };
 
@@ -156,14 +155,18 @@ namespace item
             weaponOrArmorMisc.Add(
                 PROFILE, (PROFILE.IsMisc() && (PROFILE.IsWeapon() || PROFILE.IsArmor())));
 
+            auto isNonMagicalWeaponOrArmor = [](const ItemProfile & IP) {
+                return (!IP.IsMagical() && (IP.IsWeapon() || IP.IsArmor()));
+            };
+
             standardWeaponReport.Add(
-                PROFILE, (PROFILE.IsNonMagicalWeaponOrArmor() && PROFILE.IsWeapon()));
+                PROFILE, (isNonMagicalWeaponOrArmor(PROFILE) && PROFILE.IsWeapon()));
 
             standardArmorReport.Add(
-                PROFILE, (PROFILE.IsNonMagicalWeaponOrArmor() && PROFILE.IsArmor()));
+                PROFILE, (isNonMagicalWeaponOrArmor(PROFILE) && PROFILE.IsArmor()));
 
             magicalReport.Add(PROFILE, PROFILE.IsMagical());
-            summoningReport.Add(PROFILE, PROFILE.SummonInfo().CanSummon());
+            summoningReport.Add(PROFILE, PROFILE.SummoningInfo().IsValid());
             uniqueReport.Add(PROFILE, PROFILE.IsUnique());
             setReport.Add(PROFILE, PROFILE.IsSet());
             namedReport.Add(PROFILE, PROFILE.IsNamed());
@@ -227,7 +230,7 @@ namespace item
                 ss << MIN_MAX_DISPLAY_COUNT << " Normal Items with the lowest scores:";
                 for (std::size_t i(0); i < MIN_MAX_DISPLAY_COUNT; ++i)
                 {
-                    ss << "\n\t" << NORMAL_PROFILES.at(i).TreasureScore() << " {"
+                    ss << "\n\t" << NORMAL_PROFILES.at(i).Score() << " {"
                        << NORMAL_PROFILES.at(i).ToString() << "}";
                 }
             }
@@ -241,7 +244,7 @@ namespace item
                      i < NORMAL_PROFILES.size();
                      ++i)
                 {
-                    ss << "\n\t" << NORMAL_PROFILES.at(i).TreasureScore() << " {"
+                    ss << "\n\t" << NORMAL_PROFILES.at(i).Score() << " {"
                        << NORMAL_PROFILES.at(i).ToString() << "}";
                 }
             }
@@ -255,7 +258,7 @@ namespace item
                 ss << MIN_MAX_DISPLAY_COUNT << " Religious Items with the lowest scores:";
                 for (std::size_t i(0); i < MIN_MAX_DISPLAY_COUNT; ++i)
                 {
-                    ss << "\n\t" << RELIGIOUS_PROFILES.at(i).TreasureScore() << " {"
+                    ss << "\n\t" << RELIGIOUS_PROFILES.at(i).Score() << " {"
                        << RELIGIOUS_PROFILES.at(i).ToString() << "}";
                 }
             }
@@ -269,7 +272,7 @@ namespace item
                      i < RELIGIOUS_PROFILES.size();
                      ++i)
                 {
-                    ss << "\n\t" << RELIGIOUS_PROFILES.at(i).TreasureScore() << " {"
+                    ss << "\n\t" << RELIGIOUS_PROFILES.at(i).Score() << " {"
                        << RELIGIOUS_PROFILES.at(i).ToString() << "}";
                 }
             }
@@ -284,7 +287,7 @@ namespace item
     {
         if (WILL_ADD)
         {
-            const auto NORMAL_SCORE { PROFILE.TreasureScore().GetAs<std::size_t>() };
+            const auto NORMAL_SCORE { PROFILE.Score().GetAs<std::size_t>() };
             const auto RELIGIOIUS_SCORE { PROFILE.ReligiousScore().GetAs<std::size_t>() };
 
             scores_.emplace_back(NORMAL_SCORE);
@@ -299,7 +302,7 @@ namespace item
                 ++miscCount_;
             }
 
-            if (PROFILE.ElementType() != element_type::None)
+            if (PROFILE.ElementType() != Element::None)
             {
                 ++elementalCount;
                 elementScoreMap_[PROFILE.ElementType()].emplace_back(NORMAL_SCORE);
@@ -460,7 +463,7 @@ namespace item
                         std::end(elementTypeScoreVecPair.second));
 
                     ss << "\n\t" << std::setw(20)
-                       << EnumUtil<element_type>::ToString(
+                       << EnumUtil<Element>::ToString(
                               elementTypeScoreVecPair.first,
                               EnumStringHow(Wrap::Yes, "/", NoneEmpty::No))
                        << "\t\tcount=" << std::setw(7) << elementTypeScoreVecPair.second.size()
@@ -491,11 +494,13 @@ namespace item
             if (isWeaponReport_ && PROFILE.IsWeapon())
             {
                 Report::Add(PROFILE, true);
-                reportMap_[PROFILE.WeaponInfo().GeneralName()].Add(PROFILE, true);
+                reportMap_[std::string(PROFILE.WeaponInfo().TypeString())].Add(PROFILE, true);
 
-                auto & specificItemInfo { specificMap_[PROFILE.WeaponInfo().SpecificName()] };
+                auto & specificItemInfo {
+                    specificMap_[std::string(PROFILE.WeaponInfo().SubTypeString())]
+                };
 
-                specificItemInfo.scores.emplace_back(PROFILE.TreasureScore().GetAs<std::size_t>());
+                specificItemInfo.scores.emplace_back(PROFILE.Score().GetAs<std::size_t>());
 
                 specificItemInfo.material_pairs.emplace_back(
                     PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary());
@@ -503,11 +508,11 @@ namespace item
             else if ((false == isWeaponReport_) && PROFILE.IsArmor())
             {
                 Report::Add(PROFILE, true);
-                reportMap_[PROFILE.ArmorInfo().GeneralName()].Add(PROFILE, true);
+                reportMap_[PROFILE.ArmorInfo().TypeString()].Add(PROFILE, true);
 
-                auto & specificItemInfo { specificMap_[PROFILE.ArmorInfo().SpecificName()] };
+                auto & specificItemInfo { specificMap_[PROFILE.ArmorInfo().SubTypeString()] };
 
-                specificItemInfo.scores.emplace_back(PROFILE.TreasureScore().GetAs<std::size_t>());
+                specificItemInfo.scores.emplace_back(PROFILE.Score().GetAs<std::size_t>());
 
                 specificItemInfo.material_pairs.emplace_back(
                     PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary());
@@ -550,7 +555,7 @@ namespace item
 
             auto & materialPairs { specificNameScoresPair.second.material_pairs };
 
-            misc::VectorMap<material::Enum, MaterialVec_t> primaryToSecondariesMap;
+            misc::VectorMap<Material::Enum, MaterialVec_t> primaryToSecondariesMap;
 
             for (const auto & MATERIAL_PAIR : materialPairs)
             {

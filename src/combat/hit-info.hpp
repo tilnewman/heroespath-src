@@ -51,7 +51,7 @@ namespace item
 namespace combat
 {
 
-    struct HitType : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct HitType : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

@@ -10,7 +10,6 @@
 // text.hpp
 //
 #include "gui/font-enum.hpp"
-#include "misc/enum-util.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -79,8 +78,7 @@ namespace gui
         // returns true if size and font are valid and if text is not empty
         bool IsValid() const
         {
-            return !(
-                text_.empty() || !EnumUtil<GuiFont>::IsValid(font_) || (getCharacterSize() == 0));
+            return (!text_.empty() && (font_ < GuiFont::Count) && (getCharacterSize() > 0));
         }
 
         // returns true if IsValid() and color is not transparent

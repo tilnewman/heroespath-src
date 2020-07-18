@@ -16,7 +16,7 @@ namespace heroespath
 namespace song
 {
 
-    struct SongType : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct SongType : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

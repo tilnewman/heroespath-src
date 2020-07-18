@@ -75,7 +75,7 @@ namespace popup
         tempRect.top += sfutil::MapByRes(75.0f, 225.0f);
 
         const gui::TextInfo DESC_TEXTINFO(
-            popupInfo_.TextInfo().text,
+            popupInfo_.GetTextInfo().text,
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,

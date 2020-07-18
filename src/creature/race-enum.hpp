@@ -11,7 +11,7 @@
 //
 #include "creature/rank-class.hpp"
 #include "creature/role-enum.hpp"
-#include "item/treasure-scores.hpp"
+#include "item/treasure-score-set.hpp"
 #include "misc/enum-common.hpp"
 
 #include <string>
@@ -22,7 +22,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct origin_type : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct origin_type : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -51,7 +51,7 @@ namespace creature
 
     using OriginTypeVec_t = std::vector<origin_type::Enum>;
 
-    struct race : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct race : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -104,11 +104,24 @@ namespace creature
 
         static constexpr Enum Count_PlayerRaces = Goblin;
 
-        // TODO
-        // This needs to be implemented so that races such as CaveCrawler become "Cave Crawler".
         static constexpr std::string_view Name(const Enum ENUM) noexcept
         {
-            return NAMEOF_ENUM(ENUM);
+            if (ENUM == CaveCrawler)
+            {
+                return "Cave Crawler";
+            }
+            else if (ENUM == LizardWalker)
+            {
+                return "Lizard Walker";
+            }
+            else if (ENUM == ThreeHeadedHound)
+            {
+                return "Three Headed Hound";
+            }
+            else
+            {
+                return NAMEOF_ENUM(ENUM);
+            }
         }
 
         static const std::string Desc(const Enum);
@@ -276,17 +289,14 @@ namespace creature
 
         static const OriginTypeVec_t OriginTypes(const Enum, const role::Enum);
 
-        static constexpr item::TreasureScores
-            TreasureScore(const race::Enum RACE_ENUM, const role::Enum ROLE_ENUM) noexcept
+        static constexpr item::TreasureScoreSet
+            TreasureScoreSet(const race::Enum RACE_ENUM, const role::Enum ROLE_ENUM) noexcept
         {
-
-            return (
-                InitialTreasurescoresBasedOnRace(RACE_ENUM)
-                + InitialTreasurescoresModifierBasedOnRole(ROLE_ENUM));
+            return (TreasureScoreSetByRace(RACE_ENUM) + TreasureScoreSetByRole(ROLE_ENUM));
         }
 
-        // see TreasureScore() function above for where these numbers come from
-        static constexpr item::TreasureScores TreasureScoreMax {
+        // see Score() function above for where these numbers come from
+        static constexpr item::TreasureScoreSet TreasureScoreSetMax {
             400_score, 400_score, 400_score, 400_score
         };
 
@@ -423,121 +433,121 @@ namespace creature
         }
 
         // these numbers intentionally max at 350, 300, 300, 300 -see comment below
-        static constexpr item::TreasureScores
-            InitialTreasurescoresBasedOnRace(const Enum RACE_ENUM) noexcept
+        static constexpr item::TreasureScoreSet
+            TreasureScoreSetByRace(const Enum RACE_ENUM) noexcept
         {
             // clang-format off
             switch (RACE_ENUM)
             {   
-                case race::Human:           return item::TreasureScores( 60_score,  50_score, 100_score,  50_score);
-                case race::Orc:             return item::TreasureScores( 30_score,  20_score,  60_score,  20_score);
-                case race::Minotaur:        return item::TreasureScores( 20_score,   5_score,  50_score,  10_score);
-                case race::Ogre:            return item::TreasureScores( 15_score,   5_score,  66_score,  25_score);
-                case race::Halfling:        return item::TreasureScores( 80_score,  75_score,  90_score,  50_score);
-                case race::Pug:             return item::TreasureScores( 45_score,  10_score,  20_score,  30_score);
-                case race::Giant:           return item::TreasureScores( 30_score,  10_score,  65_score,  30_score);
-                case race::Wolfen:          return item::TreasureScores(  0_score,   5_score,  10_score,  10_score);
-                case race::Lion:            return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::LionBoar:        return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::Ramonaut:        return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::Boar:            return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::Demon:           return item::TreasureScores(225_score, 125_score, 200_score, 200_score);
-                case race::Gnome:           return item::TreasureScores(175_score,  75_score, 120_score,  40_score);
-                case race::Newt:            return item::TreasureScores( 30_score,  10_score,  25_score,  20_score);
-                case race::Bog:             return item::TreasureScores( 10_score,   0_score,  20_score,   0_score);
-                case race::Plant:           return item::TreasureScores(  0_score,   0_score,   5_score,   0_score);
-                case race::Pixie:           return item::TreasureScores(125_score, 100_score, 125_score,  50_score);
-                case race::Goblin:          return item::TreasureScores( 75_score,  12_score,  50_score,  25_score);
-                case race::Troll:           return item::TreasureScores( 40_score,  25_score,  75_score,  30_score);
-                case race::Hydra:           return item::TreasureScores(200_score, 110_score, 180_score, 100_score);
-                case race::LizardWalker:    return item::TreasureScores(125_score,  20_score, 100_score, 40_score);
-                case race::Naga:            return item::TreasureScores(166_score,  35_score, 133_score,  60_score);
-                case race::Harpy:           return item::TreasureScores(125_score,  18_score, 100_score,  80_score);
-                case race::Dragon:          return item::TreasureScores(350_score, 300_score, 300_score, 150_score);
-                case race::Griffin:         return item::TreasureScores( 95_score,  20_score,  75_score,  20_score);
-                case race::Serpent:         return item::TreasureScores(  0_score,   0_score,   0_score,  30_score);
-                case race::Cobra:           return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::Wyvern:          return item::TreasureScores(100_score,  35_score,  80_score,  50_score);
-                case race::Shade:           return item::TreasureScores( 85_score, 150_score, 150_score, 100_score);
-                case race::Skeleton:        return item::TreasureScores(120_score,  35_score, 100_score,  50_score);
-                case race::Witch:           return item::TreasureScores(105_score, 175_score, 180_score, 300_score);
-                case race::Golem:           return item::TreasureScores( 55_score, 100_score, 150_score,  50_score);
-                case race::Ghoul:           return item::TreasureScores( 30_score,  35_score,  60_score,  60_score);
-                case race::Spider:          return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::CaveCrawler:     return item::TreasureScores( 10_score,   0_score,   0_score,   0_score);
-                case race::Werebear:        return item::TreasureScores(  0_score,   0_score,  50_score,   0_score);
-                case race::Wereboar:        return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::Werecat:         return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::Werewolf:        return item::TreasureScores(  0_score,  10_score, 100_score,  50_score);
-                case race::Werebat:         return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::Beetle:          return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::Bat:             return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
-                case race::ThreeHeadedHound:return item::TreasureScores(  0_score,   0_score,   0_score,   0_score);
+                case race::Human:           return item::TreasureScoreSet( 60_score,  50_score, 100_score,  50_score);
+                case race::Orc:             return item::TreasureScoreSet( 30_score,  20_score,  60_score,  20_score);
+                case race::Minotaur:        return item::TreasureScoreSet( 20_score,   5_score,  50_score,  10_score);
+                case race::Ogre:            return item::TreasureScoreSet( 15_score,   5_score,  66_score,  25_score);
+                case race::Halfling:        return item::TreasureScoreSet( 80_score,  75_score,  90_score,  50_score);
+                case race::Pug:             return item::TreasureScoreSet( 45_score,  10_score,  20_score,  30_score);
+                case race::Giant:           return item::TreasureScoreSet( 30_score,  10_score,  65_score,  30_score);
+                case race::Wolfen:          return item::TreasureScoreSet(  0_score,   5_score,  10_score,  10_score);
+                case race::Lion:            return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::LionBoar:        return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::Ramonaut:        return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::Boar:            return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::Demon:           return item::TreasureScoreSet(225_score, 125_score, 200_score, 200_score);
+                case race::Gnome:           return item::TreasureScoreSet(175_score,  75_score, 120_score,  40_score);
+                case race::Newt:            return item::TreasureScoreSet( 30_score,  10_score,  25_score,  20_score);
+                case race::Bog:             return item::TreasureScoreSet( 10_score,   0_score,  20_score,   0_score);
+                case race::Plant:           return item::TreasureScoreSet(  0_score,   0_score,   5_score,   0_score);
+                case race::Pixie:           return item::TreasureScoreSet(125_score, 100_score, 125_score,  50_score);
+                case race::Goblin:          return item::TreasureScoreSet( 75_score,  12_score,  50_score,  25_score);
+                case race::Troll:           return item::TreasureScoreSet( 40_score,  25_score,  75_score,  30_score);
+                case race::Hydra:           return item::TreasureScoreSet(200_score, 110_score, 180_score, 100_score);
+                case race::LizardWalker:    return item::TreasureScoreSet(125_score,  20_score, 100_score, 40_score);
+                case race::Naga:            return item::TreasureScoreSet(166_score,  35_score, 133_score,  60_score);
+                case race::Harpy:           return item::TreasureScoreSet(125_score,  18_score, 100_score,  80_score);
+                case race::Dragon:          return item::TreasureScoreSet(350_score, 300_score, 300_score, 150_score);
+                case race::Griffin:         return item::TreasureScoreSet( 95_score,  20_score,  75_score,  20_score);
+                case race::Serpent:         return item::TreasureScoreSet(  0_score,   0_score,   0_score,  30_score);
+                case race::Cobra:           return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::Wyvern:          return item::TreasureScoreSet(100_score,  35_score,  80_score,  50_score);
+                case race::Shade:           return item::TreasureScoreSet( 85_score, 150_score, 150_score, 100_score);
+                case race::Skeleton:        return item::TreasureScoreSet(120_score,  35_score, 100_score,  50_score);
+                case race::Witch:           return item::TreasureScoreSet(105_score, 175_score, 180_score, 300_score);
+                case race::Golem:           return item::TreasureScoreSet( 55_score, 100_score, 150_score,  50_score);
+                case race::Ghoul:           return item::TreasureScoreSet( 30_score,  35_score,  60_score,  60_score);
+                case race::Spider:          return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::CaveCrawler:     return item::TreasureScoreSet( 10_score,   0_score,   0_score,   0_score);
+                case race::Werebear:        return item::TreasureScoreSet(  0_score,   0_score,  50_score,   0_score);
+                case race::Wereboar:        return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::Werecat:         return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::Werewolf:        return item::TreasureScoreSet(  0_score,  10_score, 100_score,  50_score);
+                case race::Werebat:         return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::Beetle:          return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::Bat:             return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
+                case race::ThreeHeadedHound:return item::TreasureScoreSet(  0_score,   0_score,   0_score,   0_score);
                 case race::Count:
-                default:                    return item::TreasureScores(  0_score, 0_score, 0_score, 0_score);
+                default:                    return item::TreasureScoreSet(  0_score, 0_score, 0_score, 0_score);
             }
             // clang-format on
         }
 
         // These numbers intentionally max at 50, 100, 100, 100 -see comment above
         // These numbers (and those above) intentionally combine to a max of 400, 400, 400, 400.
-        // See TreasureScoreMax() below.
-        static constexpr item::TreasureScores
-            InitialTreasurescoresModifierBasedOnRole(const role::Enum ROLE_ENUM) noexcept
+        // See TreasureScoreSetMax() above.
+        static constexpr item::TreasureScoreSet
+            TreasureScoreSetByRole(const role::Enum ROLE_ENUM) noexcept
         {
             // clang-format off
             switch (ROLE_ENUM)
             {   
-                case role::Archer:      return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Bard:        return item::TreasureScores( 20_score, 20_score, 30_score, 10_score);
-                case role::Beastmaster: return item::TreasureScores(  0_score, 10_score, 20_score, 20_score);
-                case role::Cleric:      return item::TreasureScores(  0_score, 60_score, 50_score, 50_score);
-                case role::Knight:      return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Sorcerer:    return item::TreasureScores(  0_score, 70_score, 50_score, 20_score);
-                case role::Thief:       return item::TreasureScores(  0_score,  5_score, 20_score,  0_score);
-                case role::Firebrand:   return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Sylavin:     return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Wolfen:      return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Thug:        return item::TreasureScores( 15_score,  2_score, 15_score,  0_score);
-                case role::Mugger:      return item::TreasureScores( 25_score,  3_score, 25_score,  0_score);
-                case role::Drunk:       return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Grunt:       return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Brute:       return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Berserker:   return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Mountain:    return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Captain:     return item::TreasureScores( 50_score, 10_score, 20_score,  5_score);
-                case role::Chieftain:   return item::TreasureScores( 50_score, 20_score, 50_score, 20_score);
-                case role::Trader:      return item::TreasureScores( 30_score, 10_score, 20_score, 15_score);
-                case role::Warlord:     return item::TreasureScores( 50_score, 30_score, 30_score, 10_score);
-                case role::Shaman:      return item::TreasureScores( 10_score,100_score, 50_score,100_score);
-                case role::Smasher:     return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Strangler:   return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Soldier:     return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::TwoHeaded:   return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Giant:       return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Elder:       return item::TreasureScores( 10_score, 75_score,100_score, 50_score);
-                case role::FourArmed:   return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Tendrilus:   return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Wing:        return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Whelp:       return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Pod:         return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Spike:       return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Skeleton:    return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Ranger:      return item::TreasureScores(  0_score, 10_score,  0_score,  0_score);
-                case role::Water:       return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Blacksmith:  return item::TreasureScores(  0_score,  0_score, 10_score,  0_score);
-                case role::Spider:      return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Beetle:      return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Boar:        return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Lion:        return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Ramonaut:    return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Serpent:     return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Bat:         return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Ghost:       return item::TreasureScores(  0_score, 50_score,  0_score,  0_score);
-                case role::Cat:         return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
-                case role::Wolf:        return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
+                case role::Archer:      return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Bard:        return item::TreasureScoreSet( 20_score, 20_score, 30_score, 10_score);
+                case role::Beastmaster: return item::TreasureScoreSet(  0_score, 10_score, 20_score, 20_score);
+                case role::Cleric:      return item::TreasureScoreSet(  0_score, 60_score, 50_score, 50_score);
+                case role::Knight:      return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Sorcerer:    return item::TreasureScoreSet(  0_score, 70_score, 50_score, 20_score);
+                case role::Thief:       return item::TreasureScoreSet(  0_score,  5_score, 20_score,  0_score);
+                case role::Firebrand:   return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Sylavin:     return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Wolfen:      return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Thug:        return item::TreasureScoreSet( 15_score,  2_score, 15_score,  0_score);
+                case role::Mugger:      return item::TreasureScoreSet( 25_score,  3_score, 25_score,  0_score);
+                case role::Drunk:       return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Grunt:       return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Brute:       return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Berserker:   return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Mountain:    return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Captain:     return item::TreasureScoreSet( 50_score, 10_score, 20_score,  5_score);
+                case role::Chieftain:   return item::TreasureScoreSet( 50_score, 20_score, 50_score, 20_score);
+                case role::Trader:      return item::TreasureScoreSet( 30_score, 10_score, 20_score, 15_score);
+                case role::Warlord:     return item::TreasureScoreSet( 50_score, 30_score, 30_score, 10_score);
+                case role::Shaman:      return item::TreasureScoreSet( 10_score,100_score, 50_score,100_score);
+                case role::Smasher:     return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Strangler:   return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Soldier:     return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::TwoHeaded:   return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Giant:       return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Elder:       return item::TreasureScoreSet( 10_score, 75_score,100_score, 50_score);
+                case role::FourArmed:   return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Tendrilus:   return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Wing:        return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Whelp:       return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Pod:         return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Spike:       return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Skeleton:    return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Ranger:      return item::TreasureScoreSet(  0_score, 10_score,  0_score,  0_score);
+                case role::Water:       return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Blacksmith:  return item::TreasureScoreSet(  0_score,  0_score, 10_score,  0_score);
+                case role::Spider:      return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Beetle:      return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Boar:        return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Lion:        return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Ramonaut:    return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Serpent:     return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Bat:         return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Ghost:       return item::TreasureScoreSet(  0_score, 50_score,  0_score,  0_score);
+                case role::Cat:         return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
+                case role::Wolf:        return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
                 case role::Count:       
-                default:                return item::TreasureScores(  0_score,  0_score,  0_score,  0_score);
+                default:                return item::TreasureScoreSet(  0_score,  0_score,  0_score,  0_score);
             }
             // clang-format on
         }

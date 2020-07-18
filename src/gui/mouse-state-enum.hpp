@@ -16,7 +16,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct MouseState : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct MouseState : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

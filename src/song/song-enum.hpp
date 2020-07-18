@@ -20,7 +20,7 @@ namespace song
 {
 
     // Responsible for identifying all songs that Bards can play in the game
-    struct Songs : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Songs : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

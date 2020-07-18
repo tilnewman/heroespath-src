@@ -93,12 +93,12 @@ namespace item
     {
         Weight_t totalWeight { 0_weight };
 
-        for (const auto & NEXT_ITEM_PTR : itemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : itemsPVec_)
         {
             totalWeight += NEXT_ITEM_PTR->Weight();
         }
 
-        for (const auto & NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
+        for (const ItemPtr_t & NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
         {
             totalWeight += NEXT_EQUIPPED_ITEM_PTR->Weight();
         }
@@ -108,15 +108,15 @@ namespace item
 
     std::size_t Inventory::Count() const { return itemsPVec_.size() + equippedItemsPVec_.size(); }
 
-    std::size_t Inventory::CountItemOfArmorType(const item::armor_type::Enum ARMOR_TYPE) const
+    std::size_t Inventory::CountItemOfArmorType(const item::Armor::Enum ARMOR_TYPE) const
     {
         return CountItemOfArmorTypeHeld(ARMOR_TYPE) + CountItemOfArmorTypeEquipped(ARMOR_TYPE);
     }
 
-    std::size_t Inventory::CountItemOfArmorTypeHeld(const item::armor_type::Enum ARMOR_TYPE) const
+    std::size_t Inventory::CountItemOfArmorTypeHeld(const item::Armor::Enum ARMOR_TYPE) const
     {
         std::size_t count(0);
-        for (const auto & NEXT_ITEM_PTR : itemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : itemsPVec_)
         {
             if (NEXT_ITEM_PTR->ArmorType() == ARMOR_TYPE)
             {
@@ -127,11 +127,10 @@ namespace item
         return count;
     }
 
-    std::size_t
-        Inventory::CountItemOfArmorTypeEquipped(const item::armor_type::Enum ARMOR_TYPE) const
+    std::size_t Inventory::CountItemOfArmorTypeEquipped(const item::Armor::Enum ARMOR_TYPE) const
     {
         std::size_t count(0);
-        for (const auto & NEXT_ITEM_PTR : equippedItemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
             if (NEXT_ITEM_PTR->ArmorType() == ARMOR_TYPE)
             {
@@ -142,17 +141,17 @@ namespace item
         return count;
     }
 
-    std::size_t Inventory::CountItemOfWeaponType(const item::armor_type::Enum WEAPON_TYPE) const
+    std::size_t Inventory::CountItemOfWeaponType(const item::Weapon::Enum WEAPON_TYPE) const
     {
         return CountItemOfWeaponTypeHeld(WEAPON_TYPE) + CountItemOfWeaponTypeEquipped(WEAPON_TYPE);
     }
 
-    std::size_t Inventory::CountItemOfWeaponTypeHeld(const item::armor_type::Enum WEAPON_TYPE) const
+    std::size_t Inventory::CountItemOfWeaponTypeHeld(const item::Weapon::Enum WEAPON_TYPE) const
     {
         std::size_t count(0);
-        for (const auto & NEXT_ITEM_PTR : itemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : itemsPVec_)
         {
-            if (NEXT_ITEM_PTR->WeaponType() & WEAPON_TYPE)
+            if (NEXT_ITEM_PTR->WeaponType() == WEAPON_TYPE)
             {
                 ++count;
             }
@@ -161,13 +160,12 @@ namespace item
         return count;
     }
 
-    std::size_t
-        Inventory::CountItemOfWeaponTypeEquipped(const item::armor_type::Enum WEAPON_TYPE) const
+    std::size_t Inventory::CountItemOfWeaponTypeEquipped(const item::Weapon::Enum WEAPON_TYPE) const
     {
         std::size_t count(0);
-        for (const auto & NEXT_ITEM_PTR : equippedItemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
-            if (NEXT_ITEM_PTR->WeaponType() & WEAPON_TYPE)
+            if (NEXT_ITEM_PTR->WeaponType() == WEAPON_TYPE)
             {
                 ++count;
             }
@@ -176,18 +174,18 @@ namespace item
         return count;
     }
 
-    std::size_t Inventory::CountItemOfCategory(const item::category::Enum ITEM_CATEGORY) const
+    std::size_t Inventory::CountItemOfCategory(const item::Category::Enum ITEM_CATEGORY) const
     {
         return CountItemOfCategoryHeld(ITEM_CATEGORY) + CountItemOfCategoryEquipped(ITEM_CATEGORY);
     }
 
-    std::size_t Inventory::CountItemOfCategoryHeld(const item::category::Enum ITEM_CATEGORY) const
+    std::size_t Inventory::CountItemOfCategoryHeld(const item::Category::Enum ITEM_CATEGORY) const
     {
         std::size_t count(0);
 
-        for (const auto & NEXT_ITEM_PTR : itemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : itemsPVec_)
         {
-            if (NEXT_ITEM_PTR->Category() & ITEM_CATEGORY)
+            if (NEXT_ITEM_PTR->HasCategory(ITEM_CATEGORY))
             {
                 ++count;
             }
@@ -197,13 +195,13 @@ namespace item
     }
 
     std::size_t
-        Inventory::CountItemOfCategoryEquipped(const item::category::Enum ITEM_CATEGORY) const
+        Inventory::CountItemOfCategoryEquipped(const item::Category::Enum ITEM_CATEGORY) const
     {
         std::size_t count(0);
 
-        for (const auto & NEXT_ITEM_PTR : equippedItemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
-            if (NEXT_ITEM_PTR->Category() & ITEM_CATEGORY)
+            if (NEXT_ITEM_PTR->HasCategory(ITEM_CATEGORY))
             {
                 ++count;
             }
@@ -212,15 +210,15 @@ namespace item
         return count;
     }
 
-    std::size_t Inventory::CountItemOfMiscType(const item::misc_type::Enum MISC_TYPE) const
+    std::size_t Inventory::CountItemOfMiscType(const item::Misc::Enum MISC_TYPE) const
     {
         return CountItemOfMiscTypeHeld(MISC_TYPE) + CountItemOfMiscTypeEquipped(MISC_TYPE);
     }
 
-    std::size_t Inventory::CountItemOfMiscTypeHeld(const item::misc_type::Enum MISC_TYPE) const
+    std::size_t Inventory::CountItemOfMiscTypeHeld(const item::Misc::Enum MISC_TYPE) const
     {
         std::size_t count(0);
-        for (const auto & NEXT_ITEM_PTR : itemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : itemsPVec_)
         {
             if (NEXT_ITEM_PTR->MiscType() == MISC_TYPE)
             {
@@ -231,10 +229,10 @@ namespace item
         return count;
     }
 
-    std::size_t Inventory::CountItemOfMiscTypeEquipped(const item::misc_type::Enum MISC_TYPE) const
+    std::size_t Inventory::CountItemOfMiscTypeEquipped(const item::Misc::Enum MISC_TYPE) const
     {
         std::size_t count(0);
-        for (const auto & NEXT_ITEM_PTR : equippedItemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
             if (NEXT_ITEM_PTR->MiscType() == MISC_TYPE)
             {
@@ -245,13 +243,13 @@ namespace item
         return count;
     }
 
-    bool Inventory::HasCoverTypeEquipped(const armor::cover_type::Enum COVER_TYPE) const
+    bool Inventory::HasCoverTypeEquipped(const Covers::Enum COVER_TYPE) const
     {
         return std::find_if(
                    std::begin(equippedItemsPVec_),
                    std::end(equippedItemsPVec_),
-                   [COVER_TYPE](const auto & ITEM_PTR) {
-                       return (ITEM_PTR->ArmorInfo().CoverType() == COVER_TYPE);
+                   [COVER_TYPE](const ItemPtr_t & ITEM_PTR) {
+                       return ITEM_PTR->ArmorInfo().IsMinor<Covers>(COVER_TYPE);
                    })
             != std::end(equippedItemsPVec_);
     }
@@ -262,8 +260,8 @@ namespace item
             std::find_if(
                 std::begin(equippedItemsPVec_),
                 std::end(equippedItemsPVec_),
-                [](const auto & ITEM_PTR) {
-                    return misc_type::IsMusicalInstrument(ITEM_PTR->MiscType());
+                [](const ItemPtr_t & ITEM_PTR) {
+                    return Misc::IsMusicalInstrument(ITEM_PTR->MiscType());
                 })
             != std::end(equippedItemsPVec_));
     }
@@ -274,8 +272,8 @@ namespace item
             std::find_if(
                 std::begin(equippedItemsPVec_),
                 std::end(equippedItemsPVec_),
-                [](const auto & ITEM_PTR) {
-                    return misc_type::AllowsCasting(ITEM_PTR->MiscType());
+                [](const ItemPtr_t & ITEM_PTR) {
+                    return Misc::AllowsCasting(ITEM_PTR->MiscType());
                 })
             != std::end(equippedItemsPVec_));
     }
@@ -338,13 +336,22 @@ namespace item
         return false;
     }
 
-    Armor_t Inventory::ArmorRating() const
+    Armor_t Inventory::ArmorRating(const Rank_t CREATURE_RANK) const
     {
         Armor_t armorRating { 0_armor };
 
-        for (const auto & NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
+        for (const ItemPtr_t & NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
         {
-            armorRating += NEXT_EQUIPPED_ITEM_PTR->ArmorRating();
+            if (NEXT_EQUIPPED_ITEM_PTR->IsArmor())
+            {
+                armorRating += NEXT_EQUIPPED_ITEM_PTR->ArmorRating();
+
+                // skin armor ratings are partially determined by rank
+                if ((CREATURE_RANK > 0_rank) && NEXT_EQUIPPED_ITEM_PTR->IsBodyPart())
+                {
+                    armorRating += CREATURE_RANK.GetAs<Armor_t>();
+                }
+            }
         }
 
         return armorRating;
@@ -363,7 +370,7 @@ namespace item
         str += gems_.ToString();
         str += ", items_held=";
 
-        for (const auto & NEXT_ITEM_PTR : itemsPVec_)
+        for (const ItemPtr_t & NEXT_ITEM_PTR : itemsPVec_)
         {
             str += NEXT_ITEM_PTR->Name();
             str += ',';
@@ -371,7 +378,7 @@ namespace item
 
         str += ", items_equipped=";
 
-        for (const auto & NEXT_EQ_ITEM_PTR : equippedItemsPVec_)
+        for (const ItemPtr_t & NEXT_EQ_ITEM_PTR : equippedItemsPVec_)
         {
             str += NEXT_EQ_ITEM_PTR->Name();
             str += ',';
@@ -384,14 +391,14 @@ namespace item
 
     void Inventory::BeforeSerialize()
     {
-        for (const auto & ITEM_PTR : itemsPVec_)
+        for (const ItemPtr_t & ITEM_PTR : itemsPVec_)
         {
             ITEM_PTR->BeforeSerialize();
         }
 
         misc::SerializeHelp::BeforeSerialize(itemsPVec_, itemsPVecToSerialize_);
 
-        for (const auto & ITEM_PTR : equippedItemsPVec_)
+        for (const ItemPtr_t & ITEM_PTR : equippedItemsPVec_)
         {
             ITEM_PTR->BeforeSerialize();
         }
@@ -401,14 +408,14 @@ namespace item
 
     void Inventory::AfterSerialize()
     {
-        for (const auto & ITEM_PTR : itemsPVec_)
+        for (const ItemPtr_t & ITEM_PTR : itemsPVec_)
         {
             ITEM_PTR->AfterSerialize();
         }
 
         misc::SerializeHelp::AfterSerialize(itemsPVecToSerialize_, ItemWarehouse::Access());
 
-        for (const auto & ITEM_PTR : equippedItemsPVec_)
+        for (const ItemPtr_t & ITEM_PTR : equippedItemsPVec_)
         {
             ITEM_PTR->AfterSerialize();
         }

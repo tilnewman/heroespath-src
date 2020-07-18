@@ -9,6 +9,7 @@
 //
 // nonplayer-inventory-types.cpp
 //
+/*
 #include "nonplayer-inventory-types.hpp"
 
 #include "creature/creature.hpp"
@@ -62,8 +63,8 @@ namespace creature
         ItemChances::ItemChances(
             const float CHANCE_OWNED,
             const float CHANCE_EQUIPPED,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY)
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC)
             : chance_equipped(CHANCE_EQUIPPED)
             , num_owned_map()
             , mat_map_pri()
@@ -74,8 +75,8 @@ namespace creature
             mat_map_sec.Reserve(32);
 
             SetCountChanceSingle(CHANCE_OWNED);
-            mat_map_pri[MATERIAL_PRIMARY] = 1.0f;
-            mat_map_sec[MATERIAL_SECONDARY] = 1.0f;
+            mat_map_pri[MAT_PRI] = 1.0f;
+            mat_map_sec[MAT_SEC] = 1.0f;
         }
 
         std::size_t ItemChances::CountOwned() const
@@ -90,25 +91,25 @@ namespace creature
             }
         }
 
-        item::material::Enum ItemChances::RandomMaterialPri() const
+        item::Material::Enum ItemChances::RandomMaterialPri() const
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (mat_map_pri.Empty() == false),
                 "creature::nonplayer::ItemChances::RandomMaterialPri() "
                     << "called when mat_map_pri is empty.");
 
-            return MappedRandomFloatChance<item::material::Enum>(mat_map_pri);
+            return MappedRandomFloatChance<item::Material::Enum>(mat_map_pri);
         }
 
-        item::material::Enum ItemChances::RandomMaterialSec() const
+        item::Material::Enum ItemChances::RandomMaterialSec() const
         {
             if (mat_map_sec.Empty())
             {
-                return item::material::Nothing;
+                return item::Material::Count;
             }
             else
             {
-                return MappedRandomFloatChance<item::material::Enum>(mat_map_sec);
+                return MappedRandomFloatChance<item::Material::Enum>(mat_map_sec);
             }
         }
 
@@ -164,9 +165,9 @@ namespace creature
             cover_map.Reserve(32);
         }
 
-        item::armor::cover_type::Enum ClothingChances::RandomCoverType() const
+        item::Covers::Enum ClothingChances::RandomCoverType() const
         {
-            misc::VectorMap<item::armor::cover_type::Enum, float> coverChanceMap;
+            misc::VectorMap<item::Covers::Enum, float> coverChanceMap;
 
             for (const auto & NEXT_CHANCE_PAIR : cover_map)
             {
@@ -196,7 +197,7 @@ namespace creature
             }
             else
             {
-                return item::armor::cover_type::Count;
+                return item::Covers::Count;
             }
         }
 
@@ -213,10 +214,10 @@ namespace creature
 
         ArmorItemChances::ArmorItemChances(
             const float CHANCE_OWNED,
-            const item::armor::base_type::Enum ARMOR_BASE_TYPE,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY)
-            : ItemChances(CHANCE_OWNED, 1.0f, MATERIAL_PRIMARY, MATERIAL_SECONDARY)
+            const item::Forms::Enum ARMOR_BASE_TYPE,
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC)
+            : ItemChances(CHANCE_OWNED, 1.0f, MAT_PRI, MAT_SEC)
             , type_map()
         {
             type_map.Reserve(32);
@@ -298,7 +299,7 @@ namespace creature
             const WhipChanceMap_t & WHIP_MAP,
             const SwordChanceMap_t & SWORD_MAP,
             const ProjectileChanceMap_t & PROJECTILE_MAP,
-            const BladedStaffChanceMap_t & BLADEDSTAFF_MAP)
+            const BladedstaffChanceMap_t & BLADEDSTAFF_MAP)
             : has_claws(HAS_CLAWS)
             , has_bite(HAS_BITE)
             , has_fists(HAS_FISTS)
@@ -650,24 +651,6 @@ namespace creature
             }
         }
 
-        complexity_type::Enum complexity_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
-        {
-            const auto RACE_COMPLEXITY_STR { misc::ConfigFile::Instance()->Value(
-                std::string("nonplayer-ownershipprofile-complexitytype-race-")
-                    .append(CHARACTER_PTR->RaceName())) };
-
-            if (RACE_COMPLEXITY_STR == "based-on-role")
-            {
-                return EnumUtil<complexity_type>::FromString(misc::ConfigFile::Instance()->Value(
-                    "nonplayer-ownershipprofile-complexitytype-role-"
-                    + NAMEOF_ENUM_STR(CHARACTER_PTR->Role())));
-            }
-            else
-            {
-                return EnumUtil<complexity_type>::FromString(RACE_COMPLEXITY_STR);
-            }
-        }
-
         Profile::Profile(
             const wealth_type::Enum WEALTH_TYPE,
             const collector_type::Enum COLLECTOR_TYPE,
@@ -705,3 +688,4 @@ namespace creature
     } // namespace nonplayer
 } // namespace creature
 } // namespace heroespath
+*/

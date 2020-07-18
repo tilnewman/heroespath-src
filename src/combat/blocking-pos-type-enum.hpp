@@ -17,7 +17,7 @@ namespace combat
 {
 
     // Responsible for enumerating blocking position types.
-    struct BlockingPosType : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct BlockingPosType : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

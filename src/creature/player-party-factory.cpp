@@ -14,7 +14,6 @@
 #include "creature/creature-factory.hpp"
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
-#include "creature/player-initial-setup.hpp"
 #include "creature/player-party.hpp"
 #include "creature/stat-set.hpp"
 #include "misc/boost-string-includes.hpp"

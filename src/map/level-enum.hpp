@@ -18,7 +18,7 @@ namespace heroespath
 namespace map
 {
 
-    struct LevelType : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct LevelType : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -30,7 +30,7 @@ namespace map
         };
     };
 
-    struct Level : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Level : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

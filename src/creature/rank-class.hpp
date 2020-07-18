@@ -24,7 +24,7 @@ namespace creature
 
     using RankRange_t = misc::Range<Rank_t>;
 
-    struct rank_class : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct rank_class : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

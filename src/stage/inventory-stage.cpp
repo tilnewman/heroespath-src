@@ -13,6 +13,7 @@
 
 #include "combat/combat-sound-effects.hpp"
 #include "combat/combat-text.hpp"
+#include "combat/creature-interaction.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
@@ -104,12 +105,12 @@ namespace stage
         const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
         const game::Phase::Enum PREVIOUS_PHASE)
         : StageBase(
-              "Inventory",
-              { gui::GuiFont::Default,
-                gui::GuiFont::System,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::Number,
-                gui::GuiFont::Handwriting })
+            "Inventory",
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting })
         , SCREEN_WIDTH_(gui::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(gui::Display::Instance()->GetWinHeight())
         , INNER_PAD_(sfutil::MapByRes(10.0f, 40.0f))
@@ -270,13 +271,11 @@ namespace stage
         , fightResult_()
         , creatureEffectIndex_(0)
         , hitInfoIndex_(0)
-        , combatSoundEffectsUPtr_(std::make_unique<combat::CombatSoundEffects>())
         , sparkleAnimUPtr_()
         , songAnimUPtr_()
         , turnCreaturePtr_(TURN_CREATURE_PTR)
         , previousPhase_(PREVIOUS_PHASE)
         , hasTakenActionSpellOrSong_(false)
-        , creatureInteraction_()
         , creatureToImageMap_()
         , creatureImageWidthScaled_(0.0f)
     {
@@ -591,7 +590,9 @@ namespace stage
                         "closed who-to-give-meteor-shards-to popup and attempted to give");
                 }
                 case ContentType::Count:
-                default: { break;
+                default:
+                {
+                    break;
                 }
             }
 
@@ -2698,9 +2699,9 @@ namespace stage
         {
             const auto ITEM_PTR { itemLeftListBoxUPtr_->Selection()->Element() };
 
-            if (ITEM_PTR->IsBodypart())
+            if (ITEM_PTR->IsBodyPart())
             {
-                PopupDoneWindow("Bodypart items cannot be unequipped.", true);
+                PopupDoneWindow("BodyPart items cannot be unequipped.", true);
             }
             else
             {
@@ -3721,12 +3722,7 @@ namespace stage
 
         std::string str(
             ITEM_PTR->Name() + "\n" + ITEM_PTR->Desc() + "\n\n"
-            + item::category::Name(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n");
-
-        if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
-        {
-            str += "(can only be used by " + NAMEOF_ENUM_STR(ITEM_PTR->ExclusiveRole()) + "s)\n";
-        }
+            + item::Category::Name(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n");
 
         str += "\nweighs " + ITEM_PTR->Weight().ToString() + "\nworth about "
             + ITEM_PTR->Price().ToString() + " coins\n";
@@ -3871,47 +3867,87 @@ namespace stage
     {
         switch (WHICH_ACHV)
         {
-            case creature::AchievementType::EnemiesFaced: { return ":               ";
+            case creature::AchievementType::EnemiesFaced:
+            {
+                return ":               ";
             }
-            case creature::AchievementType::MeleeHits: { return ":                    ";
+            case creature::AchievementType::MeleeHits:
+            {
+                return ":                    ";
             }
-            case creature::AchievementType::BattlesSurvived: { return ":             ";
+            case creature::AchievementType::BattlesSurvived:
+            {
+                return ":             ";
             }
-            case creature::AchievementType::ProjectileHits: { return ":               ";
+            case creature::AchievementType::ProjectileHits:
+            {
+                return ":               ";
             }
-            case creature::AchievementType::BeastMindLinks: { return ":          ";
+            case creature::AchievementType::BeastMindLinks:
+            {
+                return ":          ";
             }
-            case creature::AchievementType::DodgedStanding: { return ":  ";
+            case creature::AchievementType::DodgedStanding:
+            {
+                return ":  ";
             }
-            case creature::AchievementType::DodgedFlying: { return ":      ";
+            case creature::AchievementType::DodgedFlying:
+            {
+                return ":      ";
             }
-            case creature::AchievementType::LocksPicked: { return ":                  ";
+            case creature::AchievementType::LocksPicked:
+            {
+                return ":                  ";
             }
-            case creature::AchievementType::BackstabHits: { return ":                ";
+            case creature::AchievementType::BackstabHits:
+            {
+                return ":                ";
             }
-            case creature::AchievementType::SongsPlayed: { return ":                 ";
+            case creature::AchievementType::SongsPlayed:
+            {
+                return ":                 ";
             }
-            case creature::AchievementType::SpiritsLifted: { return ":                 ";
+            case creature::AchievementType::SpiritsLifted:
+            {
+                return ":                 ";
             }
-            case creature::AchievementType::BeastRoars: { return ":                   ";
+            case creature::AchievementType::BeastRoars:
+            {
+                return ":                   ";
             }
-            case creature::AchievementType::MoonHowls: { return ":                  ";
+            case creature::AchievementType::MoonHowls:
+            {
+                return ":                  ";
             }
-            case creature::AchievementType::PackActions: { return ":                  ";
+            case creature::AchievementType::PackActions:
+            {
+                return ":                  ";
             }
-            case creature::AchievementType::FlyingAttackHits: { return ":         ";
+            case creature::AchievementType::FlyingAttackHits:
+            {
+                return ":         ";
             }
-            case creature::AchievementType::TurnsInFlight: { return ":              ";
+            case creature::AchievementType::TurnsInFlight:
+            {
+                return ":              ";
             }
-            case creature::AchievementType::SpellsCast: { return ":                    ";
+            case creature::AchievementType::SpellsCast:
+            {
+                return ":                    ";
             }
-            case creature::AchievementType::HealthGiven: { return ":                 ";
+            case creature::AchievementType::HealthGiven:
+            {
+                return ":                 ";
             }
-            case creature::AchievementType::HealthTraded: { return ":                ";
+            case creature::AchievementType::HealthTraded:
+            {
+                return ":                ";
             }
             case creature::AchievementType::None:
             case creature::AchievementType::Count:
-            default: { return "";
+            default:
+            {
+                return "";
             }
         }
     }
@@ -3974,11 +4010,12 @@ namespace stage
     void InventoryStage::HandleCast_Step2_PerformSpell(
         const spell::SpellPtr_t SPELL_PTR, const creature::CreaturePVec_t & TARGET_CREATURES_PVEC)
     {
-        combatSoundEffectsUPtr_->PlaySpell(SPELL_PTR);
+        combat::CombatSoundEffects::PlaySpell(SPELL_PTR);
 
         turnActionInfo_ = combat::TurnActionInfo(SPELL_PTR, TARGET_CREATURES_PVEC);
 
-        fightResult_ = creatureInteraction_.Cast(SPELL_PTR, creaturePtr_, TARGET_CREATURES_PVEC);
+        fightResult_
+            = combat::CreatureInteraction::Cast(SPELL_PTR, creaturePtr_, TARGET_CREATURES_PVEC);
 
         Setup_CreatureDetails(false);
         Setup_CreatureStats();
@@ -4166,7 +4203,7 @@ namespace stage
         else
         {
             songBeingPlayedPtrOpt_ = SONG_PTR;
-            combatSoundEffectsUPtr_->PlaySong(SONG_PTR);
+            combat::CombatSoundEffects::PlaySong(SONG_PTR);
 
             const auto TARGETS_PVEC { (
                 (SONG_PTR->Target() == combat::TargetType::AllCompanions)
@@ -4174,7 +4211,8 @@ namespace stage
                     : creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
 
             turnActionInfo_ = combat::TurnActionInfo(SONG_PTR, TARGETS_PVEC);
-            fightResult_ = creatureInteraction_.PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);
+            fightResult_
+                = combat::CreatureInteraction::PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);
 
             Setup_CreatureDetails(false);
             Setup_CreatureStats();

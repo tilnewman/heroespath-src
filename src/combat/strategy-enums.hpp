@@ -21,7 +21,7 @@ namespace combat
     namespace strategy
     {
 
-        struct SelectType : public EnumBaseBitField<>
+        struct SelectType : public EnumBaseBitField<SeparatorVaries>
         {
             enum Enum : EnumUnderlying_t
             {
@@ -49,9 +49,15 @@ namespace combat
             };
 
             static constexpr Enum Last = NotBeast;
+
+            static constexpr std::array<std::string_view, 20> TO_STRINGS {
+                "Pixie",      "Dragon",      "Human",  "Gnome",   "Wolfen", "Archer",    "Sorcerer",
+                "Knight",     "Beastmaster", "Cleric", "Thief",   "Bard",   "FireBrand", "Sylavin",
+                "Projectile", "Caster",      "CanFly", "CantFly", "Beast",  "NotBeast"
+            };
         };
 
-        struct RefineType : public EnumBaseBitField<>
+        struct RefineType : public EnumBaseBitField<SeparatorVaries>
         {
             enum Enum : EnumUnderlying_t
             {
@@ -94,9 +100,14 @@ namespace combat
             };
 
             static constexpr Enum Last = MostDamage;
+
+            static constexpr std::array<std::string_view, 12> TO_STRINGS {
+                "Murderer", "Bloodthirsty", "Coward",       "Hit",       "Attack", "MusicMaker",
+                "Caster",   "Enchanted",    "NotEnchanted", "Steadfast", "LastTo", "MostDamage"
+            };
         };
 
-        struct AdvanceType : public EnumBaseCounting<EnumFirstValue::None>
+        struct AdvanceType : public EnumBaseCounting<EnumNameOfZeroIsNone>
         {
             enum Enum : EnumUnderlying_t
             {
@@ -108,7 +119,7 @@ namespace combat
             };
         };
 
-        struct RetreatType : public EnumBaseCounting<EnumFirstValue::None>
+        struct RetreatType : public EnumBaseCounting<EnumNameOfZeroIsNone>
         {
             enum Enum : EnumUnderlying_t
             {
@@ -119,7 +130,7 @@ namespace combat
             };
         };
 
-        struct FrequencyType : public EnumBaseCounting<EnumFirstValue::Never>
+        struct FrequencyType : public EnumBaseCounting<EnumNameOfZeroIsdNever>
         {
             enum Enum : EnumUnderlying_t
             {

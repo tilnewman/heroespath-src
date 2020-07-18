@@ -49,8 +49,8 @@ namespace popup
         ~PopupManager();
 
         static misc::NotNull<PopupManager *> Instance();
-        static void Acquire();
-        static void Release();
+        static void Create();
+        static void Destroy();
 
         static void SetTexturesDirectoryPaths(
             const std::string & WINDOWS_PATH, const std::string & ACCENTS_PATH);

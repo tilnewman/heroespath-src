@@ -10,9 +10,12 @@
 // treasure.hpp
 //
 #include "game/strong-types.hpp"
-#include "item/item-profile.hpp"
+#include "item/armor-enum.hpp"
+#include "item/misc-enum.hpp"
+#include "item/set-enum.hpp"
 #include "item/treasure-image-enum.hpp"
-#include "item/treasure-scores.hpp"
+#include "item/treasure-score-set.hpp"
+#include "item/weapon-enum.hpp"
 #include "misc/not-null.hpp"
 
 #include <vector>
@@ -29,41 +32,29 @@ namespace item
 {
 
     class Item;
+    class ItemProfile;
     struct ItemCache;
+
+    using ItemProfileVec_t = std::vector<ItemProfile>;
 
     // Responsible for wrapping all the information about an Item's Set type, and for providing
     // functions to compare that type against an Item or an ItemProfile.
     class SetTypeProfile
     {
     public:
-        explicit SetTypeProfile(const ItemProfile & ITEM_PROFILE = ItemProfile())
-            : set(ITEM_PROFILE.SetType())
-            , weapon(ITEM_PROFILE.WeaponType())
-            , armor(ITEM_PROFILE.ArmorType())
-            , misc(ITEM_PROFILE.MiscType())
-        {}
-
+        SetTypeProfile() = default;
         explicit SetTypeProfile(const Item & ITEM);
-
-        bool DoesBelongToASet() const
-        {
-            return ((set_type::Count != set) && (set_type::Not != set));
-        }
-
-        bool DoesSetMatch(const ItemProfile & ITEM_PROFILE) const
-        {
-            return (
-                (ITEM_PROFILE.SetType() == set) && (ITEM_PROFILE.WeaponType() == weapon)
-                && (ITEM_PROFILE.ArmorType() == armor) && (ITEM_PROFILE.MiscType() == misc));
-        }
+        explicit SetTypeProfile(const ItemProfile & ITEM_PROFILE);
 
         bool DoesSetMatch(const Item & ITEM) const;
+        bool DoesSetMatch(const ItemProfile & ITEM_PROFILE) const;
+        inline bool DoesBelongToASet() const { return (set < Set::Count); }
 
     private:
-        set_type::Enum set;
-        weapon_type::Enum weapon;
-        armor_type::Enum armor;
-        misc_type::Enum misc;
+        Set::Enum set = Set::Count;
+        Weapon::Enum weapon = Weapon::Count;
+        Armor::Enum armor = Armor::Count;
+        Misc::Enum misc = Misc::Count;
     };
 
     using SetTypeProfileVec_t = std::vector<SetTypeProfile>;
@@ -87,12 +78,12 @@ namespace item
     class TreasureFactory
     {
     public:
+        TreasureFactory() = default;
+
         TreasureFactory(const TreasureFactory &) = delete;
         TreasureFactory(TreasureFactory &&) = delete;
         TreasureFactory & operator=(const TreasureFactory &) = delete;
         TreasureFactory & operator=(TreasureFactory &&) = delete;
-
-        TreasureFactory() = default;
 
         TreasureImage::Enum
             Make(const creature::CreaturePVec_t & CHARACTER_PVEC, ItemCache & items_OutParam) const;
@@ -100,26 +91,26 @@ namespace item
         float TreasureRatioPer(const creature::CreaturePVec_t &) const;
 
     private:
-        TreasureImage::Enum DetermineWhichTreasureImage(const TreasureScores &) const;
+        TreasureImage::Enum DetermineWhichTreasureImage(const TreasureScoreSet &) const;
 
         // uses a TreasureInfo object to hold/return sum values
-        const TreasureScores CalculateTreasureSums(const creature::CreaturePVec_t &) const;
+        const TreasureScoreSet CalculateTreasureSums(const creature::CreaturePVec_t &) const;
 
-        const TreasureScores MakeRandTreasureInfo(const creature::CreaturePVec_t &) const;
+        const TreasureScoreSet MakeRandTreasureInfo(const creature::CreaturePVec_t &) const;
 
         std::size_t SelectItems(
             const Score_t & TREASURE_SCORE,
             const bool IS_RELIGIOUS,
             ItemCache & items_OutParam) const;
 
-        void ForceItemSelection(ItemCache & items_OutParam) const;
+        void SelectRandomCheapFallbackItem(ItemCache & items_OutParam) const;
 
         std::size_t SelectRandomWeighted(
             const double WEIGHT_SUM,
             const RandomSelectionVec_t &,
             const std::size_t INDEX_LIMIT) const;
 
-        double TreasureScoreToWeight(const Score_t & SCORE) const
+        double TreasureScoreSetToWeight(const Score_t & SCORE) const
         {
             return 1.0 / (SCORE.GetAs<double>() * 0.1);
         }
@@ -138,10 +129,6 @@ namespace item
             const Score_t & MAX_SCORE,
             std::size_t & possibleIndexLimit,
             double & weightSum) const;
-
-        void PopulateFallbackItemProfiles() const;
-
-        mutable ItemProfileVec_t fallbackItemProfiles_;
     };
 
 } // namespace item

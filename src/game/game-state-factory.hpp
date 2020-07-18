@@ -53,8 +53,8 @@ namespace game
         ~GameStateFactory();
 
         static misc::NotNull<GameStateFactory *> Instance();
-        static void Acquire();
-        static void Release();
+        static void Create();
+        static void Destroy();
 
         GameStateUPtr_t MakeForNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR) const;
         GameStateUPtr_t MakeForNewGameForTesting() const;

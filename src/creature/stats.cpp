@@ -159,7 +159,7 @@ namespace creature
             const auto RANK_BONUS { static_cast<Trait_t>(
                 CREATURE_PTR->Rank().GetAs<float>()
                 * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                      "fight-stats-rank-bonus-ratio")) };
+                    "fight-stats-rank-bonus-ratio")) };
 
             rollChance += RANK_BONUS;
         }
@@ -177,7 +177,7 @@ namespace creature
         const With OPTIONS)
     {
         const auto DEFENDER_TRAIT { (
-            (DEFENDER_TRAIT_PARAM == Traits::Count) ? CHALLENGER_TRAIT : DEFENDER_TRAIT_PARAM) };
+            (DEFENDER_TRAIT_PARAM >= Traits::Count) ? CHALLENGER_TRAIT : DEFENDER_TRAIT_PARAM) };
 
         return Versus(
             CHALLENGER_PTR,
@@ -337,12 +337,12 @@ namespace creature
         const auto BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "stats-race-bonus-base-adj-ratio")) };
+                "stats-race-bonus-base-adj-ratio")) };
 
         const auto MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "stats-race-bonus-minor-adj-ratio")) };
+                "stats-race-bonus-minor-adj-ratio")) };
 
         if (TRAIT_ENUM == Traits::Strength)
         {
@@ -450,12 +450,12 @@ namespace creature
         const auto BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "stats-role-bonus-base-adj-ratio")) };
+                "stats-role-bonus-base-adj-ratio")) };
 
         const auto MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "stats-role-bonus-minor-adj-ratio")) };
+                "stats-role-bonus-minor-adj-ratio")) };
 
         if (TRAIT_ENUM == Traits::Strength)
         {

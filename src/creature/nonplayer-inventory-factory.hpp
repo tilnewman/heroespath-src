@@ -10,14 +10,17 @@
 // nonplayer-inventory-factory.hpp
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
+/*
 #include "creature/nonplayer-inventory-types.hpp"
 #include "creature/trait.hpp"
-#include "item/item-factory.hpp"
-#include "item/item-type-enum.hpp"
+#include "item/armor-enum.hpp"
 #include "item/item-warehouse.hpp"
+#include "item/material-enum.hpp"
 #include "misc/not-null.hpp"
+#include "misc/real.hpp"
 #include "misc/vector-map.hpp"
 
+#include <algorithm>
 #include <utility>
 #include <vector>
 
@@ -41,19 +44,11 @@ namespace creature
         using IItemPVecPair_t = std::pair<item::ItemPVec_t, item::ItemPVec_t>;
 
         // used by InventoryFactory
-        using MaterialChanceMap_t = misc::VectorMap<item::material::Enum, float>;
+        using MaterialChanceMap_t = misc::VectorMap<item::Material::Enum, float>;
 
         // Responsible for creating sets of items that will equip non-player creatures.
-        class InventoryFactory
+        struct InventoryFactory
         {
-        public:
-            InventoryFactory(const InventoryFactory &) = delete;
-            InventoryFactory(InventoryFactory &&) = delete;
-            InventoryFactory & operator=(const InventoryFactory &) = delete;
-            InventoryFactory & operator=(InventoryFactory &&) = delete;
-
-            InventoryFactory() = default;
-
             void SetupCreatureInventory(const CreaturePtr_t) const;
 
             const IItemPVecPair_t MakeItemSet(
@@ -138,7 +133,7 @@ namespace creature
             }
 
             void RemoveArmorTypeFromVecAndFree(
-                const item::armor_type::Enum ENUM, item::ItemPVec_t & vec) const;
+                const item::Armor::Enum ENUM, item::ItemPVec_t & vec) const;
 
             template <typename T>
             void RemoveItemsAndFree(item::ItemPVec_t & pVec, T & matchingLambda) const
@@ -157,12 +152,10 @@ namespace creature
 
                 item::ItemWarehouse::Access().Free(itemsToFreePVec);
             }
-
-            item::ItemFactory itemFactory_;
         };
 
     } // namespace nonplayer
 } // namespace creature
 } // namespace heroespath
-
+*/
 #endif // HEROESPATH_CREATURE_INVENTORY_FACTORY_HPP_INCLUDED

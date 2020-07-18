@@ -18,46 +18,46 @@ namespace heroespath
 namespace creature
 {
 
-    const std::string wolfen_class::Desc(const wolfen_class::Enum WOLFEN_CLASS_TYPE)
+    const std::string WolfenClass::Desc(const WolfenClass::Enum WOLFEN_CLASS_TYPE)
     {
         return misc::ConfigFile::Instance()->Value(
             "creature-race-desc-wolfen-" + NAMEOF_ENUM_STR(WOLFEN_CLASS_TYPE));
     }
 
-    wolfen_class::Enum wolfen_class::ClassFromRank(const Rank_t & RANK)
+    WolfenClass::Enum WolfenClass::ClassFromRank(const Rank_t & RANK)
     {
         if (RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-wolfen-class-rank-min-Elder"))
+                "creature-wolfen-class-rank-min-Elder"))
         {
-            return wolfen_class::Elder;
+            return WolfenClass::Elder;
         }
         else if (
             RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-wolfen-class-rank-min-Highborn"))
+                "creature-wolfen-class-rank-min-Highborn"))
         {
-            return wolfen_class::Highborn;
+            return WolfenClass::Highborn;
         }
         else if (
             RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-wolfen-class-rank-min-Noble"))
+                "creature-wolfen-class-rank-min-Noble"))
         {
-            return wolfen_class::Noble;
+            return WolfenClass::Noble;
         }
         else if (
             RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-wolfen-class-rank-min-Adult"))
+                "creature-wolfen-class-rank-min-Adult"))
         {
-            return wolfen_class::Adult;
+            return WolfenClass::Adult;
         }
         else if (
             RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-wolfen-class-rank-min-Juvenile"))
+                "creature-wolfen-class-rank-min-Juvenile"))
         {
-            return wolfen_class::Juvenile;
+            return WolfenClass::Juvenile;
         }
         else
         {
-            return wolfen_class::Pup;
+            return WolfenClass::Pup;
         }
     }
 

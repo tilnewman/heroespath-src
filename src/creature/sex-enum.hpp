@@ -19,7 +19,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct sex : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct sex : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

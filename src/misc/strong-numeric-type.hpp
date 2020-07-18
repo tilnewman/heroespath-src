@@ -73,7 +73,7 @@ namespace misc
         }
 
         constexpr bool IsZero() const noexcept { return (this->m_value == 0); }
-        constexpr bool IsPositive() const noexcept { return (this->m_value >= 0); }
+        constexpr bool IsZeroOrMore() const noexcept { return (this->m_value >= 0); }
         constexpr bool IsNegative() const noexcept { return (this->m_value < 0); }
 
         template <typename Real_t, typename = std::enable_if_t<are_floating_point_v<Real_t>>>

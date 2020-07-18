@@ -16,7 +16,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Direction : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Direction : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

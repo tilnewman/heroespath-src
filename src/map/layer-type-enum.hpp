@@ -16,7 +16,7 @@ namespace heroespath
 namespace map
 {
 
-    struct LayerType : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct LayerType : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

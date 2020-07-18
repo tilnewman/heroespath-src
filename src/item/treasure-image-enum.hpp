@@ -18,7 +18,7 @@ namespace heroespath
 namespace item
 {
 
-    struct TreasureImage : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct TreasureImage : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

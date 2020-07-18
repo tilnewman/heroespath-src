@@ -10,8 +10,7 @@
 // armor-ratings.hpp
 //
 #include "game/strong-types.hpp"
-#include "item/item-factory.hpp"
-#include "item/item-type-enum.hpp"
+#include "item/material-enum.hpp"
 #include "misc/not-null.hpp"
 
 #include <memory>
@@ -31,12 +30,19 @@ namespace item
     class ArmorRatings
     {
     public:
+        ArmorRatings();
+        ~ArmorRatings();
+
         ArmorRatings(const ArmorRatings &) = delete;
         ArmorRatings(ArmorRatings &&) = delete;
         ArmorRatings & operator=(const ArmorRatings &) = delete;
         ArmorRatings & operator=(ArmorRatings &&) = delete;
 
-        ArmorRatings();
+        static misc::NotNull<ArmorRatings *> Instance();
+        static void Create();
+        static void Destroy();
+
+        void Initialize();
 
         Armor_t LesserSteel() const { return lesserSteel_; }
         Armor_t GreaterSteel() const { return greaterSteel_; }
@@ -45,12 +51,13 @@ namespace item
         void LogCommonArmorRatings() const;
 
     private:
-        Armor_t ClothesSetRating(const item::material::Enum) const;
-        Armor_t LesserArmorSetRating(const item::material::Enum) const;
-        Armor_t GreaterArmorSetRating(const item::material::Enum) const;
-        Armor_t GetTotalArmorRatingAndFree(ItemPVec_t &) const;
+        Armor_t ClothesSetRating(const item::Material::Enum) const;
+        Armor_t LesserArmorSetRating(const item::Material::Enum) const;
+        Armor_t GreaterArmorSetRating(const item::Material::Enum) const;
+        Armor_t GetTotalArmorRatingAndFree(const ItemPVec_t &) const;
 
-        ItemFactory itemFactory_;
+    private:
+        static std::unique_ptr<ArmorRatings> instanceUPtr_;
 
         Armor_t lesserSteel_;
         Armor_t greaterSteel_;

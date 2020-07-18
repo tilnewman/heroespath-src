@@ -13,7 +13,7 @@
 
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
-#include "creature/nonplayer-inventory-factory.hpp"
+//#include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/player-initial-setup.hpp"
 #include "creature/stat-set.hpp"
 #include "game/game-state-factory.hpp"
@@ -85,8 +85,9 @@ namespace creature
         const auto CREATURE_PTR { CreatureWarehouse::Access().Store(std::make_unique<Creature>(
             false, race::Name(RACE), SEX, RACE, ROLE, STATS, "", HEALTH, RANK, EXPERIENCE, MANA)) };
 
-        creature::nonplayer::InventoryFactory inventoryFactory;
-        inventoryFactory.SetupCreatureInventory(CREATURE_PTR);
+        // TODO PUT BACK AFTER re-tooling
+        // creature::nonplayer::InventoryFactory inventoryFactory;
+        // inventoryFactory.SetupCreatureInventory(CREATURE_PTR);
         return CREATURE_PTR;
     }
 
@@ -113,9 +114,7 @@ namespace creature
         const auto CHARACTER_PTR { CreatureWarehouse::Access().Store(
             std::make_unique<Creature>(true, NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME)) };
 
-        PlayerInitialSetup playerSetup;
-        playerSetup.Setup(CHARACTER_PTR);
-
+        PlayerInitialSetup::Setup(CHARACTER_PTR);
         return CHARACTER_PTR;
     }
 

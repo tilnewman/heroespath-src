@@ -14,53 +14,25 @@
 #include "creature/enchantment-factory.hpp"
 #include "creature/enchantment-warehouse.hpp"
 #include "gui/item-image-paths.hpp"
-#include "misc/assertlogandthrow.hpp"
+#include "item/category-enum.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
-
-#include <iomanip>
-#include <sstream>
-#include <stdexcept>
-#include <tuple>
 
 namespace heroespath
 {
 namespace item
 {
 
-    Item::Item(
-        const std::string & NAME,
-        const std::string & DESC,
-        const ItemCreationPacket & PACKET,
-        const weapon::WeaponTypeWrapper & WEAPON_INFO,
-        const Health_t & DAMAGE_MIN,
-        const Health_t & DAMAGE_MAX,
-        const armor::ArmorTypeWrapper & ARMOR_INFO,
-        const Armor_t & ARMOR_RATING)
+    Item::Item(const std::string & NAME, const std::string & DESC, const ItemProfile & PROFILE)
         : name_(NAME)
         , desc_(DESC)
-        , price_(PACKET.price)
-        , weight_(PACKET.weight)
-        , damageMin_(DAMAGE_MIN)
-        , damageMax_(DAMAGE_MAX)
-        , armorRating_(ARMOR_RATING)
-        // if valid the role restriction based on Misc or Set type is used, otherwise the role
-        // restriction based on item type is used.
-        , exclusiveToRole_(PACKET.role_restriction)
-        , category_(PACKET.category_enum)
-        , miscType_(PACKET.misc_enum)
-        , materialPri_(PACKET.material_pri)
-        , materialSec_(PACKET.material_sec)
-        , weaponInfo_(WEAPON_INFO)
-        , armorInfo_(ARMOR_INFO)
-        , isPixie_(PACKET.is_pixie)
-        , setType_(PACKET.set_enum)
-        , namedType_(PACKET.named_enum)
-        , elementType_(PACKET.element_enum)
-        , summonInfo_(PACKET.summon_info)
+        , profile_(PROFILE)
+        , category_(PROFILE.Category())
         , enchantmentsPVec_()
-        , imageFilename_()
-        , imageFullPath_()
+        , enchantmentsToSerializePVec_()
+        , imageFilename_(gui::ItemImagePaths::Filename(PROFILE, true))
+        , imageFullPath_(gui::ItemImagePaths::PathFromFilename(imageFilename_))
     {
         enchantmentsPVec_ = creature::EnchantmentFactory::MakeAndStore(*this);
     }
@@ -90,34 +62,19 @@ namespace item
         return str;
     }
 
-    const std::string Item::ImagePath() const
-    {
-        if (imageFilename_.empty())
-        {
-            imageFilename_ = gui::ItemImagePaths::Filename(*this, true);
-        }
-
-        if (imageFullPath_.empty())
-        {
-            imageFullPath_ = gui::ItemImagePaths::PathFromFilename(imageFilename_);
-        }
-
-        return imageFullPath_;
-    }
-
     const std::string Item::ShortName() const
     {
         if (IsUnique())
         {
-            return ComposeName(std::string(misc_type::Name(miscType_)));
+            return ComposeName(std::string(Misc::Name(profile_.MiscType())));
         }
         else if (IsSet())
         {
-            return ComposeName(std::string(set_type::Name(SetType())) + " " + ReadableName());
+            return ComposeName(std::string(Set::Name(SetType())) + " " + ReadableName());
         }
         else if (IsNamed())
         {
-            return ComposeName(std::string(named_type::Name(NamedType())) + " " + ReadableName());
+            return ComposeName(std::string(Named::Name(NamedType())) + " " + ReadableName());
         }
         else
         {
@@ -127,109 +84,49 @@ namespace item
 
     const std::string Item::BaseName() const { return ComposeName(ReadableName()); }
 
-    bool Item::MustBePixieVersionForPixiesToEquip() const
+    const std::string Item::ReadableName() const { return profile_.ReadableName(); }
+
+    const std::string Item::ComposeName(const std::string & ROOT_NAME) const
     {
-        if (IsWeapon() || IsArmor())
+        std::string str;
+        str.reserve(16 + ROOT_NAME.size());
+
+        if (IsBroken())
         {
-            return true;
+            str += "broken ";
         }
-        else // assume must be misc
+
+        str += ROOT_NAME;
+
+        if (IsMagical())
         {
-            return misc_type::MustBePixieVersionForPixiesToEquip(MiscType());
+            str += " *";
         }
+
+        return str;
     }
 
     const std::string Item::ToString() const
     {
         std::string str;
-        str.reserve(2048);
+        str.reserve(1024);
 
         str += "name=\"";
+        str += misc::Quoted(Name());
+        str += "\"";
+
+        str += ", desc=\"";
         str += misc::Quoted(Desc());
+        str += "\"";
 
-        if (category::None != category_)
-        {
-            str += ", category=";
-            str += EnumUtil<category>::ToString(category_, EnumStringHow(Wrap::Yes));
-        }
+        str += ", category=";
+        str += EnumUtil<heroespath::item::Category>::ToString(category_, EnumStringHow(Wrap::Yes));
 
-        if (IsUnique())
-        {
-            str += ", unique";
-        }
+        str += profile_.ToString();
 
-        if (IsQuestItem())
-        {
-            str += ", quest";
-        }
-
-        if (armor::ArmorTypeWrapper() != armorInfo_)
-        {
-            str += ", armor_info=";
-            str += armorInfo_.ToString();
-        }
-
-        if (weapon::WeaponTypeWrapper() != weaponInfo_)
-        {
-            str += ", weapon_info=";
-            str += weaponInfo_.ToString();
-        }
-
-        if (misc_type::Not != miscType_)
-        {
-            str += ", misc_type=";
-            str += ((misc_type::Count == miscType_) ? "Count" : NAMEOF_ENUM(miscType_));
-        }
-
-        if (isPixie_)
-        {
-            str += ", is_pixie=";
-            str += misc::ToString(isPixie_);
-        }
-
-        if (creature::role::Count != exclusiveToRole_)
-        {
-            str += ", role_restriction=";
-            str += NAMEOF_ENUM(exclusiveToRole_);
-        }
-
-        str += ", mat_pri=";
-        str += NAMEOF_ENUM(materialPri_);
-
-        if (material::Nothing != materialSec_)
-        {
-            str += ", mat_sec=";
-            str += NAMEOF_ENUM(materialSec_);
-        }
-
-        if (set_type::Not != setType_)
-        {
-            str += ", set_type=";
-            str += ((set_type::Count == setType_) ? "Count" : NAMEOF_ENUM(setType_));
-        }
-
-        if (named_type::Not != namedType_)
-        {
-            str += ", named_type=";
-            str += ((named_type::Count == namedType_) ? "Count" : NAMEOF_ENUM(namedType_));
-        }
-
-        if (element_type::None != elementType_)
-        {
-            str += ", element_type=";
-            str += EnumUtil<element_type>::ToString(elementType_, EnumStringHow(Wrap::Yes));
-        }
-
-        if (summonInfo_.CanSummon())
-        {
-            str += ", summonInfo=";
-            str += summonInfo_.ToString();
-        }
-        else if (summonInfo_.IsDefaultAndCompletelyInvalid() == false)
-        {
-            str += ", summonInfo=" + summonInfo_.ToString();
-            str += "(but CanSummon()=false?)";
-        }
+        str += "image_file_name=\"";
+        str += imageFilename_;
+        str += "\"";
 
         if (enchantmentsPVec_.empty() == false)
         {
@@ -266,141 +163,28 @@ namespace item
             creature::EnchantmentWarehouse::Access());
     }
 
-    const std::string Item::ReadableName() const
-    {
-        if (IsWeapon())
-        {
-            return weaponInfo_.ReadableName();
-        }
-        else if (IsArmor())
-        {
-            return armorInfo_.ReadableName();
-        }
-        else if (IsMisc())
-        {
-            return std::string(misc_type::Name(miscType_));
-        }
-        else
-        {
-            return "";
-        }
-    }
-
-    const std::string Item::ComposeName(const std::string & ROOT_NAME) const
-    {
-        std::string str;
-        str.reserve(16 + ROOT_NAME.size());
-
-        if (IsBroken())
-        {
-            str += "broken ";
-        }
-
-        str += ROOT_NAME;
-
-        if (IsMagical())
-        {
-            str += " *";
-        }
-
-        return str;
-    }
-
-    bool operator<(const Item & L, const Item & R)
-    {
-        // name_, desc_, and imageFilename_ are random so don't include them in comparisons
-        // imageFullPath_ changes between load/save so don't include in comparisons
-
-        if (std::tie(
-                L.price_,
-                L.weight_,
-                L.damageMin_,
-                L.damageMax_,
-                L.armorRating_,
-                L.exclusiveToRole_,
-                L.category_,
-                L.miscType_,
-                L.materialPri_,
-                L.materialSec_,
-                L.weaponInfo_,
-                L.armorInfo_,
-                L.isPixie_,
-                L.setType_,
-                L.namedType_,
-                L.summonInfo_,
-                L.elementType_)
-            < std::tie(
-                R.price_,
-                R.weight_,
-                R.damageMin_,
-                R.damageMax_,
-                R.armorRating_,
-                R.exclusiveToRole_,
-                R.category_,
-                R.miscType_,
-                R.materialPri_,
-                R.materialSec_,
-                R.weaponInfo_,
-                R.armorInfo_,
-                R.isPixie_,
-                R.setType_,
-                R.namedType_,
-                R.summonInfo_,
-                R.elementType_))
-        {
-            return true;
-        }
-
-        return misc::Vector::OrderlessCompareLess(L.enchantmentsPVec_, R.enchantmentsPVec_);
-    }
-
+    // ignore name_/desc_/imageFilename_/imageFullPath_ since random or change betweeen load/save
     bool operator==(const Item & L, const Item & R)
     {
-        // name_, desc_, and imageFilename_ are random so don't include them in comparisons
-        // imageFullPath_ changes between load/save so don't include in comparisons
+        return (
+            (L.profile_ == R.profile_) && (L.category_ == R.category_)
+            && misc::Vector::OrderlessCompareLess(L.enchantmentsPVec_, R.enchantmentsPVec_));
+    }
 
-        if (std::tie(
-                L.price_,
-                L.weight_,
-                L.damageMin_,
-                L.damageMax_,
-                L.armorRating_,
-                L.exclusiveToRole_,
-                L.category_,
-                L.miscType_,
-                L.materialPri_,
-                L.materialSec_,
-                L.weaponInfo_,
-                L.armorInfo_,
-                L.isPixie_,
-                L.setType_,
-                L.namedType_,
-                L.summonInfo_,
-                L.elementType_)
-            != std::tie(
-                R.price_,
-                R.weight_,
-                R.damageMin_,
-                R.damageMax_,
-                R.armorRating_,
-                R.exclusiveToRole_,
-                R.category_,
-                R.miscType_,
-                R.materialPri_,
-                R.materialSec_,
-                R.weaponInfo_,
-                R.armorInfo_,
-                R.isPixie_,
-                R.setType_,
-                R.namedType_,
-                R.summonInfo_,
-                R.elementType_))
+    // ignore name_/desc_/imageFilename_/imageFullPath_ since random or change betweeen load/save
+    bool operator<(const Item & L, const Item & R)
+    {
+        if (L.profile_ != R.profile_)
         {
-            return false;
+            return (L.profile_ < R.profile_);
+        }
+        else if (L.category_ != R.category_)
+        {
+            return (L.category_ < R.category_);
         }
         else
         {
-            return misc::Vector::OrderlessCompareEqual(L.enchantmentsPVec_, R.enchantmentsPVec_);
+            return misc::Vector::OrderlessCompareLess(L.enchantmentsPVec_, R.enchantmentsPVec_);
         }
     }
 

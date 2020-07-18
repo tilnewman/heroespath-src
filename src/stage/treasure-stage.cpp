@@ -12,6 +12,7 @@
 #include "treasure-stage.hpp"
 
 #include "combat/combat-text.hpp"
+#include "combat/creature-interaction.hpp"
 #include "combat/encounter.hpp"
 #include "combat/trap-holder.hpp"
 #include "creature/algorithms.hpp"
@@ -24,7 +25,6 @@
 #include "gui/font-manager.hpp"
 #include "gui/list-element.hpp"
 #include "gui/text-region.hpp"
-#include "item/item-profile-warehouse.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -84,13 +84,13 @@ namespace stage
 
     TreasureStage::TreasureStage()
         : StageBase(
-              "Treasure",
-              { gui::GuiFont::Default,
-                gui::GuiFont::System,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::Number,
-                gui::GuiFont::DefaultBoldFlavor,
-                gui::GuiFont::Handwriting })
+            "Treasure",
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::DefaultBoldFlavor,
+              gui::GuiFont::Handwriting })
         , displayStagePtrOpt_()
         , treasureImageType_(item::TreasureImage::Count)
         , itemCacheHeld_()
@@ -102,7 +102,6 @@ namespace stage
         , updateItemDisplayNeeded_(false)
         , willProcessLockpickTitle_(false)
         , lockPicking_()
-        , creatureInteraction_()
     {}
 
     TreasureStage::~TreasureStage()
@@ -729,8 +728,8 @@ namespace stage
             "stage::TreasureStage::LockPickFailure() called when "
             "combat::Encounter::Instance()->LockPickCreaturePtrOpt() returned uninitialized.");
 
-        fightResult_
-            = creatureInteraction_.TreasureTrap(trap_, LOCK_PICKING_CREATURE_PTR_OPT.value());
+        fightResult_ = combat::CreatureInteraction::TreasureTrap(
+            trap_, LOCK_PICKING_CREATURE_PTR_OPT.value());
 
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateTrapPopupInfo(
             POPUP_NAME_LOCK_PICK_FAILURE_,

@@ -41,7 +41,7 @@ namespace popup
         charDetailsTextRegion.top = sfutil::Bottom(imagesRect_);
         charDetailsTextRegion.height = 0.0f;
 
-        auto charDetailsTextInfo { popupInfo_.TextInfo() };
+        auto charDetailsTextInfo { popupInfo_.GetTextInfo() };
         charDetailsTextInfo.text = " ";
 
         charDetailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(

@@ -20,16 +20,32 @@
 
 #define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_STR(exp, str)                                          \
     {                                                                                              \
-        misc::stringStreamHolder::log(                                                             \
-            true, heroespath::misc::LogPriority::Fatal, __FILE__, __func__, __LINE__, str);        \
+        misc::StringStreamHolder::log(                                                             \
+            heroespath::misc::LogPriority::Fatal, __FILE__, __func__, __LINE__, str);              \
+                                                                                                   \
+        std::ostringstream _m_hp_ass_ss;                                                           \
+        _m_hp_ass_ss << "FATAL: " << __FILE__ << __func__ << __LINE__ << str;                      \
+                                                                                                   \
+        throw std::runtime_error(_m_hp_ass_ss.str());                                              \
     }
 
 #define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_SS(exp, str_streams)                                   \
     {                                                                                              \
-        misc::stringStreamHolder::ostreamer() << str_streams;                                      \
+        std::ostringstream _m_hp_ass_ss;                                                           \
+        _m_hp_ass_ss << str_streams;                                                               \
                                                                                                    \
-        misc::stringStreamHolder::log(                                                             \
-            true, heroespath::misc::LogPriority::Fatal, __FILE__, __func__, __LINE__);             \
+        misc::StringStreamHolder::log(                                                             \
+            heroespath::misc::LogPriority::Fatal,                                                  \
+            __FILE__,                                                                              \
+            __func__,                                                                              \
+            __LINE__,                                                                              \
+            _m_hp_ass_ss.str());                                                                   \
+                                                                                                   \
+        _m_hp_ass_ss.clear();                                                                      \
+        _m_hp_ass_ss.str("");                                                                      \
+        _m_hp_ass_ss << "FATAL: " << __FILE__ << __func__ << __LINE__ << str_streams;              \
+                                                                                                   \
+        throw std::runtime_error(_m_hp_ass_ss.str());                                              \
     }
 
 #else
@@ -39,18 +55,23 @@
 
 #define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_STR(exp, str)                                          \
     {                                                                                              \
-        misc::stringStreamHolder::log(                                                             \
-            false, heroespath::misc::LogPriority::Fatal, __FILE__, __func__, __LINE__, str);       \
+        misc::StringStreamHolder::log(                                                             \
+            heroespath::misc::LogPriority::Fatal, __FILE__, __func__, __LINE__, str);              \
                                                                                                    \
         assert((exp));                                                                             \
     }
 
 #define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_SS(exp, str_streams)                                   \
     {                                                                                              \
-        misc::stringStreamHolder::ostreamer() << str_streams;                                      \
+        std::ostringstream _m_hp_ass_ss;                                                           \
+        _m_hp_ass_ss << str_streams;                                                               \
                                                                                                    \
-        misc::stringStreamHolder::log(                                                             \
-            false, heroespath::misc::LogPriority::Fatal, __FILE__, __func__, __LINE__);            \
+        misc::StringStreamHolder::log(                                                             \
+            heroespath::misc::LogPriority::Fatal,                                                  \
+            __FILE__,                                                                              \
+            __func__,                                                                              \
+            __LINE__,                                                                              \
+            _m_hp_ass_ss.str());                                                                   \
                                                                                                    \
         assert((exp));                                                                             \
     }

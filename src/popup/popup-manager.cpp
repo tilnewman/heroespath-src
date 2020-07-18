@@ -57,13 +57,13 @@ namespace popup
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: PopupManager");
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<PopupManager *>(instanceUPtr_.get());
     }
 
-    void PopupManager::Acquire()
+    void PopupManager::Create()
     {
         if (!instanceUPtr_)
         {
@@ -71,11 +71,11 @@ namespace popup
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: PopupManager");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: PopupManager");
         }
     }
 
-    void PopupManager::Release() { instanceUPtr_.reset(); }
+    void PopupManager::Destroy() { instanceUPtr_.reset(); }
 
     void PopupManager::SetTexturesDirectoryPaths(
         const std::string & WINDOWS_PATH, const std::string & ACCENTS_PATH)

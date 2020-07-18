@@ -16,8 +16,8 @@
 #include "creature/condition-holder.hpp"
 #include "creature/creature-warehouse.hpp"
 #include "creature/enchantment-warehouse.hpp"
-#include "creature/nonplayer-inventory-chances.hpp"
-#include "creature/nonplayer-inventory-factory.hpp"
+//#include "creature/nonplayer-inventory-chances.hpp"
+//#include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/title-holder.hpp"
 #include "game/game-controller.hpp"
 #include "game/game-state-factory.hpp"
@@ -31,12 +31,13 @@
 #include "gui/item-image-paths.hpp"
 #include "gui/sound-manager.hpp"
 #include "gui/texture-cache.hpp"
-#include "item/armor-details.hpp"
+#include "item/armor-enum.hpp"
 #include "item/armor-ratings.hpp"
 #include "item/item-profile-warehouse.hpp"
-#include "item/item-type-enum.hpp"
+#include "item/item-template-factory.hpp"
 #include "item/item-warehouse.hpp"
-#include "item/weapon-details.hpp"
+#include "item/materials-factory.hpp"
+#include "item/weapon-enum.hpp"
 #include "map/parser.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
@@ -93,7 +94,7 @@ namespace game
             Setup_ParseCommandLineArguments(ARGS);
             Setup_LoadItemDetails();
             Setup_Display(TITLE);
-            Setup_SubsystemsAcquire();
+            Setup_SubsystemsCreate();
 
             // SettingsFile::LoadAndRestore() must happen after Subsystem Acquires but before
             // Subsystem Initialization so that subsystems can use the settings saved from the last
@@ -128,8 +129,8 @@ namespace game
 
     void SetupTeardown::Setup_Log() const
     {
-        misc::stringStreamHolder::init();
-        misc::Log::Acquire();
+        misc::StringStreamHolder::init();
+        misc::Log::Create();
     }
 
     void SetupTeardown::Setup_PlatformDetection() const
@@ -150,7 +151,7 @@ namespace game
 
     void SetupTeardown::Setup_ConfigFile() const
     {
-        misc::ConfigFile::Acquire();
+        misc::ConfigFile::Create();
         misc::ConfigFile::Instance()->Initialize();
     }
 
@@ -177,8 +178,8 @@ namespace game
 
     void SetupTeardown::Setup_LoadItemDetails() const
     {
-        item::armor::ArmorDetailLoader::LoadFromGameDataFile();
-        item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
+        // item::ArmorDetailLoader::LoadFromGameDataFile();
+        // item::WeaponDetailLoader::LoadFromGameDataFile();
     }
 
     void SetupTeardown::Setup_Display(const std::string & TITLE) const
@@ -229,40 +230,48 @@ namespace game
         gui::ItemImagePaths::SetupFilesystemPaths();
     }
 
-    void SetupTeardown::Setup_SubsystemsAcquire() const
+    void SetupTeardown::Setup_SubsystemsCreate() const
     {
         // the order of every line in this function is critical
 
-        game::NpcWarehouse::Acquire();
-        gui::TextureCache::Acquire();
-        creature::EnchantmentWarehouse::Acquire();
-        item::ItemWarehouse::Acquire();
-        creature::CreatureWarehouse::Acquire();
-        gui::SoundManager::Acquire();
-        gui::FontManager::Acquire();
-        popup::PopupManager::Acquire();
-        Game::Acquire();
-        game::GameStateFactory::Acquire();
-        combat::Encounter::Acquire();
-        item::ItemProfileWarehouse::Acquire();
-        creature::nonplayer::ChanceFactory::Acquire();
-        misc::SettingsFile::Acquire();
-        GameController::Acquire();
+        game::NpcWarehouse::Create();
+        gui::TextureCache::Create();
+        item::ItemTemplateFactory::Create();
+        item::MaterialFactory::Create();
+        creature::EnchantmentWarehouse::Create();
+        item::ItemWarehouse::Create();
+        creature::CreatureWarehouse::Create();
+        gui::SoundManager::Create();
+        gui::FontManager::Create();
+        popup::PopupManager::Create();
+        Game::Create();
+        game::GameStateFactory::Create();
+        combat::Encounter::Create();
+        item::ItemProfileWarehouse::Create();
+        // creature::nonplayer::ChanceFactory::Create();
+        misc::SettingsFile::Create();
+        GameController::Create();
+        item::ArmorRatings::Create();
     }
 
     void SetupTeardown::Setup_SubsystemsInitialize() const
     {
         // the order of every line in this function is critical
 
+        item::ItemTemplateFactory::Instance()->Initialize();
+        item::MaterialFactory::Instance()->Initialize();
+
         gui::SoundManager::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
-        creature::nonplayer::ChanceFactory::Instance()->Initialize();
+        // creature::nonplayer::ChanceFactory::Instance()->Initialize();
 
         if (misc::ConfigFile::Instance()->ValueAs<bool>(
                 "system-items-will-create-items-at-startup", true))
         {
             item::ItemProfileWarehouse::Instance()->Initialize();
         }
+
+        item::ArmorRatings::Instance()->Initialize();
     }
 
     void SetupTeardown::Setup_HoldersFill() const
@@ -280,7 +289,10 @@ namespace game
 
         M_HP_LOG(m_name << " Teardown starting...");
 
+        // release the SettingsFile first so that it saves the settings file even if a
+        // problem happens during shutdown
         Teardown_SettingsFile();
+
         Teardown_CloseDisplay();
         Teardown_EmptyHolders();
         Teardown_ReleaseSubsystems();
@@ -363,56 +375,56 @@ namespace game
 
     void SetupTeardown::Teardown_ReleaseSubsystems() const
     {
-        // no need to check m_subsystems in this function because calling Release() on a subsystm
+        // no need to check m_subsystems in this function because calling Destroy() on a subsystm
         // singleton is always safe.
 
         try
         {
             // the order of every line in this try-block is critical
 
-            // release the SettingsFile first so that it saves the settings file even if a
-            // problem happens during shutdown
-            misc::SettingsFile::Release();
+            item::ArmorRatings::Destroy();
 
             // factories should not be needed during shutdown, so release them early
-            game::GameStateFactory::Release();
-            creature::nonplayer::ChanceFactory::Release();
+            game::GameStateFactory::Destroy();
+            // creature::nonplayer::ChanceFactory::Destroy();
 
             // release GameController early because it frees all the stages and their resources
-            GameController::Release();
+            GameController::Destroy();
 
             // these must occur after all the stages have been released
-            gui::FontManager::Release(); // after NameInfo::Release()
-            popup::PopupManager::Release();
-            gui::SoundManager::Release();
-            gui::TextureCache::Release();
+            gui::FontManager::Destroy(); // after NameInfo::Destroy()
+            popup::PopupManager::Destroy();
+            gui::SoundManager::Destroy();
+            gui::TextureCache::Destroy();
 
             // this will cause all party creatures/items/enchantments/etc to be
             // Warehouses::Free()'d
-            Game::Release();
+            Game::Destroy();
 
-            // must occur after Game::Release() because game::GameState needs it
-            game::NpcWarehouse::Release();
+            // must occur after Game::Destroy() because game::GameState needs it
+            game::NpcWarehouse::Destroy();
 
             // if this is an abnormal shutdown then the Encounter object will have some
-            // Warehouse::Free() calls to make, so this must occur after Game::Release() but
+            // Warehouse::Free() calls to make, so this must occur after Game::Destroy() but
             // before creature/item/enchantment/etc warehouses are released.
-            combat::Encounter::Release();
+            combat::Encounter::Destroy();
 
             // there are dependencies between these Warehouses so this release order is critical
-            creature::CreatureWarehouse::Release();
-            item::ItemProfileWarehouse::Release();
-            item::ItemWarehouse::Release();
-            creature::EnchantmentWarehouse::Release();
+            creature::CreatureWarehouse::Destroy();
+            item::ItemProfileWarehouse::Destroy();
+            item::ItemWarehouse::Destroy();
+            creature::EnchantmentWarehouse::Destroy();
+            item::ItemTemplateFactory::Destroy();
+            item::MaterialFactory::Destroy();
 
             // the only constraint here is that it must occur after all the stages have been
             // released, so there is no reason for this to be one of the last things to be
             // released, but for some reason I liked the idea of the screen staying black while
             // the application shuts down
-            gui::Display::Release();
+            gui::Display::Destroy();
 
             // these two are needed almost everywhere so release them last
-            misc::ConfigFile::Release();
+            misc::ConfigFile::Destroy();
         }
         catch (const std::exception & EXCEPTION)
         {
@@ -428,7 +440,7 @@ namespace game
     {
         try
         {
-            misc::Log::Release();
+            misc::Log::Destroy();
         }
         catch (const std::exception & EXCEPTION)
         {

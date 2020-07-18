@@ -16,7 +16,7 @@ namespace heroespath
 namespace avatar
 {
 
-    struct Pose : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Pose : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

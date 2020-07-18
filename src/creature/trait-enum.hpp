@@ -21,7 +21,7 @@ namespace creature
 {
 
     // Defines one effect an Enchantment can have.
-    struct Traits : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Traits : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

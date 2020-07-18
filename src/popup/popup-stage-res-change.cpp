@@ -47,7 +47,7 @@ namespace popup
 
                 if (secondCounter_ > 0)
                 {
-                    gui::TextInfo textInfo(popupInfo_.TextInfo());
+                    gui::TextInfo textInfo(popupInfo_.GetTextInfo());
 
                     textInfo.text = textInfo.text + "\n" + std::to_string(secondCounter_);
 

@@ -57,13 +57,13 @@ namespace game
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: GameController");
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<GameController *>(instanceUPtr_.get());
     }
 
-    void GameController::Acquire()
+    void GameController::Create()
     {
         if (!instanceUPtr_)
         {
@@ -71,11 +71,11 @@ namespace game
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: GameController");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: GameController");
         }
     }
 
-    void GameController::Release() { instanceUPtr_.reset(); }
+    void GameController::Destroy() { instanceUPtr_.reset(); }
 
     void GameController::Initialize()
     {

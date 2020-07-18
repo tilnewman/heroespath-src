@@ -53,7 +53,7 @@ namespace gui
             CREATURE.Race(),
             CREATURE.Role(),
             CREATURE.Sex(),
-            CREATURE.WolfenClass(),
+            CREATURE.WolfenClassType(),
             CREATURE.DragonClass()) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -74,7 +74,7 @@ namespace gui
         const creature::race::Enum RACE,
         const creature::role::Enum ROLE,
         const creature::sex::Enum SEX,
-        const creature::wolfen_class::Enum WOLFEN_CLASS,
+        const creature::WolfenClass::Enum WOLFEN_CLASS,
         const creature::dragon_class::Enum DRAGON_CLASS)
     {
         if (RACE == creature::race::Troll)
@@ -1216,7 +1216,7 @@ namespace gui
 
         if (RACE == creature::race::Wolfen)
         {
-            if (WOLFEN_CLASS == creature::wolfen_class::Count)
+            if (WOLFEN_CLASS >= creature::WolfenClass::Count)
             {
                 if (ROLE == creature::role::TwoHeaded)
                 {
@@ -1232,31 +1232,31 @@ namespace gui
             {
                 switch (WOLFEN_CLASS)
                 {
-                    case creature::wolfen_class::Pup:
+                    case creature::WolfenClass::Pup:
                     {
                         return { "wolfen-pup.png" };
                     }
-                    case creature::wolfen_class::Juvenile:
+                    case creature::WolfenClass::Juvenile:
                     {
                         return { "wolfen-juvenile.png" };
                     }
-                    case creature::wolfen_class::Adult:
+                    case creature::WolfenClass::Adult:
                     {
                         return { "wolfen-adult.png" };
                     }
-                    case creature::wolfen_class::Noble:
+                    case creature::WolfenClass::Noble:
                     {
                         return { "wolfen-noble.png" };
                     }
-                    case creature::wolfen_class::Highborn:
+                    case creature::WolfenClass::Highborn:
                     {
                         return { "wolfen-highborn.png" };
                     }
-                    case creature::wolfen_class::Elder:
+                    case creature::WolfenClass::Elder:
                     {
                         return { "wolfen-elder.png" };
                     }
-                    case creature::wolfen_class::Count:
+                    case creature::WolfenClass::Count:
                     default:
                     {
                         break;
@@ -1420,11 +1420,9 @@ namespace gui
         }
 
         std::ostringstream ss;
-        ss << "gui::CreatureImagePaths::GetFilenames(race="
-           << ((RACE == creature::race::Count) ? "(count)" : NAMEOF_ENUM(RACE))
-           << ", role=" << ((ROLE == creature::role::Count) ? "(count)" : NAMEOF_ENUM(ROLE))
-           << ", sex=" << ((SEX == creature::sex::Count) ? "(count)" : NAMEOF_ENUM(SEX))
-           << ", wolfen_class=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS
+        ss << "gui::CreatureImagePaths::GetFilenames(race=" << NAMEOF_ENUM(RACE)
+           << ", role=" << NAMEOF_ENUM(ROLE) << ", sex=" << NAMEOF_ENUM(SEX)
+           << ", WolfenClass=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS
            << ") -No filenames found for that creature information.";
 
         throw std::runtime_error(ss.str());

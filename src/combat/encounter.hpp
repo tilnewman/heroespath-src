@@ -54,8 +54,8 @@ namespace combat
         ~Encounter();
 
         static misc::NotNull<Encounter *> Instance();
-        static void Acquire();
-        static void Release();
+        static void Create();
+        static void Destroy();
 
         // the player party CreaturePtr_ts are kept by the game::GameState in a
         // creature::PlayerParty object, but all of the non-player CreaturePtr_ts are kept here in

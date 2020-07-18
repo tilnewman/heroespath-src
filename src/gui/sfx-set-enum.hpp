@@ -16,7 +16,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct sound_effect_set : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct sound_effect_set : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

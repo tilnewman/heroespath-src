@@ -73,13 +73,13 @@ namespace misc
     {
         if (!instanceUPtr_)
         {
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<Log *>(instanceUPtr_.get());
     }
 
-    void Log::Acquire()
+    void Log::Create()
     {
         if (!instanceUPtr_)
         {
@@ -87,7 +87,7 @@ namespace misc
         }
     }
 
-    void Log::Release()
+    void Log::Destroy()
     {
         if (!instanceUPtr_)
         {
@@ -95,7 +95,7 @@ namespace misc
             std::ostringstream ss;
 
             ss << __FILE__ << ":" << __func__ << "():" << __LINE__
-               << "misc::Log::Release() found instanceUPtr that was null.";
+               << "misc::Log::Destroy() found instanceUPtr that was null.";
 
             std::cerr << ss.str() << std::endl;
             throw std::runtime_error(ss.str());

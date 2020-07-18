@@ -236,7 +236,7 @@ namespace item
             mutable std::vector<std::size_t> scoresNamed_;
             mutable std::vector<std::size_t> scoresUnique_;
             mutable std::vector<std::size_t> scoresPixie_;
-            mutable misc::VectorMap<element_type::Enum, std::vector<std::size_t>> elementScoreMap_;
+            mutable misc::VectorMap<Element::Enum, std::vector<std::size_t>> elementScoreMap_;
         };
 
         struct SpecificItemInfo

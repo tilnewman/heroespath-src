@@ -19,8 +19,6 @@ stats-race-bonus-minor-adj-ratio  0.5
 stats-role-bonus-base-adj-ratio   0.2
 stats-role-bonus-minor-adj-ratio  0.5
 
-item-secondary-material-armor-adj-ratio  0.5
-
 fight-stats-luck-adj-ratio                       0.2
 fight-stats-amazing-ratio                        0.9
 fight-stats-base-high-val                        20
@@ -77,6 +75,7 @@ media-image-song-dir                    image/song
 media-image-combat-dir                  image/combat
 media-image-avatar-dir                  image/avatar
 media-image-map-dir                     image/map
+media-image-misc-dir                    image/misc
 media-maps-dir                          map
 
 #images
@@ -104,6 +103,9 @@ media-image-background-paper-popup-medium-bar-texture-rect    512,384,512,320
 media-image-background-paper-popup-banner-texture-rect        512,768,512,256
 media-image-background-paper-popup-music-sheet-texture-rect   0,0,1024,680
 media-image-background-paper-popup-spell-book-texture-rect    0,0,1024,680
+#
+media-image-misc-todo                                image/misc/todo.png
+media-image-misc-todo                                image/misc/error.png
 #
 media-image-misc-logos-sfml                          image/misc/logos.png
 media-image-misc-logos-tiled                         image/misc/logos.png
@@ -193,8 +195,6 @@ media-image-combat-note-4-texture-rect          0,128,128,128
 media-image-combat-note-5-texture-rect          128,128,128,128
 #
 media-image-misc-x                              image/misc/x.png
-media-image-misc-todo                           image/misc/todo.png
-media-image-misc-error                          image/misc/error.png
 media-image-misc-system-error                   image/misc/system-error.png
 #
 media-image-misc-money-bag                      image/misc/inventory-icons.png
@@ -452,65 +452,65 @@ creature-role-Cat        heroespath-creature-role-Cat
 creature-role-Wolf       heroespath-creature-role-Wolf
 
 #Race Descriptions TODO
-creature-race-desc-Human         Humans are a versatile race.  They are slightly stronger and more accurate with weapons, making them natural Archers, but they are a solid choice for other roles as well.  However, Humans lack the magical spark that brings luck, so they seldom make good Thieves.
-creature-race-desc-Gnome         Gnomes may be short and lack strength, but they have deceptively fast hands.  They are known to be grumpy, but the touch of magic that runs through their veins makes them luckier than any other race.  You may not like them, but they make excellent Thieves, and parties without a Thief on their side will regret it.
-creature-race-desc-Pixie         The Pixie is a tiny winged creature from the ancient world, but a few are still known to exist.  Their obvious lack of strength is more than made up for by their other significant advantages, including speed to keep their fragile bodies away from the melee.  They are the most intelligent race, making excellent Sorcerers and Clerics.  Pixies speak their own language, and sing so well they even make good Bards.
-creature-race-desc-Wolfen        The Wolfen are relatives of Dire Wolves, but magic fuels their strength and senses.  They gain significant special abilities as they progress in rank.  They may be weak in the beginning, an difficult to raise, but for those willing to put in the required time and care they grow into fearsome allies.  As with Dragons, having a Wolfen in your party means most innkeepers will turn you away, but the advantages often out-weigh the trouble of camping outside.  In fact, having a Wolfen in your party is an excellent way to prevent being surprised by dangers in the wilderness.  One of your adventurers must be a Beastmaster to have a Wolfen in your party.
-creature-race-desc-Dragon        The Dragons of Etan start out as vicious flightless lizards about half the size of a horse, but they grow into sky dwelling terrors.  As with Wolfens, having a Dragon in your party means few innkeepers will let you stay in their rooms, but the advantages often out-weigh the trouble of camping outside.  There are two types of Dragons available to join your party, Firebrand and Sylavin.  The differences between them become more apparent as they progress through the ranks, and gain special magical abilities.  One of your adventurers must be a Beastmaster to have a Dragon in your party.
-creature-race-desc-Troll heroespath-creature-race-desc-Troll-TODO
-creature-race-desc-Goblin heroespath-creature-race-desc-Goblin-TODO
-creature-race-desc-Orc heroespath-creature-race-desc-Orc-TODO
-creature-race-desc-Newt heroespath-creature-race-desc-Newt-TODO
-creature-race-desc-Spider heroespath-creature-race-desc-Spider-TODO
-creature-race-desc-Bog heroespath-creature-race-desc-Bog-TODO
-creature-race-desc-CaveCrawler heroespath-creature-race-desc-CaveCrawler-TODO
-creature-race-desc-Hydra heroespath-creature-race-desc-Hydra-TODO
-creature-race-desc-LizardWalker heroespath-creature-race-desc-LizardWalker-TODO
-creature-race-desc-Minotaur heroespath-creature-race-desc-Minotaur-TODO
-creature-race-desc-Ogre heroespath-creature-race-desc-Ogre-TODO
-creature-race-desc-Plant heroespath-creature-race-desc-Plant-TODO
-creature-race-desc-Shade heroespath-creature-race-desc-Shade-TODO
-creature-race-desc-Werebear heroespath-creature-race-desc-Werebear-TODO
-creature-race-desc-Skeleton heroespath-creature-race-desc-Skeleton-TODO
-creature-race-desc-Beetle heroespath-creature-race-desc-Beetle-TODO
-creature-race-desc-Boar heroespath-creature-race-desc-Boar-TODO
-creature-race-desc-Demon heroespath-creature-race-desc-Demon-TODO
-creature-race-desc-Griffin heroespath-creature-race-desc-Griffin-TODO
-creature-race-desc-Halfling heroespath-creature-race-desc-Halfling-TODO
-creature-race-desc-Lion heroespath-creature-race-desc-Lion-TODO
-creature-race-desc-LionBoar heroespath-creature-race-desc-LionBoar-TODO
-creature-race-desc-Naga heroespath-creature-race-desc-Naga-TODO
-creature-race-desc-Serpent heroespath-creature-race-desc-Serpent-TODO
-creature-race-desc-Ramonaut heroespath-creature-race-desc-Ramonaut-TODO
-creature-race-desc-Cobra heroespath-creature-race-desc-Cobra-TODO
-creature-race-desc-Werebear heroespath-creature-race-desc-Werebear-TODO
-creature-race-desc-Wereboar heroespath-creature-race-desc-Wereboar-TODO
-creature-race-desc-Werecat heroespath-creature-race-desc-Werecat-TODO
-creature-race-desc-Werewolf heroespath-creature-race-desc-Werewolf-TODO
-creature-race-desc-Werebat heroespath-creature-race-desc-Werebat-TODO
-creature-race-desc-Pug heroespath-creature-race-desc-Pug-TODO
-creature-race-desc-Wyvern heroespath-creature-race-desc-Wyvern-TODO
-creature-race-desc-Giant heroespath-creature-race-desc-Giant-TODO
-creature-race-desc-Ghoul heroespath-creature-race-desc-Ghoul-TODO
-creature-race-desc-Bat heroespath-creature-race-desc-Bat-TODO
-creature-race-desc-Witch heroespath-creature-race-desc-Witch-TODO
-creature-race-desc-Golem heroespath-creature-race-desc-Golem-TODO
-creature-race-desc-Harpy heroespath-creature-race-desc-Harpy-TODO
-creature-race-desc-ThreeHeadedHound heroespath-creature-race-desc-ThreeHeadedHound-TODO
-creature-race-desc-wolfen-Pup TODO
-creature-race-desc-wolfen-Juvenile TODO
-creature-race-desc-wolfen-Adult TODO
-creature-race-desc-wolfen-Noble TODO
-creature-race-desc-wolfen-Highborn TODO
-creature-race-desc-wolfen-Elder TODO
-creature-race-desc-dragon-Hatchling TODO
-creature-race-desc-dragon-Whelp TODO
-creature-race-desc-dragon-Fledgling TODO
-creature-race-desc-dragon-Juvenile TODO
-creature-race-desc-dragon-Adult TODO
-creature-race-desc-dragon-Wyrm TODO
-creature-race-desc-dragon-Skycaster TODO
-creature-race-desc-dragon-Elder TODO
+creature-race-desc-Human                Humans are a versatile race.  They are slightly stronger and more accurate with weapons, making them natural Archers, but they are a solid choice for other roles as well.  However, Humans lack the magical spark that brings luck, so they seldom make good Thieves.
+creature-race-desc-Gnome                Gnomes may be short and lack strength, but they have deceptively fast hands.  They are known to be grumpy, but the touch of magic that runs through their veins makes them luckier than any other race.  You may not like them, but they make excellent Thieves, and parties without a Thief on their side will regret it.
+creature-race-desc-Pixie                The Pixie is a tiny winged creature from the ancient world, but a few are still known to exist.  Their obvious lack of strength is more than made up for by their other significant advantages, including speed to keep their fragile bodies away from the melee.  They are the most intelligent race, making excellent Sorcerers and Clerics.  Pixies speak their own language, and sing so well they even make good Bards.
+creature-race-desc-Wolfen               The Wolfen are relatives of Dire Wolves, but magic fuels their strength and senses.  They gain significant special abilities as they progress in rank.  They may be weak in the beginning, an difficult to raise, but for those willing to put in the required time and care they grow into fearsome allies.  As with Dragons, having a Wolfen in your party means most innkeepers will turn you away, but the advantages often out-weigh the trouble of camping outside.  In fact, having a Wolfen in your party is an excellent way to prevent being surprised by dangers in the wilderness.  One of your adventurers must be a Beastmaster to have a Wolfen in your party.
+creature-race-desc-Dragon               The Dragons of Etan start out as vicious flightless lizards about half the size of a horse, but they grow into sky dwelling terrors.  As with Wolfens, having a Dragon in your party means few innkeepers will let you stay in their rooms, but the advantages often out-weigh the trouble of camping outside.  There are two types of Dragons available to join your party, Firebrand and Sylavin.  The differences between them become more apparent as they progress through the ranks, and gain special magical abilities.  One of your adventurers must be a Beastmaster to have a Dragon in your party.
+creature-race-desc-Troll                TODO-heroespath-creature-race-desc-Troll-TODO
+creature-race-desc-Goblin               TODO-heroespath-creature-race-desc-Goblin-TODO
+creature-race-desc-Orc			        TODO-heroespath-creature-race-desc-Orc-TODO
+creature-race-desc-Newt			        TODO-heroespath-creature-race-desc-Newt-TODO
+creature-race-desc-Spider	            TODO-heroespath-creature-race-desc-Spider-TODO
+creature-race-desc-Bog                  TODO-heroespath-creature-race-desc-Bog-TODO
+creature-race-desc-CaveCrawler          TODO-heroespath-creature-race-desc-CaveCrawler-TODO
+creature-race-desc-Hydra                TODO-heroespath-creature-race-desc-Hydra-TODO
+creature-race-desc-LizardWalker         TODO-heroespath-creature-race-desc-LizardWalker-TODO
+creature-race-desc-Minotaur             TODO-heroespath-creature-race-desc-Minotaur-TODO
+creature-race-desc-Ogre                 TODO-heroespath-creature-race-desc-Ogre-TODO
+creature-race-desc-Plant                TODO-heroespath-creature-race-desc-Plant-TODO
+creature-race-desc-Shade                TODO-heroespath-creature-race-desc-Shade-TODO
+creature-race-desc-Werebear             TODO-heroespath-creature-race-desc-Werebear-TODO
+creature-race-desc-Skeleton             TODO-heroespath-creature-race-desc-Skeleton-TODO
+creature-race-desc-Beetle               TODO-heroespath-creature-race-desc-Beetle-TODO
+creature-race-desc-Boar                 TODO-heroespath-creature-race-desc-Boar-TODO
+creature-race-desc-Demon                TODO-heroespath-creature-race-desc-Demon-TODO
+creature-race-desc-Griffin              TODO-heroespath-creature-race-desc-Griffin-TODO
+creature-race-desc-Halfling             TODO-heroespath-creature-race-desc-Halfling-TODO
+creature-race-desc-Lion                 TODO-heroespath-creature-race-desc-Lion-TODO
+creature-race-desc-LionBoar             TODO-heroespath-creature-race-desc-LionBoar-TODO
+creature-race-desc-Naga                 TODO-heroespath-creature-race-desc-Naga-TODO
+creature-race-desc-Serpent              TODO-heroespath-creature-race-desc-Serpent-TODO
+creature-race-desc-Ramonaut             TODO-heroespath-creature-race-desc-Ramonaut-TODO
+creature-race-desc-Cobra                TODO-heroespath-creature-race-desc-Cobra-TODO
+creature-race-desc-Werebear             TODO-heroespath-creature-race-desc-Werebear-TODO
+creature-race-desc-Wereboar             TODO-heroespath-creature-race-desc-Wereboar-TODO
+creature-race-desc-Werecat              TODO-heroespath-creature-race-desc-Werecat-TODO
+creature-race-desc-Werewolf             TODO-heroespath-creature-race-desc-Werewolf-TODO
+creature-race-desc-Werebat              TODO-heroespath-creature-race-desc-Werebat-TODO
+creature-race-desc-Pug                  TODO-heroespath-creature-race-desc-Pug-TODO
+creature-race-desc-Wyvern               TODO-heroespath-creature-race-desc-Wyvern-TODO
+creature-race-desc-Giant                TODO-heroespath-creature-race-desc-Giant-TODO
+creature-race-desc-Ghoul                TODO-heroespath-creature-race-desc-Ghoul-TODO
+creature-race-desc-Bat                  TODO-heroespath-creature-race-desc-Bat-TODO
+creature-race-desc-Witch                TODO-heroespath-creature-race-desc-Witch-TODO
+creature-race-desc-Golem                TODO-heroespath-creature-race-desc-Golem-TODO
+creature-race-desc-Harpy                TODO-heroespath-creature-race-desc-Harpy-TODO
+creature-race-desc-ThreeHeadedHound     heroespath-creature-race-desc-ThreeHeadedHound-TODO
+creature-race-desc-wolfen-Pup           TODO
+creature-race-desc-wolfen-Juvenile      TODO
+creature-race-desc-wolfen-Adult         TODO
+creature-race-desc-wolfen-Noble         TODO
+creature-race-desc-wolfen-Highborn      TODO
+creature-race-desc-wolfen-Elder         TODO
+creature-race-desc-dragon-Hatchling     TODO
+creature-race-desc-dragon-Whelp         TODO
+creature-race-desc-dragon-Fledgling     TODO
+creature-race-desc-dragon-Juvenile      TODO
+creature-race-desc-dragon-Adult         TODO
+creature-race-desc-dragon-Wyrm          TODO
+creature-race-desc-dragon-Skycaster     TODO
+creature-race-desc-dragon-Elder         TODO
 
 #Title Descriptions
 creature-title-ProtectorOfThornberry-desc Standing bravely against the Goblin hoards alongside the Thornberry town guards has earned you this title.  The townsfolk will recognize you and may even give you favorable prices and other benefits.
@@ -1348,92 +1348,6 @@ nonplayer-weapon-chances-role-Bat                    { [body] }
 nonplayer-weapon-chances-role-Ghost                  { [body] }
 nonplayer-weapon-chances-role-Cat                    { [body] }
 nonplayer-weapon-chances-role-Wolf                   { [body] }
-
-#weapon details:                                    name                complexity   price   weight   damage min/max  hands       description
-item-weapon-details-Claymore             "Claymore",         "Simple",     500,    1200,   10, 16,         two-handed, "large two-handed broadsword with forward tilting crossguards"
-item-weapon-details-Longsword            "Longsword",        "Simple",     300,    1000,    8, 14,         two-handed, "large two-handed sword"
-item-weapon-details-Flamberg             "Flamberg",         "Simple",     400,     800,   10, 15,         one-handed, "longer one-handed sword with a wavy blade"
-item-weapon-details-Knightly             "Knightly Sword",   "Simple",     180,     750,    6, 12,         two-handed, "larger one-handed sword with a fuller and cruciform hilt"
-item-weapon-details-Broadsword           "Broadsword",       "Simple",     180,     750,    6, 10,         one-handed, "broad one-handed sword with a basket hilt"
-item-weapon-details-Falcata              "Falcata",          "Simple",     100,     700,    7,  8,         one-handed, "one-handed single-edged forward-sloping sword"
-item-weapon-details-Saber                "Saber",            "Simple",     160,     725,    5, 10,         one-handed, "one-handed single-edged curved blade with a large hand guard"
-item-weapon-details-Cutlass              "Cutlass",          "Simple",     100,     500,    4,  6,         one-handed, "shorter one-handed single-edged broad sabre with a slightly curved blade and a solid cupped guard"
-item-weapon-details-Rapier               "Rapier",           "Simple",     130,     450,    5,  9,         one-handed, "one-handed double-edged long-bladed sword with a protective guard"
-item-weapon-details-Gladius              "Gladius",          "Simple",      70,     450,    4,  8,         one-handed, "broad one-handed double-edged short-bladed sword with a protective guard"
-item-weapon-details-Shortsword           "Shortsword",       "Simple",      50,     400,    3,  7,         one-handed, "sword shorter than the length of an arm"
-item-weapon-details-Handaxe              "Handaxe",          "Simple",      10,     500,    1,  3,         one-handed, "one-handed chopping axe not even intended for battle"
-item-weapon-details-Sickle               "Sickle",           "Simple",      50,     350,    3,  6,         one-handed, "short one-handed curved blade"
-item-weapon-details-Battleaxe            "Battleaxe",        "Simple",     350,    1200,    8, 16,         two-handed, "two-handed double-edged heavy axe"
-item-weapon-details-Waraxe               "Waraxe",           "Simple",     600,    2000,   12, 18,         two-handed, "two-handed double-edged heavy axe used in combat and ceremony"
-item-weapon-details-Spiked               "Spiked Club",      "Simple",     200,    1000,    6, 12,         one-handed, "spiked weight at the end of a handle"
-item-weapon-details-Maul                 "Maul",             "Simple",     500,     900,    8, 14,         two-handed, "long handled wedged hammer"
-item-weapon-details-Mace                 "Mace",             "Simple",     550,    1050,    9, 13,         two-handed, "short handled bashing club"
-item-weapon-details-Warhammer            "Warhammer",        "Simple",     600,    2000,   12, 18,         two-handed, "large heavy ceremonial club"
-item-weapon-details-Bullwhip             "Bullwhip",         "Simple",     60,      100,    1,  4,         one-handed, "sturdy leather whip"
-item-weapon-details-Flail                "Flail",            "Simple",     110,     600,    5, 10,         two-handed, "two-handed long stick handle with a shorter stick attached with soft leather"
-item-weapon-details-MaceAndChain         "Mace And Chain",   "Simple",     225,     800,    8, 12,         one-handed, "short stick with a chain connecting a spiked end"
-item-weapon-details-Blowpipe             "Blowpipe",         "Simple",     150,     200,    1,  3,         two-handed, "wooden pipe with a collection of poisoned tipped darts"
-item-weapon-details-Sling                "Sling",            "Simple",      25,      75,    2,  5,         two-handed, "length of leather with a pouch for throwing stones"
-item-weapon-details-Longbow              "Longbow",          "Simple",     200,     450,    8, 13,         two-handed, "bow that extends the full height of the archer and curves inward"
-item-weapon-details-Shortbow             "Shortbow",         "Simple",     100,     250,    4,  9,         two-handed, "smaller inward curving bow."
-item-weapon-details-CompositeBow         "Composite Bow",    "Moderate",   450,     650,    9, 16,         two-handed, "smaller bow made from animal horn with ends that curve outward"
-item-weapon-details-Crossbow             "Crossbow",         "Complex",    300,     650,    10,15,         two-handed, "wooden construct with a pull string that fires metal bolts"
-item-weapon-details-Spear                "Spear",            "Simple",      85,     200,    4,  8,         two-handed, "long shaft with a pointed tip"
-item-weapon-details-ShortSpear           "ShortSpear",       "Simple",      50,     125,    3,  7,         two-handed, "short shaft with a pointed tip"
-item-weapon-details-Scythe               "Scythe",           "Simple",     200,     400,    7, 10,         two-handed, "long shaft of wood with a crossing steel blade"
-item-weapon-details-Pike                 "Pike",             "Simple",     135,     400,    5,  9,         two-handed, "very long thrusting spear"
-item-weapon-details-Partisan             "Partisan",         "Simple",     220,     700,    8, 10,         two-handed, "very long thrusting spear with side flanges for blocking"
-item-weapon-details-Halberd              "Halberd",          "Simple",     250,     750,    9, 13,         two-handed, "very long thrusting spear with an axe protruding from the side"
-item-weapon-details-Staff                "Staff",            "Simple",      10,     300,    1,  6,         two-handed, "long thin shaft"
-item-weapon-details-Quarterstaff         "Quarterstaff",     "Simple",      10,     150,    1,  3,         two-handed, "shaft of medium length"
-item-weapon-details-BreathFirebrand      "Firebrand Breath", "Simple",       0,       1,    4,  9,                 NA, "The flaming breath of a Firebran"
-item-weapon-details-BreathSylavin        "Sylavin Breath",   "Simple",       0,       1,    7, 10,                 NA, "The toxic freezing breath of a Sylavin"
-item-weapon-details-Bite                 "Bite",             "Simple",       0,     180,    2,  4,                 NA, "The fanged jaws of a"
-item-weapon-details-Claws                "Claws",            "Simple",       0,     200,    1,  3,         two-handed, "The sharp tearing claws of a"
-item-weapon-details-Fists                "Fists",            "Simple",       0,     190,    1,  2,         two-handed, "The clendched fists of a"
-item-weapon-details-Tentacles            "Tentacles",        "Simple",       0,     350,    1,  2,                 NA, "The writhing fleshy tenticles of a"
-item-weapon-details-Knife                "Knife",            "Simple",      15,     85,     2,  3,         one-handed, "short blade with a handle"
-item-weapon-details-Dagger               "Dagger",           "Simple",      25,     115,    4,  5,         one-handed, "slightly curved blade with a handle"
-
-#armor details:                                 name                complexity  price  weight armor-rating  description
-item-armor-details-Buckler           "Buckler Shield",   "Simple",    20,    200,   40,          "small circular shield"
-item-armor-details-Kite              "Kite Shield",      "Simple",    80,    800,   70,          "shield with a round top and a pointed bottom"
-item-armor-details-Heater            "Heater Shield",    "Simple",   200,   1100,   80,          "shield with a flat top and a pointed bottom"
-item-armor-details-Pavis             "Pavis Shield",     "Simple",   400,   2000,   90,          "convex full-covering shield that knights use"
-item-armor-details-Leather           "Leather Helm",     "Simple",    15,    100,   20,          "simple top-covering single-piece helm"
-item-armor-details-Kettle            "Kettle Helm",      "Simple",    25,    150,   30,          "top-covering brimmed single-piece helm"
-item-armor-details-MailCoif          "Mail Coif",        "Complex",   50,    250,   40,          "single-piece of mail that fits over the head."
-item-armor-details-Archers           "Archers Helm",     "Simple",    75,    250,   50,          "single-piece helm that covers the top and back of the head"
-item-armor-details-Bascinet          "Bascinet Helm",    "Simple",   120,    350,   60,          "two-piece helm with a flip front"
-item-armor-details-Great             "Great Helm",       "Simple",   200,   1100,   70,          "single-piece full-covering helm that knights wear with a thin visor"
-item-armor-details-PlainGloves       "Gloves",           "Simple",     8,     50,   10,          "pair of gloves"
-item-armor-details-MailGauntlets     "Mail Gauntlets",   "Complex",   35,    300,   20,          "pair of guantlets of interlocking rings"
-item-armor-details-ScaleGauntlets    "Scale Gauntlets",  "Complex",   45,    125,   30,          "pair of guantlets of interlocking pieces"
-item-armor-details-PlateGauntlets    "Plate Gauntlets",  "Moderate",  50,    220,   40,          "pair of gauntlets that knights wear of interlocking plates"
-item-armor-details-PlainPants        "Pants",            "Simple",    22,    125,   10,          "pair of pants"
-item-armor-details-MailPants         "Mail Pants",       "Complex",  125,    800,   70,          "pair of pants made of interlocking rings"
-item-armor-details-ScalePants        "Scale Pants",      "Complex",  205,   1000,   80,          "pair of pants made of interlocking pieces"
-item-armor-details-PlatePants        "Plate Pants",      "Moderate", 400,   1500,   90,          "pair of pants that knights wear made of interlocking plates"
-item-armor-details-PlainBoots        "Boots",            "Simple",    15,    185,   10,          "pair of boots"
-item-armor-details-MailBoots         "Mail Boots",       "Complex",   55,    300,   50,          "pair of boots made of interlocking rings"
-item-armor-details-ScaleBoots        "Scale Boots",      "Complex",  115,    350,   70,          "pair of boots of interlocking pieces"
-item-armor-details-PlateBoots        "Plate Boots",      "Moderate", 250,    400,   90,          "pair of boots that knights wear of interlocking plates"
-item-armor-details-PlainShirt        "Shirt",            "Simple",    15,    185,   10,          "shirt"
-item-armor-details-MailShirt         "Mail Shirt",       "Complex",   55,    300,   50,          "shirt of interlocking rings"
-item-armor-details-ScaleShirt        "Scale Shirt",      "Complex",  115,    300,   70,          "shirt of interlocking pieces"
-item-armor-details-PlateShirt        "Plate Shirt",      "Moderate", 250,    400,   90,          "shirt that knights wear of interlocking plates"
-item-armor-details-PlainBracers      "Bracers",          "Simple",    18,    125,   20,          "forearm covering"
-item-armor-details-MailBracers       "Mail Bracers",     "Complex",   50,    250,   40,          "forearm covering of interlocking rings"
-item-armor-details-ScaleBracers      "Scale Bracers",    "Complex",   80,    200,   50,          "forearm covering of interlocking pieces"
-item-armor-details-PlateBracers      "Plate Bracers",    "Moderate", 150,    300,   70,          "forearm covering that knights wear of interlocking plates"
-item-armor-details-PlainAventail     "Aventail",         "Simple",   100,    215,   20,          "neck covering attched to a helm"
-item-armor-details-MailAventail      "Mail Aventail",    "Complex",  135,    300,   40,          "neck covering attched to a helm of interlocking rings"
-item-armor-details-ScaleAventail     "Scale Aventail",   "Complex",  200,    200,   50,          "neck covering attched to a helm of interlocking pieces"
-item-armor-details-PlateAventail     "Plate Aventail",   "Moderate", 300,    300,   60,          "neck covering attched to a helm of interlocking plates"
-item-armor-details-Cape              "Cape",             "Simple",    16,    170,   10,          "back covering"
-item-armor-details-Vest              "Vest",             "Simple",    22,    180,   20,          "torso cover that is cut short at the arms"
-item-armor-details-Robe              "Robe",             "Simple",    24,    240,   25,          "body covering without a hood"
-item-armor-details-Cloak             "Cloak",            "Simple",    30,    300,   30,          "full body cover including a hood"
 
 #non-player character combat strategies by race
 nonplayer-combat-strategy-race-Human         Select, Beast:0.25, Projectile:0.12, Caster:0.33, Knight:0.33, Wolfen:0.05 | Refine, Murderer:0.025, Bloodthirsty:0.025, Coward:0.025, Caster:0.01, Enchanted:0.1, MostDamage:0.5 | Retreat, Coward:0.1 | OutnumberRetreat, dist:2:0.025

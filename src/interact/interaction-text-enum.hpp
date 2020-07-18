@@ -24,7 +24,7 @@ namespace heroespath
 namespace interact
 {
 
-    struct Text : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Text : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

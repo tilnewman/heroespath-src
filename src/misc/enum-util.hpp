@@ -26,20 +26,6 @@
 
 namespace heroespath
 {
-namespace combat
-{
-    namespace strategy
-    {
-        struct SelectType;
-        struct RefineType;
-    } // namespace strategy
-} // namespace combat
-
-namespace item
-{
-    struct weapon_type;
-}
-
 namespace helpers
 {
 
@@ -158,16 +144,11 @@ namespace helpers
 
             EnumUnderlying_t result { 0 };
 
-            // normally we would split on anything !IsAlphaOrDigit(), but some of the enum names
-            // have underscores and there are other kinds of strings we are parsing that have
-            // other chars that we can't split on from the config files.  For example, the
-            // string "sword-long-ratio" should not match any enum but it will if we split it on
-            // the dash and turn it into "sword" "long" "ratio".  The usual bitfield enum
-            // separator chars are
-            // '/' and ','.
+            // Can't simply split on !IsAlphaOrDigit() because some of the enum names have
+            // underscores/dashes/etc.  Typical bitfield enum separators are '/' and ','.
             auto isSeparator = [](const char CH) constexpr noexcept
             {
-                return !(misc::IsAlphaOrDigit(CH) || (CH == '_') || (CH == '-'));
+                return (!misc::IsAlphaOrDigit(CH) && (CH != '_') && (CH != '-'));
             };
 
             auto setBitByName = [&](const auto FIRST, const auto LAST) {
@@ -211,7 +192,6 @@ namespace helpers
             singleBitToCheck <<= 1;
         }
 
-        // combat::strategy::SelectType, combat::strategy::,
         static void ToStringPopulate(
             std::string & str,
             const EnumUnderlying_t ENUM_VALUE,
@@ -230,40 +210,9 @@ namespace helpers
 
             EnumUnderlying_t singleBitToCheck { 1 };
 
-            if constexpr (misc::are_same_v<EnumWrapper_t, combat::strategy::SelectType>)
+            if constexpr (EnumWrapper_t::Last > NAMEOF_ENUM_RANGE_MAX)
             {
-                static const std::array<std::string_view, 20> NAMES
-                    = { "Pixie",  "Dragon",   "Human",     "Gnome",       "Wolfen",
-                        "Archer", "Sorcerer", "Knight",    "Beastmaster", "Cleric",
-                        "Thief",  "Bard",     "FireBrand", "Sylavin",     "Projectile",
-                        "Caster", "CanFly",   "CantFly",   "Beast",       "NotBeast" };
-
-                for (const auto & NAME : NAMES)
-                {
-                    ToStringPopulateAppendIf(
-                        ORIG_SIZE, str, ENUM_VALUE, separator, NAME, singleBitToCheck);
-                }
-            }
-            else if constexpr (misc::are_same_v<EnumWrapper_t, combat::strategy::RefineType>)
-            {
-                static const std::array<std::string_view, 12> NAMES
-                    = { "Murderer",     "Bloodthirsty", "Coward", "Hit",
-                        "Attack",       "MusicMaker",   "Caster", "Enchanted",
-                        "NotEnchanted", "Steadfast",    "LastTo", "MostDamage" };
-
-                for (const auto & NAME : NAMES)
-                {
-                    ToStringPopulateAppendIf(
-                        ORIG_SIZE, str, ENUM_VALUE, separator, NAME, singleBitToCheck);
-                }
-            }
-            else if constexpr (misc::are_same_v<EnumWrapper_t, heroespath::item::weapon_type>)
-            {
-                static const std::array<std::string_view, 12> NAMES
-                    = { "Melee", "Projectile", "BodyPart", "Bladed", "Pointed", "Sword",
-                        "Axe",   "Whip",       "Knife",    "Club",   "Staff",   "BladedStaff" };
-
-                for (const auto & NAME : NAMES)
+                for (const auto & NAME : EnumWrapper_t::TO_STRINGS)
                 {
                     ToStringPopulateAppendIf(
                         ORIG_SIZE, str, ENUM_VALUE, separator, NAME, singleBitToCheck);
@@ -331,13 +280,6 @@ namespace helpers
     StrNumPairVec_t BitFieldEnum<EnumWrapper_t>::nameToBitFlagMap_;
 
 } // namespace helpers
-
-constexpr std::size_t CountBitsSet(std::uint32_t x)
-{
-    x = x - ((x >> 1) & 0x55555555);
-    x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
-    return (((x + (x >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
-}
 
 // helper template for common enumeration operations
 template <typename EnumWrapper_t>
@@ -436,9 +378,9 @@ struct EnumUtil
         }
     }
 
-    static constexpr std::size_t CountBitsSet(const EnumUnderlying_t ENUM_VALUE)
+    static constexpr std::size_t CountBits(const EnumUnderlying_t ENUM_VALUE)
     {
-        return heroespath::CountBitsSet(static_cast<std::uint32_t>(ENUM_VALUE));
+        return misc::CountBits(static_cast<std::uint32_t>(ENUM_VALUE));
     }
 };
 

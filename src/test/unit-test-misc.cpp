@@ -28,7 +28,6 @@
 #include <iostream>
 #include <limits>
 #include <list>
-#include <map>
 #include <set>
 #include <type_traits>
 #include <vector>
@@ -1126,7 +1125,7 @@ BOOST_AUTO_TEST_CASE(strong_numeric_type)
     Health_t a; // should zero initialize
     BOOST_CHECK_EQUAL(a.Get(), 0);
     BOOST_CHECK(a.IsZero());
-    BOOST_CHECK(a.IsPositive());
+    BOOST_CHECK(a.IsZeroOrMore());
     BOOST_CHECK(!a.IsNegative());
     BOOST_CHECK_EQUAL(a.MakePositiveCopy(), 0_health);
     BOOST_CHECK_EQUAL(a.MakeNegativeCopy(), 0_health);
@@ -1145,7 +1144,7 @@ BOOST_AUTO_TEST_CASE(strong_numeric_type)
     Health_t d = Health_t::Make(123);
     BOOST_CHECK_EQUAL(d.Get(), 123);
     BOOST_CHECK(!d.IsZero());
-    BOOST_CHECK(d.IsPositive());
+    BOOST_CHECK(d.IsZeroOrMore());
     BOOST_CHECK(!d.IsNegative());
     BOOST_CHECK_EQUAL(d.MakePositiveCopy(), 123_health);
     BOOST_CHECK_EQUAL(d.MakeNegativeCopy(), -123_health);
@@ -1162,7 +1161,7 @@ BOOST_AUTO_TEST_CASE(strong_numeric_type)
     Health_t e = Health_t::Make(-123);
     BOOST_CHECK_EQUAL(e.Get(), -123);
     BOOST_CHECK(!e.IsZero());
-    BOOST_CHECK(!e.IsPositive());
+    BOOST_CHECK(!e.IsZeroOrMore());
     BOOST_CHECK(e.IsNegative());
     BOOST_CHECK_EQUAL(e.MakePositiveCopy(), 123_health);
     BOOST_CHECK_EQUAL(e.MakeNegativeCopy(), -123_health);
@@ -1533,7 +1532,6 @@ BOOST_AUTO_TEST_CASE(config_keys_found_in_the_codebase_images)
                                                  "media-image-misc-chest-open",
                                                  "media-image-misc-coins",
                                                  "media-image-misc-door-locked",
-                                                 "media-image-misc-error",
                                                  "media-image-misc-gear-lit",
                                                  "media-image-misc-gear-normal",
                                                  "media-image-misc-gui-elements",
@@ -1551,9 +1549,10 @@ BOOST_AUTO_TEST_CASE(config_keys_found_in_the_codebase_images)
                                                  "media-image-misc-system-error",
                                                  "media-image-misc-talk",
                                                  "media-image-misc-trap",
-                                                 "media-image-misc-todo",
                                                  "media-image-misc-weight",
-                                                 "media-image-misc-x" };
+                                                 "media-image-misc-x",
+                                                 "media-image-misc-todo",
+                                                 "media-image-misc-todo" };
 
     sf::Texture texture;
 
@@ -1674,7 +1673,6 @@ BOOST_AUTO_TEST_CASE(config_keys_found_in_the_codebase_numbers)
             "fight-stats-value-floor",
             "inventory-clothing-chance-max",
             "inventory-clothing-chance-min",
-            "item-secondary-material-armor-adj-ratio",
             "nonplayer-ownershipprofile-collectortype-chance-base",
             "nonplayer-ownershipprofile-collectortype-chance-maximum",
             "nonplayer-ownershipprofile-collectortype-chance-minimum",

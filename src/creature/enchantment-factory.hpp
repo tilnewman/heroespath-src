@@ -14,8 +14,13 @@
 #include "creature/enchantment.hpp"
 #include "creature/trait.hpp"
 #include "creature/traits-set.hpp"
-#include "item/item-creation-packet.hpp"
-#include "item/item-type-enum.hpp"
+#include "item/category-enum.hpp"
+#include "item/element-enum.hpp"
+#include "item/material-enum.hpp"
+#include "item/misc-enum.hpp"
+#include "item/named-enum.hpp"
+#include "item/set-enum.hpp"
+#include "item/weapon-enum.hpp"
 #include "misc/not-null.hpp"
 
 #include <string>
@@ -34,42 +39,43 @@ namespace creature
     // combinations of Enchantments.  Only the ItemProfieFactory queries the treasure scores, and
     // only the Item constructor calls MakeAndStore().
     //
-    // Item types such as set_type, named_type, unique_type, and elemental_type are all distinct
-    // item magical enchantments.  The only valid combination is that named_types often are
-    // element_types, and yes there are a very few unique_types that are also armor (cape's) that
-    // also have element types.  Only weapons and armor can be named_types and elemental_types.
-    // Unique_types cannot be weapons or armor, they must be misc_types.  If an item is unique_type
+    // Item types such as Set, Named, unique_type, and elemental_type are all distinct
+    // item magical enchantments.  The only valid combination is that Nameds often are
+    // Elements, and yes there are a very few unique_types that are also armor (cape's) that
+    // also have element types.  Only weapons and armor can be Nameds and elemental_types.
+    // Unique_types cannot be weapons or armor, they must be Miscs.  If an item is unique_type
     // then it will have Enchantments specifically for that unique_type and no Enchantments from the
-    // misc_type will be applied.
+    // Misc will be applied.
     struct EnchantmentFactory
     {
         EnchantmentFactory() = delete;
 
         // If part of a set, then only the set enchantments will apply.
         // If unique, then only the unique_type enchantments will be applied.
-        // All unique_types are also misc_types but their enchantments are mutually exclusive.
-        // Enchantments from element_types, named_types, and misc_types can combine.
+        // All unique_types are also Miscs but their enchantments are mutually exclusive.
+        // Enchantments from Elements, Nameds, and Miscs can combine.
         static const EnchantmentPVec_t MakeAndStore(const item::Item &);
 
-        static Score_t TreasureScore(
-            const item::misc_type::Enum,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY);
+        // TODO this one appears to be broken and not doing anything
+        // static Score_t Score(
+        //    const item::Misc::Enum,
+        //    const item::Material::Enum MAT_PRI,
+        //    const item::Material::Enum MAT_SEC);
 
-        static Score_t TreasureScore(const item::set_type::Enum);
+        static Score_t Score(const item::Set::Enum);
 
-        static Score_t TreasureScore(
-            const item::named_type::Enum,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY,
+        static Score_t Score(
+            const item::Named::Enum,
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC,
             const bool IS_WEAPON,
             const bool IS_ARMOR);
 
-        static Score_t TreasureScore(
-            const item::element_type::Enum,
+        static Score_t Score(
+            const item::Element::Enum,
             const bool IS_WEAPON,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY);
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC);
 
     private:
         static const EnchantmentPtr_t Make(
@@ -78,44 +84,44 @@ namespace creature
         static const EnchantmentPtr_t Make(const Enchantment &);
 
         static const EnchantmentVec_t MakeFromMiscType(
-            const item::misc_type::Enum,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY);
+            const item::Misc::Enum,
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC);
 
         static const EnchantmentPVec_t NewFromMiscType(
-            const item::misc_type::Enum,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY);
+            const item::Misc::Enum,
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC);
 
-        static const Enchantment MakeFromSetType(const item::set_type::Enum);
-        static const EnchantmentPtr_t NewFromSetType(const item::set_type::Enum);
+        static const Enchantment MakeFromSetType(const item::Set::Enum);
+        static const EnchantmentPtr_t NewFromSetType(const item::Set::Enum);
 
-        static const Enchantment MakeFromSetCompleteType(const item::set_type::Enum);
-        static const EnchantmentPtr_t NewFromSetCompleteType(const item::set_type::Enum);
+        static const Enchantment MakeFromSetCompleteType(const item::Set::Enum);
+        static const EnchantmentPtr_t NewFromSetCompleteType(const item::Set::Enum);
 
         static const Enchantment MakeFromElementType(
-            const item::element_type::Enum,
+            const item::Element::Enum,
             const bool IS_WEAPON,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY);
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC);
 
         static const EnchantmentPtr_t NewFromElementType(
-            const item::element_type::Enum,
+            const item::Element::Enum,
             const bool IS_WEAPON,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY);
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC);
 
         static const Enchantment MakeFromNamedType(
-            const item::named_type::Enum,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY,
+            const item::Named::Enum,
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC,
             const bool IS_WEAPON,
             const bool IS_ARMOR);
 
         static const EnchantmentPtr_t NewFromNamedType(
-            const item::named_type::Enum,
-            const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY,
+            const item::Named::Enum,
+            const item::Material::Enum MAT_PRI,
+            const item::Material::Enum MAT_SEC,
             const bool IS_WEAPON,
             const bool IS_ARMOR);
     };

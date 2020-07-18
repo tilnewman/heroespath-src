@@ -227,24 +227,18 @@ namespace combat
         projAnimWillSpin_ = !WILL_HIT;
 
         const auto COMBAT_IMAGE_TYPE = [&]() {
-            if (WEAPON_PTR->WeaponInfo().IsBow())
+            switch (WEAPON_PTR->WeaponInfo().MinorAs<item::Projectiles>())
             {
-                return gui::CombatImageType::Arrow;
-            }
-            else if (
-                WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
-            {
-                return gui::CombatImageType::Stone;
-            }
-            else if (
-                WEAPON_PTR->WeaponInfo().ProjectileType()
-                == item::weapon::projectile_type::Crossbow)
-            {
-                return gui::CombatImageType::Bolt;
-            }
-            else
-            {
-                return gui::CombatImageType::Dart;
+                case item::Projectiles::Blowpipe: return gui::CombatImageType::Dart;
+                case item::Projectiles::Sling: return gui::CombatImageType::Stone;
+
+                case item::Projectiles::Crossbow: return gui::CombatImageType::Bolt;
+
+                case item::Projectiles::Longbow:
+                case item::Projectiles::Shortbow:
+                case item::Projectiles::Compositebow:
+                case item::Projectiles::Count:
+                default: return gui::CombatImageType::Arrow;
             }
         }();
 
@@ -337,9 +331,9 @@ namespace combat
         if (!sfutil::Contains(
                 BATTLEFIELD_RECT, PROJ_ANIM_SPRITE_GBOUNDS.left, PROJ_ANIM_SPRITE_GBOUNDS.top)
             || !sfutil::Contains(
-                   BATTLEFIELD_RECT,
-                   (PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width),
-                   (PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height)))
+                BATTLEFIELD_RECT,
+                (PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width),
+                (PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height)))
         {
             ProjectileShootAnimStop();
         }
@@ -809,7 +803,9 @@ namespace combat
             }
 
             case spell::Spells::Count:
-            default: { break;
+            default:
+            {
+                break;
             }
         }
 

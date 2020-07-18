@@ -146,7 +146,7 @@ namespace creature
     {
         OriginTypeVec_t types;
 
-        if ((RACE == race::Count) && (ROLE == role::Count))
+        if ((RACE >= race::Count) && (ROLE >= role::Count))
         {
             return types;
         }
@@ -221,7 +221,9 @@ namespace creature
             case race::Bat:
             case race::ThreeHeadedHound:
             case race::Count:
-            default: { break;
+            default:
+            {
+                break;
             }
         }
 
@@ -330,7 +332,9 @@ namespace creature
                 case Bat:
                 case Harpy:
                 case Count:
-                default: { break;
+                default:
+                {
+                    break;
                 }
             }
         }
@@ -368,11 +372,15 @@ namespace creature
             }
 
             case race::Orc:
-            case race::Goblin: { return { "media-image-bone-pile-skull-goblin" };
+            case race::Goblin:
+            {
+                return { "media-image-bone-pile-skull-goblin" };
             }
 
             case race::Pug:
-            case race::Newt: { return { "media-image-bone-pile-skull-animal-2" };
+            case race::Newt:
+            {
+                return { "media-image-bone-pile-skull-animal-2" };
             }
 
             case race::Naga:
@@ -382,59 +390,87 @@ namespace creature
                 return { "media-image-bone-pile-skull-orc" };
             }
 
-            case race::Bog: { return { "media-image-bone-pile-skull-bog" };
+            case race::Bog:
+            {
+                return { "media-image-bone-pile-skull-bog" };
             }
 
             case race::Spider:
-            case race::CaveCrawler: { return { "media-image-bone-pile-cave-crawler" };
+            case race::CaveCrawler:
+            {
+                return { "media-image-bone-pile-cave-crawler" };
             }
 
-            case race::Minotaur: { return { "media-image-bone-pile-skull-minotaur" };
+            case race::Minotaur:
+            {
+                return { "media-image-bone-pile-skull-minotaur" };
             }
 
-            case race::Plant: { return { "media-image-bone-pile-skull-animal-1" };
+            case race::Plant:
+            {
+                return { "media-image-bone-pile-skull-animal-1" };
             }
 
-            case race::Beetle: { return { "media-image-bone-pile-beetle" };
+            case race::Beetle:
+            {
+                return { "media-image-bone-pile-beetle" };
             }
 
-            case race::Demon: { return { "media-image-bone-pile-skull-demon" };
+            case race::Demon:
+            {
+                return { "media-image-bone-pile-skull-demon" };
             }
 
             case race::Harpy:
-            case race::Griffin: { return { "media-image-bone-pile-griffin" };
+            case race::Griffin:
+            {
+                return { "media-image-bone-pile-griffin" };
             }
 
             case race::Boar:
             case race::LionBoar:
             case race::Ramonaut:
-            case race::Wereboar: { return { "media-image-bone-pile-skull-animal-3" };
+            case race::Wereboar:
+            {
+                return { "media-image-bone-pile-skull-animal-3" };
             }
 
             case race::Wolfen:
             case race::Lion:
             case race::Werebear:
-            case race::Werewolf: { return { "media-image-bone-pile-wolfen" };
+            case race::Werewolf:
+            {
+                return { "media-image-bone-pile-wolfen" };
             }
 
             case race::Serpent:
-            case race::Cobra: { return { "media-image-bone-pile-skull-snake" };
+            case race::Cobra:
+            {
+                return { "media-image-bone-pile-skull-snake" };
             }
 
-            case race::Werecat: { return { "media-image-bone-pile-cat" };
+            case race::Werecat:
+            {
+                return { "media-image-bone-pile-cat" };
             }
 
             case race::Ogre:
             case race::Golem:
             case race::Troll:
-            case race::Giant: { return { "media-image-bone-pile-skull-giant" };
+            case race::Giant:
+            {
+                return { "media-image-bone-pile-skull-giant" };
             }
 
             case race::Bat:
-            case race::Werebat: { return { "media-image-bone-pile-bat" };
+            case race::Werebat:
+            {
+                return { "media-image-bone-pile-bat" };
             }
 
-            case race::ThreeHeadedHound: { return { "media-image-bone-pile-three-headed-hound" };
+            case race::ThreeHeadedHound:
+            {
+                return { "media-image-bone-pile-three-headed-hound" };
             }
 
             case race::Count:

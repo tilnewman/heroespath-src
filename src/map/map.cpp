@@ -42,8 +42,8 @@ namespace map
     const float Map::NONPLAYER_MOVE_DISTANCE_ { 3.0f };
 
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
-        : WALK_SFX_VOLUME_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-              "sound-map-walk-sfx-volume-ratio"))
+        : WALK_SFX_VOLUME_RATIO_(
+            misc::ConfigFile::Instance()->ValueOrDefault<float>("sound-map-walk-sfx-volume-ratio"))
         , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(REGION))
         , interactionManager_(interactionManager)
         , collisionVec_()
@@ -320,7 +320,7 @@ namespace map
                    "the map to place the player, crashing.");
 
         // this if the LEVEL_FROM is invalid because that can only happen during unit tests
-        if (LEVEL_FROM != Level::Count)
+        if (LEVEL_FROM < Level::Count)
         {
             M_HP_LOG_ERR(
                 errorSS.str()

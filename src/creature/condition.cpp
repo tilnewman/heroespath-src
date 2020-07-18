@@ -96,7 +96,6 @@ namespace creature
     void Condition::FinalChange(const CreaturePtr_t) const {}
 
     void Condition::PerTurnEffect(
-        const combat::CreatureInteraction & CREATURE_INTERACTION,
         const CreaturePtr_t CREATURE_PTR,
         combat::HitInfoVec_t & hitInfoVec,
         bool & hasTurnBeenConsumed) const
@@ -199,7 +198,7 @@ namespace creature
                 {
                     creature::CondEnumVec_t condsRemoved;
 
-                    CREATURE_INTERACTION.RemoveAddedCondition(
+                    combat::CreatureInteraction::RemoveAddedCondition(
                         creature::Conditions::Poisoned, CREATURE_PTR, hitInfoVec, condsRemoved);
 
                     std::string descStr("The poison has left ");
@@ -231,7 +230,7 @@ namespace creature
                     CondEnumVec_t condsAddedVec;
                     CondEnumVec_t condsRemovedVec;
 
-                    CREATURE_INTERACTION.HandleDamage(
+                    combat::CreatureInteraction::HandleDamage(
                         CREATURE_PTR,
                         hitInfoVec,
                         DAMAGE_FINAL,
@@ -327,7 +326,9 @@ namespace creature
             case Conditions::Stone:
             case Conditions::Dead:
             case Conditions::Count:
-            default: { break;
+            default:
+            {
+                break;
             }
         }
     }

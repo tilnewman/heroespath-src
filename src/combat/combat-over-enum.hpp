@@ -18,7 +18,7 @@ namespace heroespath
 namespace combat
 {
 
-    struct CombatEnd : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct CombatEnd : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

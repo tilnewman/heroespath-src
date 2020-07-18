@@ -19,7 +19,7 @@ namespace heroespath
 namespace combat
 {
 
-    struct EffectType : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct EffectType : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

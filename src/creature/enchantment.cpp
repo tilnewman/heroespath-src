@@ -13,7 +13,6 @@
 
 #include "creature/condition-algorithms.hpp"
 #include "creature/creature.hpp"
-#include "item/item-score-helper.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 
@@ -34,7 +33,7 @@ namespace creature
         , useInfo_(USE_INFO)
         , effectsStr_(EFFECTS_STR)
         , effectType_(EFFECT_TYPE)
-        , score_(((SCORE == 0_score) ? CalcTreasureScore() : SCORE))
+        , score_(((SCORE == 0_score) ? CalcScore() : SCORE))
     {}
 
     const std::string Enchantment::EffectStr() const
@@ -67,7 +66,7 @@ namespace creature
             }
 
             const auto SPELL { useInfo_.Spell() };
-            if (SPELL != spell::Spells::Count)
+            if (SPELL < spell::Spells::Count)
             {
                 str += SepIfNotEmpty();
                 str += "casts the ";
@@ -106,6 +105,9 @@ namespace creature
 
     void Enchantment::UseEffect(const CreaturePtr_t)
     {
+        // TODO eventually this will only happen if all the logic allows it
+        UseCountConsume();
+
         switch (effectType_)
         {
             case UseEffectType::PixieBell:
@@ -117,8 +119,8 @@ namespace creature
             {
                 /*TODO*/
 
-                // const auto MAT_BONUS{ material::EnchantmentBonus(MATERIAL_PRIMARY,
-                // MATERIAL_SECONDARY) }; above will range from 0-20 -add 10 to that and now you
+                // const auto MAT_BONUS{ Material::EnchantmentBonus(MAT_PRI,
+                // MAT_SEC) }; above will range from 0-20 -add 10 to that and now you
                 // have how much mana is restored when used. this enchantment will need to set its
                 // own EFFECTS_STR based on these numbers
 
@@ -175,7 +177,9 @@ namespace creature
                 break;
             }
             case UseEffectType::None:
-            default: { break;
+            default:
+            {
+                break;
             }
         }
     }
@@ -194,11 +198,9 @@ namespace creature
         return str;
     }
 
-    Score_t Enchantment::CalcTreasureScore() const
+    Score_t Enchantment::CalcScore() const
     {
-        item::ScoreHelper scoreHelper;
-
-        auto score { scoreHelper.Score(traitSet_) };
+        auto score = traitSet_.Score();
 
         if (type_ & EnchantmentType::WhenHeld)
         {

@@ -15,6 +15,7 @@
 //         creating and including enums as light-weight as possible.  So while you CAN include
 //         enum-util.hpp in a header file, it would defeat the design and slow down the build.
 //
+#include "misc/bit-util.hpp"
 #include "misc/nameof.hpp"
 #include "misc/type-helpers.hpp"
 
@@ -46,31 +47,33 @@ struct SeparatorVaries
 struct SeparatorAlwaysSlash
 {};
 
-enum class EnumFirstValue
-{
-    Valid,
-    Not,
-    Nothing,
-    Never,
-    None
-};
+struct EnumNameOfZeroIs
+{};
+
+struct EnumNameOfZeroIsNothing
+{};
+
+struct EnumNameOfZeroIsdNever
+{};
+
+struct EnumNameOfZeroIsNone
+{};
+
+struct EnumNameOfZeroIsNot
+{};
 
 struct EnumCounting_t
-{
-    EnumCounting_t() = delete;
-};
+{};
 
 struct EnumBitField_t
-{
-    EnumBitField_t() = delete;
-};
+{};
 
-template <EnumFirstValue KIND_OF_FIRST_VALUE>
+template <typename NameOfZero_t = EnumNameOfZeroIs>
 struct EnumBaseCounting
 {
     EnumBaseCounting() = delete;
     using EnumBase_t = EnumCounting_t;
-    static constexpr EnumFirstValue first_value_t = KIND_OF_FIRST_VALUE;
+    using EnumNameOfZeroPolicy_t = NameOfZero_t;
 };
 
 template <typename Separator_t = SeparatorVaries>

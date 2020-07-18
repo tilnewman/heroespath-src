@@ -49,8 +49,8 @@ namespace gui
         FontManager & operator=(FontManager &&) = delete;
 
         static misc::NotNull<FontManager *> Instance();
-        static void Acquire();
-        static void Release();
+        static void Create();
+        static void Destroy();
 
         const FontPtr_t GetFont(const GuiFont::Enum);
         void Load(const GuiFont::Enum);

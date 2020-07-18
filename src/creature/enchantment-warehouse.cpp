@@ -38,13 +38,13 @@ namespace creature
         {
             M_HP_LOG_ERR(
                 "Subsystem Instance() called but instanceUPtr_ was null: EnchantmentWarehouse");
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<EnchantmentWarehouse *>(instanceUPtr_.get());
     }
 
-    void EnchantmentWarehouse::Acquire()
+    void EnchantmentWarehouse::Create()
     {
         if (!instanceUPtr_)
         {
@@ -52,11 +52,11 @@ namespace creature
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: EnchantmentWarehouse");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: EnchantmentWarehouse");
         }
     }
 
-    void EnchantmentWarehouse::Release() { instanceUPtr_.reset(); }
+    void EnchantmentWarehouse::Destroy() { instanceUPtr_.reset(); }
 
 } // namespace creature
 } // namespace heroespath

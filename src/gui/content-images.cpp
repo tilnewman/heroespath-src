@@ -20,37 +20,20 @@ namespace heroespath
 namespace gui
 {
 
-    std::string ContentImage::todoPath_ { "" };
-    std::string ContentImage::errorPath_ { "" };
+    std::string ContentImage::pathMiscImageDir_ {};
+    std::string ContentImage::pathFullTodo_ {};
+    std::string ContentImage::pathFullError_ {};
 
     void ContentImage::SetupFilesystemPaths()
     {
-        todoPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-misc-todo");
+        pathMiscImageDir_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-misc-dir");
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            misc::filesystem::ExistsAndIsFile(todoPath_),
-            "Default todo content image path does not exist or is not a file."
-                + M_HP_VAR_STR(todoPath_));
+        pathFullTodo_ = misc::filesystem::CombinePathsAndClean(
+            pathMiscImageDir_, std::string(FilenameTodo(true)));
 
-        errorPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-misc-error");
-
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            misc::filesystem::ExistsAndIsFile(errorPath_),
-            "Default error content image path does not exist or is not a file."
-                + M_HP_VAR_STR(todoPath_));
+        pathFullError_ = misc::filesystem::CombinePathsAndClean(
+            pathMiscImageDir_, std::string(FilenameError(true)));
     }
-
-    const std::string ContentImage::FilenameExtension() { return ".png"; }
-
-    const std::string ContentImage::FilenameSeparator() { return "-"; }
-
-    const std::string ContentImage::TodoFilename() { return "todo" + FilenameExtension(); }
-
-    const std::string ContentImage::TodoPath() { return todoPath_; }
-
-    const std::string ContentImage::ErrorFilename() { return "error" + FilenameExtension(); }
-
-    const std::string ContentImage::ErrorPath() { return errorPath_; }
 
 } // namespace gui
 } // namespace heroespath

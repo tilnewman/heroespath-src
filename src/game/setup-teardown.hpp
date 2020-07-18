@@ -61,7 +61,7 @@ namespace game
         void Setup_LoadItemDetails() const;
         void Setup_Display(const std::string & TITLE) const;
         void Setup_FilesystemPaths() const;
-        void Setup_SubsystemsAcquire() const;
+        void Setup_SubsystemsCreate() const;
         void Setup_SubsystemsInitialize() const;
         void Setup_HoldersFill() const;
 

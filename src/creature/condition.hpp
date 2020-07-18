@@ -8,8 +8,6 @@
 #define HEROESPATH_CREATURE_CONDITION_HPP_INCLUDED
 //
 // condition.hpp
-//  Code that places a Creature under a temporary condition.
-//  Examples would be poisoned, unconscious, etc.
 //
 #include "combat/hit-info.hpp"
 #include "creature/condition-enum.hpp"
@@ -24,10 +22,6 @@
 
 namespace heroespath
 {
-namespace combat
-{
-    class CreatureInteraction;
-}
 namespace creature
 {
 
@@ -62,7 +56,6 @@ namespace creature
         void FinalChange(const CreaturePtr_t) const;
 
         void PerTurnEffect(
-            const combat::CreatureInteraction & CREATURE_INTERACTION,
             const CreaturePtr_t CREATURE_PTR,
             combat::HitInfoVec_t & hitInfoVec,
             bool & hasTurnBeenConsumed) const;
@@ -81,9 +74,7 @@ namespace creature
     using ConditionPVec_t = std::vector<ConditionPtr_t>;
 
     bool operator<(const Condition & L, const Condition & R);
-
     bool operator==(const Condition & L, const Condition & R);
-
     inline bool operator!=(const Condition & L, const Condition & R) { return !(L == R); }
 
 } // namespace creature

@@ -1,44 +1,54 @@
+Language: Cpp
+ColumnLimit: 100
+UseTab: Never
+IndentWidth: 4
+
 AlignAfterOpenBracket: AlwaysBreak
+AlignConsecutiveAssignments: true
+AlignEscapedNewlines: Left
+AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortCaseLabelsOnASingleLine: true
-AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+AlwaysBreakAfterReturnType: None
+AlwaysBreakTemplateDeclarations: MultiLine
 AlwaysBreakTemplateDeclarations: true
-BasedOnStyle: WebKit
 BinPackArguments: false
 BinPackParameters: false
+BreakBeforeInheritanceComma: true
+BreakConstructorInitializers: BeforeComma
+Cpp11BracedListStyle: false
+DerivePointerAlignment: false
+FixNamespaceComments: true
+IndentCaseLabels: true
+IndentWrappedFunctionNames: true
+NamespaceIndentation: All
+PenaltyBreakBeforeFirstCallParameter: 0
+PointerAlignment: Middle
+SortIncludes: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+
+BreakBeforeBraces: Custom
 BraceWrapping:
+#  AfterCaseLabel:  true
   AfterClass:      true
   AfterControlStatement: true
   AfterEnum:       true
+#  AfterExternBlock:true
   AfterFunction:   true
   AfterNamespace:  true
   AfterObjCDeclaration: true
   AfterStruct:     true
   AfterUnion:      true
-  AfterExternBlock: true
   BeforeCatch:     true
   BeforeElse:      true
   IndentBraces:    false
   SplitEmptyFunction: false
-  SplitEmptyRecord: false
   SplitEmptyNamespace: false
-BreakBeforeBraces: Custom
-BreakBeforeInheritanceComma: true
-ColumnLimit: 100
-DerivePointerAlignment: false
-FixNamespaceComments: true
-IndentCaseLabels: true
-IndentWidth: 4
-IndentWrappedFunctionNames: true
-Language: Cpp
-NamespaceIndentation: Inner
-PenaltyBreakBeforeFirstCallParameter: 0
-PointerAlignment: Middle
-SortIncludes: true
 
-
-
-# As of 2019-4-28, Visual Studio 2019 does not support these yet...lame.
-#AllowShortFunctionsOnASingleLine: SFS_All
-#AllowShortLambdasOnASingleLine: SLS_All
-
+# MSVC still doesn't support these as of 2019-11-24...grumble...
+#Standard: Cpp17
+#AllowShortBlocksOnASingleLine: SBS_Always
+#AllowShortLambdasOnASingleLine: All
+#SplitEmptyNamespace: false

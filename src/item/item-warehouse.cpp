@@ -34,13 +34,13 @@ namespace item
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: ItemWarehouse");
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<ItemWarehouse *>(instanceUPtr_.get());
     }
 
-    void ItemWarehouse::Acquire()
+    void ItemWarehouse::Create()
     {
         if (!instanceUPtr_)
         {
@@ -48,11 +48,11 @@ namespace item
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: ItemWarehouse");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: ItemWarehouse");
         }
     }
 
-    void ItemWarehouse::Release() { instanceUPtr_.reset(); }
+    void ItemWarehouse::Destroy() { instanceUPtr_.reset(); }
 
 } // namespace item
 } // namespace heroespath

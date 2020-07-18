@@ -21,7 +21,7 @@ namespace heroespath
 namespace avatar
 {
 
-    struct Avatar : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Avatar : public EnumBaseCounting<>
     {
         enum class NameEnum : EnumUnderlying_t
         {
@@ -39,7 +39,7 @@ namespace avatar
             Rags, // leather tunic with ratty looking gray pants
             Common, // male only,
             Tunic, // female only, the only female in pants
-            Pants, // male only, the only male in pants
+            Pant, // male only, the only male in pants
             Maid, // female only, the bar wench
             Robes, // male only, brown full length robes
             Whitebeard, // male only, brown robes, single avatar
@@ -544,7 +544,7 @@ namespace avatar
                 case NameEnum::Rags:
                 case NameEnum::Common:
                 case NameEnum::Tunic:
-                case NameEnum::Pants:
+                case NameEnum::Pant:
                 case NameEnum::Maid:
                 case NameEnum::Robes:
                 case NameEnum::Whitebeard:
@@ -903,7 +903,7 @@ namespace avatar
                 case Pants_Male_Light_Plain_Blonde:
                 case Pants_Male_Light_Plain_Brunette:
                 case Pants_Male_Light_Plain_Raven:
-                case Pants_Male_Light_Plain_White: return NameEnum::Pants;
+                case Pants_Male_Light_Plain_White: return NameEnum::Pant;
 
                 case Plate_Gladiator_Dark_Brunette:
                 case Plate_Gladiator_Dark_Raven:

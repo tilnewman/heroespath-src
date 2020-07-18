@@ -123,13 +123,13 @@ namespace combat
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: Encounter");
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<Encounter *>(instanceUPtr_.get());
     }
 
-    void Encounter::Acquire()
+    void Encounter::Create()
     {
         if (!instanceUPtr_)
         {
@@ -137,11 +137,11 @@ namespace combat
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: Encounter");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: Encounter");
         }
     }
 
-    void Encounter::Release() { instanceUPtr_.reset(); }
+    void Encounter::Destroy() { instanceUPtr_.reset(); }
 
     bool Encounter::IsRunaway(const creature::CreaturePtr_t CREATURE_PTR) const
     {
@@ -317,7 +317,7 @@ namespace combat
             // unequip non-bodypart items
             for (const auto & EQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().ItemsEquipped())
             {
-                if (EQUIPPED_ITEM_PTR->IsBodypart() == false)
+                if (EQUIPPED_ITEM_PTR->IsBodyPart() == false)
                 {
                     CREATURE_PTR->ItemUnEquip(EQUIPPED_ITEM_PTR);
                 }
@@ -326,7 +326,7 @@ namespace combat
             // move non-bodypart item pointers into deadNonPlayerItemsHeld_
             for (const auto & UNEQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().Items())
             {
-                if (UNEQUIPPED_ITEM_PTR->IsBodypart() == false)
+                if (UNEQUIPPED_ITEM_PTR->IsBodyPart() == false)
                 {
                     CREATURE_PTR->ItemRemove(UNEQUIPPED_ITEM_PTR);
                     deadNonPlayerItemsHeld_.items_pvec.emplace_back(UNEQUIPPED_ITEM_PTR);

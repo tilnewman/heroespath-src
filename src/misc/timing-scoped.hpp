@@ -21,7 +21,7 @@ namespace heroespath
 using TimeCount_t = long long;
 using TimeMoment_t = std::chrono::high_resolution_clock::time_point;
 
-struct TimeRes : public EnumBaseCounting<EnumFirstValue::Valid>
+struct TimeRes : public EnumBaseCounting<>
 {
     enum Enum : EnumUnderlying_t
     {

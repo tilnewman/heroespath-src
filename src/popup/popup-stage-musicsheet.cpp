@@ -15,6 +15,7 @@
 #include "gui/font-manager.hpp"
 #include "gui/image-loaders.hpp"
 #include "gui/sound-manager.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
 #include "song/song.hpp"

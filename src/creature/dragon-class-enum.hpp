@@ -19,7 +19,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct dragon_class : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct dragon_class : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

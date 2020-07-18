@@ -8,13 +8,10 @@
 #define HEROESPATH_CREATURE_BODYTYPE_INCLUDED
 //
 // body-type.hpp
-//  Code that defines the body type of all creatures.
 //
-#include "misc/boost-serialize-includes.hpp"
-
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
-#include "item/item-type-enum.hpp" //for material
+#include "misc/boost-serialize-includes.hpp"
 
 #include <cstddef> //for std::size_t
 #include <string>

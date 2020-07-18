@@ -20,7 +20,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct wolfen_class : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct WolfenClass : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

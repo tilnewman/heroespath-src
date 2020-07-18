@@ -29,7 +29,7 @@ namespace gui
 
     using MusicUPtr_t = std::unique_ptr<sf::Music>;
 
-    struct music_update_status : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct music_update_status : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

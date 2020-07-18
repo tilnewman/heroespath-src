@@ -19,7 +19,7 @@ namespace heroespath
 namespace spell
 {
 
-    struct Spells : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Spells : public EnumBaseCounting<>
     {
         // Note:  Keep in sync with:
         //          spell::Warehouse::Fill()

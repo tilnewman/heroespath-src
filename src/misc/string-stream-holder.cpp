@@ -13,7 +13,6 @@
 
 #include "misc/log.hpp"
 
-#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -22,61 +21,45 @@ namespace heroespath
 namespace misc
 {
 
-    std::unique_ptr<std::ostringstream>
-        stringStreamHolder::ss_uptr(std::make_unique<std::ostringstream>());
+    //std::ostringstream StringStreamHolder::ss;
 
-    bool stringStreamHolder::hasInitAlready(false);
-
-    void stringStreamHolder::init()
+    void StringStreamHolder::init()
     {
-        ss_uptr->imbue(std::locale::classic());
-        *(ss_uptr) << std::boolalpha;
+        //ss.imbue(std::locale::classic());
+        //ss << std::boolalpha;
     }
 
-    void stringStreamHolder::reset()
+    void StringStreamHolder::reset()
     {
-        ss_uptr->clear();
-        ss_uptr->str("");
+        //ss.clear();
+        //ss.str("");
     }
 
-    const std::string stringStreamHolder::toString() { return ss_uptr->str(); }
+    //const std::string StringStreamHolder::toString() { return ss.str(); }
 
-    std::ostream & stringStreamHolder::ostreamer()
-    {
-        if (!hasInitAlready)
-        {
-            init();
-            hasInitAlready = true;
-        }
+    //std::ostringstream & StringStreamHolder::get()
+    //{
+    //    reset();
+    //    return ss;
+    //}
 
-        reset();
-        return *(ss_uptr);
-    }
+    // void StringStreamHolder::log(
+    //    const misc::LogPriority::Enum PRIORITY,
+    //    const std::string FILE,
+    //    const std::string FUNCTION,
+    //    const int LINE)
+    //{
+    //    return log(PRIORITY, FILE, FUNCTION, LINE, ss.str());
+    //}
 
-    void stringStreamHolder::log(
-        const bool WILL_THROW,
+    void StringStreamHolder::log(
         const misc::LogPriority::Enum PRIORITY,
-        const std::string & FILE,
-        const std::string & FUNCTION,
-        const int LINE)
-    {
-        log(WILL_THROW, PRIORITY, FILE, FUNCTION, LINE, ss_uptr->str());
-    }
-
-    void stringStreamHolder::log(
-        const bool WILL_THROW,
-        const misc::LogPriority::Enum PRIORITY,
-        const std::string & FILE,
-        const std::string & FUNCTION,
+        const std::string FILE,
+        const std::string FUNCTION,
         const int LINE,
-        const std::string & MESSAGE)
+        const std::string MESSAGE)
     {
         Log::Instance()->Append(PRIORITY, MESSAGE, FILE, FUNCTION, LINE);
-
-        if (WILL_THROW)
-        {
-            throw std::runtime_error(MESSAGE);
-        }
     }
 
 } // namespace misc

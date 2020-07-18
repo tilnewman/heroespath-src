@@ -11,12 +11,13 @@
 //  A collection of types that define chances to items that might be
 //  owned/carried/worn by non-player characters.
 //
+/*
 #include "creature/rank-class.hpp"
 #include "creature/trait.hpp"
 #include "game/strong-types.hpp"
-#include "item/armor-types.hpp"
-#include "item/item-type-enum.hpp"
-#include "item/weapon-types.hpp"
+#include "item/armor-enum.hpp"
+#include "item/material-enum.hpp"
+#include "item/weapon-enum.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/nameof.hpp"
@@ -25,6 +26,7 @@
 #include "misc/vector-map.hpp"
 
 #include <cstddef> //for std::size_t
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -42,8 +44,8 @@ namespace creature
 
         // custom types
         using CountChanceMap_t = misc::VectorMap<std::size_t, float>;
-        using MaterialChanceMap_t = misc::VectorMap<item::material::Enum, float>;
-        using ArmorTypeChanceMap_t = misc::VectorMap<item::armor::base_type::Enum, float>;
+        using MaterialChanceMap_t = misc::VectorMap<item::Material::Enum, float>;
+        using ArmorTypeChanceMap_t = misc::VectorMap<item::Forms::Enum, float>;
 
         // helper function that chooses a random value from the map types defined above
         template <typename T>
@@ -157,8 +159,8 @@ namespace creature
             ItemChances(
                 const float CHANCE_OWNED,
                 const float CHANCE_EQUIPPED,
-                const item::material::Enum MATERIAL_PRIMARY,
-                const item::material::Enum MATERIAL_SECONDARY);
+                const item::Material::Enum MAT_PRI,
+                const item::Material::Enum MAT_SEC);
 
             static ItemChances NoChance() { return ItemChances(); }
 
@@ -168,8 +170,8 @@ namespace creature
 
             bool IsOwned() const { return (CountOwned() > 0); }
 
-            item::material::Enum RandomMaterialPri() const;
-            item::material::Enum RandomMaterialSec() const;
+            item::Material::Enum RandomMaterialPri() const;
+            item::Material::Enum RandomMaterialSec() const;
 
             // make it so there is no chance this item will be owned
             void SetCountChanceSingleNoChance()
@@ -220,26 +222,25 @@ namespace creature
             // the primary material composing this item
             MaterialChanceMap_t mat_map_pri;
 
-            // material::Nothing can be added to this map so that there can be a chance of no
+            // Material::Count can be added to this map so that there can be a chance of no
             // secondary material
             MaterialChanceMap_t mat_map_sec;
         };
 
-        using ItemChanceMap_t = misc::VectorMap<item::misc_type::Enum, ItemChances>;
-        using HelmChanceMap_t = misc::VectorMap<item::armor::helm_type::Enum, ItemChances>;
-        using CoverChanceMap_t = misc::VectorMap<item::armor::cover_type::Enum, ItemChances>;
-        using ShieldChanceMap_t = misc::VectorMap<item::armor::shield_type::Enum, ItemChances>;
+        using ItemChanceMap_t = misc::VectorMap<item::Misc::Enum, ItemChances>;
+        using HelmChanceMap_t = misc::VectorMap<item::Helms::Enum, ItemChances>;
+        using CoverChanceMap_t = misc::VectorMap<item::Covers::Enum, ItemChances>;
+        using ShieldChanceMap_t = misc::VectorMap<item::Shields::Enum, ItemChances>;
         //
-        using AxeChanceMap_t = misc::VectorMap<item::weapon::axe_type::Enum, ItemChances>;
-        using ClubChanceMap_t = misc::VectorMap<item::weapon::club_type::Enum, ItemChances>;
-        using WhipChanceMap_t = misc::VectorMap<item::weapon::whip_type::Enum, ItemChances>;
-        using SwordChanceMap_t = misc::VectorMap<item::weapon::sword_type::Enum, ItemChances>;
+        using AxeChanceMap_t = misc::VectorMap<item::Axes::Enum, ItemChances>;
+        using ClubChanceMap_t = misc::VectorMap<item::Clubs::Enum, ItemChances>;
+        using WhipChanceMap_t = misc::VectorMap<item::Whips::Enum, ItemChances>;
+        using SwordChanceMap_t = misc::VectorMap<item::Swords::Enum, ItemChances>;
 
-        using ProjectileChanceMap_t
-            = misc::VectorMap<item::weapon::projectile_type::Enum, ItemChances>;
+        using ProjectileChanceMap_t = misc::VectorMap<item::Projectiles::Enum, ItemChances>;
 
-        using BladedStaffChanceMap_t
-            = misc::VectorMap<item::weapon::bladedstaff_type::Enum, ItemChances>;
+        using BladedstaffChanceMap_t
+            = misc::VectorMap<item::Bladedstaffs::Enum, ItemChances>;
 
         // returns the type and count of the item selected in a pair
         // It is possible and valid for the MAP to be empty, or to have only chances for zero
@@ -310,7 +311,7 @@ namespace creature
 
             static ClothingChances NoClothes() { return ClothingChances(); }
 
-            item::armor::cover_type::Enum RandomCoverType() const;
+            item::Covers::Enum RandomCoverType() const;
 
             ItemChances shirt;
             ItemChances gloves;
@@ -332,15 +333,15 @@ namespace creature
 
             ArmorItemChances(
                 const float CHANCE_OWNED,
-                const item::armor::base_type::Enum ARMOR_BASE_TYPE,
-                const item::material::Enum MATERIAL_PRIMARY,
-                const item::material::Enum MATERIAL_SECONDARY);
+                const item::Forms::Enum ARMOR_BASE_TYPE,
+                const item::Material::Enum MAT_PRI,
+                const item::Material::Enum MAT_SEC);
 
             static ArmorItemChances NoArmorChance() { return ArmorItemChances(); }
 
-            item::armor::base_type::Enum RandomArmorBaseType() const
+            item::Forms::Enum RandomArmorForm() const
             {
-                return MappedRandomFloatChance<item::armor::base_type::Enum>(type_map);
+                return MappedRandomFloatChance<item::Forms::Enum>(type_map);
             }
 
             ArmorTypeChanceMap_t type_map;
@@ -363,19 +364,19 @@ namespace creature
 
             static ArmorChances NoArmor() { return ArmorChances(); }
 
-            const std::pair<item::armor::helm_type::Enum, std::size_t> RandomHelm() const
+            const std::pair<item::Helms::Enum, std::size_t> RandomHelm() const
             {
-                return MappedRandomItemChance<item::armor::helm_type::Enum>(helm_map);
+                return MappedRandomItemChance<item::Helms::Enum>(helm_map);
             }
 
-            const std::pair<item::armor::cover_type::Enum, std::size_t> RandomCover() const
+            const std::pair<item::Covers::Enum, std::size_t> RandomCover() const
             {
-                return MappedRandomItemChance<item::armor::cover_type::Enum>(cover_map);
+                return MappedRandomItemChance<item::Covers::Enum>(cover_map);
             }
 
-            const std::pair<item::armor::shield_type::Enum, std::size_t> RandomShield() const
+            const std::pair<item::Shields::Enum, std::size_t> RandomShield() const
             {
-                return MappedRandomItemChance<item::armor::shield_type::Enum>(shield_map);
+                return MappedRandomItemChance<item::Shields::Enum>(shield_map);
             }
 
             ArmorItemChances aventail;
@@ -437,7 +438,7 @@ namespace creature
                 const WhipChanceMap_t & WHIP_MAP = WhipChanceMap_t(),
                 const SwordChanceMap_t & SWORD_MAP = SwordChanceMap_t(),
                 const ProjectileChanceMap_t & PROJECTILE_MAP = ProjectileChanceMap_t(),
-                const BladedStaffChanceMap_t & BLADEDSTAFF_MAP = BladedStaffChanceMap_t());
+                const BladedstaffChanceMap_t & BLADEDSTAFF_MAP = BladedstaffChanceMap_t());
 
             static WeaponChances NoWeapon() { return WeaponChances(); }
 
@@ -455,7 +456,7 @@ namespace creature
             WhipChanceMap_t whip_map;
             SwordChanceMap_t sword_map;
             ProjectileChanceMap_t projectile_map;
-            BladedStaffChanceMap_t bladedstaff_map;
+            BladedstaffChanceMap_t bladedstaff_map;
         };
 
         // A wrapper holding all the information needed to randomly choose a complete
@@ -485,7 +486,7 @@ namespace creature
         };
 
         // defines the value of items owned by a creature
-        struct wealth_type : public EnumBaseCounting<EnumFirstValue::Valid>
+        struct wealth_type : public EnumBaseCounting<>
         {
             enum Enum : EnumUnderlying_t
             {
@@ -531,7 +532,7 @@ namespace creature
         };
 
         // defines the frequency/power of magical items owned by the creature
-        struct owns_magic_type : public EnumBaseCounting<EnumFirstValue::Valid>
+        struct owns_magic_type : public EnumBaseCounting<>
         {
             enum Enum : EnumUnderlying_t
             {
@@ -542,30 +543,6 @@ namespace creature
             };
 
             static owns_magic_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
-        };
-
-        // define the complexity of items owned by the creature
-        struct complexity_type : public EnumBaseCounting<EnumFirstValue::Valid>
-        {
-            enum Enum : EnumUnderlying_t
-            {
-                //...nothing
-                Animal = 0,
-
-                // shortbow/longbow/blowpipe, rings,
-                // leather/stone/bone/obsidian/lapis/horn/hide/tooth materials only
-                Simple,
-
-                // composite bow, medallion, scale material, iron/steel/tin metals only
-                Moderate,
-
-                // crossbow, lantern, necklace, work with all metals
-                Complex,
-
-                Count
-            };
-
-            static complexity_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
         };
 
         // wrapper for info that describes what a creature will own
@@ -590,5 +567,5 @@ namespace creature
     } // namespace nonplayer
 } // namespace creature
 } // namespace heroespath
-
+*/
 #endif // HEROESPATH_CREATURE_NONPLAYER_CHANCE_TYPES_HPP_INCLUDED

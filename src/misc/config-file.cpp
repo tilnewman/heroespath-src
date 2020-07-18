@@ -52,13 +52,13 @@ namespace misc
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: ConfigFile");
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<ConfigFile *>(instanceUPtr_.get());
     }
 
-    void ConfigFile::Acquire()
+    void ConfigFile::Create()
     {
         if (!instanceUPtr_)
         {
@@ -66,11 +66,11 @@ namespace misc
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: ConfigFile");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: ConfigFile");
         }
     }
 
-    void ConfigFile::Release() { instanceUPtr_.reset(); }
+    void ConfigFile::Destroy() { instanceUPtr_.reset(); }
 
     void ConfigFile::Initialize()
     {

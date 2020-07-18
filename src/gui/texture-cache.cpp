@@ -58,13 +58,13 @@ namespace gui
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: TextureCache");
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<TextureCache *>(instanceUPtr_.get());
     }
 
-    void TextureCache::Acquire()
+    void TextureCache::Create()
     {
         if (!instanceUPtr_)
         {
@@ -72,11 +72,11 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: TextureCache");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: TextureCache");
         }
     }
 
-    void TextureCache::Release() { instanceUPtr_.reset(); }
+    void TextureCache::Destroy() { instanceUPtr_.reset(); }
 
     std::size_t TextureCache::AddByKey(
         const std::string & GAMEDATAFILE_KEY_STR, const ImageOptions & OPTIONS)

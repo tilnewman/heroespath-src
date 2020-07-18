@@ -66,13 +66,13 @@ namespace gui
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: FontManager");
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<FontManager *>(instanceUPtr_.get());
     }
 
-    void FontManager::Acquire()
+    void FontManager::Create()
     {
         if (!instanceUPtr_)
         {
@@ -80,11 +80,11 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: FontManager");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: FontManager");
         }
     }
 
-    void FontManager::Release() { instanceUPtr_.reset(); }
+    void FontManager::Destroy() { instanceUPtr_.reset(); }
 
     const FontPtr_t FontManager::GetFont(const GuiFont::Enum FONT)
     {

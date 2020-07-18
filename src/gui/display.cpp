@@ -86,11 +86,11 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: Display");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: Display");
         }
     }
 
-    void Display::Release() { instanceUPtr_.reset(); }
+    void Display::Destroy() { instanceUPtr_.reset(); }
 
     float Display::GetWinWidth() const { return static_cast<float>(GetWinWidthu()); }
     float Display::GetWinHeight() const { return static_cast<float>(GetWinHeightu()); }
@@ -764,8 +764,8 @@ namespace gui
         if (0 == NUM_SUPPORTED_RESOLUTIONS)
         {
             M_HP_LOG(
-                "THERE ARE NO SUPPORTED MODES!  Minimum resolution required is "
-                << GetWinWidthMin() << "x" << GetWinHeightMin() << ".");
+                "THERE ARE NO SUPPORTED MODES!  Minimum resolution required is " << GetWinSizeMin()
+                                                                                 << ".");
         }
         else
         {
@@ -803,8 +803,7 @@ namespace gui
                 "Current video mode "
                 << ConvertVideoModeToResolution(CURR_VIDEO_MODE).ToString()
                 << " is NOT supported.  The resolution must be greater, at least "
-                << GetWinWidthMin() << "x" << GetWinHeightMin()
-                << ".  Below is a list of supported modes you can use instead.");
+                << GetWinSizeMin() << ".  Below is a list of supported modes you can use instead.");
 
             LogAllSupportedFullScreenVideoModes();
 

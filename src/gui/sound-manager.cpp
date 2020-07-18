@@ -54,13 +54,13 @@ namespace gui
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: SoundManager");
-            Acquire();
+            Create();
         }
 
         return misc::NotNull<SoundManager *>(instanceUPtr_.get());
     }
 
-    void SoundManager::Acquire()
+    void SoundManager::Create()
     {
         if (!instanceUPtr_)
         {
@@ -68,11 +68,11 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: SoundManager");
+            M_HP_LOG_ERR("Subsystem Create() after Construction: SoundManager");
         }
     }
 
-    void SoundManager::Release() { instanceUPtr_.reset(); }
+    void SoundManager::Destroy() { instanceUPtr_.reset(); }
 
     void SoundManager::Initialize()
     {
@@ -441,7 +441,7 @@ namespace gui
             if ((songSet.IsValid()) && (songSet.op.Info().Which() == MUSIC_ENUM))
             {
                 const float CURRENT_VOLUME(songSet.op.Volume());
-                const float INTENDED_VOLUME(gui::SoundManager::Instance()->MusicVolume());
+                const float INTENDED_VOLUME(MusicVolume());
 
                 if (misc::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
                 {

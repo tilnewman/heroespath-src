@@ -10,7 +10,6 @@
 // player-initial-setup.hpp
 //
 #include "game/strong-types.hpp"
-#include "item/item-factory.hpp"
 #include "misc/not-null.hpp"
 
 namespace heroespath
@@ -29,34 +28,26 @@ namespace creature
 {
 
     // Responsible for the initial setup of player characters. (items/spells/starting health/etc.)
-    class PlayerInitialSetup
+    struct PlayerInitialSetup
     {
-    public:
-        PlayerInitialSetup(const PlayerInitialSetup &) = delete;
-        PlayerInitialSetup(PlayerInitialSetup &&) = delete;
-        PlayerInitialSetup & operator=(const PlayerInitialSetup &) = delete;
-        PlayerInitialSetup & operator=(PlayerInitialSetup &&) = delete;
+        PlayerInitialSetup() = delete;
 
-        PlayerInitialSetup() = default;
-
-        void Setup(const creature::CreaturePtr_t) const;
+        static void Setup(const creature::CreaturePtr_t);
 
     private:
-        void SetupInventory(const creature::CreaturePtr_t) const;
-        void SetupSpellsAndSongs(const creature::CreaturePtr_t) const;
-        void EquipBodyParts(const creature::CreaturePtr_t) const;
-        Health_t GetStartingHealth(const creature::CreaturePtr_t) const;
-        void SetStartingHealth(const creature::CreaturePtr_t) const;
-        void SetStartingMana(const creature::CreaturePtr_t) const;
+        static void SetupInventory(const creature::CreaturePtr_t);
+        static void SetupSpellsAndSongs(const creature::CreaturePtr_t);
+        static Health_t GetStartingHealth(const creature::CreaturePtr_t);
+        static void SetStartingHealth(const creature::CreaturePtr_t);
+        static void SetStartingMana(const creature::CreaturePtr_t);
 
-        void EnsureItemAddedAndEquipped(const creature::CreaturePtr_t, const item::ItemPtr_t) const;
+        static void
+            EnsureItemAddedAndEquipped(const creature::CreaturePtr_t, const item::ItemPtr_t);
 
-        const item::ItemPtr_t MakePlainBoots(const bool IS_PIXIE) const;
-        const item::ItemPtr_t MakePlainShirt(const bool IS_PIXIE) const;
-        const item::ItemPtr_t MakePlainPants(const bool IS_PIXIE) const;
-        const item::ItemPtr_t MakePlainWand(const bool IS_PIXIE) const;
-
-        item::ItemFactory itemFactory_;
+        static const item::ItemPtr_t MakePlainBoot(const bool IS_PIXIE);
+        static const item::ItemPtr_t MakePlainShirt(const bool IS_PIXIE);
+        static const item::ItemPtr_t MakePlainPant(const bool IS_PIXIE);
+        static const item::ItemPtr_t MakePlainWand(const bool IS_PIXIE);
     };
 
 } // namespace creature

@@ -14,10 +14,7 @@
 #include "creature/creature.hpp"
 #include "gui/sound-manager.hpp"
 #include "item/item.hpp"
-#include "misc/assertlogandthrow.hpp"
-#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
-#include "misc/vectors.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 
@@ -26,839 +23,654 @@ namespace heroespath
 namespace combat
 {
 
-    void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR) const
+    void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR)
     {
-        const auto WEAPON_TYPE { WEAPON_PTR->WeaponType() };
-        const auto & WEAPON_INFO { WEAPON_PTR->WeaponInfo() };
+        const auto PROJECTILE_TYPE { WEAPON_PTR->WeaponInfo().MinorAs<item::Projectiles>() };
 
-        if ((WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Blowpipe)
-            || (WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Sling))
+        if ((PROJECTILE_TYPE == item::Projectiles::Blowpipe)
+            || (PROJECTILE_TYPE == item::Projectiles::Sling))
         {
-            gui::SoundManager::Instance()
-                ->GetSoundEffectSet(gui::sound_effect_set::BlowpipeShoot)
-                .PlayRandom();
-        }
-        else if (
-            WEAPON_INFO.IsBow()
-            || (WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Crossbow))
-        {
-            gui::SoundManager::Instance()
-                ->GetSoundEffectSet(gui::sound_effect_set::ArrowShoot)
-                .PlayRandom();
+            Play(Playlist(gui::sound_effect_set::BlowpipeShoot));
         }
         else
         {
-            M_HP_LOG_ERR(
-                "combat::CombatSoundEffects::PlayShoot(weapon=\""
-                << WEAPON_PTR->Name() << "\", category=\""
-                << EnumUtil<item::category>::ToString(WEAPON_PTR->Category())
-                << "\", weapon_type=" << EnumUtil<item::weapon_type>::ToString(WEAPON_TYPE)
-                << ") Unable to find a 'shoot' sound effect to fit that weapon_type.");
+            // the sound for bows and crossbows should be different, but I don't have one yet...
+            Play(Playlist(gui::sound_effect_set::ArrowShoot));
         }
     }
 
     void CombatSoundEffects::PlayHitOrMiss(
-        const creature::CreaturePtr_t CREATURE_PTR, const HitInfo & HIT_INFO) const
+        const creature::CreaturePtr_t CREATURE_PTR, const HitInfo & HIT_INFO)
     {
         const auto WEAPON_PTR_OPT { HIT_INFO.Weapon() };
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (!!WEAPON_PTR_OPT),
-            "combat::CombatSoundEffects::PlayHitOrMiss() "
-                << "was given a nullptr WEAPON_PTR.  HIT_INFO=" << HIT_INFO.ToString());
+        if (!WEAPON_PTR_OPT)
+        {
+            M_HP_LOG_ERR(
+                "No weapon.  HIT_INFO.Weapon() is nullptr.  HIT_INFO=" << HIT_INFO.ToString());
 
-        const auto WEAPON_PTR { WEAPON_PTR_OPT.value() };
-        const auto WEAPON_TYPE { WEAPON_PTR->WeaponType() };
-        const auto & WEAPON_INFO { WEAPON_PTR->WeaponInfo() };
+            return;
+        }
+
+        const auto WEAPON_PTR = WEAPON_PTR_OPT.value();
+        const auto & WEAPON_INFO = WEAPON_PTR->WeaponInfo();
 
         if (HIT_INFO.WasHit())
         {
-            if (WEAPON_INFO.IsBlowpipe())
+            const auto WEAPON_MATERIAL_PRI = WEAPON_PTR->MaterialPrimary();
+
+            if (!Play(HitPlaylist(WEAPON_INFO, WEAPON_MATERIAL_PRI)))
             {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::BlowpipeHit)
-                    .PlayRandom();
-            }
-            else if (WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Sling)
-            {
-                // The horn hit sfx sounded good for slings too
-                return gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                    .Play(gui::sound_effect::MaterialHitHorn);
-            }
-            else if (
-                WEAPON_INFO.IsBow()
-                || (WEAPON_INFO.ProjectileType() == item::weapon::projectile_type::Crossbow))
-            {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::ArrowHit)
-                    .PlayRandom();
-            }
-            else if (WEAPON_INFO.IsFists())
-            {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::FistHit)
-                    .PlayRandom();
-            }
-            else if (WEAPON_INFO.IsTentacles())
-            {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::TentacleHit)
-                    .PlayRandom();
-            }
-            else if (WEAPON_INFO.IsBreath() && (CREATURE_PTR->Role() == creature::role::Firebrand))
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(
-                    gui::sound_effect::BreathHitFirebrand);
-            }
-            else if (WEAPON_INFO.IsBreath() && (CREATURE_PTR->Role() == creature::role::Sylavin))
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::BreathHitSylavin);
-            }
-            else if (WEAPON_INFO.IsClaws())
-            {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::ClawHit)
-                    .PlayRandom();
-            }
-            else if (WEAPON_INFO.IsWhip())
-            {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::WhipHit)
-                    .PlayRandom();
-            }
-            else
-            {
-                switch (WEAPON_PTR->MaterialPrimary())
-                {
-                    case item::material::Wood:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitWood);
-                    }
-
-                    case item::material::Leather:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitLeather);
-                    }
-
-                    case item::material::Bone:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitBone);
-                    }
-
-                    case item::material::Water:
-                    case item::material::Acid:
-                    case item::material::Blood:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitLiquid);
-                    }
-
-                    case item::material::Plant:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitPlant);
-                    }
-
-                    case item::material::Hide:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitFlesh);
-                    }
-
-                    case item::material::Scales:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitScale);
-                    }
-
-                    case item::material::DriedFlesh:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitHide);
-                    }
-
-                    case item::material::Stone:
-                    case item::material::Jade:
-                    case item::material::Obsidian:
-                    case item::material::Amethyst:
-                    case item::material::Emerald:
-                    case item::material::Pearl:
-                    case item::material::Ruby:
-                    case item::material::Lazuli:
-                    case item::material::Sapphire:
-                    case item::material::Diamond:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitStone);
-                    }
-
-                    case item::material::Rope:
-                    case item::material::Cloth:
-                    case item::material::Silk:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitCloth);
-                    }
-
-                    case item::material::Claw:
-                    case item::material::Horn:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitHorn);
-                    }
-
-                    case item::material::Tooth:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitTooth);
-                    }
-
-                    case item::material::Tin:
-                    case item::material::Gold:
-                    case item::material::Iron:
-                    case item::material::Bronze:
-                    case item::material::Silver:
-                    case item::material::Steel:
-                    case item::material::Platinum:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMetal)
-                            .PlayRandom();
-                    }
-
-                    case item::material::Feather:
-                    case item::material::Fur:
-                    case item::material::Hair:
-                    case item::material::Glass:
-                    case item::material::Gas:
-                    case item::material::Paper:
-                    case item::material::Spirit:
-                    case item::material::Dirt:
-                    case item::material::Nothing:
-                    case item::material::Count:
-                    default:
-                    {
-                        return gui::SoundManager::Instance()
-                            ->GetSoundEffectSet(gui::sound_effect_set::MaterialHitMisc)
-                            .Play(gui::sound_effect::MaterialHitMisc);
-                    }
-                }
+                M_HP_LOG_ERR(
+                    "Failed to find any hit sfx to play.  CREATURE="
+                    << CREATURE_PTR->ToString() << ", HIT_INFO=" << HIT_INFO.ToString());
             }
         }
         else
         {
-            if (WEAPON_TYPE & item::weapon_type::Projectile)
-            {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::ProjectileMiss)
-                    .PlayRandom();
-            }
-            else if (WEAPON_TYPE & item::weapon_type::Whip)
-            {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::WhipMiss)
-                    .PlayRandom();
-            }
-            else if (WEAPON_TYPE & item::weapon_type::Melee)
-            {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::MeleeMiss)
-                    .PlayRandom();
-            }
-            else
+            if (!Play(MissPlaylist(WEAPON_INFO)))
             {
                 M_HP_LOG_ERR(
-                    "combat::CombatSoundEffects::PlayHitOrMiss("
-                    << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole() << "\", weapon=\""
-                    << WEAPON_PTR->Name() << "\", category=\""
-                    << EnumUtil<item::category>::ToString(WEAPON_PTR->Category())
-                    << "\", weapon_type=" << EnumUtil<item::weapon_type>::ToString(WEAPON_TYPE)
-                    << ") Unable to find a 'miss' sound effect to fit that weapon_type.");
+                    "Failed to find any miss sfx to play.  CREATURE="
+                    << CREATURE_PTR->ToString() << ", HIT_INFO=" << HIT_INFO.ToString());
             }
         }
     }
 
-    void CombatSoundEffects::PlaySpell(const spell::SpellPtr_t SPELL_PTR) const
+    void CombatSoundEffects::PlaySpell(const spell::SpellPtr_t SPELL_PTR)
     {
-        switch (SPELL_PTR->Which())
+        if (!Play(SpellPlaylist(SPELL_PTR->Which())))
         {
-            case spell::Spells::Sparks:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellSparks);
-                break;
-            }
-            case spell::Spells::Bandage:
-            {
-                gui::SoundManager::Instance()
-                    ->GetSoundEffectSet(gui::sound_effect_set::SpellBandage)
-                    .PlayRandom();
-                break;
-            }
-            case spell::Spells::Sleep:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellSleep);
-                break;
-            }
-            case spell::Spells::Awaken:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellAwaken);
-                break;
-            }
-            case spell::Spells::Trip:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellTrip);
-
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::Trip, 1.0f);
-                break;
-            }
-            case spell::Spells::Lift:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellLift);
-                break;
-            }
-            case spell::Spells::Daze:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellDaze);
-                break;
-            }
-            case spell::Spells::Panic:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellFrighten);
-                break;
-            }
-            case spell::Spells::ClearMind:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellClearMind);
-                break;
-            }
-            case spell::Spells::Poison:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellPoison);
-                break;
-            }
-            case spell::Spells::Antidote:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellAntidote);
-                break;
-            }
-            case spell::Spells::PoisonCloud:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SpellPoisonCloud);
-                break;
-            }
-            case spell::Spells::Count:
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "combat::CombatSoundEffects::PlaySpell(" << SPELL_PTR->Name()
-                                                             << ") failed to play a sound effect.");
-            }
+            M_HP_LOG_ERR("Failed to find any spell sfx to play.  SPELL=" << SPELL_PTR->ToString());
         }
     }
 
-    void CombatSoundEffects::PlaySong(const song::SongPtr_t SONG_PTR) const
+    void CombatSoundEffects::PlaySong(const song::SongPtr_t SONG_PTR)
     {
-        switch (SONG_PTR->Which())
+        if (!Play(SongPlaylist(SONG_PTR->Which())))
         {
-            case song::Songs::RallyDrum:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SongRallyDrum);
-                break;
-            }
-            case song::Songs::SpiritResonance:
+            M_HP_LOG_ERR("Failed to find any song sfx to play.  SONG=" << SONG_PTR->ToString());
+        }
+    }
+
+    void CombatSoundEffects::PlayRoar(const creature::CreaturePtr_t CREATURE_PTR)
+    {
+        if (!Play(RoarPlaylist(CREATURE_PTR)))
+        {
+            M_HP_LOG_ERR(
+                "Failed to find any roar sfx to play.  CREATURE=" << CREATURE_PTR->ToString());
+        }
+    }
+
+    void CombatSoundEffects::PlayDeath(const creature::CreaturePtr_t CREATURE_PTR)
+    {
+        if (!Play(DeathPlaylist(CREATURE_PTR)))
+        {
+            M_HP_LOG_ERR("Failed to find any sfx to play.  CREATURE=" << CREATURE_PTR->ToString());
+        }
+    }
+
+    bool CombatSoundEffects::Play(const Playlist & PLAYLIST)
+    {
+        if (!PLAYLIST.sfx_vec.empty())
+        {
+            gui::SoundManager::Instance()->SoundEffectPlay(misc::RandomSelect(PLAYLIST.sfx_vec));
+
+            if (PLAYLIST.sfx_after < gui::sound_effect::Count)
             {
                 gui::SoundManager::Instance()->SoundEffectPlay(
-                    gui::sound_effect::SongSpiritResonance);
-                break;
+                    PLAYLIST.sfx_after, PLAYLIST.sfx_after_delay_sec);
             }
-            case song::Songs::RousingRhythm:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(
-                    gui::sound_effect::SongRousingRhythm);
-                break;
-            }
-            case song::Songs::TripBeat:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SongTripBeat);
-                break;
-            }
-            case song::Songs::PanicStrings:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SongPanicStrings);
-                break;
-            }
-            case song::Songs::Lullaby:
-            {
-                gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::SongLullaby);
-                break;
-            }
-            case song::Songs::Count:
-            default:
-            {
-                M_HP_LOG_ERR(
-                    "combat::CombatSoundEffects::PlaySong(" << SONG_PTR->Name()
-                                                            << ") failed to play a sound effect.");
-            }
+
+            return true;
+        }
+        else if (PLAYLIST.sfx_set < gui::sound_effect_set::Count)
+        {
+            gui::SoundManager::Instance()->PlayRandomFromSet(PLAYLIST.sfx_set);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
-    void CombatSoundEffects::PlayRoar(const creature::CreaturePtr_t CREATURE_PTR) const
+    const CombatSoundEffects::Playlist
+        CombatSoundEffects::RoarPlaylist(const creature::CreaturePtr_t CREATURE_PTR)
     {
         const auto ROLE { CREATURE_PTR->Role() };
+
         if (ROLE == creature::role::Wolfen)
         {
-            switch (CREATURE_PTR->WolfenClass())
+            switch (CREATURE_PTR->WolfenClassType())
             {
-                case creature::wolfen_class::Pup:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarWolfenPup);
-                    return;
-                }
-                case creature::wolfen_class::Juvenile:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarWolfenJuvenile);
-                    return;
-                }
-                case creature::wolfen_class::Adult:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarWolfenAdult);
-                    return;
-                }
-                case creature::wolfen_class::Noble:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarWolfenNoble);
-                    return;
-                }
-                case creature::wolfen_class::Highborn:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarWolfenHighborn);
-                    return;
-                }
-                case creature::wolfen_class::Elder:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarWolfenElder);
-                    return;
-                }
-                case creature::wolfen_class::Count:
-                default: {
-                }
-            }
-        }
-        else if (ROLE == creature::role::Firebrand)
-        {
-            switch (CREATURE_PTR->DragonClass())
-            {
-                case creature::dragon_class::Hatchling:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonFirebrandHatchling);
-                    return;
-                }
-                case creature::dragon_class::Whelp:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonFirebrandWhelp);
-                    return;
-                }
-                case creature::dragon_class::Fledgling:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonFirebrandFledgling);
-                    return;
-                }
-                case creature::dragon_class::Juvenile:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonFirebrandJuvenile);
-                    return;
-                }
-                case creature::dragon_class::Adult:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonFirebrandAdult);
-                    return;
-                }
-                case creature::dragon_class::Wyrm:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonFirebrandWyrm);
-                    return;
-                }
-                case creature::dragon_class::Skycaster:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonFirebrandSkycaster);
-                    return;
-                }
-                case creature::dragon_class::Elder:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonFirebrandElder);
-                    return;
-                }
-                case creature::dragon_class::Count:
-                default: {
-                }
-            }
-        }
-        else if (ROLE == creature::role::Sylavin)
-        {
-            switch (CREATURE_PTR->DragonClass())
-            {
-                case creature::dragon_class::Hatchling:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonSylavinHatchling);
-                    return;
-                }
-                case creature::dragon_class::Whelp:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonSylavinWhelp);
-                    return;
-                }
-                case creature::dragon_class::Fledgling:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonSylavinFledgling);
-                    return;
-                }
-                case creature::dragon_class::Juvenile:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonSylavinJuvenile);
-                    return;
-                }
-                case creature::dragon_class::Adult:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonSylavinAdult);
-                    return;
-                }
-                case creature::dragon_class::Wyrm:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonSylavinWyrm);
-                    return;
-                }
-                case creature::dragon_class::Skycaster:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonSylavinSkycaster);
-                    return;
-                }
-                case creature::dragon_class::Elder:
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(
-                        gui::sound_effect::RoarDragonSylavinElder);
-                    return;
-                }
-                case creature::dragon_class::Count:
-                default: {
-                }
-            }
+                case creature::WolfenClass::Pup: return Playlist(gui::sound_effect::RoarWolfenPup);
 
-            M_HP_LOG_ERR(
-                "combat::CombatSoundEffects::PlayRoar("
-                << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole()
-                << ") failed to find an sfx to play.");
+                case creature::WolfenClass::Juvenile:
+                    return Playlist(gui::sound_effect::RoarWolfenJuvenile);
+
+                case creature::WolfenClass::Adult:
+                    return Playlist(gui::sound_effect::RoarWolfenAdult);
+
+                case creature::WolfenClass::Noble:
+                    return Playlist(gui::sound_effect::RoarWolfenNoble);
+
+                case creature::WolfenClass::Highborn:
+                    return Playlist(gui::sound_effect::RoarWolfenHighborn);
+
+                case creature::WolfenClass::Elder:
+                    return Playlist(gui::sound_effect::RoarWolfenElder);
+
+                case creature::WolfenClass::Count:
+                default: return Playlist();
+            }
         }
+
+        if (ROLE == creature::role::Firebrand)
+        {
+            switch (CREATURE_PTR->DragonClass())
+            {
+                case creature::dragon_class::Hatchling:
+                    return Playlist(gui::sound_effect::RoarDragonFirebrandHatchling);
+
+                case creature::dragon_class::Whelp:
+                    return Playlist(gui::sound_effect::RoarDragonFirebrandWhelp);
+
+                case creature::dragon_class::Fledgling:
+                    return Playlist(gui::sound_effect::RoarDragonFirebrandFledgling);
+
+                case creature::dragon_class::Juvenile:
+                    return Playlist(gui::sound_effect::RoarDragonFirebrandJuvenile);
+
+                case creature::dragon_class::Adult:
+                    return Playlist(gui::sound_effect::RoarDragonFirebrandAdult);
+
+                case creature::dragon_class::Wyrm:
+                    return Playlist(gui::sound_effect::RoarDragonFirebrandWyrm);
+
+                case creature::dragon_class::Skycaster:
+                    return Playlist(gui::sound_effect::RoarDragonFirebrandSkycaster);
+
+                case creature::dragon_class::Elder:
+                    return Playlist(gui::sound_effect::RoarDragonFirebrandElder);
+
+                case creature::dragon_class::Count:
+                default: return Playlist();
+            }
+        }
+
+        if (ROLE == creature::role::Sylavin)
+        {
+            switch (CREATURE_PTR->DragonClass())
+            {
+                case creature::dragon_class::Hatchling:
+                    return Playlist(gui::sound_effect::RoarDragonSylavinHatchling);
+
+                case creature::dragon_class::Whelp:
+                    return Playlist(gui::sound_effect::RoarDragonSylavinWhelp);
+
+                case creature::dragon_class::Fledgling:
+                    return Playlist(gui::sound_effect::RoarDragonSylavinFledgling);
+
+                case creature::dragon_class::Juvenile:
+                    return Playlist(gui::sound_effect::RoarDragonSylavinJuvenile);
+
+                case creature::dragon_class::Adult:
+                    return Playlist(gui::sound_effect::RoarDragonSylavinAdult);
+
+                case creature::dragon_class::Wyrm:
+                    return Playlist(gui::sound_effect::RoarDragonSylavinWyrm);
+
+                case creature::dragon_class::Skycaster:
+                    return Playlist(gui::sound_effect::RoarDragonSylavinSkycaster);
+
+                case creature::dragon_class::Elder:
+                    return Playlist(gui::sound_effect::RoarDragonSylavinElder);
+
+                case creature::dragon_class::Count:
+                default: return Playlist();
+            }
+        }
+
+        return Playlist();
     }
 
-    void CombatSoundEffects::PlayDeath(const creature::CreaturePtr_t CREATURE_PTR) const
+    const CombatSoundEffects::Playlist
+        CombatSoundEffects::SpellPlaylist(const spell::Spells::Enum SPELL)
     {
-        gui::SfxEnumVec_t sfxVec;
-        GetDeathSfx(CREATURE_PTR, sfxVec);
+        switch (SPELL)
+        {
+            case spell::Spells::Sparks: return Playlist(gui::sound_effect::SpellSparks);
+            case spell::Spells::Bandage: return Playlist(gui::sound_effect_set::SpellBandage);
+            case spell::Spells::Sleep: return Playlist(gui::sound_effect::SpellSleep);
+            case spell::Spells::Awaken: return Playlist(gui::sound_effect::SpellAwaken);
 
-        if (sfxVec.empty())
-        {
-            M_HP_LOG_ERR(
-                "combat::CombatSoundEffects::PlayDeath("
-                << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole()
-                << ") failed to find an sfx to play.");
-        }
-        else
-        {
-            gui::SoundManager::Instance()->SoundEffectPlay(misc::RandomSelect(sfxVec));
+            case spell::Spells::Trip:
+                return Playlist(gui::sound_effect::SpellTrip, gui::sound_effect::Trip, 1.0f);
+
+            case spell::Spells::Lift: return Playlist(gui::sound_effect::SpellLift);
+            case spell::Spells::Daze: return Playlist(gui::sound_effect::SpellDaze);
+            case spell::Spells::Panic: return Playlist(gui::sound_effect::SpellFrighten);
+            case spell::Spells::ClearMind: return Playlist(gui::sound_effect::SpellClearMind);
+            case spell::Spells::Poison: return Playlist(gui::sound_effect::SpellPoison);
+            case spell::Spells::Antidote: return Playlist(gui::sound_effect::SpellAntidote);
+            case spell::Spells::PoisonCloud: return Playlist(gui::sound_effect::SpellPoisonCloud);
+
+            case spell::Spells::Count:
+            default: return Playlist();
         }
     }
 
-    void CombatSoundEffects::GetDeathSfx(
-        const creature::CreaturePtr_t CREATURE_PTR, gui::SfxEnumVec_t & sfxVec_OutParam) const
+    const CombatSoundEffects::Playlist
+        CombatSoundEffects::SongPlaylist(const song::Songs::Enum SONG)
+    {
+        switch (SONG)
+        {
+            case song::Songs::RallyDrum: return Playlist(gui::sound_effect::SongRallyDrum);
+
+            case song::Songs::SpiritResonance:
+                return Playlist(gui::sound_effect::SongSpiritResonance);
+
+            case song::Songs::RousingRhythm: return Playlist(gui::sound_effect::SongRousingRhythm);
+            case song::Songs::TripBeat: return Playlist(gui::sound_effect::SongTripBeat);
+            case song::Songs::PanicStrings: return Playlist(gui::sound_effect::SongPanicStrings);
+            case song::Songs::Lullaby: return Playlist(gui::sound_effect::SongLullaby);
+
+            case song::Songs::Count:
+            default: return Playlist();
+        }
+    }
+
+    const CombatSoundEffects::Playlist
+        CombatSoundEffects::DeathPlaylist(const creature::CreaturePtr_t CREATURE_PTR)
     {
         switch (CREATURE_PTR->Race())
         {
             case creature::race::Human:
             case creature::race::Gnome:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHuman1);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHuman2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHuman3);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHuman4);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHuman5);
+                Playlist playlist({ gui::sound_effect::DeathHuman1,
+                                    gui::sound_effect::DeathHuman2,
+                                    gui::sound_effect::DeathHuman3,
+                                    gui::sound_effect::DeathHuman4,
+                                    gui::sound_effect::DeathHuman5 });
 
                 if (CREATURE_PTR->Sex() == creature::sex::Male)
                 {
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale1);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale2);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale3);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale4);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale5);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale6);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale7);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale1);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale2);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale3);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale4);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale5);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale6);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale7);
                 }
                 else if (CREATURE_PTR->Sex() == creature::sex::Female)
                 {
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanFemale1);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanFemale3);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanFemale1);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanFemale3);
                 }
-                return;
+
+                return playlist;
             }
+
             case creature::race::Halfling:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHuman2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHuman4);
+                Playlist playlist(
+                    { gui::sound_effect::DeathHuman2, gui::sound_effect::DeathHuman4 });
 
                 if (CREATURE_PTR->Sex() == creature::sex::Male)
                 {
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale3);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale5);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale6);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale3);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale5);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanMale6);
                 }
                 else if (CREATURE_PTR->Sex() == creature::sex::Female)
                 {
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanFemale2);
+                    playlist.sfx_vec.emplace_back(gui::sound_effect::DeathHumanFemale2);
                 }
-                return;
+
+                return playlist;
             }
+
             case creature::race::Pixie:
             {
                 if (CREATURE_PTR->Sex() == creature::sex::Male)
                 {
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale2);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanMale4);
+                    return Playlist(
+                        { gui::sound_effect::DeathHumanMale2, gui::sound_effect::DeathHumanMale4 });
                 }
                 else
                 {
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanFemale1);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanFemale2);
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanFemale3);
+                    return Playlist({ gui::sound_effect::DeathHumanFemale1,
+                                      gui::sound_effect::DeathHumanFemale2,
+                                      gui::sound_effect::DeathHumanFemale3 });
                 }
-                return;
             }
+
             case creature::race::Witch:
             case creature::race::Harpy:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanFemale1);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanFemale2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHumanFemale3);
-                return;
+                return Playlist({ gui::sound_effect::DeathHumanFemale1,
+                                  gui::sound_effect::DeathHumanFemale2,
+                                  gui::sound_effect::DeathHumanFemale3 });
             }
+
             case creature::race::Golem:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastCaveTroll1);
-                return;
+                return Playlist(gui::sound_effect::DeathBeastCaveTroll1);
             }
+
             case creature::race::ThreeHeadedHound:
             case creature::race::Werewolf:
             case creature::race::Wolfen:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathWolf);
-                return;
+                return Playlist(gui::sound_effect::DeathWolf);
             }
+
             case creature::race::Hydra:
             case creature::race::Dragon:
             case creature::race::Wyvern:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathDragon1a);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathDragon1b);
-                return;
+                return Playlist(
+                    { gui::sound_effect::DeathDragon1a, gui::sound_effect::DeathDragon1b });
             }
+
             case creature::race::Newt:
             case creature::race::Goblin:
             case creature::race::Pug:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastSmallRaspy1);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastSmallRaspy2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastSmallRaspy3);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastSmallRaspy4);
-                return;
+                return Playlist({ gui::sound_effect::DeathBeastSmallRaspy1,
+                                  gui::sound_effect::DeathBeastSmallRaspy2,
+                                  gui::sound_effect::DeathBeastSmallRaspy3,
+                                  gui::sound_effect::DeathBeastSmallRaspy4 });
             }
+
             case creature::race::Troll:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastRough1);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastRough2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastRough3);
-                return;
+                return Playlist({ gui::sound_effect::DeathBeastRough1,
+                                  gui::sound_effect::DeathBeastRough2,
+                                  gui::sound_effect::DeathBeastRough3 });
             }
+
             case creature::race::Orc:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeast5);
-                return;
+                return Playlist(gui::sound_effect::DeathBeast5);
             }
+
             case creature::race::Beetle:
             case creature::race::Spider:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathSpider1);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathSpider2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathSpider3);
-                return;
+                return Playlist({ gui::sound_effect::DeathSpider1,
+                                  gui::sound_effect::DeathSpider2,
+                                  gui::sound_effect::DeathSpider3 });
             }
+
             case creature::race::Bog:
             {
                 if (CREATURE_PTR->Role() == creature::role::Smasher)
                 {
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeast3);
+                    return Playlist(gui::sound_effect::DeathBeast3);
                 }
                 else
                 {
-                    sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastSmallRaspy4);
+                    return Playlist(gui::sound_effect::DeathBeastSmallRaspy4);
                 }
-                return;
             }
+
             case creature::race::CaveCrawler:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathThing1);
-                return;
+                return Playlist(gui::sound_effect::DeathThing1);
             }
+
             case creature::race::LizardWalker:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastTalker1);
-                return;
+                return Playlist(gui::sound_effect::DeathBeastTalker1);
             }
+
             case creature::race::Minotaur:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeast1);
-                return;
+                return Playlist(gui::sound_effect::DeathBeast1);
             }
+
             case creature::race::Ogre:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastBig1);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastBig2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastBig3);
-                return;
+                return Playlist({ gui::sound_effect::DeathBeastBig1,
+                                  gui::sound_effect::DeathBeastBig2,
+                                  gui::sound_effect::DeathBeastBig3 });
             }
+
             case creature::race::Plant:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastWet);
-                return;
+                return Playlist(gui::sound_effect::DeathBeastWet);
             }
+
             case creature::race::Shade:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathGhostly1a);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathGhostly1b);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathGhostly1c);
-                return;
+                return Playlist({ gui::sound_effect::DeathGhostly1a,
+                                  gui::sound_effect::DeathGhostly1b,
+                                  gui::sound_effect::DeathGhostly1c });
             }
+
             case creature::race::Skeleton:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathCreepy1);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathCreepy2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathCreepy3);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathCreepy4);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathCreepy5);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathCreepy6);
-                return;
+                return Playlist({ gui::sound_effect::DeathCreepy1,
+                                  gui::sound_effect::DeathCreepy2,
+                                  gui::sound_effect::DeathCreepy3,
+                                  gui::sound_effect::DeathCreepy4,
+                                  gui::sound_effect::DeathCreepy5,
+                                  gui::sound_effect::DeathCreepy6 });
             }
+
             case creature::race::Boar:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBoar);
-                return;
+                return Playlist(gui::sound_effect::DeathBoar);
             }
+
             case creature::race::Demon:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathHowlDemon);
-                return;
+                return Playlist(gui::sound_effect::DeathHowlDemon);
             }
+
             case creature::race::Griffin:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathGriffin);
-                return;
+                return Playlist(gui::sound_effect::DeathGriffin);
             }
+
             case creature::race::Lion:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathLion);
-                return;
+                return Playlist(gui::sound_effect::DeathLion);
             }
+
             case creature::race::Wereboar:
             case creature::race::LionBoar:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathLionboar);
-                return;
+                return Playlist(gui::sound_effect::DeathLionboar);
             }
+
             case creature::race::Naga:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastTalker2Roar);
-                return;
+                return Playlist(gui::sound_effect::DeathBeastTalker2Roar);
             }
+
             case creature::race::Ramonaut:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeast3);
-                return;
+                return Playlist(gui::sound_effect::DeathBeast3);
             }
+
             case creature::race::Serpent:
             case creature::race::Cobra:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathSnake1);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathSnake2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathSnake3);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathSnake4);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathSnake5);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathSnake6);
-                return;
+                return Playlist({ gui::sound_effect::DeathSnake1,
+                                  gui::sound_effect::DeathSnake2,
+                                  gui::sound_effect::DeathSnake3,
+                                  gui::sound_effect::DeathSnake4,
+                                  gui::sound_effect::DeathSnake5,
+                                  gui::sound_effect::DeathSnake6 });
             }
+
             case creature::race::Werebear:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeast4);
-                return;
+                return Playlist(gui::sound_effect::DeathBeast4);
             }
+
             case creature::race::Werecat:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathThing3);
-                return;
+                return Playlist(gui::sound_effect::DeathThing3);
             }
+
             case creature::race::Bat:
             case creature::race::Werebat:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathThing2);
-                return;
+                return Playlist(gui::sound_effect::DeathThing2);
             }
+
             case creature::race::Giant:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastHuge1a);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastHuge1b);
-                return;
+                return Playlist(
+                    { gui::sound_effect::DeathBeastHuge1a, gui::sound_effect::DeathBeastHuge1b });
             }
+
             case creature::race::Ghoul:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeast6);
-                return;
+                return Playlist(gui::sound_effect::DeathBeast6);
             }
+
             case creature::race::Count:
-            default: {
+            default: return Playlist();
+        }
+    }
+
+    const CombatSoundEffects::Playlist CombatSoundEffects::HitPlaylist(
+        const item::WeaponTemplate & WEAPON_INFO, const item::Material::Enum WEAPON_MATERIAL)
+    {
+        if (WEAPON_INFO.IsBlowpipe())
+        {
+            return Playlist(gui::sound_effect_set::BlowpipeHit);
+        }
+
+        if (WEAPON_INFO.IsMinor<item::Projectiles>(item::Projectiles::Sling))
+        {
+            // The horn hit sfx sounded good for slings too
+            return Playlist(gui::sound_effect::MaterialHitHorn);
+        }
+
+        if (WEAPON_INFO.IsBow()
+            || WEAPON_INFO.IsMinor<item::Projectiles>(item::Projectiles::Crossbow))
+        {
+            return Playlist(gui::sound_effect_set::ArrowHit);
+        }
+
+        if (WEAPON_INFO.IsBodyPartBase())
+        {
+            switch (WEAPON_INFO.MinorAs<item::BodyPartWeapons>())
+            {
+                case item::BodyPartWeapons::Fists: return Playlist(gui::sound_effect_set::FistHit);
+
+                case item::BodyPartWeapons::Tentacles:
+                    return Playlist(gui::sound_effect_set::TentacleHit);
+
+                case item::BodyPartWeapons::BreathOfFire:
+                    return Playlist(gui::sound_effect::BreathHitFirebrand);
+
+                case item::BodyPartWeapons::BreathOfFrost:
+                    return Playlist(gui::sound_effect::BreathHitSylavin);
+
+                    // TODO still need a bite sfx, use claws in the mean time
+                case item::BodyPartWeapons::Bite:
+                case item::BodyPartWeapons::Claws: return Playlist(gui::sound_effect_set::ClawHit);
+
+                case item::BodyPartWeapons::Count:
+                default: return Playlist();
             }
+        }
+
+        if (WEAPON_INFO.IsWhip())
+        {
+            return Playlist(gui::sound_effect_set::WhipHit);
+        }
+
+        return HitOfMaterialPlaylist(WEAPON_MATERIAL);
+    }
+
+    const CombatSoundEffects::Playlist
+        CombatSoundEffects::HitOfMaterialPlaylist(const item::Material::Enum MATERIAL)
+    {
+        switch (MATERIAL)
+        {
+            case item::Material::Wood: return Playlist(gui::sound_effect::MaterialHitWood);
+            case item::Material::Leather: return Playlist(gui::sound_effect::MaterialHitLeather);
+            case item::Material::Bone: return Playlist(gui::sound_effect::MaterialHitBone);
+
+            case item::Material::Water:
+            case item::Material::Acid:
+            case item::Material::Blood: return Playlist(gui::sound_effect::MaterialHitLiquid);
+
+            case item::Material::Plant: return Playlist(gui::sound_effect::MaterialHitPlant);
+            case item::Material::Hide: return Playlist(gui::sound_effect::MaterialHitFlesh);
+            case item::Material::Scales: return Playlist(gui::sound_effect::MaterialHitScale);
+            case item::Material::DriedFlesh: return Playlist(gui::sound_effect::MaterialHitHide);
+
+            case item::Material::Stone:
+            case item::Material::Jade:
+            case item::Material::Obsidian:
+            case item::Material::Amethyst:
+            case item::Material::Emerald:
+            case item::Material::Pearl:
+            case item::Material::Ruby:
+            case item::Material::Lazuli:
+            case item::Material::Sapphire:
+            case item::Material::Diamond: return Playlist(gui::sound_effect::MaterialHitStone);
+
+            case item::Material::Rope:
+            case item::Material::Cloth:
+            case item::Material::Silk: return Playlist(gui::sound_effect::MaterialHitCloth);
+
+            case item::Material::Claw:
+            case item::Material::Horn: return Playlist(gui::sound_effect::MaterialHitHorn);
+
+            case item::Material::Tooth: return Playlist(gui::sound_effect::MaterialHitTooth);
+
+            case item::Material::Tin:
+            case item::Material::Gold:
+            case item::Material::Iron:
+            case item::Material::Bronze:
+            case item::Material::Silver:
+            case item::Material::Steel:
+            case item::Material::Platinum: return Playlist(gui::sound_effect_set::MaterialHitMetal);
+
+            case item::Material::Feather:
+            case item::Material::Fur:
+            case item::Material::Hair:
+            case item::Material::Glass:
+            case item::Material::Gas:
+            case item::Material::Paper:
+            case item::Material::Spirit:
+            case item::Material::Dirt: return Playlist(gui::sound_effect::MaterialHitMisc);
+
+            case item::Material::Count:
+            default: return Playlist();
+        }
+    }
+
+    const CombatSoundEffects::Playlist
+        CombatSoundEffects::MissPlaylist(const item::WeaponTemplate & WEAPON_INFO)
+    {
+        if (WEAPON_INFO.IsProjectile())
+        {
+            return Playlist(gui::sound_effect_set::ProjectileMiss);
+        }
+        else if (WEAPON_INFO.IsWhip())
+        {
+            return Playlist(gui::sound_effect_set::WhipMiss);
+        }
+        else if (WEAPON_INFO.IsMelee())
+        {
+            return Playlist(gui::sound_effect_set::MeleeMiss);
+        }
+        else
+        {
+            return Playlist();
         }
     }
 

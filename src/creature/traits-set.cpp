@@ -165,5 +165,70 @@ namespace creature
         return str;
     }
 
+    Score_t TraitSet::Score() const
+    {
+        auto score { 0_score };
+
+        for (EnumUnderlying_t i(0); i < creature::Traits::Count; ++i)
+        {
+            const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
+            const auto NEXT_TRAIT_VALUE { GetCopy(NEXT_TRAIT_ENUM).Current() };
+
+            if (NEXT_TRAIT_VALUE == 0)
+            {
+                continue;
+            }
+
+            auto traitScore { [NEXT_TRAIT_VALUE]() {
+                const auto MULTIPLIER { ((NEXT_TRAIT_VALUE >= 0) ? 10 : 5) };
+                const auto NEXT_TRAIT_VALUE_ABS { misc::Abs(NEXT_TRAIT_VALUE) };
+
+                const Trait_t MAX_VALUE_BEFORE_REDUCTION = 100;
+                if (NEXT_TRAIT_VALUE_ABS < MAX_VALUE_BEFORE_REDUCTION)
+                {
+                    return NEXT_TRAIT_VALUE_ABS * MULTIPLIER;
+                }
+                else
+                {
+                    double traitReduced { static_cast<double>(MAX_VALUE_BEFORE_REDUCTION) };
+
+                    traitReduced += std::sqrt(
+                        static_cast<double>(NEXT_TRAIT_VALUE_ABS)
+                        - static_cast<double>(MAX_VALUE_BEFORE_REDUCTION));
+
+                    return static_cast<int>(traitReduced) * MULTIPLIER;
+                }
+            }() };
+
+            if ((NEXT_TRAIT_ENUM == creature::Traits::HealthGainAll)
+                || (NEXT_TRAIT_ENUM == creature::Traits::HealthGainMelee))
+            {
+                traitScore *= 10;
+            }
+            else if (
+                (NEXT_TRAIT_ENUM == creature::Traits::AnimalResist)
+                || (NEXT_TRAIT_ENUM == creature::Traits::ArmorRating)
+                || (NEXT_TRAIT_ENUM == creature::Traits::Backstab)
+                || (NEXT_TRAIT_ENUM == creature::Traits::CurseOnDamage)
+                || (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusAll)
+                || (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusMelee)
+                || (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusProj)
+                || (NEXT_TRAIT_ENUM == creature::Traits::FindCoinsAmount)
+                || (NEXT_TRAIT_ENUM == creature::Traits::PoisonOnAll)
+                || (NEXT_TRAIT_ENUM == creature::Traits::PoisonOnMelee))
+            {
+                traitScore *= 2;
+            }
+            else if (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusFist)
+            {
+                traitScore /= 4;
+            }
+
+            score += Score_t::Make(traitScore);
+        }
+
+        return score;
+    }
+
 } // namespace creature
 } // namespace heroespath

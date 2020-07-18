@@ -15,6 +15,8 @@
 #include "combat/combat-display.hpp"
 #include "combat/combat-node.hpp"
 #include "combat/combat-over-enum.hpp"
+#include "combat/combat-sound-effects.hpp"
+#include "combat/creature-interaction.hpp"
 #include "combat/encounter.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "creature/algorithms.hpp"
@@ -148,13 +150,13 @@ namespace stage
         const combat::CombatDisplayPtr_t COMBAT_DISPLAY_STAGE_PTR,
         const bool WILL_ADVANCE_TURN)
         : StageBase(
-              "Combat",
-              { gui::GuiFont::Default,
-                gui::GuiFont::System,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::Number,
-                gui::GuiFont::DefaultBoldFlavor,
-                gui::GuiFont::Handwriting })
+            "Combat",
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::DefaultBoldFlavor,
+              gui::GuiFont::Handwriting })
         , WILL_ADVANCE_TURN_(WILL_ADVANCE_TURN)
         , COMBAT_REGION_MARGIN_(25.0f)
         , STATUS_REGION_SLIDERBAR_WIDTH_(35.0f)
@@ -175,7 +177,6 @@ namespace stage
         , zoomSliderBarUPtr_()
         , turnBoxUPtr_()
         , turnBoxRegion_()
-        , combatSoundEffects_()
         , soundEffectsPlayedVec_()
         , turnPhase_(TurnPhase::NotATurn)
         , preTurnPhase_(PreTurnPhase::Start)
@@ -256,7 +257,6 @@ namespace stage
         , isSongAnim1Done_(false)
         , isSongAnim2Done_(false)
         , creatureTitlesVec_()
-        , creatureInteraction_()
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -1826,7 +1826,7 @@ namespace stage
                 // This the first of two places where non-player death sfx is played,
                 // so it can coincide with the non-player death animation start.
                 // Player death sfx is played in HandleApplyDamageTasks().
-                combatSoundEffects_.PlayDeath(CREATURE_PTR);
+                combat::CombatSoundEffects::PlayDeath(CREATURE_PTR);
 
                 return;
             }
@@ -2014,7 +2014,7 @@ namespace stage
                 // Player death sfx is played in HandleApplyDamageTasks().
                 for (const auto & NEXT_CREATURE_PTR : killedNonPlayerCreaturesPVec)
                 {
-                    combatSoundEffects_.PlayDeath(NEXT_CREATURE_PTR);
+                    combat::CombatSoundEffects::PlayDeath(NEXT_CREATURE_PTR);
                 }
             }
             return;
@@ -2101,7 +2101,8 @@ namespace stage
                         << ") turn_action_info.Action()==SkyPounce||LandPounce but "
                            "turn_action_info.Targets() was empty.");
 
-                fightResult_ = creatureInteraction_.Fight(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
+                fightResult_
+                    = combat::CreatureInteraction::Fight(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
 
                 SetupTurnBox();
                 return GetTurnActionPhaseFromFightResult(fightResult_);
@@ -2140,7 +2141,7 @@ namespace stage
                 creature::CreaturePVec_t targetedCreaturesPVec { turnActionInfo_.Targets() };
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
-                fightResult_ = creatureInteraction_.Cast(
+                fightResult_ = combat::CreatureInteraction::Cast(
                     turnActionInfo_.Spell().value(), TURN_CREATURE_PTR, targetedCreaturesPVec);
 
                 SetupTurnBox();
@@ -2158,7 +2159,7 @@ namespace stage
                 creature::CreaturePVec_t targetedCreaturesPVec { turnActionInfo_.Targets() };
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
-                fightResult_ = creatureInteraction_.PlaySong(
+                fightResult_ = combat::CreatureInteraction::PlaySong(
                     turnActionInfo_.Song().value(), TURN_CREATURE_PTR, targetedCreaturesPVec);
 
                 SetupTurnBox();
@@ -2184,7 +2185,8 @@ namespace stage
                         << ") turn_action_info.Action()==SkyPounce||LandPounce but "
                            "turn_action_info.Targets() was empty.");
 
-                fightResult_ = creatureInteraction_.Pounce(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
+                fightResult_
+                    = combat::CreatureInteraction::Pounce(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
 
                 SetupTurnBox();
 
@@ -2200,7 +2202,8 @@ namespace stage
 
             case combat::TurnAction::Roar:
             {
-                fightResult_ = creatureInteraction_.Roar(TURN_CREATURE_PTR, combatDisplayStagePtr_);
+                fightResult_
+                    = combat::CreatureInteraction::Roar(TURN_CREATURE_PTR, combatDisplayStagePtr_);
                 SetupTurnBox();
 
                 AppendStatusMessage(
@@ -2282,7 +2285,7 @@ namespace stage
         }
         else
         {
-            conditionEffectsTookTurn_ = creatureInteraction_.ProcessConditionEffects(
+            conditionEffectsTookTurn_ = combat::CreatureInteraction::ProcessConditionEffects(
                 game::Phase::Combat, TURN_CREATURE_PTR, conditionEffectsVec_);
         }
 
@@ -2413,7 +2416,7 @@ namespace stage
         }
         else
         {
-            HandleAttackTasks(creatureInteraction_.FindNonPlayerCreatureToAttack(
+            HandleAttackTasks(combat::CreatureInteraction::FindNonPlayerCreatureToAttack(
                 turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
 
             return "";
@@ -2518,7 +2521,7 @@ namespace stage
 
             combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
-            fightResult_ = creatureInteraction_.PlaySong(
+            fightResult_ = combat::CreatureInteraction::PlaySong(
                 songBeingPlayedPtrOpt_.value(), TURN_CREATURE_PTR, creaturesListeningPVec);
 
             SetTurnActionPhase(TurnActionPhase::PlaySong);
@@ -2616,7 +2619,7 @@ namespace stage
 
         combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
-        fightResult_ = creatureInteraction_.Cast(
+        fightResult_ = combat::CreatureInteraction::Cast(
             spellBeingCastPtrOpt_.value(), TURN_CREATURE_PTR, creaturesToCastUponCopyPVec);
 
         SetTurnActionPhase(TurnActionPhase::Cast);
@@ -3196,9 +3199,10 @@ namespace stage
     void CombatStage::SetupTurnBox()
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
-        const auto SINGLE_SPACE_STR {
-            " "
-        }; // any short all-whitespace non-empty string will work here
+
+        // any short all-whitespace non-empty string will work here
+        const auto SINGLE_SPACE_STR { " " };
+
         const auto CAN_TAKE_ACTION_STR { TURN_CREATURE_PTR->CanTakeActionStr() };
         const auto CURR_WEAPONS_STR { TURN_CREATURE_PTR->WeaponsString() };
 
@@ -3573,7 +3577,7 @@ namespace stage
                     const auto WEAPON_PTR_OPT { HIT_INFO.Weapon() };
                     if (WEAPON_PTR_OPT)
                     {
-                        combatSoundEffects_.PlayShoot(WEAPON_PTR_OPT.value());
+                        combat::CombatSoundEffects::PlayShoot(WEAPON_PTR_OPT.value());
 
                         const auto CREATURE_ATTACKING_CENTER_POSV {
                             combatDisplayStagePtr_->GetCombatNodeCenter(TURN_CREATURE_PTR)
@@ -3617,7 +3621,7 @@ namespace stage
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
-                combatSoundEffects_.PlaySpell(spellBeingCastPtrOpt_.value());
+                combat::CombatSoundEffects::PlaySpell(spellBeingCastPtrOpt_.value());
 
                 // start sparkle anim for creature doing the casting
                 combatAnimationUPtr_->SparkleAnimStart(
@@ -3638,7 +3642,7 @@ namespace stage
 
             case TurnActionPhase::Roar:
             {
-                combatSoundEffects_.PlayRoar(TURN_CREATURE_PTR);
+                combat::CombatSoundEffects::PlayRoar(TURN_CREATURE_PTR);
 
                 creature::CreaturePVec_t creaturesToShakePVec { creature::Algorithms::NonPlayers(
                     creature::Algorithms::Living) };
@@ -3663,7 +3667,7 @@ namespace stage
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
-                combatSoundEffects_.PlaySong(songBeingPlayedPtrOpt_.value());
+                combat::CombatSoundEffects::PlaySong(songBeingPlayedPtrOpt_.value());
 
                 // start the song animation for the bard playing the music
                 combatAnimationUPtr_->SongAnimStart(
@@ -3683,7 +3687,9 @@ namespace stage
             case TurnActionPhase::Pounce:
             case TurnActionPhase::None:
             case TurnActionPhase::Count:
-            default: { break;
+            default:
+            {
+                break;
             }
         }
     }
@@ -3692,42 +3698,78 @@ namespace stage
     {
         switch (ENUM)
         {
-            case TurnPhase::NotATurn: { return "NotATurn";
+            case TurnPhase::NotATurn:
+            {
+                return "NotATurn";
             }
-            case TurnPhase::CenterAndZoomIn: { return "CenterAndZoomIn";
+            case TurnPhase::CenterAndZoomIn:
+            {
+                return "CenterAndZoomIn";
             }
-            case TurnPhase::PostCenterAndZoomInPause: { return "PostZInPause";
+            case TurnPhase::PostCenterAndZoomInPause:
+            {
+                return "PostZInPause";
             }
-            case TurnPhase::Determine: { return "Determine";
+            case TurnPhase::Determine:
+            {
+                return "Determine";
             }
-            case TurnPhase::TargetSelect: { return "TargetSelect";
+            case TurnPhase::TargetSelect:
+            {
+                return "TargetSelect";
             }
-            case TurnPhase::ConditionEffectPause: { return "ConditionEffectPause";
+            case TurnPhase::ConditionEffectPause:
+            {
+                return "ConditionEffectPause";
             }
-            case TurnPhase::CenterAndZoomOut: { return "CenterAndZoomOut";
+            case TurnPhase::CenterAndZoomOut:
+            {
+                return "CenterAndZoomOut";
             }
-            case TurnPhase::PostCenterAndZoomOutPause: { return "PostZOutPause";
+            case TurnPhase::PostCenterAndZoomOutPause:
+            {
+                return "PostZOutPause";
             }
-            case TurnPhase::PerformAnim: { return "PerformAnim";
+            case TurnPhase::PerformAnim:
+            {
+                return "PerformAnim";
             }
-            case TurnPhase::PerformReport: { return "PerformReport";
+            case TurnPhase::PerformReport:
+            {
+                return "PerformReport";
             }
-            case TurnPhase::PostPerformPause: { return "PostPerformPause";
+            case TurnPhase::PostPerformPause:
+            {
+                return "PostPerformPause";
             }
-            case TurnPhase::StatusAnim: { return "StatusAnim";
+            case TurnPhase::StatusAnim:
+            {
+                return "StatusAnim";
             }
-            case TurnPhase::DeathAnim: { return "DeathAnim";
+            case TurnPhase::DeathAnim:
+            {
+                return "DeathAnim";
             }
-            case TurnPhase::RepositionAnim: { return "RepositionAnim";
+            case TurnPhase::RepositionAnim:
+            {
+                return "RepositionAnim";
             }
-            case TurnPhase::PostTurnPause: { return "PostTurnPause";
+            case TurnPhase::PostTurnPause:
+            {
+                return "PostTurnPause";
             }
-            case TurnPhase::Achievements: { return "Achievements";
+            case TurnPhase::Achievements:
+            {
+                return "Achievements";
             }
-            case TurnPhase::End: { return "End";
+            case TurnPhase::End:
+            {
+                return "End";
             }
             case TurnPhase::Count:
-            default: { return "turn_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
+            default:
+            {
+                return "turn_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
@@ -3736,34 +3778,62 @@ namespace stage
     {
         switch (ENUM)
         {
-            case TurnActionPhase::None: { return "None";
+            case TurnActionPhase::None:
+            {
+                return "None";
             }
-            case TurnActionPhase::PauseAndReport: { return "PauseAndReport";
+            case TurnActionPhase::PauseAndReport:
+            {
+                return "PauseAndReport";
             }
-            case TurnActionPhase::MeleeWeapon: { return "MeleeWeapon";
+            case TurnActionPhase::MeleeWeapon:
+            {
+                return "MeleeWeapon";
             }
-            case TurnActionPhase::ShootSling: { return "ShootSling";
+            case TurnActionPhase::ShootSling:
+            {
+                return "ShootSling";
             }
-            case TurnActionPhase::ShootArrow: { return "ShootArrow";
+            case TurnActionPhase::ShootArrow:
+            {
+                return "ShootArrow";
             }
-            case TurnActionPhase::ShootBlowpipe: { return "ShootBlowpipe";
+            case TurnActionPhase::ShootBlowpipe:
+            {
+                return "ShootBlowpipe";
             }
-            case TurnActionPhase::Advance: { return "Advance";
+            case TurnActionPhase::Advance:
+            {
+                return "Advance";
             }
-            case TurnActionPhase::Retreat: { return "Retreat";
+            case TurnActionPhase::Retreat:
+            {
+                return "Retreat";
             }
-            case TurnActionPhase::Cast: { return "Cast";
+            case TurnActionPhase::Cast:
+            {
+                return "Cast";
             }
-            case TurnActionPhase::PlaySong: { return "PlaySong";
+            case TurnActionPhase::PlaySong:
+            {
+                return "PlaySong";
             }
-            case TurnActionPhase::Roar: { return "Roar";
+            case TurnActionPhase::Roar:
+            {
+                return "Roar";
             }
-            case TurnActionPhase::Pounce: { return "Pounce";
+            case TurnActionPhase::Pounce:
+            {
+                return "Pounce";
             }
-            case TurnActionPhase::Run: { return "Run";
+            case TurnActionPhase::Run:
+            {
+                return "Run";
             }
             case TurnActionPhase::Count:
-            default: { return "turn_action_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
+            default:
+            {
+                return "turn_action_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
@@ -3772,17 +3842,29 @@ namespace stage
     {
         switch (ENUM)
         {
-            case PreTurnPhase::Start: { return "Start";
+            case PreTurnPhase::Start:
+            {
+                return "Start";
             }
-            case PreTurnPhase::PanToCenter: { return "PanToCenter";
+            case PreTurnPhase::PanToCenter:
+            {
+                return "PanToCenter";
             }
-            case PreTurnPhase::PostPanPause: { return "PostPanPause";
+            case PreTurnPhase::PostPanPause:
+            {
+                return "PostPanPause";
             }
-            case PreTurnPhase::ZoomOut: { return "ZOut";
+            case PreTurnPhase::ZoomOut:
+            {
+                return "ZOut";
             }
-            case PreTurnPhase::PostZoomOutPause: { return "PostZOutPause";
+            case PreTurnPhase::PostZoomOutPause:
+            {
+                return "PostZOutPause";
             }
-            case PreTurnPhase::End: { return "End";
+            case PreTurnPhase::End:
+            {
+                return "End";
             }
             case PreTurnPhase::Count:
             default:
@@ -3796,40 +3878,74 @@ namespace stage
     {
         switch (ENUM)
         {
-            case AnimPhase::NotAnimating: { return "NotAnimating";
+            case AnimPhase::NotAnimating:
+            {
+                return "NotAnimating";
             }
-            case AnimPhase::AdvanceOrRetreat: { return "AdvanceOrRetreat";
+            case AnimPhase::AdvanceOrRetreat:
+            {
+                return "AdvanceOrRetreat";
             }
-            case AnimPhase::ProjectileShoot: { return "ProjShoot";
+            case AnimPhase::ProjectileShoot:
+            {
+                return "ProjShoot";
             }
-            case AnimPhase::MoveToward: { return "MoveToward";
+            case AnimPhase::MoveToward:
+            {
+                return "MoveToward";
             }
-            case AnimPhase::PostMoveTowardPause: { return "PostTowardPause";
+            case AnimPhase::PostMoveTowardPause:
+            {
+                return "PostTowardPause";
             }
-            case AnimPhase::Impact: { return "Impact";
+            case AnimPhase::Impact:
+            {
+                return "Impact";
             }
-            case AnimPhase::PostImpactPause: { return "PostImpactPause";
+            case AnimPhase::PostImpactPause:
+            {
+                return "PostImpactPause";
             }
-            case AnimPhase::Spell: { return "Spell";
+            case AnimPhase::Spell:
+            {
+                return "Spell";
             }
-            case AnimPhase::PostSpellPause: { return "PostSpellPause";
+            case AnimPhase::PostSpellPause:
+            {
+                return "PostSpellPause";
             }
-            case AnimPhase::Song: { return "Song";
+            case AnimPhase::Song:
+            {
+                return "Song";
             }
-            case AnimPhase::PostSongPause: { return "PostSongPause";
+            case AnimPhase::PostSongPause:
+            {
+                return "PostSongPause";
             }
-            case AnimPhase::MoveBack: { return "MoveBack";
+            case AnimPhase::MoveBack:
+            {
+                return "MoveBack";
             }
-            case AnimPhase::Roar: { return "Roar";
+            case AnimPhase::Roar:
+            {
+                return "Roar";
             }
-            case AnimPhase::PostRoarPause: { return "PostRoarPause";
+            case AnimPhase::PostRoarPause:
+            {
+                return "PostRoarPause";
             }
-            case AnimPhase::Run: { return "Run";
+            case AnimPhase::Run:
+            {
+                return "Run";
             }
-            case AnimPhase::FinalPause: { return "FinalPause";
+            case AnimPhase::FinalPause:
+            {
+                return "FinalPause";
             }
             case AnimPhase::Count:
-            default: { return "anim_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
+            default:
+            {
+                return "anim_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
@@ -3885,18 +4001,17 @@ namespace stage
     CombatStage::TurnActionPhase
         CombatStage::GetTurnActionPhaseFromWeaponType(const item::ItemPtr_t WEAPON_PTR) const
     {
-        if (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
+        if (WEAPON_PTR->WeaponInfo().IsMinor<item::Projectiles>(item::Projectiles::Sling))
         {
             return TurnActionPhase::ShootSling;
         }
         else if (
             WEAPON_PTR->WeaponInfo().IsBow()
-            || WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Crossbow)
+            || WEAPON_PTR->WeaponInfo().IsMinor<item::Projectiles>(item::Projectiles::Crossbow))
         {
             return TurnActionPhase::ShootArrow;
         }
-        else if (
-            WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Blowpipe)
+        else if (WEAPON_PTR->WeaponInfo().IsMinor<item::Projectiles>(item::Projectiles::Blowpipe))
         {
             return TurnActionPhase::ShootBlowpipe;
         }
@@ -3979,7 +4094,7 @@ namespace stage
                 if (KILLED_CREATURE_PTR->IsPlayerCharacter())
                 {
                     wasPlayerKilled = true;
-                    combatSoundEffects_.PlayDeath(KILLED_CREATURE_PTR);
+                    combat::CombatSoundEffects::PlayDeath(KILLED_CREATURE_PTR);
                 }
             }
 
@@ -4011,7 +4126,8 @@ namespace stage
 
         combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
-        fightResult_ = creatureInteraction_.Fight(TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR);
+        fightResult_
+            = combat::CreatureInteraction::Fight(TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR);
 
         AppendStatusMessage(
             combatText_.ActionText(TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
@@ -4093,7 +4209,7 @@ namespace stage
                 == std::end(soundEffectsPlayedVec_))
             {
                 soundEffectsPlayedVec_.emplace_back(REPORT_INDICIES);
-                combatSoundEffects_.PlayHitOrMiss(turnCreaturePtrOpt_.value(), HIT_INFO);
+                combat::CombatSoundEffects::PlayHitOrMiss(turnCreaturePtrOpt_.value(), HIT_INFO);
             }
         }
     }
@@ -4264,12 +4380,11 @@ namespace stage
                         }
 
                         if (NEXT_HIT_INFO.Weapon().value()->WeaponType()
-                            & item::weapon_type::Projectile)
+                            == item::Weapon::Projectile)
                         {
                             ++projectileHits;
                         }
-                        else if (
-                            NEXT_HIT_INFO.Weapon().value()->WeaponType() & item::weapon_type::Melee)
+                        else if (NEXT_HIT_INFO.Weapon().value()->WeaponInfo().IsMelee())
                         {
                             ++meleeHits;
                         }
@@ -4388,8 +4503,8 @@ namespace stage
 
     void CombatStage::PerformRoarEffects()
     {
-        fightResult_
-            = creatureInteraction_.Roar(turnCreaturePtrOpt_.value(), combatDisplayStagePtr_);
+        fightResult_ = combat::CreatureInteraction::Roar(
+            turnCreaturePtrOpt_.value(), combatDisplayStagePtr_);
     }
 
     void CombatStage::AnimationCenteringStart(const creature::CreaturePVec_t & CREATURE_PVEC)

@@ -335,9 +335,8 @@ namespace map
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (misc::ToNumber(std::string(FIRST, LAST), value)),
-                "Parse_Layer_Generic_Tiles() valueStringConverterAndSaver(\""
-                    << std::string(FIRST, LAST)
-                    << "\"), was unable to turn that value into an int.");
+                "Parse_Layer_Generic_Tiles() valueStringConverterAndSaver(\"" << std::string(
+                    FIRST, LAST) << "\"), was unable to turn that value into an int.");
 
             mapIDs.emplace_back(value);
             return false;
@@ -412,7 +411,7 @@ namespace map
                 const auto ANIM_ENUM { EnumUtil<gui::Animations>::FromString(ANIM_NAME) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (ANIM_ENUM != gui::Animations::Count),
+                    (ANIM_ENUM < gui::Animations::Count),
                     "map::Parser::Parse_Layer_Animations() got an invalid animation name \""
                         << ANIM_NAME << "\"");
 
@@ -564,7 +563,7 @@ namespace map
             "map::Parser::Parse_Transition_Properties() was unable to parse an entry type.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (level != Level::Count),
+            (level < Level::Count),
             "map::Parser::Parse_Transition_Properties() was unable to parse a Level::Enum.");
     }
 

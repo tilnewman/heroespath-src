@@ -9,17 +9,14 @@
 //
 // item-factory.hpp
 //
-#include "game/strong-types.hpp"
-#include "item/item-name-factory.hpp"
-#include "item/item-type-enum.hpp"
-#include "misc/boost-optional-that-throws.hpp"
+#include "item/item-profile-factory.hpp"
 #include "misc/not-null.hpp"
 
-#include <memory>
-#include <string>
+#include <string_view>
 
 namespace heroespath
 {
+
 namespace creature
 {
     class Creature;
@@ -28,46 +25,50 @@ namespace creature
 
 namespace item
 {
-    class ItemProfile;
 
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
 
     // Responsible for making new (and properly warehousing) item objects from ItemProfiles.
-    class ItemFactory
+    struct ItemFactory
     {
-    public:
-        ItemFactory(const ItemFactory &) = delete;
-        ItemFactory(ItemFactory &&) = delete;
-        ItemFactory & operator=(const ItemFactory &) = delete;
-        ItemFactory & operator=(ItemFactory &&) = delete;
+        ItemFactory() = delete;
 
-        ItemFactory() = default;
+        // only non-misc bodypart items need a creature race name
+        static const ItemPtr_t
+            Make(const ItemProfile &, const std::string_view CREATURE_RACE_NAME = {});
 
-        const ItemPtr_t Make(const ItemProfile &) const;
-        const ItemPtr_t Make(const body_part::Enum, const creature::CreaturePtr_t) const;
+        // make with weapon or armor sub-type enum
+        template <typename EquipmentSubEnumWrapper_t>
+        static const ItemPtr_t Make(
+            const EquipmentSubEnumWrapper_t EQUIPMENT_SUB_TYPE_ENUM,
+            const bool IS_PIXIE,
+            const Material::Enum MAT_PRI,
+            const Material::Enum MAT_SEC = Material::Count)
+        {
+            return Make(
+                ItemProfileFactory::Make(EQUIPMENT_SUB_TYPE_ENUM, IS_PIXIE, MAT_PRI, MAT_SEC));
+        }
+
+        // make armor requiring a form (Aventail/Bracer/Boot/Pant/Shirt/Gauntlet)
+        static const ItemPtr_t Make(
+            const Armor::Enum ARMOR_TYPE,
+            const Forms::Enum FORM_TYPE,
+            const bool IS_PIXIE,
+            const Material::Enum MAT_PRI,
+            const Material::Enum MAT_SEC = Material::Count);
+
+        static bool
+            EquipSkinArmor(const creature::CreaturePtr_t CREATURE_PTR, std::string & errorMessage);
+
+        static bool EquipBodyPartWeapon(
+            const creature::CreaturePtr_t CREATURE_PTR, std::string & errorMessage);
 
     private:
-        const ItemPtr_t MakeArmor(const ItemProfile &) const;
-        const ItemPtr_t MakeArmor(const body_part::Enum, const creature::CreaturePtr_t) const;
-
-        const ItemPtr_t MakeWeapon(const ItemProfile &) const;
-        const ItemPtr_t MakeWeapon(const body_part::Enum, const creature::CreaturePtr_t) const;
-
-        const ItemPtr_t MakeMisc(const ItemProfile & PROFILE) const;
-
-        Coin_t CalculatePrice(
-            const ItemProfile & PROFILE, const Coin_t BASE_PRICE_PARAM = 0_coin) const;
-
-        Weight_t CalculateWeight(
-            const ItemProfile & PROFILE, const Weight_t BASE_WEIGHT_PARAM = 0_weight) const;
-
-        Armor_t CalculateArmorRating(
-            const ItemProfile & PROFILE, const Armor_t & BASE_ARMOR_RATING = 0_armor) const;
-
-        Coin_t TreasureScoreToCoins(const Score_t &) const;
-
-        ItemNameFactory nameFactory_;
+        static bool EquipBodyPart(
+            const ItemProfile & ITEM_PROFILE,
+            const creature::CreaturePtr_t CREATURE_PTR,
+            std::string & errorMessage);
     };
 
 } // namespace item

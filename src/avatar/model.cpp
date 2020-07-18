@@ -287,7 +287,7 @@ namespace avatar
 
                 const auto NEW_DIRECTION { WalkDirection(gui::Direction::Count) };
 
-                if (NEW_DIRECTION != gui::Direction::Count)
+                if (NEW_DIRECTION < gui::Direction::Count)
                 {
                     action_ = Pose::Walking;
                     SetWalkAnim(NEW_DIRECTION, true);
@@ -301,7 +301,7 @@ namespace avatar
 
             if (NEW_DIRECTION != prevWalkDirection_)
             {
-                if (NEW_DIRECTION == gui::Direction::Count)
+                if (NEW_DIRECTION >= gui::Direction::Count)
                 {
                     StopWalking();
                 }
@@ -405,7 +405,7 @@ namespace avatar
     {
         const auto CURRENT_POS_V { mapPosV_ };
 
-        if (DIRECTION_TO_MAINTAIN == gui::Direction::Count)
+        if (DIRECTION_TO_MAINTAIN >= gui::Direction::Count)
         {
             std::vector<gui::Direction::Enum> dirVec;
 

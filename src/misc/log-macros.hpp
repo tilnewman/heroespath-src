@@ -12,19 +12,20 @@
 #include "misc/log-pri-enum.hpp"
 #include "misc/string-stream-holder.hpp"
 
-#include <ostream>
-
 #if !defined(MACRO_DISABLE_ALL) && !defined(HEROESPATH_MACRO_DISABLE_LOG)
 
 #define M_HP_LOG_PRI_SS(priority, str_streams)                                                     \
     {                                                                                              \
-        misc::stringStreamHolder::ostreamer() << str_streams;                                      \
-        misc::stringStreamHolder::log(false, priority, __FILE__, __func__, __LINE__);              \
+        std::ostringstream _m_hp_log_pri_ss;                                                       \
+        _m_hp_log_pri_ss << str_streams;                                                           \
+                                                                                                   \
+        misc::StringStreamHolder::log(                                                             \
+            priority, __FILE__, __func__, __LINE__, _m_hp_log_pri_ss.str());                       \
     }
 
 #define M_HP_LOG_PRI_STR(priority, str)                                                            \
     {                                                                                              \
-        misc::stringStreamHolder::log(false, priority, __FILE__, __func__, __LINE__, str);         \
+        misc::StringStreamHolder::log(priority, __FILE__, __func__, __LINE__, str);                \
     }
 
 #define M_HP_LOG_DBG(str_streams) M_HP_LOG_PRI_SS(heroespath::misc::LogPriority::Debug, str_streams)

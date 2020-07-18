@@ -16,7 +16,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Brightness : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Brightness : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

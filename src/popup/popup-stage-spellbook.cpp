@@ -15,6 +15,7 @@
 #include "gui/cached-texture.hpp"
 #include "gui/font-manager.hpp"
 #include "gui/sound-manager.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
 #include "spell/spell.hpp"

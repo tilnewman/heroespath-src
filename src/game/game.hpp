@@ -41,8 +41,8 @@ namespace game
         ~Game();
 
         static misc::NotNull<Game *> Instance();
-        static void Acquire();
-        static void Release();
+        static void Create();
+        static void Destroy();
 
         GameState & State() const;
         void Set(GameStateUPtr_t gameStateUPtr);

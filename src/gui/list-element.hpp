@@ -197,13 +197,13 @@ namespace gui
 
         bool HasCachedTexture() const { return HasImage(); }
 
-        const CachedTextureOpt_t & CachedTextureOpt() const { return cachedTextureOpt_; }
+        const CachedTextureOpt_t & GetCachedTextureOpt() const { return cachedTextureOpt_; }
 
-        const CachedTexture & CachedTexture() const
+        const CachedTexture & GetCachedTexture() const
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (cachedTextureOpt_),
-                ToString() << "::CachedTexture() but the cachedTextureOpt_ is not initialized.");
+                ToString() << "::GetCachedTexture() but the cachedTextureOpt_ is not initialized.");
 
             return cachedTextureOpt_.value();
         }
@@ -243,7 +243,7 @@ namespace gui
 
         // returns TextRegion.GetTextInfo(), returns a default constructed TextInfo if there is
         // no TextRegion
-        const TextInfo TextInfo() const
+        const TextInfo GetTextInfo() const
         {
             if (textRegionUPtr_)
             {
@@ -297,9 +297,11 @@ namespace gui
             sprite_.setColor(COLOR);
         }
 
-        friend bool operator==(const ListElement<Element_t> & L, const ListElement<Element_t> & R);
+        template <typename T>
+        friend bool operator==(const ListElement<T> & L, const ListElement<T> & R);
 
-        friend bool operator<(const ListElement<Element_t> & L, const ListElement<Element_t> & R);
+        template <typename T>
+        friend bool operator<(const ListElement<T> & L, const ListElement<T> & R);
 
         const std::string ToString() const
         {

@@ -61,7 +61,7 @@ namespace gui
         static void Acquire(
             const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
 
-        static void Release();
+        static void Destroy();
 
         float GetWinWidth() const;
         float GetWinHeight() const;
@@ -109,10 +109,6 @@ namespace gui
 
         void DisplayFrameBuffer();
 
-        // TODO move this to the config file
-        static float GetWinWidthMin() { return 1280.0f; }
-        static float GetWinHeightMin() { return 900.0f; }
-
         // These are not enforced.  They exist only to aid in setting screen positions
         // that are relative to min/max sizes.
         //
@@ -121,8 +117,8 @@ namespace gui
         // correctly!
         //
         // When I finish eliminating all calls to MapByRes() then this crap can be removed.
-        static float GetWinWidthMax() { return 7680.0f; }
-        static float GetWinHeightMax() { return 4800.0f; }
+        static const sf::Vector2f GetWinSizeMin() { return { 1280.0f, 900.0f }; }
+        static const sf::Vector2f GetWinSizeMax() { return { 7680.0f, 4800.0f }; }
 
         static bool IsResolutionListed(const Resolution & RES);
         static bool IsVideoModeListed(const sf::VideoMode & VM);
@@ -157,12 +153,14 @@ namespace gui
         // min required res.  zTn 2016-10-10
         static bool IsVideoModeSupported(const sf::VideoMode & V)
         {
-            return ((V.width >= GetWinWidthMin()) && (V.height >= GetWinHeightMin()));
+            const sf::Vector2u WIN_SIZE_MIN_U(GetWinSizeMin());
+            return ((V.width >= WIN_SIZE_MIN_U.x) && (V.height >= WIN_SIZE_MIN_U.y));
         }
 
         static bool IsResolutionSupported(const Resolution & R)
         {
-            return ((R.width >= GetWinWidthMin()) && (R.height >= GetWinHeightMin()));
+            const sf::Vector2u WIN_SIZE_MIN_U(GetWinSizeMin());
+            return ((R.width >= WIN_SIZE_MIN_U.x) && (R.height >= WIN_SIZE_MIN_U.y));
         }
 
         static bool IsCurrentDesktopResolutionSupported()

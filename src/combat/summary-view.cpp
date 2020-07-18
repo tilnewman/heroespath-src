@@ -451,7 +451,7 @@ namespace combat
 
         for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
-            if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
+            if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodyPart() == false))
             {
                 weaponItemsToDisplay.emplace_back(NEXT_ITEM_PTR);
             }
@@ -462,7 +462,7 @@ namespace combat
         {
             for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
-                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
+                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodyPart()))
                 {
                     weaponItemsToDisplay.emplace_back(NEXT_ITEM_PTR);
                 }
@@ -472,7 +472,7 @@ namespace combat
         {
             for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
-                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
+                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodyPart()))
                 {
                     weaponItemsToIgnore.emplace_back(NEXT_ITEM_PTR);
                 }
@@ -500,7 +500,7 @@ namespace combat
         // then misc
         for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
-            if (NEXT_ITEM_PTR->MiscType() != item::misc_type::Not)
+            if (NEXT_ITEM_PTR->MiscType() < item::Misc::Count)
             {
                 makeAndppendItemWithText(NEXT_ITEM_PTR);
             }
@@ -633,7 +633,7 @@ namespace combat
 
             std::string infoStr;
 
-            if (nextItemTextUPtr->item_ptr->IsQuestItem())
+            if (nextItemTextUPtr->item_ptr->IsQuest())
             {
                 infoStr += "(Quest Item)";
             }

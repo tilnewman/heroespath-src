@@ -20,7 +20,7 @@ namespace heroespath
 namespace interact
 {
 
-    struct Buttons : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Buttons : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

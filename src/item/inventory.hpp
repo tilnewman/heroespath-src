@@ -8,12 +8,13 @@
 #define HEROESPATH_ITEM_INVENTORY_HPP_INCLUDED
 //
 // inventory.hpp
-//  A class that encapsulates a collection of Items.
 //
 #include "creature/trait.hpp"
 #include "game/strong-types.hpp"
-#include "item/armor-types.hpp"
-#include "item/item-type-enum.hpp"
+#include "item/armor-enum.hpp"
+#include "item/category-enum.hpp"
+#include "item/misc-enum.hpp"
+#include "item/weapon-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 
@@ -76,29 +77,29 @@ namespace item
 
         std::size_t Count() const;
 
-        std::size_t CountItemOfArmorType(const armor_type::Enum) const;
-        std::size_t CountItemOfArmorTypeHeld(const armor_type::Enum) const;
-        std::size_t CountItemOfArmorTypeEquipped(const armor_type::Enum) const;
+        std::size_t CountItemOfArmorType(const Armor::Enum) const;
+        std::size_t CountItemOfArmorTypeHeld(const Armor::Enum) const;
+        std::size_t CountItemOfArmorTypeEquipped(const Armor::Enum) const;
 
-        std::size_t CountItemOfWeaponType(const armor_type::Enum) const;
-        std::size_t CountItemOfWeaponTypeHeld(const armor_type::Enum) const;
-        std::size_t CountItemOfWeaponTypeEquipped(const armor_type::Enum) const;
+        std::size_t CountItemOfWeaponType(const Weapon::Enum) const;
+        std::size_t CountItemOfWeaponTypeHeld(const Weapon::Enum) const;
+        std::size_t CountItemOfWeaponTypeEquipped(const Weapon::Enum) const;
 
-        std::size_t CountItemOfCategory(const category::Enum) const;
-        std::size_t CountItemOfCategoryHeld(const category::Enum) const;
-        std::size_t CountItemOfCategoryEquipped(const category::Enum) const;
+        std::size_t CountItemOfCategory(const Category::Enum) const;
+        std::size_t CountItemOfCategoryHeld(const Category::Enum) const;
+        std::size_t CountItemOfCategoryEquipped(const Category::Enum) const;
 
-        std::size_t CountItemOfMiscType(const misc_type::Enum) const;
-        std::size_t CountItemOfMiscTypeHeld(const misc_type::Enum) const;
-        std::size_t CountItemOfMiscTypeEquipped(const misc_type::Enum) const;
+        std::size_t CountItemOfMiscType(const Misc::Enum) const;
+        std::size_t CountItemOfMiscTypeHeld(const Misc::Enum) const;
+        std::size_t CountItemOfMiscTypeEquipped(const Misc::Enum) const;
 
-        bool HasCoverTypeEquipped(const armor::cover_type::Enum) const;
+        bool HasCoverTypeEquipped(const Covers::Enum) const;
 
         bool HasMusicalInstrumentEquipped() const;
 
         bool HasCastingItemEquipped() const;
 
-        Armor_t ArmorRating() const;
+        Armor_t ArmorRating(const Rank_t CREATURE_RANK = 0_rank) const;
 
         const std::string ToString() const;
 

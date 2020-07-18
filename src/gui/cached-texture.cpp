@@ -53,7 +53,7 @@ namespace gui
     {
         if ((this != &CT) && ((CT.index_ != index_) || (CT.texturePtr_ != texturePtr_)))
         {
-            Release();
+            Destroy();
 
             index_ = CT.index_;
             path_ = CT.path_;
@@ -71,7 +71,7 @@ namespace gui
     {
         if ((this != &ct) && ((texturePtr_ != ct.texturePtr_) || (index_ != ct.index_)))
         {
-            Release();
+            Destroy();
 
             path_ = std::move(ct.path_);
             index_ = std::move(ct.index_);
@@ -142,21 +142,21 @@ namespace gui
         texturePtr_ = TEXTURE_PTR;
     }
 
-    CachedTexture::~CachedTexture() { Release(); }
+    CachedTexture::~CachedTexture() { Destroy(); }
 
     std::size_t CachedTexture::RefCount() const
     {
         return TextureCache::Instance()->GetRefCountByIndex(index_);
     }
 
-    void CachedTexture::Release()
+    void CachedTexture::Destroy()
     {
         if (path_.empty() == false)
         {
             texturePtr_ = misc::NotNull(&alwaysEmptyTexture_);
             TextureCache::Instance()->RemoveByPath(path_, options_);
 
-            // clear path_ so that repeated calls to Release() are safe
+            // clear path_ so that repeated calls to Destroy() are safe
             path_.clear();
         }
     }
@@ -186,7 +186,7 @@ namespace gui
     {
         if ((this != &CT) && (CT.indexes_ != indexes_))
         {
-            Release();
+            Destroy();
 
             if (CT.path_.empty() == false)
             {
@@ -207,7 +207,7 @@ namespace gui
         {
             if (ct.indexes_ != indexes_)
             {
-                Release();
+                Destroy();
 
                 path_ = std::move(ct.path_);
                 indexes_ = std::move(ct.indexes_);
@@ -235,7 +235,7 @@ namespace gui
         , options_(OPTIONS)
     {}
 
-    CachedTextures::~CachedTextures() { Release(); }
+    CachedTextures::~CachedTextures() { Destroy(); }
 
     std::size_t CachedTextures::RefCount() const
     {
@@ -262,13 +262,13 @@ namespace gui
 
     const sf::Texture & CachedTextures::Back() const { return operator[](indexes_.size() - 1); }
 
-    void CachedTextures::Release()
+    void CachedTextures::Destroy()
     {
         if (path_.empty() == false)
         {
             TextureCache::Instance()->RemoveByPath(path_, options_);
 
-            // empty indexes_ so that repeated calls to Release() are safe
+            // empty indexes_ so that repeated calls to Destroy() are safe
             path_.clear();
         }
     }

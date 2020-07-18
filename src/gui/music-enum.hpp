@@ -21,7 +21,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct music : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct music : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

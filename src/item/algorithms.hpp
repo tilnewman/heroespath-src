@@ -12,7 +12,10 @@
 //  There are too many variables to code a complete set of functions, so instead,
 //  functions will be added here as needed during development.
 //
-#include "item/item-type-enum.hpp"
+#include "item/armor-enum.hpp"
+#include "item/category-enum.hpp"
+#include "item/misc-enum.hpp"
+#include "item/weapon-enum.hpp"
 #include "misc/not-null.hpp"
 #include "misc/strings.hpp"
 
@@ -43,22 +46,22 @@ namespace item
 
         static const ItemPVec_t FindByCategory(
             const ItemPVec_t & itemSVec,
-            const category::Enum CATEGORY_TYPE,
+            const Category::Enum CATEGORY_TYPE,
             const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t FindByWeaponType(
             const ItemPVec_t & itemSVec,
-            const weapon_type::Enum WEAPON_TYPE,
+            const Weapon::Enum WEAPON_TYPE,
             const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t FindByArmorType(
             const ItemPVec_t & itemSVec,
-            const armor_type::Enum ARMOR_TYPE,
+            const Armor::Enum ARMOR_TYPE,
             const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t FindByMiscType(
             const ItemPVec_t & itemSVec,
-            const misc_type::Enum MISC_TYPE,
+            const Misc::Enum MISC_TYPE,
             const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t

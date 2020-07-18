@@ -51,7 +51,7 @@ namespace gui
             const creature::race::Enum RACE,
             const creature::role::Enum ROLE,
             const creature::sex::Enum SEX,
-            const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
+            const creature::WolfenClass::Enum WOLFEN_CLASS = creature::WolfenClass::Pup,
             const creature::dragon_class::Enum DRAGON_CLASS = creature::dragon_class::Hatchling);
 
         static bool WillHorizFlipToFaceRight(const creature::Creature &);

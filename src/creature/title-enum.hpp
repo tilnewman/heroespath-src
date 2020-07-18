@@ -20,7 +20,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct Titles : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Titles : public EnumBaseCounting<>
     {
         // Note:  Keep order in sync with creature::title::Warehouse::Fill()
         enum Enum : EnumUnderlying_t

@@ -56,7 +56,7 @@ namespace game
                   avatar::Avatar::NameEnum::KnightGold,
                   avatar::Avatar::NameEnum::Maid,
                   avatar::Avatar::NameEnum::Monk,
-                  avatar::Avatar::NameEnum::Pants,
+                  avatar::Avatar::NameEnum::Pant,
                   avatar::Avatar::NameEnum::Thug,
                   avatar::Avatar::NameEnum::Whitebeard },
                 0, // misc::Random(0, 3),

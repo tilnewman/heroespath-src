@@ -102,8 +102,8 @@ namespace test
             throw std::runtime_error(ss.str());
         }
 
-        if ((CountBitsSet(static_cast<std::uint32_t>(CURR_SIZE.x)) != 1)
-            || (CountBitsSet(static_cast<std::uint32_t>(CURR_SIZE.y)) != 1))
+        if ((misc::CountBits(static_cast<std::uint32_t>(CURR_SIZE.x)) != 1)
+            || (misc::CountBits(static_cast<std::uint32_t>(CURR_SIZE.y)) != 1))
         {
             M_HP_LOG_WRN(
                 makeErrorMessagePrefix() << "verifyCurrentSizeAndGetNewSize(CURR_SIZE=" << CURR_SIZE

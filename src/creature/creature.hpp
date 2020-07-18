@@ -133,7 +133,7 @@ namespace creature
 
         dragon_class::Enum DragonClass() const { return dragon_class::ClassFromRank(Rank()); }
 
-        wolfen_class::Enum WolfenClass() const { return wolfen_class::ClassFromRank(Rank()); }
+        WolfenClass::Enum WolfenClassType() const { return WolfenClass::ClassFromRank(Rank()); }
 
         Rank_t Rank() const { return rank_; }
 
@@ -260,7 +260,7 @@ namespace creature
         const std::string ItemIsAddAllowed(const item::ItemPtr_t) const;
         const std::string ItemEquip(const item::ItemPtr_t);
         const std::string ItemIsEquipAllowed(const item::ItemPtr_t) const;
-        const std::string ItemIsEquipAllowedByRole(const item::ItemPtr_t) const;
+        const std::string ItemIsEquipAllowedByRaceAndRole(const item::ItemPtr_t) const;
 
         // This function will not remove an equipped item.  Unequip first.
         void ItemRemove(const item::ItemPtr_t);

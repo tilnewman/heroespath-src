@@ -55,8 +55,8 @@ namespace game
         GameController & operator=(GameController &&) = delete;
 
         static misc::NotNull<GameController *> Instance();
-        static void Acquire();
-        static void Release();
+        static void Create();
+        static void Destroy();
         static void Initialize();
 
         static void SetStartupStage(const std::string & STARTUP_STAGE_NAME)

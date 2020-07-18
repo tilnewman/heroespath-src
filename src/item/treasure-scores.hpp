@@ -4,10 +4,10 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_ITEM_TREASURESCORES_HPP_INCLUDED
-#define HEROESPATH_ITEM_TREASURESCORES_HPP_INCLUDED
+#ifndef HEROESPATH_ITEM_TREASURE_SCORE_SET_HPP_INCLUDED
+#define HEROESPATH_ITEM_TREASURE_SCORE_SET_HPP_INCLUDED
 //
-// treasure-scores.hpp
+// treasure-score-set.hpp
 //
 #include "game/strong-types.hpp"
 
@@ -182,4 +182,4 @@ namespace item
 } // namespace item
 } // namespace heroespath
 
-#endif // HEROESPATH_ITEM_TREASUREINFO_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_TREASURE_SCORE_SET_HPP_INCLUDED

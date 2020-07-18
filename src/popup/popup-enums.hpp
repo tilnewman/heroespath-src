@@ -20,7 +20,7 @@ namespace heroespath
 namespace popup
 {
 
-    struct PopupStage : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct PopupStage : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -65,7 +65,7 @@ namespace popup
         }
     };
 
-    struct PopupButtonColor : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct PopupButtonColor : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -75,7 +75,7 @@ namespace popup
         };
     };
 
-    struct PopupImage : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct PopupImage : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -172,8 +172,7 @@ namespace popup
                 default: return "popup::PopupImage::ImageConfigKey(ENUM=out_of_range)";
             }
         }
-
-    }; // namespace heroespath
+    };
 
 } // namespace popup
 } // namespace heroespath

@@ -371,7 +371,7 @@ namespace popup
     {
         textRegionUPtr_ = std::make_unique<gui::TextRegion>(
             GetStageName() + "'s",
-            popupInfo_.TextInfo(),
+            popupInfo_.GetTextInfo(),
             contentRegion_,
             gui::BoxEntityInfo(),
             stage::IStagePtr_t(this));

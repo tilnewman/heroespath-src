@@ -190,6 +190,20 @@ namespace misc
         return *(std::begin(CONTAINER) + RANDOM_INDEX_DIFF_T);
     }
 
+    template <typename EnumWrapper_t>
+    std::enable_if_t<are_enum_v<typename EnumWrapper_t::Enum>, typename EnumWrapper_t::Enum>
+        Random(const typename EnumWrapper_t::Enum ENUM)
+    {
+        return Random(typename EnumWrapper_t::Enum(0), ENUM);
+    }
+
+    template <typename EnumWrapper_t>
+    std::enable_if_t<are_enum_v<typename EnumWrapper_t::Enum>, typename EnumWrapper_t::Enum>
+        Random()
+    {
+        return Random(EnumWrapper_t::Count);
+    }
+
 } // namespace misc
 } // namespace heroespath
 

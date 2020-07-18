@@ -21,7 +21,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct role : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct role : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

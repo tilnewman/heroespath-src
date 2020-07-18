@@ -19,7 +19,7 @@ namespace heroespath
 namespace stage
 {
 
-    struct Stage : public EnumBaseCounting<EnumFirstValue::None>
+    struct Stage : public EnumBaseCounting<EnumNameOfZeroIsNone>
     {
         enum Enum : EnumUnderlying_t
         {

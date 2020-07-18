@@ -138,14 +138,14 @@ namespace creature
 
         void UseEffect(const CreaturePtr_t);
 
-        Score_t TreasureScore() const { return score_; }
+        Score_t Score() const { return score_; }
 
         const std::string ToString() const;
 
         friend bool operator==(const Enchantment & L, const Enchantment & R);
 
     private:
-        Score_t CalcTreasureScore() const;
+        Score_t CalcScore() const;
 
     private:
         EnchantmentType::Enum type_;

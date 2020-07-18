@@ -62,7 +62,7 @@ namespace misc
 
     [[nodiscard]] constexpr bool IsDisplayable(const char CH) noexcept
     {
-        return (((CH > 31) && (CH != 127)) || IsWhitespace(CH));
+        return (((CH > 31) && (CH != 127)) || IsWhitespace(CH)); // 32=SPACE, 127=DEL
     }
 
     [[nodiscard]] constexpr bool IsNonDisplayable(const char CH) noexcept
@@ -499,10 +499,11 @@ namespace misc
                     > static_cast<Str2NumInteger_t>(std::numeric_limits<ResultNumber_t>::max()))
                 {
                     if (!(PARSE.is_negative)
-                        || !(INTEGER
-                             == (static_cast<Str2NumInteger_t>(
-                                     std::numeric_limits<ResultNumber_t>::max())
-                                 + 1)))
+                        || !(
+                            INTEGER
+                            == (static_cast<Str2NumInteger_t>(
+                                    std::numeric_limits<ResultNumber_t>::max())
+                                + 1)))
                     {
                         return false;
                     }
@@ -763,8 +764,10 @@ namespace misc
             const auto REV_BEGIN_ITER = std::rbegin(str);
             const auto REV_END_ITER = std::rend(str);
 
-            auto revIterPeriod = std::find_if_not(REV_BEGIN_ITER, REV_END_ITER, [
-            ](const char CH) constexpr noexcept { return (CH == '0'); });
+            auto revIterPeriod = std::find_if_not(
+                REV_BEGIN_ITER, REV_END_ITER, [](const char CH) constexpr noexcept {
+                    return (CH == '0');
+                });
 
             if ((revIterPeriod != REV_BEGIN_ITER) && (revIterPeriod != REV_END_ITER))
             {

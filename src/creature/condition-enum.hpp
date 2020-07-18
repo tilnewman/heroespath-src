@@ -30,7 +30,7 @@ namespace creature
     //      interactions in fight.cpp
     //      testing code in conditions.cpp creature::condition::Warehouse::Fill()
     //
-    struct Conditions : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Conditions : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

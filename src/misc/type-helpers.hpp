@@ -9,34 +9,16 @@
 //
 // type-helpers.hpp
 //
+#include <array>
 #include <iterator>
 #include <type_traits>
+#include <utility>
 
 namespace heroespath
 {
 namespace misc
 {
 
-    // Explanation of dependant_false_v<>
-    //
-    // The Problem:
-    // Technically, any static_assert(false) can fail to compile even if this template is never
-    // created/used/called.  For example, a template class that you want to prevent compiling if the
-    // wrong type is used.  This won't always work in msvc or g++, but we often want it to...
-    //
-    //      template <typename T1, typename T2>
-    //      struct T2CannotBeInt {};
-    //
-    //      template <typename T1>
-    //      struct SecondTypeCannotBeInt<T1, int> { static_assert(false); };
-    //
-    // The Solution:
-    // Create an 'always false' template.  That way the compiler won't know it is false until trying
-    // to create it.  (see dependant_false below)  Now you can do this, which will always work:
-    //
-    //      template <typename T1>
-    //      struct SecondTypeCannotBeInt<T1, int> { static_assert(dependant_false_v<T>); };
-    //
     template <typename...>
     struct dependant_false
     {
@@ -197,6 +179,71 @@ namespace misc
     template <typename... T>
     constexpr bool are_random_access_iterator_v
         = helpers::are_iterator_with_tag_v<std::random_access_iterator_tag, T...>;
+
+    namespace detail
+    {
+        template <typename ToCreate_t, typename Param_t, std::size_t... Indices>
+        constexpr auto make_constexpr_array_from_constructor_to_helper(
+            std::index_sequence<Indices...>) noexcept -> std::array<ToCreate_t, sizeof...(Indices)>
+        {
+            return { { ToCreate_t(Param_t(Indices))... } };
+        }
+
+        template <typename Function_t, std::size_t... Indices>
+        constexpr auto make_constexpr_array_from_function_helper(
+            Function_t f, std::index_sequence<Indices...>) noexcept -> std::
+            array<typename std::result_of<Function_t(std::size_t)>::type, sizeof...(Indices)>
+        {
+            return { { f(Indices)... } };
+        }
+
+        template <typename Container_t, std::size_t... Indices>
+        constexpr auto make_constexpr_array_from_container_helper(
+            const Container_t & CONTAINER, std::index_sequence<Indices...>) noexcept
+            -> std::array<typename Container_t::value_type, sizeof...(Indices)>
+        {
+            return { { CONTAINER[Indices]... } };
+        }
+
+        template <typename ToCreate_t, typename Container_t, std::size_t... Indices>
+        constexpr auto make_constexpr_array_from_container_to_helper(
+            const Container_t & CONTAINER, std::index_sequence<Indices...>) noexcept
+            -> std::array<ToCreate_t, sizeof...(Indices)>
+        {
+            return { { ToCreate_t(CONTAINER[Indices])... } };
+        }
+
+    } // namespace detail
+
+    template <typename ToCreate_t, typename Param_t, std::size_t N>
+    constexpr auto make_constexpr_array_from_constructor_to() noexcept -> std::array<ToCreate_t, N>
+    {
+        return detail::make_constexpr_array_from_constructor_to_helper<ToCreate_t, Param_t>(
+            std::make_index_sequence<N> {});
+    }
+
+    template <std::size_t N, typename Function_t>
+    constexpr auto make_constexpr_array_from_function(Function_t f) noexcept
+        -> std::array<typename std::result_of<Function_t(std::size_t)>::type, N>
+    {
+        return detail::make_constexpr_array_from_function_helper(f, std::make_index_sequence<N> {});
+    }
+
+    template <typename Container_t>
+    constexpr auto make_constexpr_array_from_container(const Container_t & CONTAINER) noexcept
+        -> std::array<typename Container_t::value_type, std::tuple_size<Container_t>::value>
+    {
+        return detail::make_constexpr_array_from_container_helper(
+            CONTAINER, std::make_index_sequence<std::tuple_size<Container_t>::value> {});
+    }
+
+    template <typename ToCreate_t, typename Container_t>
+    constexpr auto make_constexpr_array_from_container_to(const Container_t & CONTAINER) noexcept
+        -> std::array<ToCreate_t, std::tuple_size<Container_t>::value>
+    {
+        return detail::make_constexpr_array_from_container_to_helper<ToCreate_t>(
+            CONTAINER, std::make_index_sequence<std::tuple_size<Container_t>::value> {});
+    }
 
 } // namespace misc
 } // namespace heroespath

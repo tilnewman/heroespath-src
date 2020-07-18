@@ -18,7 +18,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct CombatImageType : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct CombatImageType : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

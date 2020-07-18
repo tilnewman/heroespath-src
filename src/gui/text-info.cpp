@@ -79,12 +79,12 @@ namespace gui
             size = SIZE;
         }
 
-        if (LETTERS_FONT != GuiFont::Count)
+        if (LETTERS_FONT < GuiFont::Count)
         {
             font_letters = LETTERS_FONT;
         }
 
-        if (NUMBERS_FONT != GuiFont::Count)
+        if (NUMBERS_FONT < GuiFont::Count)
         {
             font_numbers = NUMBERS_FONT;
         }

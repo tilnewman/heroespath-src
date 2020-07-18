@@ -39,8 +39,8 @@ namespace game
         ~NpcWarehouse();
 
         static misc::NotNull<NpcWarehouse *> Instance();
-        static void Acquire();
-        static void Release();
+        static void Create();
+        static void Destroy();
 
         static misc::NotNullWarehouse<Npc> & Access() { return Instance()->Warehouse(); }
         misc::NotNullWarehouse<Npc> & Warehouse() { return warehouse_; }

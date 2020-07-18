@@ -19,7 +19,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct AchievementType : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct AchievementType : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

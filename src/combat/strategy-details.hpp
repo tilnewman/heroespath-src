@@ -64,7 +64,7 @@ namespace combat
             void ParseSubPartsOutnumberRetreat(
                 const std::vector<std::string> &, OutnumberRetreatChanceMap_t &) const;
 
-            template <typename BaseType, typename EnumType>
+            template <typename Form, typename EnumType>
             void ParseEnumColonChance(
                 const std::string & FUNCTION_NAME,
                 const std::string & SUB_STR,
@@ -83,7 +83,7 @@ namespace combat
                 EnumType typeEnum;
                 try
                 {
-                    typeEnum = EnumUtil<BaseType>::FromString(ENUM_CHANCE_STR_VEC.at(0));
+                    typeEnum = EnumUtil<Form>::FromString(ENUM_CHANCE_STR_VEC.at(0));
                 }
                 catch (const std::exception & EX)
                 {

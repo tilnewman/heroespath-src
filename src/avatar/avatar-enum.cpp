@@ -35,7 +35,9 @@ namespace avatar
             {
                 return { Puck_Female_Dark, Puck_Female_Light, Puck_Male_Dark, Puck_Male_Light };
             }
-            case NameEnum::Sara: { return { Sara_BlueWhite, Sara_Cyan, Sara_Green, Sara_White };
+            case NameEnum::Sara:
+            {
+                return { Sara_BlueWhite, Sara_Cyan, Sara_Green, Sara_White };
             }
             case NameEnum::Girl:
             {
@@ -221,7 +223,7 @@ namespace avatar
                          Tunic_Female_Light_Unkempt_Brunette2,
                          Tunic_Female_Light_Unkempt_LightBlonde2 };
             }
-            case NameEnum::Pants:
+            case NameEnum::Pant:
             {
                 return { Pants_Male_Dark_Bedhead_Brunette, Pants_Male_Dark_Bedhead_Raven,
                          Pants_Male_Dark_Messy2_Brunette,  Pants_Male_Dark_Messy2_Raven,
@@ -430,7 +432,9 @@ namespace avatar
                          Monk_Shirt_Beltnone_Dark,        Monk_Shirt_Beltnone_Tanned2,
                          Monk_Shirt_Beltwhite_Dark,       Monk_Shirt_Beltwhite_Tanned2 };
             }
-            default: { return {};
+            default:
+            {
+                return {};
             }
         }
     }

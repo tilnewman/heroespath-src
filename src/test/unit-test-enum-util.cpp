@@ -31,10 +31,10 @@
 #include "combat/target-enum.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "creature/achievement-enum.hpp"
+#include "creature/complexity-type.hpp"
 #include "creature/condition-enum.hpp"
 #include "creature/dragon-class-enum.hpp"
 #include "creature/enchantment-type.hpp"
-#include "creature/nonplayer-inventory-types.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/sex-enum.hpp"
@@ -67,11 +67,11 @@
 #include "interact/interaction-button.hpp"
 #include "interact/interaction-text-enum.hpp"
 #include "interact/statement.hpp"
-#include "item/armor-types.hpp"
-#include "item/item-type-enum.hpp"
+#include "item/armor-enum.hpp"
+#include "item/item-profile.hpp"
 #include "item/treasure-available-enum.hpp"
 #include "item/treasure-image-enum.hpp"
-#include "item/weapon-types.hpp"
+#include "item/weapon-enum.hpp"
 #include "map/layer-type-enum.hpp"
 #include "map/level-enum.hpp"
 #include "misc/log-pri-enum.hpp"
@@ -235,36 +235,6 @@ void TestCountingEnum()
             << "Underlying type was: " << NAMEOF_TYPE(UnderlyingTypeActual_t)
             << " instead of what it should be: " << NAMEOF_TYPE(EnumUnderlying_t) << ".");
 
-    if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::Not)
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (EnumWrapper_t::Not == 0),
-            NAMEOF_TYPE(EnumWrapper_t) << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
-    }
-
-    if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::Nothing)
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (EnumWrapper_t::Nothing == 0),
-            NAMEOF_TYPE(EnumWrapper_t)
-                << "::Nothing=" << EnumWrapper_t::Nothing << " instead of zero.");
-    }
-
-    if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::Never)
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (EnumWrapper_t::Never == 0),
-            NAMEOF_TYPE(EnumWrapper_t)
-                << "::Never=" << EnumWrapper_t::Never << " instead of zero.");
-    }
-
-    if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::None)
-    {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (EnumWrapper_t::None == 0),
-            NAMEOF_TYPE(EnumWrapper_t) << "::None=" << EnumWrapper_t::None << " instead of zero.");
-    }
-
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::Count > 0),
         NAMEOF_TYPE(EnumWrapper_t)
@@ -292,7 +262,7 @@ void TestCountingEnum()
 }
 
 // a counting enum to test with
-struct Counting : public EnumBaseCounting<EnumFirstValue::None>
+struct Counting : public EnumBaseCounting<EnumNameOfZeroIsNone>
 {
     enum Enum : EnumUnderlying_t
     {
@@ -467,17 +437,17 @@ BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
 
     //
 
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::None) == 0);
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::A) == 1);
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::B) == 1);
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::Last) == 1);
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::None | Bitfield::A) == 1);
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::A | Bitfield::B) == 2);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(Bitfield::None) == 0);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(Bitfield::A) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(Bitfield::B) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(Bitfield::Last) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(Bitfield::None | Bitfield::A) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(Bitfield::A | Bitfield::B) == 2);
 
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(0) == 0);
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(1) == 1);
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(2) == 1);
-    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(3) == 2);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(0) == 0);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(1) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(2) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBits(3) == 2);
 
     //
 
@@ -783,9 +753,9 @@ BOOST_AUTO_TEST_CASE(Case_3_MiscEnumUtil_ActualEnums_Counting_Tests)
     TestCountingEnum<creature::AchievementType>();
     TestCountingEnum<creature::Conditions>();
     TestCountingEnum<creature::dragon_class>();
-    TestCountingEnum<creature::nonplayer::wealth_type>();
-    TestCountingEnum<creature::nonplayer::owns_magic_type>();
-    TestCountingEnum<creature::nonplayer::complexity_type>();
+    // estCountingEnum<creature::nonplayer::wealth_type>();
+    // estCountingEnum<creature::nonplayer::owns_magic_type>();
+    // estCountingEnum<creature::nonplayer::complexity_type>();
     TestCountingEnum<creature::origin_type>();
     TestCountingEnum<creature::race>();
     TestCountingEnum<creature::rank_class>();
@@ -793,7 +763,7 @@ BOOST_AUTO_TEST_CASE(Case_3_MiscEnumUtil_ActualEnums_Counting_Tests)
     TestCountingEnum<creature::sex>();
     TestCountingEnum<creature::Titles>();
     TestCountingEnum<creature::Traits>();
-    TestCountingEnum<creature::wolfen_class>();
+    TestCountingEnum<creature::WolfenClass>();
     TestCountingEnum<gui::Animations>();
     TestCountingEnum<gui::Brightness>();
     TestCountingEnum<gui::CombatImageType>();
@@ -813,25 +783,25 @@ BOOST_AUTO_TEST_CASE(Case_3_MiscEnumUtil_ActualEnums_Counting_Tests)
     TestCountingEnum<interact::Interact>();
     TestCountingEnum<interact::Buttons>();
     TestCountingEnum<interact::Text>();
-    TestCountingEnum<item::armor::shield_type>();
-    TestCountingEnum<item::armor::helm_type>();
-    TestCountingEnum<item::armor::base_type>();
-    TestCountingEnum<item::armor::cover_type>();
-    TestCountingEnum<item::material>();
-    TestCountingEnum<item::misc_type>();
-    TestCountingEnum<item::set_type>();
-    TestCountingEnum<item::named_type>();
-    TestCountingEnum<item::armor_type>();
-    TestCountingEnum<item::body_part>();
-    TestCountingEnum<item::name_material_type>();
+    TestCountingEnum<item::Shields>();
+    TestCountingEnum<item::Helms>();
+    TestCountingEnum<item::Forms>();
+    TestCountingEnum<item::Covers>();
+    TestCountingEnum<item::Material>();
+    TestCountingEnum<item::Misc>();
+    TestCountingEnum<item::Set>();
+    TestCountingEnum<item::Named>();
+    TestCountingEnum<item::Armor>();
+    TestCountingEnum<item::BodyPartWeapons>();
+    TestCountingEnum<item::MaterialNameStyle>();
     TestCountingEnum<item::TreasureAvailable>();
     TestCountingEnum<item::TreasureImage>();
-    TestCountingEnum<item::weapon::sword_type>();
-    TestCountingEnum<item::weapon::axe_type>();
-    TestCountingEnum<item::weapon::club_type>();
-    TestCountingEnum<item::weapon::whip_type>();
-    TestCountingEnum<item::weapon::projectile_type>();
-    TestCountingEnum<item::weapon::bladedstaff_type>();
+    TestCountingEnum<item::Swords>();
+    TestCountingEnum<item::Axes>();
+    TestCountingEnum<item::Clubs>();
+    TestCountingEnum<item::Whips>();
+    TestCountingEnum<item::Projectiles>();
+    TestCountingEnum<item::Bladedstaffs>();
     TestCountingEnum<map::LayerType>();
     TestCountingEnum<map::LevelType>();
     TestCountingEnum<map::Level>();
@@ -842,21 +812,21 @@ BOOST_AUTO_TEST_CASE(Case_3_MiscEnumUtil_ActualEnums_Counting_Tests)
     TestCountingEnum<song::SongType>();
     TestCountingEnum<spell::Spells>();
     TestCountingEnum<stage::Stage>();
+    TestCountingEnum<item::Weapon>();
 }
 
 BOOST_AUTO_TEST_CASE(Case_4_MiscEnumUtil_ActualEnums_Bitfield_Tests)
 {
     TestBitFieldEnum<combat::strategy::RefineType>();
     TestBitFieldEnum<creature::EnchantmentType>();
-    TestBitFieldEnum<creature::nonplayer::collector_type>();
+    // TestBitFieldEnum<creature::nonplayer::collector_type>();
+    TestBitFieldEnum<item::Category>();
+    TestBitFieldEnum<item::Element>();
     TestBitFieldEnum<game::Phase>();
     TestBitFieldEnum<gui::Corner>();
     TestBitFieldEnum<gui::GuiEvent>();
     TestBitFieldEnum<gui::ImageOpt>();
     TestBitFieldEnum<gui::Side>();
-    TestBitFieldEnum<item::category>();
-    TestBitFieldEnum<item::element_type>();
-    TestBitFieldEnum<item::weapon_type>();
     TestBitFieldEnum<popup::PopupButtons>();
     TestBitFieldEnum<combat::strategy::SelectType>();
 }

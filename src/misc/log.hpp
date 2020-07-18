@@ -40,8 +40,8 @@ namespace misc
         Log & operator=(Log &&) = delete;
 
         static misc::NotNull<Log *> Instance();
-        static void Acquire();
-        static void Release();
+        static void Create();
+        static void Destroy();
 
         void Append(
             const std::string & MSG,

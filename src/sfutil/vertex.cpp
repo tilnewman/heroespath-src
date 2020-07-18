@@ -124,7 +124,7 @@ namespace sfutil
             ((SIZE_LIMIT_V.x > 0.0f) ? misc::Min(SIZE_LIMIT_V.x, SIZE_FULL_V.x) : SIZE_FULL_V.x),
             ((SIZE_LIMIT_V.y > 0.0f) ? misc::Min(SIZE_LIMIT_V.y, SIZE_FULL_V.y) : SIZE_FULL_V.y)) };
 
-        if (ORIENTATIONS_TO_DRAW_FROM_END == gui::Orientation::Count)
+        if (ORIENTATIONS_TO_DRAW_FROM_END >= gui::Orientation::Count)
         {
             positions[0] = POS_V;
             positions[1] = sf::Vector2f(POS_V.x + SIZE_ACTUAL_V.x, POS_V.y);
@@ -227,7 +227,7 @@ namespace sfutil
         const float OPPOSITE_ORIENTATION_SIZE_LIMIT,
         const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END)
     {
-        if (((LENGTH > 0.0f) == false) || (ORIENTATION == gui::Orientation::Count))
+        if (((LENGTH > 0.0f) == false) || (ORIENTATION >= gui::Orientation::Count))
         {
             return;
         }

@@ -16,7 +16,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Justified : public EnumBaseCounting<EnumFirstValue::Valid>
+    struct Justified : public EnumBaseCounting<>
     {
         enum Enum : EnumUnderlying_t
         {

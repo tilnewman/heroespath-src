@@ -27,7 +27,7 @@ namespace item
 
     const ItemPVec_t Algorithms::FindByCategory(
         const ItemPVec_t & ITEM_PVEC,
-        const category::Enum CATEGORY_TYPE,
+        const Category::Enum CATEGORY_TYPE,
         const MatchOpt MATCH_OPTION)
     {
         ItemPVec_t resultSVec;
@@ -44,17 +44,14 @@ namespace item
             ITEM_PVEC.end(),
             back_inserter(resultSVec),
             [CATEGORY_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
-                return ((ITEM_PTR->Category() & CATEGORY_TYPE) != 0)
-                    == (MATCH_OPTION == MatchOpt::Equal);
+                return (ITEM_PTR->HasCategory(CATEGORY_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
             });
 
         return resultSVec;
     }
 
     const ItemPVec_t Algorithms::FindByWeaponType(
-        const ItemPVec_t & ITEM_PVEC,
-        const weapon_type::Enum WEAPON_TYPE,
-        const MatchOpt MATCH_OPTION)
+        const ItemPVec_t & ITEM_PVEC, const Weapon::Enum WEAPON_TYPE, const MatchOpt MATCH_OPTION)
     {
         ItemPVec_t resultSVec;
 
@@ -71,17 +68,14 @@ namespace item
             back_inserter(resultSVec),
             [WEAPON_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
                 return (
-                    ((ITEM_PTR->WeaponType() & WEAPON_TYPE) != 0)
-                    == (MATCH_OPTION == MatchOpt::Equal));
+                    (ITEM_PTR->WeaponType() == WEAPON_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
             });
 
         return resultSVec;
     }
 
     const ItemPVec_t Algorithms::FindByArmorType(
-        const ItemPVec_t & ITEM_PVEC,
-        const armor_type::Enum ARMOR_TYPE,
-        const MatchOpt MATCH_OPTION)
+        const ItemPVec_t & ITEM_PVEC, const Armor::Enum ARMOR_TYPE, const MatchOpt MATCH_OPTION)
     {
         ItemPVec_t resultSVec;
 
@@ -104,7 +98,7 @@ namespace item
     }
 
     const ItemPVec_t Algorithms::FindByMiscType(
-        const ItemPVec_t & ITEM_PVEC, const misc_type::Enum MISC_TYPE, const MatchOpt MATCH_OPTION)
+        const ItemPVec_t & ITEM_PVEC, const Misc::Enum MISC_TYPE, const MatchOpt MATCH_OPTION)
     {
         ItemPVec_t resultSVec;
 

@@ -13,12 +13,9 @@
 #include <boost/serialization/serialization.hpp>
 
 #include <boost/serialization/base_object.hpp>
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/set.hpp>
-#include <boost/serialization/shared_ptr.hpp>
+#include <boost/serialization/string.hpp>
 #include <boost/serialization/unique_ptr.hpp>
 #include <boost/serialization/utility.hpp>
-#include <boost/serialization/variant.hpp>
 #include <boost/serialization/vector.hpp>
 
 #endif // HEROESPATH_MISC_BOOSTSERIALIZEINCLUDES_HPP_INCLUDED

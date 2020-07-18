@@ -15,6 +15,7 @@
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/strings.hpp"
@@ -148,7 +149,7 @@ namespace spell
                     "'s magic forces ",
                     " to "
                         + std::string(
-                              creature::sex::HisHerIts(CREATURE_CAST_UPON_PTR->Sex(), false, false))
+                            creature::sex::HisHerIts(CREATURE_CAST_UPON_PTR->Sex(), false, false))
                         + " feet.",
                     combat::NamePosition::SourceThenTarget);
             }
