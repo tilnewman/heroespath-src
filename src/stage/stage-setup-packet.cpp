@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -14,7 +12,6 @@
 #include "creature/creature.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
-#include "misc/enum-util.hpp"
 
 namespace heroespath
 {
@@ -24,9 +21,8 @@ namespace stage
     const std::string InventorySetupPacket::ToString() const
     {
         return "inventory_stage_setup, inventory_stage_prev_calling_phase="
-            + EnumUtil<game::Phase>::ToString(prev_calling_phase)
-            + ", inventory_stage_turn_creature=" + turn_creature_ptr->NameAndRaceAndRole()
-            + ", inventory_stage_inventory_creature="
+            + game::Phase::ToString(prev_calling_phase) + ", inventory_stage_turn_creature="
+            + turn_creature_ptr->NameAndRaceAndRole() + ", inventory_stage_inventory_creature="
             + inventory_creature_ptr->NameAndRaceAndRole();
     }
 

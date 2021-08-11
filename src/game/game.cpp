@@ -18,9 +18,9 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 
+#include <exception>
 #include <memory>
 #include <sstream>
-#include <stdexcept>
 
 namespace heroespath
 {
@@ -42,13 +42,13 @@ namespace game
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: Game");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<Game *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void Game::Create()
+    void Game::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -56,11 +56,17 @@ namespace game
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: Game");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: Game");
         }
     }
 
-    void Game::Destroy() { instanceUPtr_.reset(); }
+    void Game::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "Game::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     GameState & Game::State() const
     {

@@ -15,7 +15,7 @@
 #include "gui/direction-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>

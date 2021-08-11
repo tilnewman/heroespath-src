@@ -49,7 +49,7 @@ namespace gui
     {
         symbolSprite_.setColor(sf::Color(255, 255, 255, gui::MenuImage::SymbolAlpha()));
 
-        if (MENU_IMAGE < MenuImage::Count)
+        if (MENU_IMAGE != MenuImage::Count)
         {
             const auto CONFIG_FILE_KEY { MenuImage::ConfigFileKey(MENU_IMAGE) };
 

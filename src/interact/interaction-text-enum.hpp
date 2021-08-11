@@ -11,6 +11,7 @@
 //
 #include "gui/font-enum.hpp"
 #include "misc/enum-common.hpp"
+#include "misc/not-null.hpp"
 
 #include <string>
 
@@ -21,10 +22,12 @@ class Font;
 
 namespace heroespath
 {
+using FontPtr_t = misc::NotNull<sf::Font *>;
+
 namespace interact
 {
 
-    struct Text : public EnumBaseCounting<>
+    struct Text : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -33,16 +36,8 @@ namespace interact
             Count
         };
 
-        static constexpr gui::GuiFont::Enum Font(const Enum TEXT_TYPE) noexcept
-        {
-            switch (TEXT_TYPE)
-            {
-                case System: return gui::GuiFont::Default;
-                case Dialog: return gui::GuiFont::DialogMedieval;
-                case Count:
-                default: return gui::GuiFont::Count;
-            }
-        }
+        static const std::string ToString(const Enum);
+        static gui::GuiFont::Enum Font(const Enum);
     };
 
 } // namespace interact

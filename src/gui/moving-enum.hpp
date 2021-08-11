@@ -11,12 +11,14 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace gui
 {
 
-    struct Moving : public EnumBaseCounting<>
+    struct Moving : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -26,7 +28,9 @@ namespace gui
             Count
         };
 
-        static constexpr bool IsMoving(const Moving::Enum ENUM) noexcept
+        static const std::string ToString(const Moving::Enum);
+
+        static bool IsMoving(const Moving::Enum ENUM)
         {
             return ((ENUM == Toward) || (ENUM == Away));
         }

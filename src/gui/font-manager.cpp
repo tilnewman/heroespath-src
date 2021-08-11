@@ -66,13 +66,13 @@ namespace gui
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: FontManager");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<FontManager *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void FontManager::Create()
+    void FontManager::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -80,11 +80,17 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: FontManager");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: FontManager");
         }
     }
 
-    void FontManager::Destroy() { instanceUPtr_.reset(); }
+    void FontManager::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "gui::FontManager::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     const FontPtr_t FontManager::GetFont(const GuiFont::Enum FONT)
     {
@@ -97,46 +103,45 @@ namespace gui
         {
             M_HP_LOG_WRN(
                 "gui::FontManager::GetFont("
-                << NAMEOF_ENUM(FONT) << "/" << GuiFont::Name(FONT)
+                << GuiFont::ToString(FONT) << "/" << GuiFont::Name(FONT)
                 << ") asked to return a font that was not already loaded.  Loading now...");
 
             Load(FONT);
         }
 
-        return FontPtr_t(fontUVec_.at(static_cast<std::size_t>(FONT)).get());
+        return GetFontRef(FONT);
     }
 
     void FontManager::Load(const GuiFont::Enum FONT)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<GuiFont>::IsValid(FONT)),
-            "FONT_ENUM is invalid.  (gui_font_enum_count=" << NAMEOF_ENUM(FONT) << ")(font_enum="
-                                                           << NAMEOF_ENUM(FONT) << ")");
+            "FONT_ENUM is invalid.  (gui_font_enum_count=" << misc::ToString(FONT)
+                    + ")(font_enum=" + GuiFont::ToString(FONT) + ")");
 
         if (IsLoaded(FONT))
         {
             return;
         }
 
-        auto & fontUPtr = fontUVec_.at(static_cast<std::size_t>(FONT));
-
+        auto & fontUPtr { GetFontRef(FONT) };
         fontUPtr = std::make_unique<sf::Font>();
 
         const auto PATH_STR_COMPLETE { misc::filesystem::CombinePaths(
-            fontsDirPathStr_, std::string(GuiFont::Path(FONT))) };
+            fontsDirPathStr_, GuiFont::Path(FONT)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
             "Failed because that file either does not exist or is not a regular file.  (font_enum="
-                << NAMEOF_ENUM_STR(FONT) << ")" << M_HP_VAR_STR(PATH_STR_COMPLETE)
-                << M_HP_VAR_STR(fontsDirPathStr_) << GuiFont::Path(FONT));
+                + GuiFont::ToString(FONT) + ")" + M_HP_VAR_STR(PATH_STR_COMPLETE)
+                + M_HP_VAR_STR(fontsDirPathStr_) + M_HP_VAR_STR(GuiFont::Path(FONT)));
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (fontUPtr->loadFromFile(PATH_STR_COMPLETE)),
             "sf::Font::loadFromFile(\"" + PATH_STR_COMPLETE
-                << "\") failed.  Check console output for information.  (font_enum="
-                << NAMEOF_ENUM(FONT) << ")" << M_HP_VAR_STR(PATH_STR_COMPLETE)
-                << M_HP_VAR_STR(fontsDirPathStr_) << GuiFont::Path(FONT));
+                + "\") failed.  Check console output for information.  (font_enum="
+                + GuiFont::ToString(FONT) + ")" + M_HP_VAR_STR(PATH_STR_COMPLETE)
+                + M_HP_VAR_STR(fontsDirPathStr_) + M_HP_VAR_STR(GuiFont::Path(FONT)));
     }
 
     void FontManager::Load(const FontEnumVec_t & FONT_ENUM_VEC)
@@ -154,7 +159,7 @@ namespace gui
             "gui::FontManager::Unload(font_enum=" << static_cast<EnumUnderlying_t>(FONT)
                                                   << ") given an invalid font enum.");
 
-        fontUVec_.at(static_cast<std::size_t>(FONT)).reset();
+        GetFontRef(FONT).reset();
     }
 
     void FontManager::Unload(const FontEnumVec_t & FONT_ENUM_VEC)
@@ -267,6 +272,11 @@ namespace gui
     }
 
     unsigned int FontManager::Size_CombatCreatureLabels() const { return Size_Smallish(); }
+
+    FontUPtr_t & FontManager::GetFontRef(const GuiFont::Enum FONT)
+    {
+        return fontUVec_.at(static_cast<std::size_t>(FONT));
+    }
 
 } // namespace gui
 } // namespace heroespath

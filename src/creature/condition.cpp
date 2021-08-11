@@ -18,6 +18,7 @@
 #include "misc/random.hpp"
 
 #include <algorithm>
+#include <sstream>
 #include <tuple>
 
 namespace heroespath
@@ -34,48 +35,43 @@ namespace creature
 
     const std::string Condition::ToString() const
     {
-        std::string str;
-        str.reserve(128);
-
-        str += Conditions::Name(type_);
+        std::ostringstream ss;
+        ss << Conditions::Name(type_);
 
         if (isMagical_)
         {
-            str += " (magical)";
+            ss << " (magical)";
         }
 
-        str += ".  ";
-        str += Conditions::Desc(type_);
+        ss << ".  " << Conditions::Desc(type_);
 
         const auto TRAIT_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
         {
-            str += "  Traits: " + TRAIT_STR;
+            ss << "  Traits: " << TRAIT_STR;
         }
 
-        return str;
+        return ss.str();
     }
 
     const std::string Condition::LongDesc() const
     {
-        std::string str;
-        str.reserve(128);
-
-        str += Conditions::Desc(type_);
+        std::ostringstream ss;
+        ss << Conditions::Desc(type_);
 
         if (isMagical_)
         {
-            str += " (a magical condition)";
+            ss << " (a magical condition)";
         }
 
         const auto TRAIT_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
         {
-            str += "  Traits: " + TRAIT_STR;
+            ss << "  Traits: " << TRAIT_STR;
         }
 
-        str += '.';
-        return str;
+        ss << ".";
+        return ss.str();
     }
 
     bool operator<(const Condition & L, const Condition & R)
@@ -96,6 +92,7 @@ namespace creature
     void Condition::FinalChange(const CreaturePtr_t) const {}
 
     void Condition::PerTurnEffect(
+        const combat::CreatureInteraction & CREATURE_INTERACTION,
         const CreaturePtr_t CREATURE_PTR,
         combat::HitInfoVec_t & hitInfoVec,
         bool & hasTurnBeenConsumed) const
@@ -113,7 +110,7 @@ namespace creature
                     }
                 }
 
-                if (misc::Random(100) < (10 + CREATURE_PTR->Rank().Get()))
+                if (misc::Random(100) < (10 + CREATURE_PTR->Rank().As<int>()))
                 {
                     CREATURE_PTR->ConditionRemove(Conditions::Dazed);
 
@@ -174,7 +171,7 @@ namespace creature
                     }
                 }
 
-                if (misc::Random(100) < (15 + CREATURE_PTR->Rank().GetAs<int>()))
+                if (misc::Random(100) < (15 + CREATURE_PTR->Rank().As<int>()))
                 {
                     CREATURE_PTR->ConditionRemove(Conditions::AsleepNatural);
 
@@ -198,39 +195,40 @@ namespace creature
                 {
                     creature::CondEnumVec_t condsRemoved;
 
-                    combat::CreatureInteraction::RemoveAddedCondition(
+                    CREATURE_INTERACTION.RemoveAddedCondition(
                         creature::Conditions::Poisoned, CREATURE_PTR, hitInfoVec, condsRemoved);
 
-                    std::string descStr("The poison has left ");
+                    std::ostringstream ss;
+                    ss << "The poison has left ";
 
                     if (CREATURE_PTR->IsPlayerCharacter() == false)
                     {
-                        descStr += "the ";
+                        ss << "the ";
                     }
 
                     const auto CONTENT_NAME_POS { combat::ContentAndNamePos(
-                        descStr, "'s body.", "", combat::NamePosition::TargetBefore) };
+                        ss.str(), "'s body.", "", combat::NamePosition::TargetBefore) };
 
                     hitInfoVec.emplace_back(combat::HitInfo(
                         false, Which(), CONTENT_NAME_POS, 0_health, {}, condsRemoved));
                 }
                 else
                 {
-                    const auto DAMAGE_BASE { Health_t::Make(
+                    const auto DAMAGE_BASE { (
                         (CREATURE_PTR->IsPixie()) ? 0 : misc::Random(1, 5)) };
 
-                    const auto DAMAGE_RAND_MAX { Health_t::Make(
-                        misc::Max(1.0f, (CREATURE_PTR->HealthNormal().GetAs<float>() * 0.1f))) };
+                    const auto DAMAGE_RAND_MAX { std::max(
+                        1, static_cast<int>(CREATURE_PTR->HealthNormal().As<float>() * 0.1f)) };
 
-                    const auto DAMAGE_FROM_HEALTH_NORMAL { misc::Random(
-                        1_health, DAMAGE_RAND_MAX) };
+                    const auto DAMAGE_FROM_HEALTH_NORMAL { misc::Random(1, DAMAGE_RAND_MAX) };
 
-                    const Health_t DAMAGE_FINAL { -(DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL) };
+                    const Health_t DAMAGE_FINAL { Health_t(
+                        -1 * (DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL)) };
 
                     CondEnumVec_t condsAddedVec;
                     CondEnumVec_t condsRemovedVec;
 
-                    combat::CreatureInteraction::HandleDamage(
+                    CREATURE_INTERACTION.HandleDamage(
                         CREATURE_PTR,
                         hitInfoVec,
                         DAMAGE_FINAL,
@@ -238,12 +236,12 @@ namespace creature
                         condsRemovedVec,
                         false);
 
-                    const std::string DESC_STR(
-                        " hurts " + std::string(creature::sex::HimHerIt(CREATURE_PTR->Sex(), false))
-                        + " for " + DAMAGE_FINAL.MakePositiveCopy().ToString() + " damage.");
+                    std::ostringstream ss;
+                    ss << " hurts " << creature::sex::HimHerIt(CREATURE_PTR->Sex(), false)
+                       << " for " << DAMAGE_FINAL.Abs() << " damage.";
 
                     const combat::ContentAndNamePos CNP(
-                        "The poison in ", DESC_STR, "", combat::NamePosition::TargetBefore);
+                        "The poison in ", ss.str(), "", combat::NamePosition::TargetBefore);
 
                     hitInfoVec.emplace_back(combat::HitInfo(
                         true, Which(), CNP, DAMAGE_FINAL, condsAddedVec, condsRemovedVec));
@@ -304,7 +302,7 @@ namespace creature
                     }
                 }
 
-                if (misc::Random(100) < (8 + CREATURE_PTR->Rank().Get()))
+                if (misc::Random(100) < (8 + CREATURE_PTR->Rank().As<int>()))
                 {
                     CREATURE_PTR->ConditionRemove(Conditions::AsleepMagical);
 
@@ -326,9 +324,7 @@ namespace creature
             case Conditions::Stone:
             case Conditions::Dead:
             case Conditions::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
     }

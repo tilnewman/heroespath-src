@@ -156,8 +156,8 @@ namespace creature
 
         if (OPTIONS & With::RankBonus)
         {
-            const auto RANK_BONUS { static_cast<Trait_t>(
-                CREATURE_PTR->Rank().GetAs<float>()
+            const auto RANK_BONUS { static_cast<int>(
+                CREATURE_PTR->Rank().As<float>()
                 * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                     "fight-stats-rank-bonus-ratio")) };
 
@@ -177,7 +177,7 @@ namespace creature
         const With OPTIONS)
     {
         const auto DEFENDER_TRAIT { (
-            (DEFENDER_TRAIT_PARAM >= Traits::Count) ? CHALLENGER_TRAIT : DEFENDER_TRAIT_PARAM) };
+            (DEFENDER_TRAIT_PARAM == Traits::Count) ? CHALLENGER_TRAIT : DEFENDER_TRAIT_PARAM) };
 
         return Versus(
             CHALLENGER_PTR,
@@ -237,7 +237,7 @@ namespace creature
         }
 
         const auto CHALLENGER_ROLL {
-            chaRandSum + ((OPTIONS & With::RankBonus) ? CHALLENGER_PTR->Rank().GetAsTrait() : 0)
+            chaRandSum + ((OPTIONS & With::RankBonus) ? CHALLENGER_PTR->Rank().As<int>() : 0)
         };
 
         const auto DEFENDER_TRAIT_VEC { (
@@ -278,14 +278,14 @@ namespace creature
         }
 
         const auto DEFENDER_ROLL {
-            defRandSum + ((OPTIONS & With::RankBonus) ? DEFENDER_PTR->Rank().GetAsTrait() : 0)
+            defRandSum + ((OPTIONS & With::RankBonus) ? DEFENDER_PTR->Rank().As<int>() : 0)
         };
 
         // handle roll tie
         if (CHALLENGER_ROLL == DEFENDER_ROLL)
         {
-            const auto CHA_NORMAL_PLUS_RANK { chaNormalSum + CHALLENGER_PTR->Rank().GetAsTrait() };
-            const auto DEF_NORMAL_PLUS_RANK { defNormalSum + DEFENDER_PTR->Rank().GetAsTrait() };
+            const auto CHA_NORMAL_PLUS_RANK { chaNormalSum + CHALLENGER_PTR->Rank().As<int>() };
+            const auto DEF_NORMAL_PLUS_RANK { defNormalSum + DEFENDER_PTR->Rank().As<int>() };
 
             // handle normal+rank tie
             if (CHA_NORMAL_PLUS_RANK == DEF_NORMAL_PLUS_RANK)
@@ -328,7 +328,8 @@ namespace creature
     {
         return misc::Random(static_cast<int>(
             static_cast<float>(CREATURE_PTR->TraitWorking(Traits::Luck))
-            / misc::ConfigFile::Instance()->ValueOrDefault<float>("fight-stats-luck-adj-ratio")));
+            / misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                "fight-stats-luck-adj-ratio")));
     }
 
     Trait_t Stats::RollBonusByRace(
@@ -437,7 +438,7 @@ namespace creature
         {
             M_HP_LOG_ERR(
                 "creature::Stats::RollBonusByRace(stat_enum="
-                << NAMEOF_ENUM(TRAIT_ENUM) << ", race_enum=" << RACE_ENUM
+                << Traits::ToString(TRAIT_ENUM) << ", race_enum=" << RACE_ENUM
                 << ") but that trait value is invalid.");
 
             return 0;
@@ -514,7 +515,7 @@ namespace creature
         {
             M_HP_LOG_ERR(
                 "creature::Stats::RollBonusByRole(stat_enum="
-                << NAMEOF_ENUM(TRAIT_ENUM) << ", role_enum=" << ROLE_ENUM
+                << Traits::ToString(TRAIT_ENUM) << ", role_enum=" << ROLE_ENUM
                 << ") but that trait value is invalid.");
 
             return 0;
@@ -536,7 +537,7 @@ namespace creature
         auto x { static_cast<int>(
             static_cast<float>(RAND_SPREAD) * (RAND_RATIO + TRAIT_BONUS_RATIO)) };
 
-        x += static_cast<int>(CREATURE_PTR->Rank().GetAs<float>() * RANK_BONUS_MULT);
+        x += static_cast<int>(CREATURE_PTR->Rank().As<float>() * RANK_BONUS_MULT);
 
         return x;
     }

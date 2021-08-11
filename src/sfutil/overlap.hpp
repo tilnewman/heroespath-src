@@ -19,7 +19,15 @@ class Sprite;
 namespace heroespath
 {
 namespace sfutil
-{} // namespace sfutil
+{
+
+    // returns true if the two sprites intersect (global)
+    bool intersects(const sf::Sprite & A, const sf::Sprite & B);
+
+    // returns true if the sprite intersects with the rect (global)
+    bool intersects(const sf::Sprite & A, const sf::FloatRect & R);
+
+} // namespace sfutil
 } // namespace heroespath
 
 #endif // HEROESPATH_SFUTIL_OVERLAP_HPP_INCLUDED

@@ -81,7 +81,7 @@ namespace gui
         friend void swap(CachedTexture & l, CachedTexture & r);
 
     private:
-        void Destroy();
+        void Release();
 
         std::string path_;
         std::size_t index_;
@@ -164,7 +164,7 @@ namespace gui
         friend bool operator<(const CachedTextures & L, const CachedTextures & R);
 
     private:
-        void Destroy();
+        void Release();
 
         std::string path_;
         std::vector<std::size_t> indexes_;

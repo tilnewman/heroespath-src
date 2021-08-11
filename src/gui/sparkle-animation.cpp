@@ -12,7 +12,7 @@
 #include "sparkle-animation.hpp"
 
 #include "misc/random.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -38,7 +38,7 @@ namespace gui
             ,
 
             // start half way so everything moves fast at first and then slows down
-            slider_(misc::Max(1.0f, SPEED))
+            slider_(std::max(1.0f, SPEED))
         {
             sprite_.setPosition(0.0f, 0.0f);
             sprite_.setScale(1.0f, 1.0f);
@@ -68,8 +68,8 @@ namespace gui
             sprite_.setPosition(0.0f, 0.0f);
             sprite_.setScale(1.0f, 1.0f);
 
-            const auto SPRITE_LOCAL_BOUNDS { sprite_.getLocalBounds() };
-            sprite_.setOrigin(SPRITE_LOCAL_BOUNDS.width * 0.5f, SPRITE_LOCAL_BOUNDS.height * 0.5f);
+            sprite_.setOrigin(
+                sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
 
             sprite_.rotate(misc::Random(0.5f, 3.0f));
 

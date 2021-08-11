@@ -14,9 +14,9 @@
 #include "combat/target-enum.hpp"
 #include "creature/condition-enum.hpp"
 #include "game/phase-enum.hpp"
-#include "game/strong-types.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 #include "song/song-enum.hpp"
 #include "song/song-type-enum.hpp"
 
@@ -55,7 +55,7 @@ namespace song
             const std::string & VERB_THIRD_PERSON,
             const std::string & VERB_PAST_TENSE);
 
-        const std::string Name() const { return std::string(Songs::Name(which_)); }
+        const std::string Name() const { return Songs::Name(which_); }
 
         const std::string ToString() const;
 

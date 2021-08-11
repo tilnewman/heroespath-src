@@ -11,10 +11,10 @@
 //
 #include "creature/condition-enum.hpp"
 #include "creature/trait.hpp"
-#include "game/strong-types.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/enum-common.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 #include "name-position-enum.hpp"
 
 #include <memory>
@@ -51,7 +51,7 @@ namespace item
 namespace combat
 {
 
-    struct HitType : public EnumBaseCounting<>
+    struct HitType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -64,6 +64,8 @@ namespace combat
             Trap,
             Count
         };
+
+        static const std::string ToString(const Enum);
     };
 
     // Everything required to describe an attempted combat action.

@@ -60,8 +60,8 @@ namespace gui
         ~TextureCache();
 
         static misc::NotNull<TextureCache *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         // all Add...() functions increment the ref_count
         std::size_t AddByKey(

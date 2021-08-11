@@ -15,7 +15,6 @@
 #include "gui/font-manager.hpp"
 #include "gui/image-loaders.hpp"
 #include "gui/sound-manager.hpp"
-#include "misc/enum-util.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
 #include "song/song.hpp"
@@ -440,7 +439,7 @@ namespace popup
         ss << "Mana Cost: " << SONG_PTR->ManaCost() << "\n"
            << "Rank: " << SONG_PTR->Rank() << "\n"
            << "Targets " << combat::TargetType::Name(SONG_PTR->Target()) << "\n"
-           << "Play during " << EnumUtil<game::Phase>::ToString(SONG_PTR->ValidPhases()) << "\n";
+           << "Play during " << game::Phase::ToString(SONG_PTR->ValidPhases()) << "\n";
 
         const auto SONGDETAILS_TEXTRECT_LEFT { pageRectRight_.left };
 
@@ -505,8 +504,7 @@ namespace popup
             }
             else
             {
-                ss << "Only during " << EnumUtil<game::Phase>::ToString(SONG_PTR->ValidPhases())
-                   << ".";
+                ss << "Only during " << game::Phase::ToString(SONG_PTR->ValidPhases()) << ".";
             }
         }
 
@@ -522,7 +520,8 @@ namespace popup
 
         const auto SONG_UNABLE_TEXTRECT_LEFT { pageRectRight_.left };
 
-        const auto SONG_UNABLE_TEXTRECT_TOP { sfutil::Bottom(detailsTextUPtr_->GetEntityRegion())
+        const auto SONG_UNABLE_TEXTRECT_TOP { detailsTextUPtr_->GetEntityRegion().top
+                                              + detailsTextUPtr_->GetEntityRegion().height
                                               + VERT_SPACER };
 
         const auto SONG_UNABLE_TEXTRECT_WIDTH { pageRectRight_.width };

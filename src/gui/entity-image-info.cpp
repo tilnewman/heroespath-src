@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -11,10 +9,8 @@
 //
 #include "entity-image-info.hpp"
 
-#include "misc/strings.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/vector-and-rect.hpp"
 
 #include <string>
 
@@ -133,53 +129,40 @@ namespace gui
 
     const std::string EntityImageInfo::ToString(const bool WILL_PREFIX, const Wrap WILL_WRAP) const
     {
-        std::string str;
-        str.reserve(128);
-
-        if (WILL_PREFIX)
-        {
-            str += std::string("EntityImageInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=");
-        }
-
-        if (WILL_WRAP == Wrap::Yes)
-        {
-            str += '(';
-        }
+        std::ostringstream ss;
 
         if (cached_texture_opt)
         {
-            str += "path\"";
-            str += cached_texture_opt->Path();
-            str += '\"';
+            ss << "path\"" << cached_texture_opt->Path() << "\"";
         }
         else
         {
-            str += "no_image";
+            ss << "no_image";
         }
 
-        str += "_region";
-        str += misc::ToString(sprite.getGlobalBounds());
-        str += '_';
-        str += misc::ToString(sprite.getColor());
-        str += "_scale";
-        str += misc::ToString(sprite.getScale());
-        str += ", will_";
+        ss << "_region" << sprite.getGlobalBounds() << "_" << sprite.getColor() << "_scale"
+           << sprite.getScale() << ", will_";
 
         if (will_resize_instead_of_fit)
         {
-            str += "resize";
+            ss << "resize";
         }
         else
         {
-            str += "fit";
+            ss << "fit";
         }
 
-        if (WILL_WRAP == Wrap::Yes)
+        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+
+        if (WILL_PREFIX)
         {
-            str += ')';
+            return std::string("EntityImageInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
+                + PARTS_STR;
         }
-
-        return str;
+        else
+        {
+            return PARTS_STR;
+        }
     }
 
     void EntityImageInfo::SetRegion(const sf::FloatRect & NEW_GLOBAL_BOUNDS)

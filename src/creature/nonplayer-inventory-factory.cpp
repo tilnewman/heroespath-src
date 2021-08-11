@@ -9,7 +9,6 @@
 //
 // nonplayer-inventory-factory.cpp
 //
-/*
 #include "nonplayer-inventory-factory.hpp"
 
 #include "creature/creature.hpp"
@@ -21,9 +20,9 @@
 #include "misc/random.hpp"
 
 #include <algorithm>
+#include <exception>
 #include <iterator>
 #include <sstream>
-#include <stdexcept>
 #include <string>
 
 namespace heroespath
@@ -55,7 +54,7 @@ namespace creature
                 }
                 else
                 {
-                    if (NEXT_ITEM_PTR->Category() & item::Category::Equipable)
+                    if (NEXT_ITEM_PTR->Category() & item::category::Equipable)
                     {
                         const auto ITEM_EQUIP_RESULT(CREATURE_PTR->ItemEquip(NEXT_ITEM_PTR));
                         if (ITEM_EQUIP_RESULT.empty() == false)
@@ -98,17 +97,11 @@ namespace creature
         {
             IItemPVecPair_t itemsPtrVecPair;
 
-            const auto MAT_PAIR = item::Material::SkinMaterials(CHARACTER_PTR->Race());
-
-            if (MAT_PAIR.first < item::Material::Count)
+            if (item::material::SkinMaterial(CHARACTER_PTR->Race()).first
+                != item::material::Nothing)
             {
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(
-                    ItemProfile(
-                        Skins::Flesh,
-                        CHARACTER_PTR->IsPixie(),
-                        MAT_PAIR.first,
-                        MAT_PAIR.second),
-                    CHARACTER_PTR->RaceName()));
+                itemsPtrVecPair.first.emplace_back(
+                    itemFactory_.Make(item::body_part::Skin, CHARACTER_PTR));
             }
 
             {
@@ -136,7 +129,7 @@ namespace creature
                 {
                     auto hasNoPixieVersion { [](const auto ITEM_PTR) {
                         return (
-                            ((ITEM_PTR->WeaponInfo().Type() & item::Weapon::Knife) == 0)
+                            ((ITEM_PTR->WeaponInfo().Type() & item::weapon_type::Knife) == 0)
                             && (ITEM_PTR->WeaponInfo().IsStaff() == false));
                     } };
 
@@ -172,21 +165,22 @@ namespace creature
             // remove clothing items that might conflict with armor equipping
             for (const auto & NEXT_ITEM_PTR : armorItemsPVecPair.first)
             {
-                if (NEXT_ITEM_PTR->ArmorType() == item::Armor::Boot)
+                if (NEXT_ITEM_PTR->ArmorType() == item::armor_type::Boots)
                 {
-                    RemoveArmorTypeFromVecAndFree(item::Armor::Boot, itemsPtrVecPair.first);
+                    RemoveArmorTypeFromVecAndFree(item::armor_type::Boots, itemsPtrVecPair.first);
                 }
-                else if (NEXT_ITEM_PTR->ArmorType() == item::Armor::Pant)
+                else if (NEXT_ITEM_PTR->ArmorType() == item::armor_type::Pants)
                 {
-                    RemoveArmorTypeFromVecAndFree(item::Armor::Pant, itemsPtrVecPair.first);
+                    RemoveArmorTypeFromVecAndFree(item::armor_type::Pants, itemsPtrVecPair.first);
                 }
-                else if (NEXT_ITEM_PTR->ArmorType() == item::Armor::Shirt)
+                else if (NEXT_ITEM_PTR->ArmorType() == item::armor_type::Shirt)
                 {
-                    RemoveArmorTypeFromVecAndFree(item::Armor::Shirt, itemsPtrVecPair.first);
+                    RemoveArmorTypeFromVecAndFree(item::armor_type::Shirt, itemsPtrVecPair.first);
                 }
-                else if (NEXT_ITEM_PTR->ArmorType() == item::Armor::Gauntlet)
+                else if (NEXT_ITEM_PTR->ArmorType() == item::armor_type::Gauntlets)
                 {
-                    RemoveArmorTypeFromVecAndFree(item::Armor::Gauntlet, itemsPtrVecPair.first);
+                    RemoveArmorTypeFromVecAndFree(
+                        item::armor_type::Gauntlets, itemsPtrVecPair.first);
                 }
             }
 
@@ -195,11 +189,10 @@ namespace creature
             {
                 // helm/shield/aventail/plate
                 auto hasNoPixieVersion { [](const auto ITEM_PTR) {
-                    const auto & ARMOR_INFO { ITEM_PTR->ArmorInfo() };
-
                     return (
-                        ARMOR_INFO.IsShield() || ARMOR_INFO.IsHelm() || ARMOR_INFO.IsAventail()
-                        || (ARMOR_INFO.Form() == item::Forms::Plate));
+                        ITEM_PTR->ArmorInfo().IsShield() || ITEM_PTR->ArmorInfo().IsHelm()
+                        || ITEM_PTR->ArmorInfo().IsAventail()
+                        || (ITEM_PTR->ArmorInfo().BaseType() == item::armor::base_type::Plate));
                 } };
 
                 RemoveItemsAndFree(armorItemsPVecPair.first, hasNoPixieVersion);
@@ -208,7 +201,7 @@ namespace creature
             // no vests on beasts
             auto isVestOnBeast { [CHARACTER_PTR](const auto ITEM_PTR) {
                 return (
-                    ITEM_PTR->ArmorInfo().IsMinor(Covers::Vest)
+                    (ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Vest)
                     && ((CHARACTER_PTR->Race() == race::Dragon)
                         || (CHARACTER_PTR->Race() == race::Wolfen)));
             } };
@@ -218,7 +211,7 @@ namespace creature
             // no gauntlets without fingers
             auto isGauntletWithoutFingers { [CHARACTER_PTR](const auto ITEM_PTR) {
                 return (
-                    (ITEM_PTR->ArmorType() == item::Armor::Gauntlet)
+                    (ITEM_PTR->ArmorType() == item::armor_type::Gauntlets)
                     && (CHARACTER_PTR->Body().HasFingers() == false));
             } };
 
@@ -227,7 +220,7 @@ namespace creature
             // no shields without fingers
             auto isShieldWithoutFingers { [CHARACTER_PTR](const auto ITEM_PTR) {
                 return (
-                    (ITEM_PTR->ArmorType() == item::Armor::Shield)
+                    (ITEM_PTR->ArmorType() == item::armor_type::Shield)
                     && (CHARACTER_PTR->Body().HasFingers() == false));
             } };
 
@@ -236,29 +229,29 @@ namespace creature
             // no helms with horns
             auto isHeldWithHorns { [CHARACTER_PTR](const auto ITEM_PTR) {
                 return (
-                    (ITEM_PTR->ArmorType() == item::Armor::Helm)
+                    (ITEM_PTR->ArmorType() == item::armor_type::Helm)
                     && CHARACTER_PTR->Body().HasHorns());
             } };
 
             RemoveItemsAndFree(armorItemsPVecPair.first, isHeldWithHorns);
 
             // no pants without legs
-            auto isPantWithoutLegs { [CHARACTER_PTR](const auto ITEM_PTR) {
+            auto isPantsWithoutLegs { [CHARACTER_PTR](const auto ITEM_PTR) {
                 return (
-                    (ITEM_PTR->ArmorType() == item::Armor::Pant)
+                    (ITEM_PTR->ArmorType() == item::armor_type::Pants)
                     && (CHARACTER_PTR->Body().HasLegs() == false));
             } };
 
-            RemoveItemsAndFree(armorItemsPVecPair.first, isPantWithoutLegs);
+            RemoveItemsAndFree(armorItemsPVecPair.first, isPantsWithoutLegs);
 
             // no boots without feet
-            auto isBootWithoutFeet { [CHARACTER_PTR](const auto ITEM_PTR) {
+            auto isBootsWithoutFeet { [CHARACTER_PTR](const auto ITEM_PTR) {
                 return (
-                    (ITEM_PTR->ArmorType() == item::Armor::Boot)
+                    (ITEM_PTR->ArmorType() == item::armor_type::Boots)
                     && (CHARACTER_PTR->Body().HasLegs() == false));
             } };
 
-            RemoveItemsAndFree(armorItemsPVecPair.first, isBootWithoutFeet);
+            RemoveItemsAndFree(armorItemsPVecPair.first, isBootsWithoutFeet);
 
             // finally, add the armor items
             std::copy(
@@ -284,7 +277,7 @@ namespace creature
                                            itemsPtrVecPair.first.begin(),
                                            itemsPtrVecPair.first.end(),
                                            [](const item::ItemPtr_t PTR) {
-                                               return (PTR->ArmorType() == item::Armor::Helm);
+                                               return (PTR->ArmorType() == item::armor_type::Helm);
                                            })
                                        != itemsPtrVecPair.first.end() };
 
@@ -295,14 +288,15 @@ namespace creature
                         itemsPtrVecPair.first.begin(),
                         itemsPtrVecPair.first.end(),
                         [](const item::ItemPtr_t PTR) {
-                            return (PTR->ArmorType() == item::Armor::Aventail);
+                            return (PTR->ArmorType() == item::armor_type::Aventail);
                         })
                     != itemsPtrVecPair.first.end()
                 };
 
                 if (WILL_ADD_AVENTAIL)
                 {
-                    RemoveArmorTypeFromVecAndFree(item::Armor::Aventail, itemsPtrVecPair.first);
+                    RemoveArmorTypeFromVecAndFree(
+                        item::armor_type::Aventail, itemsPtrVecPair.first);
                 }
             }
 
@@ -329,55 +323,86 @@ namespace creature
 
             if (CHANCES.boots.IsOwned())
             {
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                    item::Armor::Boot,
-                    item::Forms::Plain,
-                    IS_PIXIE,
+                item::ItemProfile profile;
+
+                profile.SetBoots(
+                    item::armor::base_type::Plain,
                     CHANCES.boots.RandomMaterialPri(),
-                    CHANCES.boots.RandomMaterialSec())));
+                    CHANCES.boots.RandomMaterialSec(),
+                    item::named_type::Not,
+                    item::set_type::Not,
+                    item::element_type::None,
+                    IS_PIXIE);
+
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             if (CHANCES.gloves.IsOwned())
             {
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                    item::Armor::Gauntlet,
-                    item::Forms::Plain,
-                    IS_PIXIE,
+                item::ItemProfile profile;
+
+                profile.SetGauntlets(
+                    item::armor::base_type::Plain,
                     CHANCES.gloves.RandomMaterialPri(),
-                    CHANCES.gloves.RandomMaterialSec())));
+                    CHANCES.gloves.RandomMaterialSec(),
+                    item::named_type::Not,
+                    item::set_type::Not,
+                    item::element_type::None,
+                    IS_PIXIE);
+
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             if (CHANCES.pants.IsOwned())
             {
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                    item::Armor::Pant,
-                    item::Forms::Plain,
-                    IS_PIXIE,
-                    CHANCES.pants.RandomMaterialPri(),
-                    CHANCES.pants.RandomMaterialSec())));
+                item::ItemProfile profile;
+
+                profile.SetPants(
+                    item::armor::base_type::Plain,
+                    CHANCES.gloves.RandomMaterialPri(),
+                    item::material::Nothing,
+                    item::named_type::Not,
+                    item::set_type::Not,
+                    item::element_type::None,
+                    IS_PIXIE);
+
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             if (CHANCES.shirt.IsOwned())
             {
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                    item::Armor::Shirt,
-                    item::Forms::Plain,
-                    IS_PIXIE,
-                    CHANCES.shirt.RandomMaterialPri(),
-                    CHANCES.shirt.RandomMaterialSec())));
+                item::ItemProfile profile;
+
+                profile.SetShirt(
+                    item::armor::base_type::Plain,
+                    CHANCES.gloves.RandomMaterialPri(),
+                    item::material::Nothing,
+                    item::named_type::Not,
+                    item::set_type::Not,
+                    item::element_type::None,
+                    IS_PIXIE);
+
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             if (CHANCES.vest.IsOwned())
             {
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                    item::Covers::Vest,
-                    IS_PIXIE,
+                item::ItemProfile profile;
+
+                profile.SetCover(
+                    item::armor::cover_type::Vest,
                     CHANCES.vest.RandomMaterialPri(),
-                    CHANCES.vest.RandomMaterialSec())));
+                    CHANCES.vest.RandomMaterialSec(),
+                    item::named_type::Not,
+                    item::set_type::Not,
+                    item::element_type::None,
+                    IS_PIXIE);
+
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             const auto COVER_TYPE { CHANCES.RandomCoverType() };
-            if (COVER_TYPE < item::Covers::Count)
+            if (COVER_TYPE != item::armor::cover_type::Count)
             {
                 nonplayer::ItemChances itemChances;
                 const auto WAS_FOUND { CHANCES.cover_map.Find(COVER_TYPE, itemChances) };
@@ -387,11 +412,18 @@ namespace creature
                     "creature::nonplayer::InventoryFactory::MakeItemSet_Clothing() failed to"
                         << " find \"" << COVER_TYPE << "\".");
 
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
+                item::ItemProfile profile;
+
+                profile.SetCover(
                     COVER_TYPE,
-                    IS_PIXIE,
                     CHANCES.vest.RandomMaterialPri(),
-                    CHANCES.vest.RandomMaterialSec())));
+                    CHANCES.vest.RandomMaterialSec(),
+                    item::named_type::Not,
+                    item::set_type::Not,
+                    item::element_type::None,
+                    IS_PIXIE);
+
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             return itemsPtrVecPair;
@@ -403,71 +435,72 @@ namespace creature
             IItemPVecPair_t itemsPtrVecPair;
 
             using KindChancePair_t = std::pair<int, float>;
-            misc::VectorMap<item::Weapon::Enum, KindChancePair_t> typeKindChanceMap;
+            misc::VectorMap<item::weapon_type::Enum, KindChancePair_t> typeKindChanceMap;
 
             // TODO handle multiple item::weapons of the same type/kind
 
             // TODO handle intentionally unequipped item::weapons
 
             const auto RANDOM_SELECTED_AXE_PAIR(
-                RandomSelectWeapon<item::Axes::Enum>(WEAPON_CHANCES.axe_map));
+                RandomSelectWeapon<item::weapon::axe_type::Enum>(WEAPON_CHANCES.axe_map));
 
-            if ((RANDOM_SELECTED_AXE_PAIR.first < item::Axes::Count)
+            if ((RANDOM_SELECTED_AXE_PAIR.first != item::weapon::axe_type::Count)
                 && (misc::IsRealClose(RANDOM_SELECTED_AXE_PAIR.second, 0.0f) == false))
             {
-                typeKindChanceMap[item::Weapon::Axe] = std::make_pair(
+                typeKindChanceMap[item::weapon_type::Axe] = std::make_pair(
                     RANDOM_SELECTED_AXE_PAIR.first, RANDOM_SELECTED_AXE_PAIR.second);
             }
 
             const auto RANDOM_SELECTED_BLADEDSTAFF_PAIR(
-                RandomSelectWeapon<item::Bladedstaffs::Enum>(
+                RandomSelectWeapon<item::weapon::bladedstaff_type::Enum>(
                     WEAPON_CHANCES.bladedstaff_map));
 
-            if ((RANDOM_SELECTED_BLADEDSTAFF_PAIR.first < item::Bladedstaffs::Count)
+            if ((RANDOM_SELECTED_BLADEDSTAFF_PAIR.first != item::weapon::bladedstaff_type::Count)
                 && (misc::IsRealClose(RANDOM_SELECTED_BLADEDSTAFF_PAIR.second, 0.0f) == false))
             {
-                typeKindChanceMap[item::Weapon::Bladedstaff] = std::make_pair(
+                typeKindChanceMap[item::weapon_type::BladedStaff] = std::make_pair(
                     RANDOM_SELECTED_BLADEDSTAFF_PAIR.first,
                     RANDOM_SELECTED_BLADEDSTAFF_PAIR.second);
             }
 
             const auto RANDOM_SELECTED_CLUB_PAIR(
-                RandomSelectWeapon<item::Clubs::Enum>(WEAPON_CHANCES.club_map));
+                RandomSelectWeapon<item::weapon::club_type::Enum>(WEAPON_CHANCES.club_map));
 
-            if ((RANDOM_SELECTED_CLUB_PAIR.first < item::Clubs::Count)
+            if ((RANDOM_SELECTED_CLUB_PAIR.first != item::weapon::club_type::Count)
                 && (misc::IsRealClose(RANDOM_SELECTED_CLUB_PAIR.second, 0.0f) == false))
             {
-                typeKindChanceMap[item::Weapon::Club] = std::make_pair(
+                typeKindChanceMap[item::weapon_type::Club] = std::make_pair(
                     RANDOM_SELECTED_CLUB_PAIR.first, RANDOM_SELECTED_CLUB_PAIR.second);
             }
 
             const auto RANDOM_SELECTED_PROJECTILE_PAIR(
-                RandomSelectWeapon<item::Projectiles::Enum>(WEAPON_CHANCES.projectile_map));
+                RandomSelectWeapon<item::weapon::projectile_type::Enum>(
+                    WEAPON_CHANCES.projectile_map));
 
-            if ((RANDOM_SELECTED_PROJECTILE_PAIR.first < item::Projectiles::Count)
+            if ((RANDOM_SELECTED_PROJECTILE_PAIR.first != item::weapon::projectile_type::Count)
                 && (misc::IsRealClose(RANDOM_SELECTED_PROJECTILE_PAIR.second, 0.0f) == false))
             {
-                typeKindChanceMap[item::Weapon::Projectile] = std::make_pair(
+                typeKindChanceMap[item::weapon_type::Projectile] = std::make_pair(
                     RANDOM_SELECTED_PROJECTILE_PAIR.first, RANDOM_SELECTED_PROJECTILE_PAIR.second);
             }
 
             const auto RANDOM_SELECTED_SWORD_PAIR(
-                RandomSelectWeapon<item::Swords::Enum>(WEAPON_CHANCES.sword_map));
+                RandomSelectWeapon<item::weapon::sword_type::Enum>(WEAPON_CHANCES.sword_map));
 
-            if ((RANDOM_SELECTED_SWORD_PAIR.first < item::Swords::Count)
+            if ((RANDOM_SELECTED_SWORD_PAIR.first != item::weapon::sword_type::Count)
                 && (misc::IsRealClose(RANDOM_SELECTED_SWORD_PAIR.second, 0.0f) == false))
             {
-                typeKindChanceMap[item::Weapon::Sword] = std::make_pair(
+                typeKindChanceMap[item::weapon_type::Sword] = std::make_pair(
                     RANDOM_SELECTED_SWORD_PAIR.first, RANDOM_SELECTED_SWORD_PAIR.second);
             }
 
             const auto RANDOM_SELECTED_WHIP_PAIR(
-                RandomSelectWeapon<item::Whips::Enum>(WEAPON_CHANCES.whip_map));
+                RandomSelectWeapon<item::weapon::whip_type::Enum>(WEAPON_CHANCES.whip_map));
 
-            if ((RANDOM_SELECTED_WHIP_PAIR.first < item::Whips::Count)
+            if ((RANDOM_SELECTED_WHIP_PAIR.first != item::weapon::whip_type::Count)
                 && (misc::IsRealClose(RANDOM_SELECTED_WHIP_PAIR.second, 0.0f) == false))
             {
-                typeKindChanceMap[item::Weapon::Whip] = std::make_pair(
+                typeKindChanceMap[item::weapon_type::Whip] = std::make_pair(
                     RANDOM_SELECTED_WHIP_PAIR.first, RANDOM_SELECTED_WHIP_PAIR.second);
             }
 
@@ -476,7 +509,7 @@ namespace creature
                 auto countChance { 0.0f };
                 if (WEAPON_CHANCES.knife.num_owned_map.Find(1, countChance))
                 {
-                    typeKindChanceMap[item::Weapon::Knife] = std::make_pair(0, countChance);
+                    typeKindChanceMap[item::weapon_type::Knife] = std::make_pair(0, countChance);
                 }
             }
 
@@ -485,7 +518,7 @@ namespace creature
                 auto countChance { 0.0f };
                 if (WEAPON_CHANCES.staff.num_owned_map.Find(1, countChance))
                 {
-                    typeKindChanceMap[item::Weapon::Staff] = std::make_pair(0, countChance);
+                    typeKindChanceMap[item::weapon_type::Staff] = std::make_pair(0, countChance);
                 }
             }
 
@@ -512,9 +545,11 @@ namespace creature
             // create item::weapon
             switch (randomSelectedWeaponType)
             {
-                case item::Weapon::Knife:
+                case item::weapon_type::Knife:
                 {
                     const auto IS_DAGGER { misc::Random(1.0f) < WEAPON_CHANCES.knife.is_dagger };
+
+                    item::ItemProfile profile;
 
                     // prevent adding a knife/dagger if invalid
                     if (WEAPON_CHANCES.knife.mat_map_pri.Empty())
@@ -524,47 +559,59 @@ namespace creature
 
                     if (IS_DAGGER)
                     {
-                        itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                            item::Knifes::Dagger,
-                            CHARACTER_PTR->IsPixie(),
+                        profile.SetDagger(
                             WEAPON_CHANCES.knife.RandomMaterialPri(),
-                            WEAPON_CHANCES.knife.RandomMaterialSec())));
+                            WEAPON_CHANCES.knife.RandomMaterialSec(),
+                            item::named_type::Not,
+                            item::set_type::Not,
+                            item::element_type::None,
+                            CHARACTER_PTR->IsPixie());
                     }
                     else
                     {
-                        itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                            item::Knifes::Knife,
-                            CHARACTER_PTR->IsPixie(),
+                        profile.SetKnife(
                             WEAPON_CHANCES.knife.RandomMaterialPri(),
-                            WEAPON_CHANCES.knife.RandomMaterialSec())));
+                            WEAPON_CHANCES.knife.RandomMaterialSec(),
+                            item::named_type::Not,
+                            item::set_type::Not,
+                            item::element_type::None,
+                            CHARACTER_PTR->IsPixie());
                     }
 
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
-                case item::Weapon::Staff:
+                case item::weapon_type::Staff:
                 {
+                    item::ItemProfile profile;
+
                     if (misc::Random(1.0f) < WEAPON_CHANCES.staff.is_quarterstaff)
                     {
-                        itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                            item::Staffs::Quarterstaff,
-                            false,
+                        profile.SetQuarterStaff(
                             WEAPON_CHANCES.staff.RandomMaterialPri(),
-                            WEAPON_CHANCES.staff.RandomMaterialSec())));
+                            WEAPON_CHANCES.staff.RandomMaterialSec(),
+                            item::named_type::Not,
+                            item::set_type::Not,
+                            item::element_type::None);
                     }
                     else
                     {
-                        itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                            item::Staffs::Staff,
-                            CHARACTER_PTR->IsPixie(),
+                        profile.SetStaff(
                             WEAPON_CHANCES.staff.RandomMaterialPri(),
-                            WEAPON_CHANCES.staff.RandomMaterialSec())));
+                            WEAPON_CHANCES.staff.RandomMaterialSec(),
+                            item::named_type::Not,
+                            item::set_type::Not,
+                            item::element_type::None,
+                            item::misc_type::Not,
+                            CHARACTER_PTR->IsPixie());
                     }
 
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
-                case item::Weapon::Axe:
+                case item::weapon_type::Axe:
                 {
-                    const auto AXE_TYPE { static_cast<item::Axes::Enum>(
+                    const auto AXE_TYPE { static_cast<item::weapon::axe_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances axeChances;
@@ -575,29 +622,32 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << EnumUtil<item::Weapon>::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << NAMEOF_ENUM(AXE_TYPE)
+                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << "\" and kind=\"" << item::weapon::axe_type::ToString(AXE_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
 
                     // if the primary material is wood, make sure there is a valid secondary
                     // material
-                    const auto MAT_PRI { axeChances.RandomMaterialPri() };
+                    const auto MATERIAL_PRI { axeChances.RandomMaterialPri() };
                     auto materialSec { axeChances.RandomMaterialSec() };
-                    if ((MAT_PRI == item::Material::Wood) && (materialSec >= item::Material::Count))
+                    if ((MATERIAL_PRI == item::material::Wood)
+                        && (item::material::Nothing == materialSec))
                     {
-                        materialSec = item::Material::Steel;
+                        materialSec = item::material::Steel;
                     }
 
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(
-                        ItemProfile(AXE_TYPE, CHARACTER_PTR->IsPixie(), MAT_PRI, materialSec)));
+                    item::ItemProfile profile;
 
+                    profile.SetAxe(AXE_TYPE, MATERIAL_PRI, materialSec);
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
-                case item::Weapon::Bladedstaff:
+                case item::weapon_type::BladedStaff:
                 {
-                    const auto BLADEDSTAFF_TYPE { static_cast<item::Bladedstaffs::Enum>(
+                    const auto BLADEDSTAFF_TYPE { static_cast<item::weapon::bladedstaff_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances bstaffChances;
@@ -610,30 +660,32 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << EnumUtil<item::Weapon>::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << NAMEOF_ENUM(BLADEDSTAFF_TYPE)
+                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << "\" and kind=\""
+                            << item::weapon::bladedstaff_type::ToString(BLADEDSTAFF_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
 
                     // if the primary material is wood, make sure there is a valid secondary
                     // material
-                    const auto MAT_PRI { bstaffChances.RandomMaterialPri() };
+                    const auto MATERIAL_PRI { bstaffChances.RandomMaterialPri() };
                     auto materialSec { bstaffChances.RandomMaterialSec() };
 
-                    if ((MAT_PRI == item::Material::Wood) && (materialSec >= item::Material::Count))
+                    if ((MATERIAL_PRI == item::material::Wood)
+                        && (item::material::Nothing == materialSec))
                     {
-                        materialSec = item::Material::Steel;
+                        materialSec = item::material::Steel;
                     }
 
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        BLADEDSTAFF_TYPE, CHARACTER_PTR->IsPixie(), MAT_PRI, materialSec)));
-
+                    item::ItemProfile profile;
+                    profile.SetBladedStaff(BLADEDSTAFF_TYPE, MATERIAL_PRI, materialSec);
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
-                case item::Weapon::Club:
+                case item::weapon_type::Club:
                 {
-                    const auto CLUB_TYPE { static_cast<item::Clubs::Enum>(
+                    const auto CLUB_TYPE { static_cast<item::weapon::club_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances clubChances;
@@ -646,30 +698,31 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << EnumUtil<item::Weapon>::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << NAMEOF_ENUM(CLUB_TYPE)
+                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << "\" and kind=\"" << item::weapon::club_type::ToString(CLUB_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
 
                     // if the primary material is wood, make sure there is a valid secondary
                     // material
-                    const auto MAT_PRI { clubChances.RandomMaterialPri() };
+                    const auto MATERIAL_PRI { clubChances.RandomMaterialPri() };
                     auto materialSec { clubChances.RandomMaterialSec() };
 
-                    if ((MAT_PRI == item::Material::Wood) && (materialSec >= item::Material::Count))
+                    if ((MATERIAL_PRI == item::material::Wood)
+                        && (item::material::Nothing == materialSec))
                     {
-                        materialSec = item::Material::Steel;
+                        materialSec = item::material::Steel;
                     }
 
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(
-                        ItemProfile(CLUB_TYPE, CHARACTER_PTR->IsPixie(), MAT_PRI, materialSec)));
-
+                    item::ItemProfile profile;
+                    profile.SetClub(CLUB_TYPE, MATERIAL_PRI, materialSec);
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
-                case item::Weapon::Projectile:
+                case item::weapon_type::Projectile:
                 {
-                    const auto PROJECTILE_TYPE { static_cast<item::Projectiles::Enum>(
+                    const auto PROJECTILE_TYPE { static_cast<item::weapon::projectile_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances projChances;
@@ -682,23 +735,26 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << EnumUtil<item::Weapon>::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << NAMEOF_ENUM(PROJECTILE_TYPE)
+                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << "\" and kind=\""
+                            << item::weapon::projectile_type::ToString(PROJECTILE_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
 
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        PROJECTILE_TYPE,
-                        CHARACTER_PTR->IsPixie(),
-                        projChances.RandomMaterialPri(),
-                        projChances.RandomMaterialSec())));
+                    item::ItemProfile profile;
 
+                    profile.SetProjectile(
+                        PROJECTILE_TYPE,
+                        projChances.RandomMaterialPri(),
+                        projChances.RandomMaterialSec());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
-                case item::Weapon::Sword:
+                case item::weapon_type::Sword:
                 {
-                    const auto SWORD_TYPE { static_cast<item::Swords::Enum>(
+                    const auto SWORD_TYPE { static_cast<item::weapon::sword_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances swordChances;
@@ -711,23 +767,25 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << EnumUtil<item::Weapon>::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << NAMEOF_ENUM(SWORD_TYPE)
+                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << "\" and kind=\"" << item::weapon::sword_type::ToString(SWORD_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
 
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        SWORD_TYPE,
-                        CHARACTER_PTR->IsPixie(),
-                        swordChances.RandomMaterialPri(),
-                        swordChances.RandomMaterialSec())));
+                    item::ItemProfile profile;
 
+                    profile.SetSword(
+                        SWORD_TYPE,
+                        swordChances.RandomMaterialPri(),
+                        swordChances.RandomMaterialSec());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
-                case item::Weapon::Whip:
+                case item::weapon_type::Whip:
                 {
-                    const auto WHIP_TYPE { static_cast<item::Whips::Enum>(
+                    const auto WHIP_TYPE { static_cast<item::weapon::whip_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances whipChances;
@@ -740,33 +798,35 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected item::weapon type=\""
-                            << EnumUtil<item::Weapon>::ToString(randomSelectedWeaponType)
-                            << "\" and kind=\"" << NAMEOF_ENUM(WHIP_TYPE)
+                            << item::weapon_type::ToString(randomSelectedWeaponType)
+                            << "\" and kind=\"" << item::weapon::whip_type::ToString(WHIP_TYPE)
                             << "\" -but that item::weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
 
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        WHIP_TYPE,
-                        CHARACTER_PTR->IsPixie(),
-                        whipChances.RandomMaterialPri(),
-                        whipChances.RandomMaterialSec())));
+                    item::ItemProfile profile;
 
+                    profile.SetWhip(
+                        WHIP_TYPE,
+                        whipChances.RandomMaterialPri(),
+                        whipChances.RandomMaterialSec());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
-                case item::Weapon::Bladed:
-                case item::Weapon::Melee:
-                case item::Weapon::None:
-                case item::Weapon::Pointed:
-                case item::Weapon::BodyPart:
+                case item::weapon_type::Bladed:
+                case item::weapon_type::Melee:
+                case item::weapon_type::None:
+                case item::weapon_type::Pointed:
+                case item::weapon_type::BodyPart:
                 default:
                 {
                     std::ostringstream ss;
                     ss << "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                        << "creature=\"" << CHARACTER_PTR->ToString()
                        << "\") failed to find a valid random selected item::weapon.  "
-                          "(item::Weapon="
-                       << EnumUtil<item::Weapon>::ToString(randomSelectedWeaponType) << "\")";
+                          "(item::weapon_type="
+                       << item::weapon_type::ToString(randomSelectedWeaponType) << "\")";
 
                     throw std::runtime_error(ss.str());
                 }
@@ -792,12 +852,14 @@ namespace creature
             {
                 if (CHANCES.aventail.IsOwned())
                 {
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        item::Armor::Aventail,
-                        CHANCES.aventail.RandomArmorForm(),
-                        CHARACTER_PTR->IsPixie(),
+                    item::ItemProfile profile;
+
+                    profile.SetAventail(
+                        CHANCES.aventail.RandomArmorBaseType(),
                         CHANCES.aventail.RandomMaterialPri(),
-                        CHANCES.aventail.RandomMaterialSec())));
+                        CHANCES.aventail.RandomMaterialSec());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -815,12 +877,18 @@ namespace creature
             {
                 if (CHANCES.boots.IsOwned())
                 {
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        item::Armor::Boot,
-                        CHANCES.boots.RandomArmorForm(),
-                        CHARACTER_PTR->IsPixie(),
+                    item::ItemProfile profile;
+
+                    profile.SetBoots(
+                        CHANCES.boots.RandomArmorBaseType(),
                         CHANCES.boots.RandomMaterialPri(),
-                        CHANCES.boots.RandomMaterialSec())));
+                        CHANCES.boots.RandomMaterialSec(),
+                        item::named_type::Not,
+                        item::set_type::Not,
+                        item::element_type::None,
+                        CHARACTER_PTR->IsPixie());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -838,12 +906,18 @@ namespace creature
             {
                 if (CHANCES.bracers.IsOwned())
                 {
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        item::Armor::Bracer,
-                        CHANCES.bracers.RandomArmorForm(),
-                        CHARACTER_PTR->IsPixie(),
+                    item::ItemProfile profile;
+
+                    profile.SetBracer(
+                        CHANCES.bracers.RandomArmorBaseType(),
                         CHANCES.bracers.RandomMaterialPri(),
-                        CHANCES.bracers.RandomMaterialSec())));
+                        CHANCES.bracers.RandomMaterialSec(),
+                        item::named_type::Not,
+                        item::set_type::Not,
+                        item::element_type::None,
+                        CHARACTER_PTR->IsPixie());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -861,12 +935,18 @@ namespace creature
             {
                 if (CHANCES.gauntlets.IsOwned())
                 {
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        item::Armor::Gauntlet,
-                        CHANCES.gauntlets.RandomArmorForm(),
-                        CHARACTER_PTR->IsPixie(),
+                    item::ItemProfile profile;
+
+                    profile.SetGauntlets(
+                        CHANCES.gauntlets.RandomArmorBaseType(),
                         CHANCES.gauntlets.RandomMaterialPri(),
-                        CHANCES.gauntlets.RandomMaterialSec())));
+                        CHANCES.gauntlets.RandomMaterialSec(),
+                        item::named_type::Not,
+                        item::set_type::Not,
+                        item::element_type::None,
+                        CHARACTER_PTR->IsPixie());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -884,12 +964,18 @@ namespace creature
             {
                 if (CHANCES.pants.IsOwned())
                 {
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        item::Armor::Pant,
-                        CHANCES.pants.RandomArmorForm(),
-                        CHARACTER_PTR->IsPixie(),
+                    item::ItemProfile profile;
+
+                    profile.SetPants(
+                        CHANCES.pants.RandomArmorBaseType(),
                         CHANCES.pants.RandomMaterialPri(),
-                        CHANCES.pants.RandomMaterialSec())));
+                        CHANCES.pants.RandomMaterialSec(),
+                        item::named_type::Not,
+                        item::set_type::Not,
+                        item::element_type::None,
+                        CHARACTER_PTR->IsPixie());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -907,12 +993,18 @@ namespace creature
             {
                 if (CHANCES.shirt.IsOwned())
                 {
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
-                        item::Armor::Shirt,
-                        CHANCES.shirt.RandomArmorForm(),
-                        CHARACTER_PTR->IsPixie(),
+                    item::ItemProfile profile;
+
+                    profile.SetShirt(
+                        CHANCES.shirt.RandomArmorBaseType(),
                         CHANCES.shirt.RandomMaterialPri(),
-                        CHANCES.shirt.RandomMaterialSec())));
+                        CHANCES.shirt.RandomMaterialSec(),
+                        item::named_type::Not,
+                        item::set_type::Not,
+                        item::element_type::None,
+                        CHARACTER_PTR->IsPixie());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -942,15 +1034,22 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomCover() returned \""
-                            << NAMEOF_ENUM(COVER_PAIR.first)
+                            << item::armor::cover_type::ToString(COVER_PAIR.first)
                             << "\", but that item was not found in the "
                                "ARMOR_CHANCES.cover_map.");
 
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
+                    item::ItemProfile profile;
+
+                    profile.SetCover(
                         COVER_PAIR.first,
-                        CHARACTER_PTR->IsPixie(),
                         coverChances.RandomMaterialPri(),
-                        coverChances.RandomMaterialSec())));
+                        coverChances.RandomMaterialSec(),
+                        item::named_type::Not,
+                        item::set_type::Not,
+                        item::element_type::None,
+                        CHARACTER_PTR->IsPixie());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -980,15 +1079,18 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomHelm() returned \""
-                            << NAMEOF_ENUM(HELM_PAIR.first)
+                            << item::armor::helm_type::ToString(HELM_PAIR.first)
                             << "\", but that item was not found in the "
                                "ARMOR_CHANCES.helm_map.");
 
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(ItemProfile(
+                    item::ItemProfile profile;
+
+                    profile.SetHelm(
                         HELM_PAIR.first,
-                        CHARACTER_PTR->IsPixie(),
                         helmChances.RandomMaterialPri(),
-                        helmChances.RandomMaterialSec())));
+                        helmChances.RandomMaterialSec());
+
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -1018,23 +1120,24 @@ namespace creature
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomShield() returned \""
-                            << NAMEOF_ENUM(SHIELD_PAIR.first)
+                            << item::armor::shield_type::ToString(SHIELD_PAIR.first)
                             << "\", but that item was not found in the "
                                "ARMOR_CHANCES.shield_map.");
 
-                    const ItemPtr_t ITEM_PTR = ItemFactory::Make(ItemProfile(
+                    item::ItemProfile profile;
+
+                    profile.SetShield(
                         SHIELD_PAIR.first,
-                        CHARACTER_PTR->IsPixie(),
                         shieldChances.RandomMaterialPri(),
-                        shieldChances.RandomMaterialSec()));
+                        shieldChances.RandomMaterialSec());
 
                     if (HAS_TWO_HANDED_WEAPON)
                     {
-                        itemsPtrVecPair.second.emplace_back(ITEM_PTR);
+                        itemsPtrVecPair.second.emplace_back(itemFactory_.Make(profile));
                     }
                     else
                     {
-                        itemsPtrVecPair.first.emplace_back(ITEM_PTR);
+                        itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     }
                 }
             }
@@ -1057,80 +1160,42 @@ namespace creature
             const CreaturePtr_t CHARACTER_PTR,
             const bool HAS_TWO_HANDED_WEAPON_EQUIPPED) const
         {
-            item::ItemPVec_t bodyWeapons;
-
-            const auto MAT_PAIR = item::BodyPartWeapons::MaterialsPair(CHARACTER_PTR->Race());
+            item::ItemPVec_t bodyWeaponsSVec;
 
             if (CHANCES.has_bite)
             {
-                bodyWeapons.emplace_back(ItemFactory::Make(
-                    ItemProfile(
-                        item::BodyPartWeapons::Bite,
-                        CHARACTER_PTR->IsPixie(),
-                        MAT_PAIR.first,
-                        MAT_PAIR.second),
-                    CHARACTER_PTR->RaceName()));
+                bodyWeaponsSVec.emplace_back(
+                    itemFactory_.Make(item::body_part::Bite, CHARACTER_PTR));
             }
 
             if (CHANCES.has_claws && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
             {
-                bodyWeapons.emplace_back(ItemFactory::Make(
-                    ItemProfile(
-                        item::BodyPartWeapons::Claws,
-                        CHARACTER_PTR->IsPixie(),
-                        MAT_PAIR.first,
-                        MAT_PAIR.second),
-                    CHARACTER_PTR->RaceName()));
+                bodyWeaponsSVec.emplace_back(
+                    itemFactory_.Make(item::body_part::Claws, CHARACTER_PTR));
             }
 
             if (CHANCES.has_fists && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false)
                 && (CHANCES.has_claws == false))
             {
-                bodyWeapons.emplace_back(ItemFactory::Make(
-                    ItemProfile(
-                        item::BodyPartWeapons::Fists,
-                        CHARACTER_PTR->IsPixie(),
-                        MAT_PAIR.first,
-                        MAT_PAIR.second),
-                    CHARACTER_PTR->RaceName()));
+                bodyWeaponsSVec.emplace_back(
+                    itemFactory_.Make(item::body_part::Fists, CHARACTER_PTR));
             }
 
             if (CHANCES.has_tentacles && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
             {
-                bodyWeapons.emplace_back(ItemFactory::Make(
-                    ItemProfile(
-                        item::BodyPartWeapons::Tentacles,
-                        CHARACTER_PTR->IsPixie(),
-                        MAT_PAIR.first,
-                        MAT_PAIR.second),
-                    CHARACTER_PTR->RaceName()));
+                bodyWeaponsSVec.emplace_back(
+                    itemFactory_.Make(item::body_part::Tentacles, CHARACTER_PTR));
             }
 
-            if (CHANCES.has_breath)
+            if (CHANCES.has_breath
+                && ((CHARACTER_PTR->Role() == role::Sylavin)
+                    || (CHARACTER_PTR->Role() == role::Firebrand)))
             {
-                if (CHARACTER_PTR->Role() == role::Sylavin)
-                {
-                    bodyWeapons.emplace_back(ItemFactory::Make(
-                        ItemProfile(
-                            item::BodyPartWeapons::BreathOfFrost,
-                            CHARACTER_PTR->IsPixie(),
-                            MAT_PAIR.first,
-                            MAT_PAIR.second),
-                        CHARACTER_PTR->RaceName()));
-                }
-                else if (CHARACTER_PTR->Role() == role::Firebrand)
-                {
-                    bodyWeapons.emplace_back(ItemFactory::Make(
-                        ItemProfile(
-                            item::BodyPartWeapons::BreathOfFire,
-                            CHARACTER_PTR->IsPixie(),
-                            MAT_PAIR.first,
-                            MAT_PAIR.second),
-                        CHARACTER_PTR->RaceName()));
-                }
+                bodyWeaponsSVec.emplace_back(
+                    itemFactory_.Make(item::body_part::Breath, CHARACTER_PTR));
             }
 
-            return bodyWeapons;
+            return bodyWeaponsSVec;
         }
 
         Coin_t InventoryFactory::Make_Coins(const InventoryChances & CHANCES) const
@@ -1152,7 +1217,7 @@ namespace creature
         }
 
         void InventoryFactory::RemoveArmorTypeFromVecAndFree(
-            const item::Armor::Enum ENUM, item::ItemPVec_t & vec) const
+            const item::armor_type::Enum ENUM, item::ItemPVec_t & vec) const
         {
             item::ItemPVec_t itemsToRemovePVec;
 
@@ -1174,4 +1239,3 @@ namespace creature
     } // namespace nonplayer
 } // namespace creature
 } // namespace heroespath
-*/

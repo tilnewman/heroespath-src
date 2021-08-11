@@ -29,6 +29,13 @@ class Texture;
 
 namespace heroespath
 {
+
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace creature
 {
     class Creature;
@@ -44,14 +51,18 @@ namespace gui
         CreatureImagePaths() = delete;
 
         static void SetupFilesystemPaths();
+
+        static bool Test(stage::IStagePtr_t iStagePtr);
+
         static const std::string PathFromFilename(const std::string & FILENAME);
+
         static const std::string FilenameRandom(const creature::Creature &);
 
         static const std::vector<std::string> Filenames(
             const creature::race::Enum RACE,
             const creature::role::Enum ROLE,
             const creature::sex::Enum SEX,
-            const creature::WolfenClass::Enum WOLFEN_CLASS = creature::WolfenClass::Pup,
+            const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
             const creature::dragon_class::Enum DRAGON_CLASS = creature::dragon_class::Hatchling);
 
         static bool WillHorizFlipToFaceRight(const creature::Creature &);

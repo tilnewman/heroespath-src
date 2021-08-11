@@ -12,7 +12,7 @@
 #include "gui/color-set.hpp"
 #include "gui/i-entity.hpp"
 #include "gui/mouse-state-enum.hpp"
-#include "sfutil/common.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/System/Clock.hpp>
 
@@ -60,7 +60,7 @@ namespace gui
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override = 0;
 
-        MouseState::Enum GetMouseState() const final { return entityMouseState_; }
+        MouseState::Enum GetMouseState() const override { return entityMouseState_; }
 
         bool SetMouseState(const MouseState::Enum ENUM) override;
 
@@ -73,13 +73,13 @@ namespace gui
         // disabled until bug in wheel movement direction can be resolved zTn 2016-12-11
         bool UpdateMouseWheel(const sf::Vector2f &, const float) override { return false; }
 
-        bool HasFocus() const final { return entityHasFocus_; }
+        bool HasFocus() const override { return entityHasFocus_; }
         bool SetHasFocus(const bool) override;
-        bool WillAcceptFocus() const final { return entityWillFocus_; }
+        bool WillAcceptFocus() const override { return entityWillFocus_; }
         void SetWillAcceptFocus(const bool WILL) override { entityWillFocus_ = WILL; }
-        const std::string GetMouseHoverText() final { return entityMouseHoverText_; }
+        const std::string GetMouseHoverText() override { return entityMouseHoverText_; }
 
-        void SetMouseHoverText(const std::string & S) final { entityMouseHoverText_ = S; }
+        void SetMouseHoverText(const std::string & S) override { entityMouseHoverText_ = S; }
 
     protected:
         void OnClick(const sf::Vector2f &) override {}
@@ -89,7 +89,7 @@ namespace gui
 
         // IEntity
     public:
-        const sf::Vector2f GetEntityPos() const final
+        const sf::Vector2f GetEntityPos() const override
         {
             return sf::Vector2f(entityRegion_.left, entityRegion_.top);
         }
@@ -112,39 +112,19 @@ namespace gui
         void SetEntityColors(const FocusColors & COLOR_SET) override;
         void SetEntityColorFg(const sf::Color & FG_COLOR) override;
         void SetEntityColorFgBoth(const sf::Color & FG_COLOR) override;
-        const FocusColors GetEntityColors() const final { return entityFocusColors_; }
+        const FocusColors GetEntityColors() const override { return entityFocusColors_; }
 
-        const sf::Color GetEntityColorForeground() const final { return entityFgColor_; }
+        const sf::Color GetEntityColorForeground() const override { return entityFgColor_; }
 
-        const sf::Color GetEntityColorBackground() const final { return entityBgColor_; }
+        const sf::Color GetEntityColorBackground() const override { return entityBgColor_; }
 
-        void FakeFocusColorsAsIfFocusIs(const bool) final;
+        void FakeFocusColorsAsIfFocusIs(const bool) override;
 
-        const std::string GetEntityName() const final { return entityName_; }
+        const std::string GetEntityName() const override { return entityName_; }
 
-        const sf::FloatRect GetEntityRegion() const final { return entityRegion_; }
+        const sf::FloatRect GetEntityRegion() const override { return entityRegion_; }
 
         void SetEntityRegion(const sf::FloatRect & REGION) override { entityRegion_ = REGION; }
-
-        bool Contains(const sf::Vector2f & POS) const final
-        {
-            return sfutil::Contains(entityRegion_, POS);
-        }
-
-        bool Contains(const float LEFT, const float TOP) const final
-        {
-            return sfutil::Contains(entityRegion_, LEFT, TOP);
-        }
-
-        bool Contains(const sf::FloatRect & R) const final
-        {
-            return sfutil::Contains(entityRegion_, R);
-        }
-
-        bool Intersects(const sf::FloatRect & R) const final
-        {
-            return sfutil::Intersects(entityRegion_, R);
-        }
 
         bool UpdateTime(const float) override { return false; }
 

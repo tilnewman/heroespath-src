@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -11,13 +9,15 @@
 //
 #include "vertex.hpp"
 
-#include "sfutil/color.hpp"
-#include "sfutil/common.hpp"
-#include "sfutil/sprite.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
+#include "sfutil/sprite-texture.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/VertexArray.hpp>
 
+#include <algorithm>
+#include <iostream>
 #include <tuple>
 
 namespace sf
@@ -32,6 +32,8 @@ bool operator==(const sf::Vertex & L, const sf::Vertex & R)
 {
     return std::tie(L.position, L.color, L.texCoords) == std::tie(R.position, R.color, R.texCoords);
 }
+
+bool operator!=(const sf::Vertex & L, const sf::Vertex & R) { return !(L == R); }
 
 bool operator<(const sf::VertexArray & L, const sf::VertexArray & R)
 {
@@ -97,6 +99,7 @@ bool operator==(const sf::VertexArray & L, const sf::VertexArray & R)
     }
 }
 
+bool operator!=(const sf::VertexArray & L, const sf::VertexArray & R) { return !(L == R); }
 } // namespace sf
 
 namespace heroespath
@@ -121,10 +124,10 @@ namespace sfutil
         positions.resize(VERTS_PER_QUAD);
 
         const auto SIZE_ACTUAL_V { sf::Vector2f(
-            ((SIZE_LIMIT_V.x > 0.0f) ? misc::Min(SIZE_LIMIT_V.x, SIZE_FULL_V.x) : SIZE_FULL_V.x),
-            ((SIZE_LIMIT_V.y > 0.0f) ? misc::Min(SIZE_LIMIT_V.y, SIZE_FULL_V.y) : SIZE_FULL_V.y)) };
+            ((SIZE_LIMIT_V.x > 0.0f) ? std::min(SIZE_LIMIT_V.x, SIZE_FULL_V.x) : SIZE_FULL_V.x),
+            ((SIZE_LIMIT_V.y > 0.0f) ? std::min(SIZE_LIMIT_V.y, SIZE_FULL_V.y) : SIZE_FULL_V.y)) };
 
-        if (ORIENTATIONS_TO_DRAW_FROM_END >= gui::Orientation::Count)
+        if (ORIENTATIONS_TO_DRAW_FROM_END == gui::Orientation::Count)
         {
             positions[0] = POS_V;
             positions[1] = sf::Vector2f(POS_V.x + SIZE_ACTUAL_V.x, POS_V.y);
@@ -227,7 +230,7 @@ namespace sfutil
         const float OPPOSITE_ORIENTATION_SIZE_LIMIT,
         const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END)
     {
-        if (((LENGTH > 0.0f) == false) || (ORIENTATION >= gui::Orientation::Count))
+        if (((LENGTH > 0.0f) == false) || (ORIENTATION == gui::Orientation::Count))
         {
             return;
         }

@@ -19,7 +19,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct GuiFont : public EnumBaseCounting<>
+    struct GuiFont : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -42,6 +42,8 @@ namespace gui
             // (good for signs) (great flavorful numbers)
             SignThinTallNarrow,
 
+            Number = SignThinTallNarrow,
+
             // Queen-Country, very bold and short with medieval flavor
             // (good for signs)
             SignBoldShortWide,
@@ -60,43 +62,9 @@ namespace gui
             Count
         };
 
-        static constexpr Enum Number = SignThinTallNarrow;
-
-        static constexpr std::string_view Name(const GuiFont::Enum FONT) noexcept
-        {
-            switch (FONT)
-            {
-                case Default: return "Euler";
-                case DefaultBoldFlavor: return "Modern-Antiqua";
-                case System: return "Gentium-Plus";
-                case SystemCondensed: return "Goudy-Bookletter";
-                case SignThinTallNarrow: return "Quill-Sword";
-                case SignBoldShortWide: return "Queen-Country";
-                case Handwriting: return "Valley-Forge";
-                case DialogModern: return "Square-Antiqua";
-                case DialogMedieval: return "Mops-Antiqua";
-                case Count: return "Count";
-                default: return "gui::GuiFont::Name(ENUM=out_of_bounds)";
-            }
-        }
-
-        static constexpr std::string_view Path(const Enum FONT) noexcept
-        {
-            switch (FONT)
-            {
-                case Default: return "euler/euler.otf";
-                case DefaultBoldFlavor: return "modern-antiqua/modern-antiqua.ttf";
-                case System: return "gentium-plus/gentium-plus.ttf";
-                case SystemCondensed: return "goudy-bookletter/goudy-bookletter.otf";
-                case SignThinTallNarrow: return "quill-sword/quill-sword.ttf";
-                case SignBoldShortWide: return "queen-country/queen-country.ttf";
-                case Handwriting: return "valley-forge/valley-forge.ttf";
-                case DialogModern: return "square-antiqua/square-antiqua.ttf";
-                case DialogMedieval: return "mops-antiqua/mops-antiqua.ttf";
-                case Count: return "Count";
-                default: return "gui::GuiFont::Path(ENUM=out_of_bounds)";
-            }
-        }
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
+        static const std::string Path(const Enum);
     };
 
     using FontEnumVec_t = std::vector<GuiFont::Enum>;

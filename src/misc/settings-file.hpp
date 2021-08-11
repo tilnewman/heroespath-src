@@ -35,8 +35,8 @@ namespace misc
         SettingsFile & operator=(SettingsFile &&) = delete;
 
         static misc::NotNull<SettingsFile *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         void AcquireAndSave();
         void LoadAndRestore();

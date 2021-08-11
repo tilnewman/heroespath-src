@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -20,20 +18,37 @@ namespace heroespath
 namespace gui
 {
 
-    std::string ContentImage::pathMiscImageDir_ {};
-    std::string ContentImage::pathFullTodo_ {};
-    std::string ContentImage::pathFullError_ {};
+    std::string ContentImage::todoPath_ { "" };
+    std::string ContentImage::errorPath_ { "" };
 
     void ContentImage::SetupFilesystemPaths()
     {
-        pathMiscImageDir_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-misc-dir");
+        todoPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-misc-todo");
 
-        pathFullTodo_ = misc::filesystem::CombinePathsAndClean(
-            pathMiscImageDir_, std::string(FilenameTodo(true)));
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            misc::filesystem::ExistsAndIsFile(todoPath_),
+            "Default todo content image path does not exist or is not a file."
+                + M_HP_VAR_STR(todoPath_));
 
-        pathFullError_ = misc::filesystem::CombinePathsAndClean(
-            pathMiscImageDir_, std::string(FilenameError(true)));
+        errorPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-misc-error");
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            misc::filesystem::ExistsAndIsFile(errorPath_),
+            "Default error content image path does not exist or is not a file."
+                + M_HP_VAR_STR(todoPath_));
     }
+
+    const std::string ContentImage::FilenameExtension() { return ".png"; }
+
+    const std::string ContentImage::FilenameSeparator() { return "-"; }
+
+    const std::string ContentImage::TodoFilename() { return "todo" + FilenameExtension(); }
+
+    const std::string ContentImage::TodoPath() { return todoPath_; }
+
+    const std::string ContentImage::ErrorFilename() { return "error" + FilenameExtension(); }
+
+    const std::string ContentImage::ErrorPath() { return errorPath_; }
 
 } // namespace gui
 } // namespace heroespath

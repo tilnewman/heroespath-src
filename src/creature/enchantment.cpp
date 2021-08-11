@@ -13,8 +13,9 @@
 
 #include "creature/condition-algorithms.hpp"
 #include "creature/creature.hpp"
-#include "misc/enum-util.hpp"
-#include "misc/strings.hpp"
+#include "item/item-score-helper.hpp"
+
+#include <sstream>
 
 namespace heroespath
 {
@@ -33,81 +34,73 @@ namespace creature
         , useInfo_(USE_INFO)
         , effectsStr_(EFFECTS_STR)
         , effectType_(EFFECT_TYPE)
-        , score_(((SCORE == 0_score) ? CalcScore() : SCORE))
+        , score_(((SCORE == 0_score) ? CalcTreasureScore() : SCORE))
     {}
 
     const std::string Enchantment::EffectStr() const
     {
-        if (!effectsStr_.empty())
+        if (effectsStr_.empty() == false)
         {
             return effectsStr_;
         }
 
-        std::string str;
-        str.reserve(128);
+        std::ostringstream ss;
 
-        str += EnchantmentType::EffectStr(type_);
+        ss << EnchantmentType::ToString(type_);
 
-        const auto SepIfNotEmpty { [&]() -> std::string { return ((str.empty()) ? "" : ", "); } };
+        const auto SepIfNotEmpty { [](const std::string & S) {
+            return ((S.empty()) ? "" : ", ");
+        } };
 
         if (IsUseableEver())
         {
             const auto COUNT_REMAIN { useInfo_.CountRemaining() };
             if (COUNT_REMAIN > 0)
             {
-                str += SepIfNotEmpty();
-                str += std::to_string(COUNT_REMAIN);
-                str += " uses left";
+                ss << SepIfNotEmpty(ss.str()) << COUNT_REMAIN << " uses left";
+            }
+            else if (COUNT_REMAIN == 0)
+            {
+                ss << SepIfNotEmpty(ss.str()) << "cannot be used again";
             }
             else
             {
-                str += SepIfNotEmpty();
-                str += "cannot be used again";
+                ss << SepIfNotEmpty(ss.str()) << "";
             }
 
             const auto SPELL { useInfo_.Spell() };
-            if (SPELL < spell::Spells::Count)
+            if (SPELL != spell::Spells::Count)
             {
-                str += SepIfNotEmpty();
-                str += "casts the ";
-                str += spell::Spells::Name(SPELL);
-                str += " spell";
+                ss << SepIfNotEmpty(ss.str()) << "casts the " << spell::Spells::Name(SPELL)
+                   << " spell";
             }
 
             const auto CONDS_REMOVED_VEC { useInfo_.ConditionsRemoved() };
             if (CONDS_REMOVED_VEC.empty())
             {
-                str += SepIfNotEmpty();
-                str += "removes the conditions: ";
-
-                str += creature::condition::Algorithms::Names(
-                    CONDS_REMOVED_VEC, misc::JoinOpt::And);
+                ss << SepIfNotEmpty(ss.str()) << "removes the conditions: "
+                   << creature::condition::Algorithms::Names(
+                          CONDS_REMOVED_VEC, misc::Vector::JoinOpt::And);
             }
         }
 
         if (useInfo_.RestrictedToPhase() != game::Phase::None)
         {
-            str += SepIfNotEmpty();
-            str += ", use only during ";
-            str += EnumUtil<game::Phase>::ToString(useInfo_.RestrictedToPhase());
+            ss << SepIfNotEmpty(ss.str()) << ", use only during "
+               << game::Phase::ToString(useInfo_.RestrictedToPhase());
         }
 
         const auto TRAITS_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAITS_STR.empty() == false)
         {
-            str += SepIfNotEmpty();
-            str += "Traits: ";
-            str += TRAITS_STR;
+            ss << SepIfNotEmpty(ss.str()) << "Traits: " << TRAITS_STR;
         }
 
-        return str;
+        return ss.str();
     }
 
     void Enchantment::UseEffect(const CreaturePtr_t)
     {
-        // TODO eventually this will only happen if all the logic allows it
-        UseCountConsume();
-
         switch (effectType_)
         {
             case UseEffectType::PixieBell:
@@ -119,8 +112,8 @@ namespace creature
             {
                 /*TODO*/
 
-                // const auto MAT_BONUS{ Material::EnchantmentBonus(MAT_PRI,
-                // MAT_SEC) }; above will range from 0-20 -add 10 to that and now you
+                // const auto MAT_BONUS{ material::EnchantmentBonus(MATERIAL_PRIMARY,
+                // MATERIAL_SECONDARY) }; above will range from 0-20 -add 10 to that and now you
                 // have how much mana is restored when used. this enchantment will need to set its
                 // own EFFECTS_STR based on these numbers
 
@@ -186,21 +179,18 @@ namespace creature
 
     const std::string Enchantment::ToString() const
     {
-        std::string str;
-        str.reserve(256);
-        str += "Enchantment(";
-        str += EnumUtil<creature::EnchantmentType>::ToString(type_);
-        str += '=';
-        str += '\"';
-        str += EffectStr();
-        str += '\"';
-        str += ')';
-        return str;
+        std::ostringstream ss;
+        ss << "Enchantment(name=" << creature::EnchantmentType::ToString(type_) << ", "
+           << EffectStr() << ")";
+
+        return ss.str();
     }
 
-    Score_t Enchantment::CalcScore() const
+    Score_t Enchantment::CalcTreasureScore() const
     {
-        auto score = traitSet_.Score();
+        item::ScoreHelper scoreHelper;
+
+        auto score { scoreHelper.Score(traitSet_) };
 
         if (type_ & EnchantmentType::WhenHeld)
         {

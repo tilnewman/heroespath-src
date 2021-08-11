@@ -9,7 +9,6 @@
 //
 // nonplayer-inventory-types.cpp
 //
-/*
 #include "nonplayer-inventory-types.hpp"
 
 #include "creature/creature.hpp"
@@ -63,8 +62,8 @@ namespace creature
         ItemChances::ItemChances(
             const float CHANCE_OWNED,
             const float CHANCE_EQUIPPED,
-            const item::Material::Enum MAT_PRI,
-            const item::Material::Enum MAT_SEC)
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY)
             : chance_equipped(CHANCE_EQUIPPED)
             , num_owned_map()
             , mat_map_pri()
@@ -75,8 +74,8 @@ namespace creature
             mat_map_sec.Reserve(32);
 
             SetCountChanceSingle(CHANCE_OWNED);
-            mat_map_pri[MAT_PRI] = 1.0f;
-            mat_map_sec[MAT_SEC] = 1.0f;
+            mat_map_pri[MATERIAL_PRIMARY] = 1.0f;
+            mat_map_sec[MATERIAL_SECONDARY] = 1.0f;
         }
 
         std::size_t ItemChances::CountOwned() const
@@ -91,25 +90,25 @@ namespace creature
             }
         }
 
-        item::Material::Enum ItemChances::RandomMaterialPri() const
+        item::material::Enum ItemChances::RandomMaterialPri() const
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (mat_map_pri.Empty() == false),
                 "creature::nonplayer::ItemChances::RandomMaterialPri() "
                     << "called when mat_map_pri is empty.");
 
-            return MappedRandomFloatChance<item::Material::Enum>(mat_map_pri);
+            return MappedRandomFloatChance<item::material::Enum>(mat_map_pri);
         }
 
-        item::Material::Enum ItemChances::RandomMaterialSec() const
+        item::material::Enum ItemChances::RandomMaterialSec() const
         {
             if (mat_map_sec.Empty())
             {
-                return item::Material::Count;
+                return item::material::Nothing;
             }
             else
             {
-                return MappedRandomFloatChance<item::Material::Enum>(mat_map_sec);
+                return MappedRandomFloatChance<item::material::Enum>(mat_map_sec);
             }
         }
 
@@ -165,9 +164,9 @@ namespace creature
             cover_map.Reserve(32);
         }
 
-        item::Covers::Enum ClothingChances::RandomCoverType() const
+        item::armor::cover_type::Enum ClothingChances::RandomCoverType() const
         {
-            misc::VectorMap<item::Covers::Enum, float> coverChanceMap;
+            misc::VectorMap<item::armor::cover_type::Enum, float> coverChanceMap;
 
             for (const auto & NEXT_CHANCE_PAIR : cover_map)
             {
@@ -197,7 +196,7 @@ namespace creature
             }
             else
             {
-                return item::Covers::Count;
+                return item::armor::cover_type::Count;
             }
         }
 
@@ -214,10 +213,10 @@ namespace creature
 
         ArmorItemChances::ArmorItemChances(
             const float CHANCE_OWNED,
-            const item::Forms::Enum ARMOR_BASE_TYPE,
-            const item::Material::Enum MAT_PRI,
-            const item::Material::Enum MAT_SEC)
-            : ItemChances(CHANCE_OWNED, 1.0f, MAT_PRI, MAT_SEC)
+            const item::armor::base_type::Enum ARMOR_BASE_TYPE,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY)
+            : ItemChances(CHANCE_OWNED, 1.0f, MATERIAL_PRIMARY, MATERIAL_SECONDARY)
             , type_map()
         {
             type_map.Reserve(32);
@@ -299,7 +298,7 @@ namespace creature
             const WhipChanceMap_t & WHIP_MAP,
             const SwordChanceMap_t & SWORD_MAP,
             const ProjectileChanceMap_t & PROJECTILE_MAP,
-            const BladedstaffChanceMap_t & BLADEDSTAFF_MAP)
+            const BladedStaffChanceMap_t & BLADEDSTAFF_MAP)
             : has_claws(HAS_CLAWS)
             , has_bite(HAS_BITE)
             , has_fists(HAS_FISTS)
@@ -322,9 +321,57 @@ namespace creature
             bladedstaff_map.Reserve(32);
         }
 
+        const std::string wealth_type::ToString(const wealth_type::Enum WEALTH_TYPE)
+        {
+            switch (WEALTH_TYPE)
+            {
+                case Destitute:
+                {
+                    return "Destitute";
+                }
+                case Poor:
+                {
+                    return "Poor";
+                }
+                case LowerMiddle:
+                {
+                    return "LowerMiddle";
+                }
+                case UpperMiddle:
+                {
+                    return "UpperMiddle";
+                }
+                case Rich:
+                {
+                    return "Rich";
+                }
+                case Lavish:
+                {
+                    return "Lavish";
+                }
+                case Royal:
+                {
+                    return "Royal";
+                }
+                case Count:
+                {
+                    return "(Count)";
+                }
+                default:
+                {
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(WEALTH_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
+                    return "";
+                }
+            }
+        }
+
         wealth_type::Enum wealth_type::FromRankType(const rank_class::Enum RANK_CLASS)
         {
-            const auto RANK_CLASS_STR { NAMEOF_ENUM(RANK_CLASS) };
+            const auto RANK_CLASS_STR { rank_class::ToString(RANK_CLASS) };
 
             misc::VectorMap<wealth_type::Enum, float> wealthChanceMap;
 
@@ -333,24 +380,28 @@ namespace creature
             for (std::size_t i(0); i < wealth_type::Count; ++i)
             {
                 const auto NEXT_WEALTH_TYPE { static_cast<wealth_type::Enum>(i) };
-                const auto NEXT_WEALTH_TYPE_NAME { NAMEOF_ENUM(NEXT_WEALTH_TYPE) };
+                const auto NEXT_WEALTH_TYPE_NAME { wealth_type::ToString(NEXT_WEALTH_TYPE) };
 
-                std::string str;
-                str.reserve(128);
-                str += "wealthtype-chance-";
-                str += RANK_CLASS_STR;
-                str += '-';
-                str += NEXT_WEALTH_TYPE_NAME;
-                str += "-one-in";
+                std::ostringstream ss;
+                ss << "wealthtype-chance-" << RANK_CLASS_STR << "-"
+                   << NEXT_WEALTH_TYPE_NAME << "-one-in";
 
-                const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(str) };
+                const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(ss.str()) };
 
                 if (NEXT_VALUE_STR == "remaining")
                 {
                     wealthTypeChanceRemaining = NEXT_WEALTH_TYPE;
                 }
 
-                auto nextChanceValue = misc::ToNumberOrZero<float>(NEXT_VALUE_STR);
+                auto nextChanceValue { 0.0f };
+                try
+                {
+                    nextChanceValue = boost::lexical_cast<float>(NEXT_VALUE_STR);
+                }
+                catch (...)
+                {
+                    nextChanceValue = -1.0f;
+                }
 
                 wealthChanceMap[NEXT_WEALTH_TYPE]
                     = ((nextChanceValue > 0.0f) ? (1.0f / nextChanceValue) : (0.0f));
@@ -384,15 +435,40 @@ namespace creature
             return FromRank(CHARACTER_PTR->Rank());
         }
 
+        const std::string collector_type::ToString(const Enum ENUM, const EnumStringHow & HOW)
+        {
+            return EnumUtil<collector_type>::ToString(ENUM, HOW);
+        }
+
+        const std::string collector_type::ToStringPopulate(
+            const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+        {
+            std::string str;
+
+            AppendNameIfBitIsSet(
+                str, ENUM_VALUE, collector_type::Minimalist, "Minimalist", SEPARATOR);
+
+            AppendNameIfBitIsSet(
+                str, ENUM_VALUE, collector_type::Practical, "Practical", SEPARATOR);
+
+            AppendNameIfBitIsSet(
+                str, ENUM_VALUE, collector_type::Collector, "Collector", SEPARATOR);
+
+            AppendNameIfBitIsSet(str, ENUM_VALUE, collector_type::Hoarder, "Hoarder", SEPARATOR);
+            return str;
+        }
+
         collector_type::Enum collector_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             const auto CHANCE_BASE(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "nonplayer-ownershipprofile-collectortype-chance-base"));
 
             // adjust for race
+            const auto RACE_STR { race::ToString(CHARACTER_PTR->Race()) };
+
             const auto RACE_KEY {
-                std::string("nonplayer-ownershipprofile-collectortype-chance-adjustment-race-")
-                    .append(CHARACTER_PTR->RaceName())
+                "nonplayer-ownershipprofile-collectortype-chance-adjustment-race-"
+                + RACE_STR
             };
 
             const auto RACE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(RACE_KEY) };
@@ -419,10 +495,12 @@ namespace creature
                 CHANCE_BASE + ConvertStringToFloat(RACE_KEY, RACE_PARTS_STR_VEC[3]));
 
             // adjust for roles
-            const auto ROLE_STR { NAMEOF_ENUM_STR(CHARACTER_PTR->Role()) };
+            const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
 
-            const auto ROLE_KEY { "nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
-                                  + ROLE_STR };
+            const auto ROLE_KEY {
+                "nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
+                + ROLE_STR
+            };
 
             const auto ROLE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(ROLE_KEY) };
 
@@ -517,6 +595,35 @@ namespace creature
             return collectorType;
         }
 
+        const std::string owns_magic_type::ToString(const owns_magic_type::Enum OWNS_MAGIC_TYPE)
+        {
+            if (OWNS_MAGIC_TYPE == Rarely)
+            {
+                return "Rarely";
+            }
+            else if (OWNS_MAGIC_TYPE == Religious)
+            {
+                return "Religious";
+            }
+            else if (OWNS_MAGIC_TYPE == Magical)
+            {
+                return "Magical";
+            }
+            else if (OWNS_MAGIC_TYPE == Count)
+            {
+                return "(Count)";
+            }
+            else
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(OWNS_MAGIC_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
+                return "";
+            }
+        }
+
         owns_magic_type::Enum owns_magic_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             float chanceRarely(0.0f);
@@ -525,9 +632,11 @@ namespace creature
 
             // adjust for race
             {
-                const auto RACE_KEY { std::string(
-                                          "nonplayer-ownershipprofile-ownsmagictype-chance-race-")
-                                          .append(CHARACTER_PTR->RaceName()) };
+                const auto RACE_STR(race::ToString(CHARACTER_PTR->Race()));
+
+                const auto RACE_KEY {
+                    "nonplayer-ownershipprofile-ownsmagictype-chance-race-" + RACE_STR
+                };
 
                 const auto RACE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
                     RACE_KEY) };
@@ -566,10 +675,15 @@ namespace creature
 
             // adjust for role
             {
-                const auto ROLE_STR { NAMEOF_ENUM_STR(CHARACTER_PTR->Role()) };
+                const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
+
+                std::ostringstream ss;
+                ss << "nonplayer-ownershipprofile-"
+                   << "ownsmagictype-chance-adjustment-Rarely-role-" << ROLE_STR;
 
                 const auto ROLE_KEY {
-                    "nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-" + ROLE_STR
+                    "nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-"
+                    + ROLE_STR
                 };
 
                 const auto ROLE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
@@ -632,7 +746,8 @@ namespace creature
             }
 
             // determine
-            const auto RAND(misc::Random(0.0f, (chanceRarely + chanceReligious + chanceRarely)));
+            const auto RAND(
+                misc::Random(0.0f, (chanceRarely + chanceReligious + chanceRarely)));
 
             if (RAND < chanceMagical)
             {
@@ -648,6 +763,60 @@ namespace creature
                 {
                     return Rarely;
                 }
+            }
+        }
+
+        const std::string complexity_type::ToString(const complexity_type::Enum COMPLEXITY_TYPE)
+        {
+            switch (COMPLEXITY_TYPE)
+            {
+                case Animal:
+                {
+                    return "Animal";
+                }
+                case Simple:
+                {
+                    return "Simple";
+                }
+                case Moderate:
+                {
+                    return "Moderate";
+                }
+                case Complex:
+                {
+                    return "Complex";
+                }
+                case Count:
+                {
+                    return "(Count)";
+                }
+                default:
+                {
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(COMPLEXITY_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
+                    return "";
+                }
+            }
+        }
+
+        complexity_type::Enum complexity_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
+        {
+            const auto RACE_COMPLEXITY_STR { misc::ConfigFile::Instance()->Value(
+                "nonplayer-ownershipprofile-complexitytype-race-"
+                + race::ToString(CHARACTER_PTR->Race())) };
+
+            if (RACE_COMPLEXITY_STR == "based-on-role")
+            {
+                return EnumUtil<complexity_type>::FromString(misc::ConfigFile::Instance()->Value(
+                    "nonplayer-ownershipprofile-complexitytype-role-"
+                    + role::ToString(CHARACTER_PTR->Role())));
+            }
+            else
+            {
+                return EnumUtil<complexity_type>::FromString(RACE_COMPLEXITY_STR);
             }
         }
 
@@ -673,19 +842,20 @@ namespace creature
 
         float ConvertStringToFloat(const std::string & KEY, const std::string & STR_FLOAT)
         {
-            const float ERROR_NUMBER = -6969.6969f;
-            const float RESULT = misc::ToNumberOr(STR_FLOAT, ERROR_NUMBER);
+            try
+            {
+                return boost::lexical_cast<float>(STR_FLOAT);
+            }
+            catch (...)
+            {
+                std::ostringstream ss;
+                ss << "creature::nonplayer::ConvertStringToFloat(key=" << KEY
+                   << ", STR_FLOAT=" << STR_FLOAT << " unable to convert that str to a float.";
 
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (!misc::IsRealClose(RESULT, ERROR_NUMBER)),
-                "creature::nonplayer::ConvertStringToFloat(key="
-                    << KEY << ", STR_FLOAT=" << STR_FLOAT
-                    << " unable to convert that str to a float.");
-
-            return RESULT;
+                throw std::runtime_error(ss.str());
+            }
         }
 
     } // namespace nonplayer
 } // namespace creature
 } // namespace heroespath
-*/

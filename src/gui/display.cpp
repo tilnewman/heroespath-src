@@ -18,15 +18,14 @@
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/vector-and-rect.hpp"
 #include "stage/i-stage.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Mouse.hpp>
 
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -54,8 +53,8 @@ namespace gui
             "Unable to open render window.  Check console for explanation.  Bail.");
 
         M_HP_LOG(
-            "Window open " << winUPtr_->getSize() << " with color depth reported as "
-                           << winUPtr_->getSettings().depthBits
+            "Window open " << winUPtr_->getSize().x << "x" << winUPtr_->getSize().y
+                           << " with color depth reported as " << winUPtr_->getSettings().depthBits
                            << ((0 == winUPtr_->getSettings().depthBits)
                                    ? "(which is really 32...), "
                                    : ", ")
@@ -69,12 +68,14 @@ namespace gui
         }
     }
 
+    Display::~Display() { Close(); }
+
     misc::NotNull<Display *> Display::Instance()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "gui::Display::Instance() found instanceUPtr that was null.");
 
-        return misc::NotNull<Display *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
     void Display::Acquire(
@@ -86,16 +87,24 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: Display");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: Display");
         }
     }
 
-    void Display::Destroy() { instanceUPtr_.reset(); }
+    void Display::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "gui::Display::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     float Display::GetWinWidth() const { return static_cast<float>(GetWinWidthu()); }
+
     float Display::GetWinHeight() const { return static_cast<float>(GetWinHeightu()); }
 
     unsigned int Display::GetWinWidthu() const { return winUPtr_->getSize().x; }
+
     unsigned int Display::GetWinHeightu() const { return winUPtr_->getSize().y; }
 
     unsigned int Display::WinColorDepth() const { return winUPtr_->getSettings().depthBits; }
@@ -200,7 +209,7 @@ namespace gui
 
     bool Display::IsOpen() const { return winUPtr_->isOpen(); }
 
-    void Display::ClearTo(const sf::Color & COLOR) { winUPtr_->clear(COLOR); }
+    void Display::ClearToBlack() { winUPtr_->clear(sf::Color::Black); }
 
     void Display::DisplayFrameBuffer() { winUPtr_->display(); }
 
@@ -764,8 +773,8 @@ namespace gui
         if (0 == NUM_SUPPORTED_RESOLUTIONS)
         {
             M_HP_LOG(
-                "THERE ARE NO SUPPORTED MODES!  Minimum resolution required is " << GetWinSizeMin()
-                                                                                 << ".");
+                "THERE ARE NO SUPPORTED MODES!  Minimum resolution required is "
+                << GetWinWidthMin() << "x" << GetWinHeightMin() << ".");
         }
         else
         {
@@ -778,7 +787,7 @@ namespace gui
         return NUM_SUPPORTED_RESOLUTIONS;
     }
 
-    const sf::VideoMode Display::EstablishVideoModeMaxResolution()
+    const sf::VideoMode Display::EstablishVideoMode()
     {
         sf::VideoMode videoMode;
 
@@ -803,7 +812,8 @@ namespace gui
                 "Current video mode "
                 << ConvertVideoModeToResolution(CURR_VIDEO_MODE).ToString()
                 << " is NOT supported.  The resolution must be greater, at least "
-                << GetWinSizeMin() << ".  Below is a list of supported modes you can use instead.");
+                << GetWinWidthMin() << "x" << GetWinHeightMin()
+                << ".  Below is a list of supported modes you can use instead.");
 
             LogAllSupportedFullScreenVideoModes();
 
@@ -814,7 +824,7 @@ namespace gui
             if (0 == NUM_SUPPORTED)
             {
                 M_HP_LOG(
-                    "No valid full-screen video modes found that are supported by this system.  "
+                    "No valid video modes found that are supported by this system.  "
                     << "See above for a list of supported video modes.  Attempt to increase "
                     << "your resolution to one of these.");
 
@@ -835,39 +845,6 @@ namespace gui
         }
 
         return videoMode;
-    }
-
-    const sf::VideoMode Display::EstablishVideoModeMinResolution()
-    {
-        ResolutionVec_t supportedResolutionsVec;
-        const std::size_t NUM_SUPPORTED(
-            ComposeSupportedFullScreenVideoModesVec(supportedResolutionsVec));
-
-        if (0 == NUM_SUPPORTED)
-        {
-            M_HP_LOG(
-                "No valid full-screen video modes found that are supported by this system.  "
-                << "See above for a list of supported video modes.  Attempt to increase "
-                << "your resolution to one of these.");
-
-            throw std::runtime_error(
-                "No valid video modes found that are supported by this system.");
-        }
-
-        M_HP_LOG("Attempting to find a good low resolution suitable for testing...");
-
-        std::sort(std::begin(supportedResolutionsVec), std::end(supportedResolutionsVec));
-
-        for (const auto & RES : supportedResolutionsVec)
-        {
-            if (RES.width >= 800)
-            {
-                return sf::VideoMode(RES.width, RES.height, RES.bits_per_pixel);
-            }
-        }
-
-        throw std::runtime_error("No valid full-screen video modes found for testing that are "
-                                 "supported by this system.");
     }
 
     const sf::VideoMode Display::GetCurrentVideoMode()
@@ -956,8 +933,7 @@ namespace gui
         {
             M_HP_LOG_ERR(makeLogMessage(
                 "Failed to change resolution ",
-                ".  The call to sf::RenderWindow::create() resulted in the window NOT being "
-                "open, "
+                ".  The call to sf::RenderWindow::create() resulted in the window NOT being open, "
                 "so reverting back to original."));
 
             winUPtr_->create(
@@ -1003,8 +979,8 @@ namespace gui
         {
             M_HP_LOG_ERR(makeLogMessage(
                 "Changed resolution ",
-                " succeeded in changing the resolution but not in changing the AA level.  The "
-                "AA  ended up="
+                " succeeded in changing the resolution but not in changing the AA level.  The AA "
+                "ended up="
                     + misc::ToString(DISPLAY_SETTINGS_AFTER.second) + "."));
         }
         else if (RESULT.FailedAndRevertFailed())
@@ -1012,18 +988,9 @@ namespace gui
             M_HP_LOG_ERR(makeLogMessage(
                 "Failed to change resolution ",
                 makeResMessage(
-                    ".  For some unknown reason (ahem) SFML switched to a new resolution that "
-                    "was  not  the intended or the original.  New resolution=",
-                    DISPLAY_SETTINGS_AFTER)));
-        }
-        else
-        {
-            M_HP_LOG_ERR(makeLogMessage(
-                "Failed to change resolution (in an unusual case...not sure what happened here...)"
-                    + M_HP_VAR_STR(RESULT.did_res_change) + M_HP_VAR_STR(RESULT.is_res_intended)
-                    + M_HP_VAR_STR(RESULT.did_aa_change) + M_HP_VAR_STR(RESULT.is_aa_intended),
-                makeResMessage(
-                    "Here are all the details of what display settings we ended up with:",
+                    ".  For some unknown reason (ahem) SFML switched to a new resolution that was "
+                    "not "
+                    "the intended or the original.  New resolution=",
                     DISPLAY_SETTINGS_AFTER)));
         }
 

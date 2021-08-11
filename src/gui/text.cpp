@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -16,11 +14,11 @@
 #include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/common.hpp"
+#include "sfutil/position.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include <ostream>
+#include <sstream>
 
 namespace heroespath
 {
@@ -140,28 +138,33 @@ namespace gui
         target.draw(sfText_, states);
     }
 
+    bool Text::IsValid() const
+    {
+        return (!text_.empty() && EnumUtil<GuiFont>::IsValid(font_) && (getCharacterSize() > 0));
+    }
+
     const std::string Text::getFontFamilyName() const
     {
-        std::string str;
-
-        if (sfText_.getFont() != nullptr)
+        if (sfText_.getFont() == nullptr)
         {
-            str = sfText_.getFont()->getInfo().family;
+            return "";
         }
-
-        return str;
+        else
+        {
+            return sfText_.getFont()->getInfo().family;
+        }
     }
 
     float Text::getLineSpacing() const
     {
-        float lineSpace = 0.0f;
-
-        if (sfText_.getFont() != nullptr)
+        if (sfText_.getFont() == nullptr)
         {
-            lineSpace = sfText_.getFont()->getLineSpacing(sfText_.getCharacterSize());
+            return 0.0f;
         }
-
-        return lineSpace;
+        else
+        {
+            return sfText_.getFont()->getLineSpacing(sfText_.getCharacterSize());
+        }
     }
 
     void Text::setString(const std::string & NEW_STRING)
@@ -225,48 +228,37 @@ namespace gui
     const std::string Text::ToString(
         const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        std::string str;
-        str.reserve(text_.size() + 128);
-
-        if (WILL_WRAP == Wrap::Yes)
-        {
-            str += '(';
-        }
+        std::ostringstream ss;
 
         if (WillDraw() == false)
         {
-            str += "INVALID";
-            str += SEPARATOR;
-            str += "WONT_DRAW";
+            ss << "INVALID" << SEPARATOR << "WONT_DRAW";
         }
         else if (IsValid() == false)
         {
-            str += "INVALID";
+            ss << "INVALID";
         }
 
-        str += SEPARATOR;
-
+        ss << SEPARATOR;
         if (text_.empty())
         {
-            str += "(invalid, text is empty)";
+            ss << "(invalid, text is empty)";
         }
         else
         {
-            str += misc::MakeLoggableString(text_);
+            ss << misc::MakeLoggableString(text_);
         }
 
-        str += SEPARATOR;
-        str += NAMEOF_ENUM(font_);
-        str += SEPARATOR + std::to_string(size());
-        str += SEPARATOR;
-        str += misc::ToString(getFillColor());
-        str += SEPARATOR;
+        ss << SEPARATOR << GuiFont::ToString(font_);
+        ss << SEPARATOR << size();
+        ss << SEPARATOR << sfutil::ToString(getFillColor(), misc::ToStringPrefix::SimpleName);
 
+        ss << SEPARATOR;
         const auto STYLE { getStyle() };
         if (0 != STYLE)
         {
-            auto separatorIfNotEmpty = [&](const std::string & S) -> std::string {
-                if (S.empty())
+            auto separatorIfNotEmpty = [&](std::ostringstream & strstrm) -> std::string {
+                if (strstrm.str().empty())
                 {
                     return "";
                 }
@@ -276,57 +268,48 @@ namespace gui
                 }
             };
 
-            std::string styleStr;
-            styleStr.reserve(32);
+            std::ostringstream oss;
 
             if (STYLE & sf::Text::Style::Bold)
             {
-                styleStr += "Bold";
+                oss << "Bold";
             }
 
             if (STYLE & sf::Text::Style::Italic)
             {
-                styleStr += separatorIfNotEmpty(styleStr);
-                styleStr += "Italic";
+                oss << separatorIfNotEmpty(oss) << "Italic";
             }
 
             if (STYLE & sf::Text::Style::Underlined)
             {
-                styleStr += separatorIfNotEmpty(styleStr);
-                styleStr += "Underlined";
+                oss << separatorIfNotEmpty(oss) << "Underlined";
             }
 
             if (STYLE & sf::Text::Style::StrikeThrough)
             {
-                styleStr += separatorIfNotEmpty(styleStr);
-                styleStr += "StrikeThrough";
+                oss << separatorIfNotEmpty(oss) << "StrikeThrough";
             }
 
-            if (styleStr.empty())
+            if (oss.str().empty())
             {
-                str += "(invalid, sf::Style=";
-                styleStr += std::to_string(STYLE);
-                styleStr += ')';
+                ss << "(invalid, sf::Style=" << STYLE << ")";
             }
             else
             {
-                str += styleStr;
+                ss << oss.str();
             }
         }
 
-        if (WILL_WRAP == Wrap::Yes)
-        {
-            str += ')';
-        }
+        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
 
         if (WILL_PREFIX)
         {
-            str = std::string("Text");
-            str += ((WILL_WRAP == Wrap::Yes) ? "" : "=");
-            str += str;
+            return std::string("Text").append((WILL_WRAP == Wrap::Yes) ? "" : "=") + PARTS_STR;
         }
-
-        return str;
+        else
+        {
+            return PARTS_STR;
+        }
     }
 
     void Text::UpdateAfterChangingCachedString()
@@ -341,11 +324,4 @@ namespace gui
     }
 
 } // namespace gui
-
-std::ostream & operator<<(std::ostream & os, const gui::Text & TEXT)
-{
-    os << TEXT.ToString();
-    return os;
-}
-
 } // namespace heroespath

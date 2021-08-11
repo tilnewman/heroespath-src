@@ -9,33 +9,27 @@
 //
 // main.cpp
 //
-#include "game/setup-teardown.hpp"
+#include "game/startup-shutdown.hpp"
 
 #include <cstdlib>
+#include <exception>
 #include <iostream>
-#include <stdexcept>
-#include <string>
-#include <vector>
 
-int main(const int ARGC, const char * ARGV[])
+int main(int argc, char * argv[])
 {
     try
     {
-        const std::vector<std::string> ARGS(ARGV, ARGV + ARGC);
-
-        heroespath::game::SetupTeardown setupThenTeardown(
-            "Heroes' Path", heroespath::game::SubsystemCollection::All, ARGS);
-
-        setupThenTeardown.Play();
+        heroespath::game::StartupShutdown startStop("Heroes' Path", argc, argv);
+        startStop.Run();
         return EXIT_SUCCESS;
     }
     catch (const std::exception & EXCEPTION)
     {
-        std::cout << "exception: " << EXCEPTION.what() << std::endl;
+        std::cerr << "exception: " << EXCEPTION.what() << std::endl;
     }
     catch (...)
     {
-        std::cout << "unknown exception" << std::endl;
+        std::cerr << "unknown exception" << std::endl;
     }
 
     return EXIT_FAILURE;

@@ -12,7 +12,7 @@
 #include "log-pri-enum.hpp"
 #include "misc/not-null.hpp"
 
-#include <iosfwd>
+#include <fstream>
 #include <memory>
 #include <string>
 
@@ -28,7 +28,7 @@ namespace misc
         explicit Log(
             const std::string & FILE_NAME,
             const std::string & FILE_EXT = ".txt", // must include the dot if not empty
-            const LogPriority::Enum LOWEST_PRI_TO_CONSOLE_ECHO = LogPriority::Error,
+            const LogPriority::Enum LOWEST_PRI_TO_CONSOLE_ECHO = LogPriority::Count,
             const std::size_t FILE_APPEND_COUNT_BEFORE_FLUSH = 0,
             const std::size_t CONSOLE_APPEND_COUNT_BEFORE_FLUSH = 0);
 
@@ -40,8 +40,8 @@ namespace misc
         Log & operator=(Log &&) = delete;
 
         static misc::NotNull<Log *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         void Append(
             const std::string & MSG,
@@ -60,11 +60,6 @@ namespace misc
             const int LINE = LINE_NUMBER_INVALID_);
 
         std::size_t LineCount() const { return lineCount_; }
-
-        static void setUnitTestName(const std::string & UNIT_TEST_NAME)
-        {
-            unitTestName_ = UNIT_TEST_NAME;
-        }
 
     private:
         void OpenFile();
@@ -91,15 +86,14 @@ namespace misc
         bool IsFileReadyForWriting() const;
 
     private:
-        static const int LINE_NUMBER_INVALID_ = -1; // anything less than zero works here
-        static constexpr std::string_view SEPARATOR_STR_ = "  ";
+        static const int LINE_NUMBER_INVALID_;
+        static const std::string SEPARATOR_STR_;
         static std::unique_ptr<Log> instanceUPtr_;
-        static inline std::string unitTestName_ {};
 
         std::string fileName_;
         std::string fileNameExtension_; // must include the dot if not empty
         LogPriority::Enum lowestPriToConsoleEcho_;
-        std::unique_ptr<std::ofstream> fileStreamUPtr_;
+        std::ofstream fileStream_;
         std::size_t fileAppendCountBeforeFlush_;
         std::size_t fileAppendCountSinceLastFlush_;
         std::size_t consoleAppendCountBeforeFlush_;

@@ -10,12 +10,13 @@
 // text.hpp
 //
 #include "gui/font-enum.hpp"
+#include "misc/enum-common.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-#include <iosfwd>
+#include <ostream>
 #include <string>
 
 namespace heroespath
@@ -76,16 +77,12 @@ namespace gui
         void draw(sf::RenderTarget & target, sf::RenderStates states) const final;
 
         // returns true if size and font are valid and if text is not empty
-        bool IsValid() const
-        {
-            return (!text_.empty() && (font_ < GuiFont::Count) && (getCharacterSize() > 0));
-        }
+        bool IsValid() const;
 
         // returns true if IsValid() and color is not transparent
         bool WillDraw() const { return (IsValid() && (getFillColor().a > 0)); }
 
         std::size_t size() const { return text_.size(); }
-
         bool empty() const { return text_.empty(); }
 
         const sf::Vector2f findCharacterPos(const std::size_t INDEX) const
@@ -94,7 +91,7 @@ namespace gui
         }
 
         const std::string getFontFamilyName() const;
-        const std::string getFontName() const { return NAMEOF_ENUM_STR(font_); }
+        const std::string getFontName() const { return GuiFont::ToString(font_); }
         const std::string getString() const { return text_; }
         GuiFont::Enum getFont() const { return font_; }
         unsigned int getCharacterSize() const { return sfText_.getCharacterSize(); }
@@ -103,14 +100,6 @@ namespace gui
         const sf::FloatRect getGlobalBounds() const { return sfText_.getGlobalBounds(); }
         const sf::Vector2f getScale() const { return sfText_.getScale(); }
         const sf::Vector2f getPosition() const { return sfText_.getPosition(); }
-
-        // always 0,0, the whole point of this class is to handle the origin internally
-        const sf::Vector2f getOrigin() const { return sf::Vector2f(); }
-
-        const sf::Vector2f getSize() const
-        {
-            return sf::Vector2f(sfText_.getGlobalBounds().width, sfText_.getGlobalBounds().height);
-        }
 
         float getLineSpacing() const;
 
@@ -190,7 +179,11 @@ namespace gui
 
 } // namespace gui
 
-std::ostream & operator<<(std::ostream & os, const gui::Text & TEXT);
+inline std::ostream & operator<<(std::ostream & os, const gui::Text & TEXT)
+{
+    os << TEXT.ToString();
+    return os;
+}
 
 } // namespace heroespath
 

@@ -123,7 +123,7 @@ namespace gui
         }
 
         // If IsStopped() returns Still otherwise returns Direction()
-        Moving::Enum MovingType() const { return ((IsStopped()) ? Moving::Still : Direction()); }
+        Moving::Enum Moving() const { return ((IsStopped()) ? Moving::Still : Direction()); }
 
         bool WillOscilate() const { return (WillOscillate::Yes == willOscillate_); }
 

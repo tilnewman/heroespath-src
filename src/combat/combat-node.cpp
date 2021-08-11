@@ -20,8 +20,8 @@
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
-#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -66,8 +66,8 @@ namespace combat
 
     CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR)
         : Entity(
-              std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).append("\""),
-              sf::FloatRect())
+            std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).append("\""),
+            sf::FloatRect())
         , creatureNameInfo_()
         , isPlayer_(CREATURE_PTR->IsPlayerCharacter())
         , nameText_(
@@ -141,19 +141,18 @@ namespace combat
 
     const std::string CombatNode::ToString() const
     {
-        std::string str("CombatNode ");
-        str += ((isPlayer_) ? "Player " : "NonPlayer ");
-        str += creaturePtr_->RaceName();
-        str += ' ';
-        str += creaturePtr_->RoleName();
+        std::ostringstream ss;
+        ss << "CombatNode " << ((isPlayer_) ? "Player " : "NonPlayer ") << creaturePtr_->RaceName()
+           << " " << creaturePtr_->RoleName();
 
         if (isPlayer_)
         {
-            str += " \"" + creaturePtr_->Name() + "\"";
+            ss << " \"" << creaturePtr_->Name() << "\"";
         }
 
-        str += " blocking_pos=" + std::to_string(blockingPos_);
-        return str;
+        ss << " blocking_pos=" << blockingPos_;
+
+        return ss.str();
     }
 
     void CombatNode::SetRegion(const sf::FloatRect & NEW_REGION)

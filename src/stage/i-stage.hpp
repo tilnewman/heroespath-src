@@ -85,12 +85,6 @@ namespace stage
         virtual void RemoveFocus() = 0;
         virtual void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) = 0;
 
-        template <typename T>
-        void SetFocus(const std::unique_ptr<T> & UPTR)
-        {
-            SetFocus(gui::IEntityPtr_t(UPTR.get()));
-        }
-
         virtual void draw(sf::RenderTarget &, sf::RenderStates) const = 0;
 
         virtual void HandleResolutionChange() = 0;
@@ -99,23 +93,14 @@ namespace stage
             const gui::IEntityPtr_t, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false)
             = 0;
 
-        template <typename T>
-        void EntityAdd(
-            const std::unique_ptr<T> & UPTR,
-            const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false)
-        {
-            EntityAdd(gui::IEntityPtr_t(UPTR.get()), WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK);
-        }
-
         virtual void EntityRemove(const gui::IEntityPtr_t) = 0;
 
-        template <typename T>
-        void EntityRemove(const std::unique_ptr<T> & UPTR)
-        {
-            EntityRemove(gui::IEntityPtr_t(UPTR.get()));
-        }
-
         virtual void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) = 0;
+
+        // all of these testing functions are temp until all tests are moved to unit tests
+        virtual void TestingStrAppend(const std::string &) = 0;
+        virtual void TestingStrIncrement(const std::string &) = 0;
+        virtual void TestingImageSet(const std::string & PATH_STR) = 0;
 
         virtual void PerformNextTest() = 0;
 

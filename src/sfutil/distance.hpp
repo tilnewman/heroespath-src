@@ -10,9 +10,13 @@
 // distance.hpp
 //
 #include "sfutil/center.hpp"
-#include "sfutil/common.hpp"
 
 #include <cmath>
+
+namespace sf
+{
+class Sprite;
+}
 
 namespace heroespath
 {
@@ -21,26 +25,23 @@ namespace sfutil
 
     // returns the distance from position A to position B
     template <typename T1, typename T2>
-    const T1 Distance(const sf::Vector2<T1> & A, const sf::Vector2<T2> & B) noexcept
+    constexpr T1 Distance(const sf::Vector2<T1> & A, const sf::Vector2<T2> & B)
     {
-        const float DIFF_HORIZ { static_cast<float>(B.x) - static_cast<float>(A.x) };
-        const float DIFF_VERT { static_cast<float>(B.y) - static_cast<float>(A.y) };
-        return static_cast<T1>(std::sqrt((DIFF_HORIZ * DIFF_HORIZ) + (DIFF_VERT * DIFF_VERT)));
+        const auto DIST_HORIZ { static_cast<double>(B.x) - static_cast<double>(A.x) };
+        const auto DIST_VERT { static_cast<double>(B.y) - static_cast<double>(A.y) };
+
+        return static_cast<T1>(std::sqrt((DIST_HORIZ * DIST_HORIZ) + (DIST_VERT * DIST_VERT)));
     }
 
     // returns the distance from the center of A to the center of B
     template <typename T1, typename T2>
-    const T1 Distance(const sf::Rect<T1> & A, const sf::Rect<T2> & B) noexcept
+    constexpr T1 Distance(const sf::Rect<T1> & A, const sf::Rect<T2> & B)
     {
         return Distance(CenterOf(A), CenterOf(B));
     }
 
     // returns the distance from the center of A to the center of B (global)
-    template <typename T>
-    std::enable_if_t<has_getglobalbounds_v<T>, float> Distance(const T & A, const T & B)
-    {
-        return Distance(CenterOf(A.getGlobalBounds()), CenterOf(B.getGlobalBounds()));
-    }
+    float Distance(const sf::Sprite & A, const sf::Sprite & B);
 
 } // namespace sfutil
 } // namespace heroespath

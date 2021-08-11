@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -23,10 +21,9 @@ namespace game
         if (stage::Stage::IsPlayable(NEW_CURRENT_STAGE) == false)
         {
             M_HP_LOG_ERR(
-                "Attempt to set new current stage to "
-                << NAMEOF_ENUM(NEW_CURRENT_STAGE)
-                << " which is not a valid playable stage.  Not setting this as the new current "
-                   "stage.  Ignoring the request.");
+                "Attempt to set new current stage to " + stage::Stage::ToString(NEW_CURRENT_STAGE)
+                + " which is not a valid playable stage.  Not setting this as the new current "
+                  "stage.  Ignoring the request.");
 
             return;
         }

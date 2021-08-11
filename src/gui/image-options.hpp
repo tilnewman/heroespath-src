@@ -12,7 +12,7 @@
 #include "gui/image-option-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/common.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Config.hpp>
 
@@ -29,8 +29,6 @@ namespace heroespath
 {
 namespace gui
 {
-
-    using ColorOpt_t = boost::optional<sf::Color>;
 
     // Responsible for wrapping all information needed to modify an image.
     struct ImageOptions

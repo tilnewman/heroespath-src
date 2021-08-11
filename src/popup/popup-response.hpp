@@ -12,6 +12,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "popup/popup-enums.hpp"
 
+#include <sstream>
 #include <string>
 
 namespace heroespath
@@ -30,27 +31,23 @@ namespace popup
 
         const std::string ToString() const
         {
-            std::string str;
-            str.reserve(32);
+            std ::ostringstream ss;
 
-            str += "PopupResonse(\"";
-            str += curently_open_popup_name;
-            str += "\", ";
-            str += NAMEOF_ENUM_STR(type);
-            str += ", selected_index=";
+            ss << "PopupResonse(\"" << curently_open_popup_name << "\", "
+               << popup::PopupButtons::ToString(type) << ", selected_index=";
 
             if (selection_opt)
             {
-                str += std::to_string(selection_opt.value());
+                ss << selection_opt.value();
             }
             else
             {
-                str += "(none)";
+                ss << "(none)";
             }
 
-            str += ')';
+            ss << ")";
 
-            return str;
+            return ss.str();
         }
 
         std::string curently_open_popup_name;

@@ -61,13 +61,13 @@ namespace game
             M_HP_LOG_ERR(
                 "Subsystem Instance() called but instanceUPtr_ was null: GameStateFactory");
 
-            Create();
+            Acquire();
         }
 
         return misc::NotNull<GameStateFactory *>(instanceUPtr_.get());
     }
 
-    void GameStateFactory::Create()
+    void GameStateFactory::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -75,11 +75,17 @@ namespace game
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: GameStateFactory");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: GameStateFactory");
         }
     }
 
-    void GameStateFactory::Destroy() { instanceUPtr_.reset(); }
+    void GameStateFactory::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "GameStateFactory::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     GameStateUPtr_t GameStateFactory::MakeForNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR) const
     {

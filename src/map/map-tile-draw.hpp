@@ -9,7 +9,8 @@
 //
 // map-tile-draw.hpp
 //
-#include "sfutil/vector-and-rect.hpp"
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include <cstddef> //for std::size_t
 #include <vector>

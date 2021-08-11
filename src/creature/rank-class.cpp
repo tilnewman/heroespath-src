@@ -30,8 +30,10 @@ namespace creature
         {
             const rank_class::Enum RANK_ENUM { static_cast<rank_class::Enum>(i) };
 
-            rankCumulative += misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "rankclass-" + NAMEOF_ENUM_STR(RANK_ENUM) + "-rankmax");
+            std::ostringstream ss;
+            ss << "rankclass-" << ToString(RANK_ENUM) << "-rankmax";
+
+            rankCumulative += Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(ss.str()));
 
             if (RANK_PARAM <= rankCumulative)
             {
@@ -49,32 +51,74 @@ namespace creature
 
         if (ENUM == GrandMaster)
         {
-            min
-                = (misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                       "rankclass-" + std::string(NAMEOF_ENUM(Master)) + "-rankmax")
-                   + 1_rank);
+            min = Rank_t(
+                misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                    "rankclass-" + ToString(Master) + "-rankmax")
+                + 1);
         }
         else if (ENUM == Novice)
         {
             min = 1_rank;
 
-            max = misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "rankclass-" + std::string(NAMEOF_ENUM(Novice)) + "-rankmax");
+            max = Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "rankclass-" + ToString(Novice) + "-rankmax"));
         }
         else
         {
-            min
-                = (misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                       "rankclass-"
-                       + std::string(NAMEOF_ENUM(static_cast<rank_class::Enum>(ENUM - 1)))
-                       + "-rankmax")
-                   + 1_rank);
+            min = Rank_t(
+                misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                    "rankclass-" + ToString(static_cast<rank_class::Enum>(ENUM - 1))
+                    + "-rankmax")
+                + 1);
 
-            max = misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "rankclass-" + std::string(NAMEOF_ENUM(ENUM)) + "-rankmax");
+            max = Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "rankclass-" + ToString(ENUM) + "-rankmax"));
         }
 
         return RankRange_t(min, max);
+    }
+
+    const std::string rank_class::ToString(const rank_class::Enum ENUM)
+    {
+        switch (ENUM)
+        {
+            case Novice:
+            {
+                return "Novice";
+            }
+            case Trainee:
+            {
+                return "Trainee";
+            }
+            case Skilled:
+            {
+                return "Skilled";
+            }
+            case Expert:
+            {
+                return "Expert";
+            }
+            case Master:
+            {
+                return "Master";
+            }
+            case GrandMaster:
+            {
+                return "GrandMaster";
+            }
+            case Count:
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
+                return "";
+            }
+        }
     }
 
 } // namespace creature

@@ -21,7 +21,7 @@ namespace heroespath
 using TimeCount_t = long long;
 using TimeMoment_t = std::chrono::high_resolution_clock::time_point;
 
-struct TimeRes : public EnumBaseCounting<>
+struct TimeRes : public EnumBaseCounting<EnumFirstValue::Valid>
 {
     enum Enum : EnumUnderlying_t
     {
@@ -29,8 +29,10 @@ struct TimeRes : public EnumBaseCounting<>
         Milli,
         Micro,
         Second,
-        Count
+        Count,
     };
+
+    static const std::string ToString(const Enum RES);
 };
 
 namespace misc

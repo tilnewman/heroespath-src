@@ -18,8 +18,9 @@
 #include "misc/vector-map.hpp"
 
 #include <algorithm>
+#include <exception>
 #include <memory>
-#include <stdexcept>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -64,44 +65,54 @@ namespace combat
             void ParseSubPartsOutnumberRetreat(
                 const std::vector<std::string> &, OutnumberRetreatChanceMap_t &) const;
 
-            template <typename Form, typename EnumType>
+            template <typename BaseType, typename EnumType>
             void ParseEnumColonChance(
                 const std::string & FUNCTION_NAME,
                 const std::string & SUB_STR,
                 misc::VectorMap<EnumType, float> & OutParam_EnumChanceMap) const
             {
                 const std::vector<std::string> ENUM_CHANCE_STR_VEC { misc::SplitByChars(
-                    SUB_STR, misc::SplitHow(":")) };
+                    SUB_STR, misc::SplitHow(':')) };
 
                 if (ENUM_CHANCE_STR_VEC.size() != 2)
                 {
-                    throw std::runtime_error(
-                        "combat::strategy::CreatureStrategies::" + FUNCTION_NAME
-                        + "() Found invalid subparts string: \"" + SUB_STR + "\".");
+                    std::ostringstream ss;
+                    ss << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
+                       << "() Found invalid subparts string: \"" << SUB_STR << "\".";
+
+                    throw std::runtime_error(ss.str());
                 }
 
                 EnumType typeEnum;
                 try
                 {
-                    typeEnum = EnumUtil<Form>::FromString(ENUM_CHANCE_STR_VEC.at(0));
+                    typeEnum = EnumUtil<BaseType>::FromString(ENUM_CHANCE_STR_VEC.at(0));
                 }
                 catch (const std::exception & EX)
                 {
-                    throw std::runtime_error(
-                        "combat::strategy::CreatureStrategies::" + FUNCTION_NAME
-                        + "()  Threw exception calling T::FromString(\"" + ENUM_CHANCE_STR_VEC.at(0)
-                        + "\")  This is probably just a typo in the gamedatafile.  Exception: ["
-                        + EX.what() + "].");
+                    std::ostringstream exceptionSS;
+
+                    exceptionSS
+                        << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
+                        << "()  Threw exception calling T::FromString(\""
+                        << ENUM_CHANCE_STR_VEC.at(0)
+                        << "\")  This is probably just a typo in the gamedatafile.  Exception: ["
+                        << EX.what() << "].";
+
+                    throw std::runtime_error(exceptionSS.str());
                 }
 
                 const auto CHANCE { ParseChanceString(ENUM_CHANCE_STR_VEC.at(1)) };
                 if ((CHANCE < 0.0f) || (CHANCE > 1.0f))
                 {
-                    throw std::runtime_error(
-                        "combat::strategy::CreatureStrategies::" + FUNCTION_NAME
-                        + "()  Failed to parse \"" + ENUM_CHANCE_STR_VEC.at(1)
-                        + "\" into a valid 'enum:float'.  Resulting float (chance) was: "
-                        + std::to_string(CHANCE) + ".");
+                    std::ostringstream ss;
+
+                    ss << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
+                       << "()  Failed to parse \"" << ENUM_CHANCE_STR_VEC.at(1)
+                       << "\" into a valid 'enum:float'.  Resulting float (chance) was: " << CHANCE
+                       << ".";
+
+                    throw std::runtime_error(ss.str());
                 }
 
                 OutParam_EnumChanceMap[typeEnum] = CHANCE;

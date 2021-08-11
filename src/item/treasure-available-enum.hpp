@@ -11,12 +11,14 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace item
 {
 
-    struct TreasureAvailable : public EnumBaseCounting<>
+    struct TreasureAvailable : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -26,6 +28,8 @@ namespace item
             HeldAndLockbox,
             Count
         };
+
+        static const std::string ToString(const Enum);
     };
 
 } // namespace item

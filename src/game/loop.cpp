@@ -28,7 +28,7 @@ namespace heroespath
 namespace game
 {
 
-    Loop::Loop(ActiveStages & stages, IStatusForLoop & iStatus, const ExecuteCommand & FLAGS)
+    Loop::Loop(ActiveStages & stages, IStatusForLoop & iStatus, const ExecuteCommand FLAGS)
         : stages_(stages)
         , iStatus_(iStatus)
         , flags_(FLAGS)
@@ -42,7 +42,7 @@ namespace game
         , durationSec_(0.0f)
         , prevFadeColor_(sf::Color::Transparent)
         , fadeColorChangeCounter_(0)
-    //, componentFramerateTrials_("ComponentFramerate", TimeRes::Micro, true, 200, 0.0)
+        , componentFramerateTrials_("ComponentFramerate", TimeRes::Micro, true, 200, 0.0)
     //, componentFrameRateTrialsIndexAudio_(componentFramerateTrials_.AddCollecter("Audio"))
     //, componentFrameRateTrialsIndexUpdate_(componentFramerateTrials_.AddCollecter("Update"))
     //, componentFrameRateTrialsIndexDraw_(componentFramerateTrials_.AddCollecter("Draw"))
@@ -79,6 +79,9 @@ namespace game
 
                 gui::Display::Instance()->ClearToBlack();
 
+                // TODO TEMP REMOVE remove this crap once all testing is in unit tests
+                ExecuteNextTest();
+
                 frameMouseInfo_ = UpdateMouseInfo();
                 StopMouseHover(frameMouseInfo_.has_moved);
                 HandleMouseMove();
@@ -106,7 +109,7 @@ namespace game
             }
 
             framerateTrials.EndAllContests();
-            // componentFramerateTrials_.EndAllContests();
+            componentFramerateTrials_.EndAllContests();
         }
         catch (const std::exception & EXCEPTION)
         {
@@ -312,7 +315,6 @@ namespace game
         if (IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV && (IS_KEYPRESS == false)
             && (EVENT.key.code == sf::Keyboard::F1))
         {
-            M_HP_LOG_WRN("Shutting down because the testing early exit key was pressed: F1");
             iStatus_.GameExitRequest();
             iStatus_.LoopStopRequest();
             return;
@@ -467,6 +469,16 @@ namespace game
     {
         // M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexDisplay_);
         gui::Display::Instance()->DisplayFrameBuffer();
+    }
+
+    void Loop::ExecuteNextTest()
+    {
+        auto handlePerformNextTest = [](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->PerformNextTest();
+            return boost::none;
+        };
+
+        stages_.ExecuteOnNonPopupStages(handlePerformNextTest);
     }
 
     void Loop::UpdateTimeAudio(const float FRAME_TIME_SEC)

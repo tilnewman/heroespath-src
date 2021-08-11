@@ -42,10 +42,10 @@
 #include "popup/popup-stage-image-select.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -59,12 +59,12 @@ namespace stage
 
     CharacterStage::CharacterStage()
         : StageBase(
-              "CharacterCreation",
-              { gui::GuiFont::Default,
-                gui::GuiFont::System,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::Number,
-                gui::GuiFont::Handwriting })
+            "CharacterCreation",
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting })
         //, STAT_INVALID_(-1)
         //, STAT_INITIAL_MAX_(20)
         , LIGHT_TEXT_COLOR_(sfutil::color::Light)
@@ -683,7 +683,7 @@ namespace stage
         creature::NameInfo creatureNameInfo;
 
         gui::TextInfo nameEntryTextInfo(creatureNameInfo.MakeTextInfo());
-        nameEntryTextInfo.text.clear();
+        nameEntryTextInfo.text = "";
         nameEntryTextInfo.color = DESC_TEXT_COLOR_;
 
         const sf::FloatRect REGION(
@@ -843,10 +843,11 @@ namespace stage
 
         // Setup the strength attribute here because it is special.
         // See below where it is added by hand.
-        const auto STRENGTH_BASE_TEXT {
-            std::string(creature::Traits::Name(creature::Traits::Strength)) + " - "
-            + misc::ConfigFile::Instance()->Value("stats-stat-desc_Strength") + "\n\n"
-        };
+        std::ostringstream ss;
+        ss << creature::Traits::Name(creature::Traits::Strength) << " - "
+           << misc::ConfigFile::Instance()->Value("stats-stat-desc_Strength") << "\n\n";
+
+        const auto STRENGTH_BASE_TEXT { ss.str() };
 
         gui::TextInfo strHelpTextInfo(descTextInfo);
 
@@ -910,11 +911,15 @@ namespace stage
         gui::TextInfo & descTextInfo,
         gui::TextRegionUVec_t & textRegionUVec)
     {
-        descTextInfo.text = std::string(creature::Traits::Name(TRAIT_ENUM)) + " - "
-            + misc::ConfigFile::Instance()->Value(DESC_KEY) + "\n\n";
+        std::ostringstream ss;
+
+        ss << creature::Traits::Name(TRAIT_ENUM) << " - "
+           << misc::ConfigFile::Instance()->Value(DESC_KEY) << "\n\n";
+
+        descTextInfo.text = ss.str();
 
         textRegionUVec.emplace_back(std::make_unique<gui::TextRegion>(
-            NAMEOF_ENUM_STR(TRAIT_ENUM) + "StatDesc", descTextInfo, REGION));
+            creature::Traits::ToString(TRAIT_ENUM) + "StatDesc", descTextInfo, REGION));
 
         gui::TextInfo helpTextInfo(descTextInfo);
 
@@ -932,7 +937,7 @@ namespace stage
         if (helpTextInfo.text.empty() == false)
         {
             textRegionUVec.emplace_back(std::make_unique<gui::TextRegion>(
-                NAMEOF_ENUM_STR(TRAIT_ENUM) + "AttributeDesc", helpTextInfo, REGION));
+                creature::Traits::ToString(TRAIT_ENUM) + "AttributeDesc", helpTextInfo, REGION));
         }
     }
 
@@ -1319,7 +1324,7 @@ namespace stage
         const auto STAT_VALUE { fixedStatsSVec_[static_cast<std::size_t>(WHICH_STAT)]->Value() };
 
         std::ostringstream sss;
-        sss << "Your current " << NAMEOF_ENUM(WHICH_STAT) << " is only "
+        sss << "Your current " << creature::Traits::ToString(WHICH_STAT) << " is only "
             << STAT_VALUE << ".";
 
         const auto IS_ONLY_STR { sss.str() };
@@ -2458,7 +2463,7 @@ namespace stage
         gui::BoxEntityInfo boxInfo;
         boxInfo.SetupImage(woodCachedTexture_);
         boxInfo.SetupBorder(true);
-        boxInfo.focus_colors = gui::GuiFocusColors;
+        boxInfo.focus_colors = sfutil::color::GuiFocusColors;
         return boxInfo;
     }
 

@@ -15,8 +15,6 @@
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/platform.hpp"
-#include "misc/strings.hpp"
-#include "sfutil/vector-and-rect.hpp"
 
 namespace heroespath
 {
@@ -33,18 +31,13 @@ namespace misc
         , mediaBasePathKey_()
         , mediaBasePath_()
     {
-        if constexpr (platform_is_any_windows)
-        {
-            mediaBasePathKey_ = MEDIA_BASE_PATH_KEY_FOR_WINDOWS_;
-        }
-        else
-        {
-            mediaBasePathKey_ = MEDIA_BASE_PATH_KEY_FOR_NON_WINDOWS_;
-        }
+        M_HP_LOG_DBG("Subsystem Construction: ConfigFile");
 
-        M_HP_LOG_DBG(
-            "Subsystem Construction: ConfigFile (mediaBasePathKey_=\"" << mediaBasePathKey_
-                                                                       << "\"");
+#if defined(HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS)
+        mediaBasePathKey_ = MEDIA_BASE_PATH_KEY_FOR_WINDOWS_;
+#else
+        mediaBasePathKey_ = MEDIA_BASE_PATH_KEY_FOR_NON_WINDOWS_;
+#endif
     }
 
     misc::NotNull<ConfigFile *> misc::ConfigFile::Instance()
@@ -52,13 +45,13 @@ namespace misc
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: ConfigFile");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<ConfigFile *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void ConfigFile::Create()
+    void ConfigFile::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -66,11 +59,17 @@ namespace misc
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: ConfigFile");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: ConfigFile");
         }
     }
 
-    void ConfigFile::Destroy() { instanceUPtr_.reset(); }
+    void ConfigFile::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "ConfigFile::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     void ConfigFile::Initialize()
     {
@@ -128,32 +127,36 @@ namespace misc
     {
         const auto VALUE_STR { Value(KEY + "-texture-rect") };
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (!VALUE_STR.empty()), "(key=\"" << KEY << "\") was not found in the config file.");
+        if (VALUE_STR.empty())
+        {
+            return sf::IntRect();
+        }
 
         const auto NUMBER_STR_VEC { misc::SplitByChars(VALUE_STR) };
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (NUMBER_STR_VEC.size() == 4),
-            "(key=\"" << KEY << "\") was found in the config file but " << NUMBER_STR_VEC.size()
-                      << " numbers were found instead of 4.");
+        if (NUMBER_STR_VEC.size() != 4)
+        {
+            return sf::IntRect();
+        }
 
         sf::IntRect rect;
-        rect.left = misc::ToNumberOr(NUMBER_STR_VEC.at(0), -1);
-        rect.top = misc::ToNumberOr(NUMBER_STR_VEC.at(1), -1);
-        rect.width = misc::ToNumberOr(NUMBER_STR_VEC.at(2), -1);
-        rect.height = misc::ToNumberOr(NUMBER_STR_VEC.at(3), -1);
+        rect.left = misc::ToNumber(NUMBER_STR_VEC.at(0), -1);
+        rect.top = misc::ToNumber(NUMBER_STR_VEC.at(1), -1);
+        rect.width = misc::ToNumber(NUMBER_STR_VEC.at(2), -1);
+        rect.height = misc::ToNumber(NUMBER_STR_VEC.at(3), -1);
+
+        if ((rect.left < 0) || (rect.top < 0) || (rect.width < 0) || (rect.height < 0))
+        {
+            return sf::IntRect();
+        }
 
         const int NUMBER_TOO_LARGE { 10000 };
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            ((rect.left >= 0) && (rect.top >= 0) && (rect.width >= 0) && (rect.height >= 0)
-             && (rect.left < NUMBER_TOO_LARGE) && (rect.top < NUMBER_TOO_LARGE)
-             && (rect.width < NUMBER_TOO_LARGE) && (rect.height < NUMBER_TOO_LARGE)),
-            "(key=\"" << KEY
-                      << "\") was found in the config file, and four numbers were found, but some "
-                         "of them were not valid values.  They all must be [0,"
-                      << NUMBER_TOO_LARGE << "].  rect=" << rect);
+        if ((rect.left >= NUMBER_TOO_LARGE) || (rect.top >= NUMBER_TOO_LARGE)
+            || (rect.width >= NUMBER_TOO_LARGE) || (rect.height >= NUMBER_TOO_LARGE))
+        {
+            return sf::IntRect();
+        }
 
         return rect;
     }

@@ -15,12 +15,12 @@
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
-#include "misc/enum-util.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/strings.hpp"
 
 #include <algorithm>
+#include <sstream>
 
 namespace heroespath
 {
@@ -49,20 +49,29 @@ namespace spell
         , verbPastTense_(VERB_PAST_TENSE)
     {}
 
-    const std::string Spell::ToString() const { return Name() + "  -" + DescDetails(); }
+    const std::string Spell::ToString() const
+    {
+        std::ostringstream ss;
+        ss << Name() << "  -" << DescDetails();
+        return ss.str();
+    }
 
     const std::string Spell::DescDetails() const
     {
-        return std::string("A ") + misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>())
-            + " rank" + " " + EnumUtil<combat::EffectType>::NameStd(effectType_)
-            + " spell that can be cast during " + EnumUtil<game::Phase>::ToString(validPhases_)
-            + ", targeting " + EnumUtil<combat::TargetType>::NameStd(targetType_) + ", and costing "
-            + manaCost_.ToString() + " mana.";
+        std::ostringstream ss;
+        ss << "A " << misc::NumberToStringWithOrdinalSuffix(rank_.As<int>()) << " rank"
+           << " " << combat::EffectType::Name(effectType_) << " spell"
+           << " that can be cast during " << game::Phase::ToString(validPhases_) << ", targeting "
+           << combat::TargetType::Name(targetType_) << ", and costing " << manaCost_ << " mana.";
+
+        return ss.str();
     }
 
     const std::string Spell::DescComplete() const
     {
-        return Desc() + "  " + DescExtra() + " " + DescDetails();
+        std::ostringstream ss;
+        ss << Desc() << "  " << DescExtra() << " " << DescDetails();
+        return ss.str();
     }
 
     const combat::ContentAndNamePos
@@ -147,9 +156,7 @@ namespace spell
                 return combat::ContentAndNamePos(
                     "",
                     "'s magic forces ",
-                    " to "
-                        + std::string(
-                            creature::sex::HisHerIts(CREATURE_CAST_UPON_PTR->Sex(), false, false))
+                    " to " + creature::sex::HisHerIts(CREATURE_CAST_UPON_PTR->Sex(), false, false)
                         + " feet.",
                     combat::NamePosition::SourceThenTarget);
             }
@@ -208,7 +215,7 @@ namespace spell
         {
             case Spells::Sparks:
             {
-                const auto DAMAGE_ABS_ORIG { Health_t::Make(creature::Stats::RandomRatio(
+                const auto DAMAGE_ABS_ORIG { Health_t(creature::Stats::RandomRatio(
                     CREATURE_CASTING_PTR,
                     creature::Traits::Intelligence,
                     8,
@@ -222,14 +229,14 @@ namespace spell
                 const auto DAMAGE_ABS_FINAL { (
                     (DAMAGE_ABS_ORIG > DAMAGE_ABS_MAX) ? DAMAGE_ABS_MAX : DAMAGE_ABS_ORIG) };
 
-                healthAdj = -DAMAGE_ABS_FINAL;
+                healthAdj = Health_t(-1) * DAMAGE_ABS_FINAL;
 
                 actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                 return true;
             }
             case Spells::Bandage:
             {
-                const auto HEALTH_GAIN_ORIG { Health_t::Make(creature::Stats::RandomRatio(
+                const auto HEALTH_GAIN_ORIG { Health_t(creature::Stats::RandomRatio(
                     CREATURE_CASTING_PTR,
                     creature::Traits::Charm,
                     8,

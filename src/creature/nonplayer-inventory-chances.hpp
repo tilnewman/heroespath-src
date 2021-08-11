@@ -10,14 +10,12 @@
 // nonplayer-inventory-chances.hpp
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
-/*
-#include "creature/complexity-type.hpp"
 #include "creature/creature.hpp"
 #include "creature/nonplayer-inventory-types.hpp"
-#include "game/strong-types.hpp"
-#include "item/armor-template.hpp"
-#include "item/weapon-template.hpp"
+#include "item/armor-type-wrapper.hpp"
+#include "item/weapon-type-wrapper.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 
 #include <cstddef> //for std::size_t
@@ -75,7 +73,7 @@ namespace creature
                 }
 
                 std::size_t count;
-                misc::VectorMap<item::WeaponTemplate, float> chanceMap;
+                misc::VectorMap<item::weapon::WeaponTypeWrapper, float> chanceMap;
             };
 
             using WeaponSetVec_t = std::vector<WeaponSet>;
@@ -84,13 +82,13 @@ namespace creature
             struct RoleArmorChance
             {
                 explicit RoleArmorChance(
-                    const item::ArmorTemplate & ARMOR_TEMPLATE,
+                    const item::armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER,
                     const float CHANCE = 0.0f)
-                    : type_wrapper(ARMOR_TEMPLATE)
+                    : type_wrapper(ARMOR_TYPE_WRAPPER)
                     , chance(CHANCE)
                 {}
 
-                item::ArmorTemplate type_wrapper;
+                item::armor::ArmorTypeWrapper type_wrapper;
                 float chance;
             };
 
@@ -106,8 +104,8 @@ namespace creature
             ~ChanceFactory();
 
             static misc::NotNull<ChanceFactory *> Instance();
-            static void Create();
-            static void Destroy();
+            static void Acquire();
+            static void Release();
             void Initialize();
 
             const InventoryChances Make(const CreaturePtr_t CHARACTER_PTR) const;
@@ -192,34 +190,28 @@ namespace creature
                 MaterialChanceMap_t & materialsMapPri,
                 MaterialChanceMap_t & materialsMapSec,
                 const Weight_t & WEIGHT,
-                const item::Material::Enum FORCED_MAT_PRI = item::Material::Count) const;
+                const item::material::Enum FORCED_PRIMARY_MATERIAL = item::material::Nothing) const;
 
             template <typename T>
             bool SetWeaponChances(
                 const std::string & WEAPON_NAME,
                 const T WEAPON_ENUM,
-                const float ,//CHANCE_BASE,
+                const float /*CHANCE_BASE*/,
                 const Profile & PROFILE,
                 const CreaturePtr_t CHARACTER_PTR,
                 const MaterialChanceMap_t & MATERIALS_TYPICAL,
                 misc::VectorMap<T, ItemChances> & weaponChanceMap) const
             {
-                //if (IsWeaponPossibleConsideringComplexity(WEAPON_NAME, PROFILE.complexityType)
-                //    == false)
-                //{
-                //    // TODO how to handle in a way that works without leaving
-                //    // chances without materials?!
-                //    // weaponChanceMap[WEAPON_ENUM].SetCountChanceSingleNoChance();
-                //    // return false;
-                //}
-                
-
-
-
-
-
-
-
+                /*
+                if (IsWeaponPossibleConsideringComplexity(WEAPON_NAME, PROFILE.complexityType)
+                    == false)
+                {
+                    // TODO how to handle in a way that works without leaving
+                    // chances without materials?!
+                    // weaponChanceMap[WEAPON_ENUM].SetCountChanceSingleNoChance();
+                    // return false;
+                }
+                */
 
                 const auto WEAPON_NUM_FLOAT { static_cast<float>(WEAPON_ENUM) };
                 const auto WEAPON_COUNT_FLOAT { static_cast<float>(T::Count) };
@@ -235,8 +227,10 @@ namespace creature
                 const auto ENUM_RATIO_INVERSE { (WEAPON_COUNT_FLOAT + 1.0f)
                                                 / (WEAPON_NUM_FLOAT + 1.0f) };
 
-                const auto RANK_F { CHARACTER_PTR->Rank().GetAs<float>() };
+                const auto RANK_F { CHARACTER_PTR->Rank().As<float>() };
+
                 const auto RANK_GRANDMASTER_F { masterRankMax_ + 1.0f };
+
                 const auto RANK_RATIO { RANK_F / RANK_GRANDMASTER_F };
 
                 chance
@@ -269,7 +263,7 @@ namespace creature
                 const Profile & PROFILE,
                 const CreaturePtr_t CHARACTER_PTR,
                 const bool WILL_MATERIALS_INCLUDED_WOOD,
-                const item::Material::Enum FORCED_MAT_PRI = item::Material::Count) const;
+                const item::material::Enum FORCED_PRIMARY_MATERIAL = item::material::Nothing) const;
 
             void RestrictMaterialsByComplexity(
                 const complexity_type::Enum COMPLEXITY,
@@ -351,5 +345,5 @@ namespace creature
     } // namespace nonplayer
 } // namespace creature
 } // namespace heroespath
-*/
+
 #endif // HEROESPATH_CREATURE_NONPLAYER_INVENTORY_CHANCES_INCLUDED

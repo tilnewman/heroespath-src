@@ -29,12 +29,12 @@ namespace stage
 
     InnStage::InnStage()
         : StageBase(
-              "Inn",
-              { gui::GuiFont::Default,
-                gui::GuiFont::System,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::Number,
-                gui::GuiFont::Handwriting })
+            "Inn",
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting })
         , stageTitle_()
         , backgroundBox_(
               "InnStage'sBackground",
@@ -42,7 +42,7 @@ namespace stage
               gui::BoxEntityInfo(gui::CachedTexture(
                   "media-image-background-tile-darkknot",
                   gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
-        , candleCachedTexture_("media-image-misc-candle")
+        , candleCachedTexture_("media-image-candle")
         , candleSprite_(candleCachedTexture_.Get())
         , candleAnimUPtr_()
         , ouroborosUPtr_()

@@ -89,7 +89,7 @@ namespace popup
         const std::string Name() const { return name_; }
         PopupButtons::Enum Buttons() const { return buttons_; }
         PopupImage::Enum Image() const { return image_; }
-        const gui::TextInfo GetTextInfo() const { return textInfo_; }
+        const gui::TextInfo TextInfo() const { return textInfo_; }
         gui::sound_effect::Enum SoundEffect() const { return soundEffect_; }
         float SizeX() const { return ratioX_; }
         float SizeY() const { return ratioY_; }
@@ -117,7 +117,7 @@ namespace popup
         static std::size_t ContentNum_Item() { return 0; }
         static std::size_t ContentNum_Coins() { return 1; }
         static std::size_t ContentNum_Gems() { return 2; }
-        static std::size_t ContentNum_Shards() { return 3; }
+        static std::size_t ContentNum_MeteorShards() { return 3; }
 
         bool IsNumberValid(const std::size_t) const;
 

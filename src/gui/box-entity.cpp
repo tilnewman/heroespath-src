@@ -86,7 +86,7 @@ namespace gui
 
     void BoxEntity::SetEntityRegion(const sf::FloatRect & REGION_ORIG)
     {
-        if (sfutil::IsZeroOrLessAny(sfutil::Size(REGION_ORIG)))
+        if (sfutil::IsSizeZeroOrLessEither(REGION_ORIG))
         {
             border_.WillDraw(false);
             coloredRect_.WillDraw(false);

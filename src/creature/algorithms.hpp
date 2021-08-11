@@ -10,7 +10,8 @@
 // algorithms.hpp
 //
 #include "creature/creature.hpp"
-#include "misc/strings.hpp"
+
+#include "misc/vectors.hpp"
 
 #include <string>
 #include <vector>
@@ -64,8 +65,9 @@ namespace creature
 
         static const std::string Names(
             const CreaturePVec_t &,
-            const misc::JoinHow & JOIN_HOW = misc::JoinHow(),
-            const NamesOpt NAME_OPTION = NamesOpt::NameOnly);
+            const std::size_t MAX_COUNT = 0,
+            const misc::Vector::JoinOpt JOIN_OPTIONS = misc::Vector::JoinOpt::None,
+            const NamesOpt OPTIONS = NamesOpt::NameOnly);
 
         enum class CriteriaOpt
         {

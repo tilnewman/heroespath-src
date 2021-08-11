@@ -20,7 +20,7 @@
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -371,7 +371,7 @@ namespace popup
     {
         textRegionUPtr_ = std::make_unique<gui::TextRegion>(
             GetStageName() + "'s",
-            popupInfo_.GetTextInfo(),
+            popupInfo_.TextInfo(),
             contentRegion_,
             gui::BoxEntityInfo(),
             stage::IStagePtr_t(this));

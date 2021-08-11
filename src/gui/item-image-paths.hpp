@@ -9,14 +9,35 @@
 //
 // item-image-paths.hpp
 //
+#include "item/item-type-enum.hpp"
+#include "misc/not-null.hpp"
+
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace heroespath
 {
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace item
 {
-    class ItemProfile;
+    class Item;
+
+    namespace armor
+    {
+        class ArmorTypeWrapper;
+    }
+
+    namespace weapon
+    {
+        class WeaponTypeWrapper;
+    }
+
 } // namespace item
 
 namespace gui
@@ -29,24 +50,34 @@ namespace gui
 
         static void SetupFilesystemPaths();
 
-        static const std::string
-            Filename(const item::ItemProfile & PROFILE, const bool WILL_RANDOMIZE);
-
-        static const std::vector<std::string> Filenames(const item::ItemProfile & PROFILE);
+        static bool Test(stage::IStagePtr_t iStagePtr);
 
         static const std::string PathFromFilename(const std::string & FILE_NAME);
 
+        static const std::string Filename(const item::Item & ITEM, const bool WILL_RANDOMIZE);
+
     private:
-        static const std::vector<std::string> MiscFilenames(const item::ItemProfile & PROFILE);
+        static const std::vector<std::string> Filenames(
+            const item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool IS_BONE);
 
-        static const std::string WeaponFilename(const item::ItemProfile & PROFILE);
-        static const std::string ArmorFilename(const item::ItemProfile & PROFILE);
-        static const std::string SkinArmorFilename(const item::ItemProfile & PROFILE);
+        static const std::string Filename(
+            const item::misc_type::Enum ITEM_ENUM,
+            const bool IS_JEWELED,
+            const bool IS_BONE,
+            const bool WILL_RANDOMIZE);
 
-        static const std::vector<std::string> MakeNumberedFilenames(
-            const std::string_view PREFIX, const int LAST_NUMBER, const int FIRST_NUMBER = 1);
+        static const std::string GetSkinImageFilename(const item::material::Enum);
 
-        static std::string itemImageDir_;
+        static const std::string
+            Filename(const item::weapon::WeaponTypeWrapper & WEAPON_INFO, const bool IS_JEWELED);
+
+        static const std::string Filename(const item::armor::ArmorTypeWrapper & ARMOR_INFO);
+
+        static const std::vector<std::string> MakeFilenames(
+            const std::string & PREFIX, const int LAST_NUMBER, const int FIRST_NUMBER = 1);
+
+        static const std::string SEPARATOR_;
+        static std::string imageDirectoryPath_;
     };
 
 } // namespace gui

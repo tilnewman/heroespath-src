@@ -20,7 +20,7 @@
 #include "sfutil/display.hpp"
 #include "sfutil/distance.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -218,12 +218,12 @@ namespace map
             const auto SHADOW_SIZE_V { sfutil::Size(npcShadowSprite_) };
 
             const sf::Vector2f COMBINED_SIZE_V(
-                misc::Max(SHADOW_SIZE_V.x, AVATAR_SIZE_V.x),
-                misc::Max(SHADOW_SIZE_V.y, AVATAR_SIZE_V.y));
+                std::max(SHADOW_SIZE_V.x, AVATAR_SIZE_V.x),
+                std::max(SHADOW_SIZE_V.y, AVATAR_SIZE_V.y));
 
             const sf::FloatRect COMBINED_OFFSCREEN_RECT(AVATAR_OFFSCREEN_POS_V, COMBINED_SIZE_V);
 
-            if (sfutil::Intersects(MAP_DISPLAY.OffScreenTextureRect(), COMBINED_OFFSCREEN_RECT))
+            if (MAP_DISPLAY.OffScreenTextureRect().intersects(COMBINED_OFFSCREEN_RECT))
             {
                 drawPairs.emplace_back(std::make_pair(
                     index, MAP_DISPLAY.SpriteRectToVertexVec(COMBINED_OFFSCREEN_RECT)));
@@ -333,7 +333,7 @@ namespace map
             const auto MAP_RECT_ORIG_V { animUPtrVec_.at(index)->GetEntityRegion() };
             const auto OFFSCREEN_RECT { MAP_DISPLAY.OffScreenRectFromMapRect(MAP_RECT_ORIG_V) };
 
-            if (sfutil::Intersects(MAP_DISPLAY.OffScreenTextureRect(), OFFSCREEN_RECT))
+            if (MAP_DISPLAY.OffScreenTextureRect().intersects(OFFSCREEN_RECT))
             {
                 drawPairs.emplace_back(
                     std::make_pair(index, MAP_DISPLAY.SpriteRectToVertexVec(OFFSCREEN_RECT)));

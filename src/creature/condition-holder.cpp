@@ -23,7 +23,6 @@ namespace creature
     {
 
         ConditionUVec_t Holder::conditionsUVec_;
-        Trait_t Holder::SMALLEST_TRAIT_POSSIBLE_ = std::numeric_limits<Trait_t>::lowest();
 
         void Holder::Fill()
         {
@@ -88,9 +87,9 @@ namespace creature
             conditionsUVec_.emplace_back(std::make_unique<Condition>(
                 Conditions::AsleepNatural,
                 false,
-                TraitSet({ std::make_pair(Traits::Strength, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Accuracy, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Speed, SMALLEST_TRAIT_POSSIBLE_) })));
+                TraitSet({ std::make_pair(Traits::Strength, -9999),
+                           std::make_pair(Traits::Accuracy, -9999),
+                           std::make_pair(Traits::Speed, -9999) })));
 
             conditionsUVec_.emplace_back(std::make_unique<Condition>(
                 Conditions::Poisoned,
@@ -109,48 +108,102 @@ namespace creature
             conditionsUVec_.emplace_back(std::make_unique<Condition>(
                 Conditions::AsleepMagical,
                 true,
-                TraitSet({ std::make_pair(Traits::Strength, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Accuracy, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Speed, SMALLEST_TRAIT_POSSIBLE_) })));
+                TraitSet({ std::make_pair(Traits::Strength, -9999),
+                           std::make_pair(Traits::Accuracy, -9999),
+                           std::make_pair(Traits::Speed, -9999) })));
 
             conditionsUVec_.emplace_back(std::make_unique<Condition>(
                 Conditions::Unconscious,
                 false,
                 TraitSet({
-                    std::make_pair(Traits::Strength, SMALLEST_TRAIT_POSSIBLE_),
-                    std::make_pair(Traits::Accuracy, SMALLEST_TRAIT_POSSIBLE_),
-                    std::make_pair(Traits::Charm, SMALLEST_TRAIT_POSSIBLE_),
-                    std::make_pair(Traits::Speed, SMALLEST_TRAIT_POSSIBLE_),
-                    std::make_pair(Traits::Intelligence, SMALLEST_TRAIT_POSSIBLE_),
+                    std::make_pair(Traits::Strength, -9999),
+                    std::make_pair(Traits::Accuracy, -9999),
+                    std::make_pair(Traits::Charm, -9999),
+                    std::make_pair(Traits::Speed, -9999),
+                    std::make_pair(Traits::Intelligence, -9999),
                 })));
 
             conditionsUVec_.emplace_back(std::make_unique<Condition>(
                 Conditions::Stone,
                 true,
-                TraitSet({ std::make_pair(Traits::Strength, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Accuracy, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Charm, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Speed, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Intelligence, SMALLEST_TRAIT_POSSIBLE_) })));
+                TraitSet({ std::make_pair(Traits::Strength, -9999),
+                           std::make_pair(Traits::Accuracy, -9999),
+                           std::make_pair(Traits::Charm, -9999),
+                           std::make_pair(Traits::Speed, -9999),
+                           std::make_pair(Traits::Intelligence, -9999) })));
 
             conditionsUVec_.emplace_back(std::make_unique<Condition>(
                 Conditions::Dead,
                 false,
-                TraitSet({ std::make_pair(Traits::Strength, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Accuracy, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Charm, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Luck, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Speed, SMALLEST_TRAIT_POSSIBLE_),
-                           std::make_pair(Traits::Intelligence, SMALLEST_TRAIT_POSSIBLE_) })));
+                TraitSet({ std::make_pair(Traits::Strength, -9999),
+                           std::make_pair(Traits::Accuracy, -9999),
+                           std::make_pair(Traits::Charm, -9999),
+                           std::make_pair(Traits::Luck, -9999),
+                           std::make_pair(Traits::Speed, -9999),
+                           std::make_pair(Traits::Intelligence, -9999) })));
         }
 
         void Holder::Empty() { conditionsUVec_.clear(); }
+
+        bool Holder::Test(stage::IStagePtr_t iStagePtr)
+        {
+            static auto hasInitialPrompt { false };
+            if (false == hasInitialPrompt)
+            {
+                hasInitialPrompt = true;
+                iStagePtr->TestingStrAppend(
+                    "creature::condition::Holder::Test() Starting Tests...");
+            }
+
+            static EnumUnderlying_t condIndex { 0 };
+            if (condIndex < creature::Conditions::Count)
+            {
+                const auto NEXT_ENUM { static_cast<creature::Conditions::Enum>(condIndex) };
+                const auto CONDITION_PTR { Get(NEXT_ENUM) };
+
+                M_HP_ASSERT_OR_LOG_AND_THROW(
+                    (CONDITION_PTR->Desc().empty() == false),
+                    "creature::condition::Holder::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                                                           << "\") resulted in an empty Desc().");
+
+                M_HP_ASSERT_OR_LOG_AND_THROW(
+                    (CONDITION_PTR->LongDesc().empty() == false),
+                    "creature::condition::Holder::Test(\"" << Conditions::ToString(
+                        NEXT_ENUM) << "\") resulted in an empty LongDesc().");
+
+                M_HP_ASSERT_OR_LOG_AND_THROW(
+                    (CONDITION_PTR->ToString().empty() == false),
+                    "creature::condition::Holder::Test(\"" << Conditions::ToString(
+                        NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
+
+                M_HP_ASSERT_OR_LOG_AND_THROW(
+                    (CONDITION_PTR->Name().empty() == false),
+                    "creature::condition::Holder::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                                                           << "\") resulted in an empty Name().");
+
+                M_HP_ASSERT_OR_LOG_AND_THROW(
+                    (CONDITION_PTR->Name() == Conditions::Name(NEXT_ENUM)),
+                    "creature::condition::Holder::Test(ptr=\""
+                        << CONDITION_PTR->Name() << "\", enum=\"" << Conditions::ToString(NEXT_ENUM)
+                        << "\") Condition is out of order.");
+
+                ++condIndex;
+
+                iStagePtr->TestingStrIncrement("Condition Test \"" + CONDITION_PTR->Name() + "\"");
+
+                return false;
+            }
+
+            iStagePtr->TestingStrAppend("creature::title::Holder::Test()  ALL TESTS PASSED.");
+
+            return true;
+        }
 
         const ConditionPtr_t Holder::Get(const Conditions::Enum ENUM)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (conditionsUVec_.empty() == false),
-                "creature::condition::Holder::Get(" << NAMEOF_ENUM(ENUM)
+                "creature::condition::Holder::Get(" << Conditions::ToString(ENUM)
                                                     << ") was called when Holder was empty.");
 
             const auto INDEX { static_cast<std::size_t>(ENUM) };
@@ -158,7 +211,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < conditionsUVec_.size()),
                 "creature::condition::Holder::Get("
-                    << NAMEOF_ENUM(ENUM)
+                    << Conditions::ToString(ENUM)
                     << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
 
             return ConditionPtr_t(conditionsUVec_[INDEX].get());

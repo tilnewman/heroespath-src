@@ -10,7 +10,6 @@
 // menu-image-enum.hpp
 //
 #include "misc/enum-common.hpp"
-#include "misc/strings.hpp"
 
 #include <SFML/Config.hpp>
 
@@ -21,7 +20,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct MenuImage : public EnumBaseCounting<>
+    struct MenuImage : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -46,57 +45,10 @@ namespace gui
             Count
         };
 
-        static constexpr bool IsTitleOnly(const Enum ENUM) noexcept
-        {
-            switch (ENUM)
-            {
-                case Back:
-                case New:
-                case StartGame:
-                case Delete:
-                case Save:
-                case Help:
-                case Next:
-                case Exit:
-                case Credits:
-                case Settings:
-                case Resume:
-                case CreateParty: return false;
-
-                case CreateCharacters:
-                case Inventory:
-                case Treasure:
-                case Title:
-                case SymbolTop:
-                case SymbolBottom:
-                case Count:
-                default: return true;
-            }
-        }
-
-        static inline const std::string ConfigFileKey(const Enum ENUM, const bool IS_LIT = false)
-        {
-            std::string name;
-            name.reserve(64);
-            name += "media-image-misc-menu-";
-            name += misc::ToLowerCopy(NAMEOF_ENUM(ENUM));
-
-            if (!IsTitleOnly(ENUM))
-            {
-                if (IS_LIT)
-                {
-                    name += "-lit";
-                }
-                else
-                {
-                    name += "-normal";
-                }
-            }
-
-            return name;
-        }
-
-        static constexpr sf::Uint8 SymbolAlpha() noexcept { return 24; }
+        static const std::string ToString(const Enum);
+        static bool IsTitleOnly(const Enum);
+        static const std::string ConfigFileKey(const Enum, const bool IS_LIT = false);
+        static sf::Uint8 SymbolAlpha() { return 24; }
     };
 
 } // namespace gui

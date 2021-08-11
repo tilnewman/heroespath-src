@@ -15,8 +15,6 @@
 #include "combat/combat-display.hpp"
 #include "combat/combat-node.hpp"
 #include "combat/combat-over-enum.hpp"
-#include "combat/combat-sound-effects.hpp"
-#include "combat/creature-interaction.hpp"
 #include "combat/encounter.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "creature/algorithms.hpp"
@@ -62,8 +60,8 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -177,6 +175,7 @@ namespace stage
         , zoomSliderBarUPtr_()
         , turnBoxUPtr_()
         , turnBoxRegion_()
+        , combatSoundEffects_()
         , soundEffectsPlayedVec_()
         , turnPhase_(TurnPhase::NotATurn)
         , preTurnPhase_(PreTurnPhase::Start)
@@ -257,6 +256,7 @@ namespace stage
         , isSongAnim1Done_(false)
         , isSongAnim2Done_(false)
         , creatureTitlesVec_()
+        , creatureInteraction_()
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -879,8 +879,8 @@ namespace stage
 
         const auto ZOOM_SLIDERBAR_POS_LEFT { COMMAND_REGION_.left + COMMAND_REGION_PAD_ };
 
-        const auto ZOOM_SLIDERBAR_POS_TOP { sfutil::Bottom(
-            zoomLabelTextRegionUPtr_->GetEntityRegion()) };
+        const auto ZOOM_SLIDERBAR_POS_TOP { zoomLabelTextRegionUPtr_->GetEntityRegion().top
+                                            + zoomLabelTextRegionUPtr_->GetEntityRegion().height };
 
         const auto ZOOM_SLIDERBAR_LENGTH { (settingsButtonUPtr_->GetEntityPos().x
                                             - COMMAND_REGION_.left)
@@ -1826,7 +1826,7 @@ namespace stage
                 // This the first of two places where non-player death sfx is played,
                 // so it can coincide with the non-player death animation start.
                 // Player death sfx is played in HandleApplyDamageTasks().
-                combat::CombatSoundEffects::PlayDeath(CREATURE_PTR);
+                combatSoundEffects_.PlayDeath(CREATURE_PTR);
 
                 return;
             }
@@ -2014,7 +2014,7 @@ namespace stage
                 // Player death sfx is played in HandleApplyDamageTasks().
                 for (const auto & NEXT_CREATURE_PTR : killedNonPlayerCreaturesPVec)
                 {
-                    combat::CombatSoundEffects::PlayDeath(NEXT_CREATURE_PTR);
+                    combatSoundEffects_.PlayDeath(NEXT_CREATURE_PTR);
                 }
             }
             return;
@@ -2101,8 +2101,7 @@ namespace stage
                         << ") turn_action_info.Action()==SkyPounce||LandPounce but "
                            "turn_action_info.Targets() was empty.");
 
-                fightResult_
-                    = combat::CreatureInteraction::Fight(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
+                fightResult_ = creatureInteraction_.Fight(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
 
                 SetupTurnBox();
                 return GetTurnActionPhaseFromFightResult(fightResult_);
@@ -2141,7 +2140,7 @@ namespace stage
                 creature::CreaturePVec_t targetedCreaturesPVec { turnActionInfo_.Targets() };
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
-                fightResult_ = combat::CreatureInteraction::Cast(
+                fightResult_ = creatureInteraction_.Cast(
                     turnActionInfo_.Spell().value(), TURN_CREATURE_PTR, targetedCreaturesPVec);
 
                 SetupTurnBox();
@@ -2159,7 +2158,7 @@ namespace stage
                 creature::CreaturePVec_t targetedCreaturesPVec { turnActionInfo_.Targets() };
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
-                fightResult_ = combat::CreatureInteraction::PlaySong(
+                fightResult_ = creatureInteraction_.PlaySong(
                     turnActionInfo_.Song().value(), TURN_CREATURE_PTR, targetedCreaturesPVec);
 
                 SetupTurnBox();
@@ -2185,8 +2184,7 @@ namespace stage
                         << ") turn_action_info.Action()==SkyPounce||LandPounce but "
                            "turn_action_info.Targets() was empty.");
 
-                fightResult_
-                    = combat::CreatureInteraction::Pounce(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
+                fightResult_ = creatureInteraction_.Pounce(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
 
                 SetupTurnBox();
 
@@ -2202,8 +2200,7 @@ namespace stage
 
             case combat::TurnAction::Roar:
             {
-                fightResult_
-                    = combat::CreatureInteraction::Roar(TURN_CREATURE_PTR, combatDisplayStagePtr_);
+                fightResult_ = creatureInteraction_.Roar(TURN_CREATURE_PTR, combatDisplayStagePtr_);
                 SetupTurnBox();
 
                 AppendStatusMessage(
@@ -2285,7 +2282,7 @@ namespace stage
         }
         else
         {
-            conditionEffectsTookTurn_ = combat::CreatureInteraction::ProcessConditionEffects(
+            conditionEffectsTookTurn_ = creatureInteraction_.ProcessConditionEffects(
                 game::Phase::Combat, TURN_CREATURE_PTR, conditionEffectsVec_);
         }
 
@@ -2416,7 +2413,7 @@ namespace stage
         }
         else
         {
-            HandleAttackTasks(combat::CreatureInteraction::FindNonPlayerCreatureToAttack(
+            HandleAttackTasks(creatureInteraction_.FindNonPlayerCreatureToAttack(
                 turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
 
             return "";
@@ -2497,7 +2494,8 @@ namespace stage
             std::ostringstream ssErr;
             ssErr << "stage::CombatStage::HandleSong_Step2_SelectTargetOrPerformOnAll("
                   << "song=" << songBeingPlayedPtrOpt_.value()->Name() << ") had a target_type of "
-                  << NAMEOF_ENUM(SONG_TARGET) << " which is not yet supported in combat stage.";
+                  << combat::TargetType::ToString(SONG_TARGET)
+                  << " which is not yet supported in combat stage.";
 
             SystemErrorPopup("Playing this type of song is not yet supported.", ssErr.str());
 
@@ -2521,7 +2519,7 @@ namespace stage
 
             combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
-            fightResult_ = combat::CreatureInteraction::PlaySong(
+            fightResult_ = creatureInteraction_.PlaySong(
                 songBeingPlayedPtrOpt_.value(), TURN_CREATURE_PTR, creaturesListeningPVec);
 
             SetTurnActionPhase(TurnActionPhase::PlaySong);
@@ -2594,7 +2592,8 @@ namespace stage
             std::ostringstream ssErr;
             ssErr << "stage::CombatStage::HandleCast Step2 SelectTargetOrPerformOnAll("
                   << "spell=" << spellBeingCastPtrOpt_.value()->Name() << ") had a target_type of "
-                  << NAMEOF_ENUM(SPELL_TARGET) << " which is not yet supported in combat stage.";
+                  << combat::TargetType::ToString(SPELL_TARGET)
+                  << " which is not yet supported in combat stage.";
 
             SystemErrorPopup("Casting this type of spell is not yet supported.", ssErr.str());
 
@@ -2619,7 +2618,7 @@ namespace stage
 
         combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
-        fightResult_ = combat::CreatureInteraction::Cast(
+        fightResult_ = creatureInteraction_.Cast(
             spellBeingCastPtrOpt_.value(), TURN_CREATURE_PTR, creaturesToCastUponCopyPVec);
 
         SetTurnActionPhase(TurnActionPhase::Cast);
@@ -3199,38 +3198,34 @@ namespace stage
     void CombatStage::SetupTurnBox()
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
-
-        // any short all-whitespace non-empty string will work here
-        const auto SINGLE_SPACE_STR { " " };
-
+        const auto EMPTY_STR { " " }; // any short all-whitespace non-empty string will work here
         const auto CAN_TAKE_ACTION_STR { TURN_CREATURE_PTR->CanTakeActionStr() };
         const auto CURR_WEAPONS_STR { TURN_CREATURE_PTR->WeaponsString() };
 
-        std::string weaponsStr;
+        std::ostringstream weaponsSS;
         if (CURR_WEAPONS_STR.empty())
         {
-            weaponsStr += "(holding no weapons, can't attack)";
+            weaponsSS << "(holding no weapons, can't attack)";
         }
         else
         {
-            weaponsStr += "Weapon";
-
+            weaponsSS << "Weapon";
             if (boost::algorithm::contains(CURR_WEAPONS_STR, ","))
             {
-                weaponsStr += 's';
+                weaponsSS << "s";
             }
 
-            weaponsStr += ":  " + CURR_WEAPONS_STR;
+            weaponsSS << ":  " << CURR_WEAPONS_STR;
         }
 
-        const std::string HOLDING_WEAPON_STR(weaponsStr);
+        const std::string HOLDING_WEAPON_STR(weaponsSS.str());
 
-        std::string titleStr;
-        std::string weaponHoldingStr;
-        std::string armorStr;
-        std::string infoStr;
-        std::string preambleStr;
-        std::string enemyCondsStr;
+        std::ostringstream titleSS;
+        std::ostringstream weaponHoldingSS;
+        std::ostringstream armorSS;
+        std::ostringstream infoSS;
+        std::ostringstream preambleSS;
+        std::ostringstream enemyCondsSS;
 
         auto isPreambleShowing { false };
 
@@ -3238,104 +3233,100 @@ namespace stage
         {
             willRedColorShakeWeaponText_ = false;
 
-            titleStr += TURN_CREATURE_PTR->Name() + "'s Turn";
+            titleSS << TURN_CREATURE_PTR->Name() << "'s Turn";
 
-            weaponHoldingStr += HOLDING_WEAPON_STR;
+            weaponHoldingSS << HOLDING_WEAPON_STR;
 
-            infoStr = std::string(" Str:   ")
-                + std::to_string(TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Strength)) + " "
-                + TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Strength, true)
-                + "\n Acc:  "
-                + std::to_string(TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Accuracy)) + " "
-                + TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Accuracy, true)
-                + "\n Cha:  "
-                + std::to_string(TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Charm)) + " "
-                + TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Charm, true)
-                + "\n Lck:  "
-                + std::to_string(TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Luck)) + " "
-                + TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Luck, true) + "\n Spd:  "
-                + std::to_string(TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Speed)) + " "
-                + TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Speed, true)
-                + "\n Int:    "
-                + std::to_string(TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Intelligence))
-                + " " + TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Intelligence, true)
-                + "\nHealth:  " + TURN_CREATURE_PTR->HealthCurrent().ToString() + "/"
-                + TURN_CREATURE_PTR->HealthNormal().ToString() + "\nCondition";
+            infoSS << " Str:   " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Strength)
+                   << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Strength, true)
+                   << "\n Acc:  " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Accuracy)
+                   << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Accuracy, true)
+                   << "\n Cha:  " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Charm) << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Charm, true)
+                   << "\n Lck:  " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Luck) << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Luck, true)
+                   << "\n Spd:  " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Speed) << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Speed, true)
+                   << "\n Int:    "
+                   << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Intelligence) << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Intelligence, true)
+                   << "\nHealth:  " << TURN_CREATURE_PTR->HealthCurrent() << "/"
+                   << TURN_CREATURE_PTR->HealthNormal() << "\nCondition";
 
             if (TURN_CREATURE_PTR->Conditions().size() > 1)
             {
-                infoStr += 's';
+                infoSS << "s";
             }
 
-            infoStr += ":  " + TURN_CREATURE_PTR->ConditionNames(6);
+            infoSS << ":  " << TURN_CREATURE_PTR->ConditionNames(6);
 
-            armorStr += "Armor Rating: " + TURN_CREATURE_PTR->ArmorRating().ToString();
+            armorSS << "Armor Rating: " << TURN_CREATURE_PTR->ArmorRating();
 
             const auto MANA_NORMAL { TURN_CREATURE_PTR->ManaNormal() };
             if (MANA_NORMAL > 0_mana)
             {
-                armorStr += "\n\nMana: " + TURN_CREATURE_PTR->Mana().ToString() + "/"
-                    + MANA_NORMAL.ToString();
+                armorSS << "\n\nMana: " << TURN_CREATURE_PTR->Mana() << "/" << MANA_NORMAL;
             }
 
-            preambleStr = SINGLE_SPACE_STR;
-            enemyCondsStr = SINGLE_SPACE_STR;
+            preambleSS.str(EMPTY_STR);
+            enemyCondsSS.str(EMPTY_STR);
         }
         else if (IsNonPlayerCharacterTurnValid())
         {
-            titleStr += TURN_CREATURE_PTR->RaceName();
+            titleSS << TURN_CREATURE_PTR->RaceName();
 
             if (creature::race::RaceRoleMatch(TURN_CREATURE_PTR->Race(), TURN_CREATURE_PTR->Role())
                 == false)
             {
-                titleStr += ' ';
-                titleStr += TURN_CREATURE_PTR->RoleName();
+                titleSS << " " << TURN_CREATURE_PTR->RoleName();
             }
 
             // turn box weapon text (or text that indicates that a creature cannot take their turn)
             if (CAN_TAKE_ACTION_STR.empty())
             {
                 willRedColorShakeWeaponText_ = false;
-                weaponHoldingStr += HOLDING_WEAPON_STR;
+                weaponHoldingSS << HOLDING_WEAPON_STR;
             }
             else
             {
                 willRedColorShakeWeaponText_ = true;
-
-                weaponHoldingStr += "Cannot take "
-                    + std::string(creature::sex::HisHerIts(TURN_CREATURE_PTR->Sex(), false, false))
-                    + " turn because " + TURN_CREATURE_PTR->CanTakeActionStr(false) + "!";
+                weaponHoldingSS << "Cannot take "
+                                << creature::sex::HisHerIts(TURN_CREATURE_PTR->Sex(), false, false)
+                                << " turn because " << TURN_CREATURE_PTR->CanTakeActionStr(false)
+                                << "!";
             }
 
-            infoStr = SINGLE_SPACE_STR; // any short all-whitespace non-empty string will work here
+            infoSS.str(EMPTY_STR); // any short all-whitespace non-empty string will work here
 
-            armorStr += "Armor:  ";
+            armorSS << "Armor:  ";
 
             const auto ARMOR_STR(TURN_CREATURE_PTR->ArmorString());
             if (ARMOR_STR.empty())
             {
-                armorStr += "None";
+                armorSS << "None";
             }
             else
             {
-                armorStr += ARMOR_STR;
+                armorSS << ARMOR_STR;
             }
 
             if (TURN_CREATURE_PTR->HasCondition(creature::Conditions::Good))
             {
-                enemyCondsStr += ' ';
+                enemyCondsSS << " ";
             }
             else
             {
                 const auto CONDITION_LIST_STR { TURN_CREATURE_PTR->ConditionNames(6) };
-                enemyCondsStr += "Condition";
+                enemyCondsSS << "Condition";
 
                 if (boost::algorithm::contains(CONDITION_LIST_STR, ","))
                 {
-                    enemyCondsStr += 's';
+                    enemyCondsSS << "s";
                 }
 
-                enemyCondsStr += ": " + CONDITION_LIST_STR;
+                enemyCondsSS << ": " << CONDITION_LIST_STR;
             }
         }
 
@@ -3349,20 +3340,20 @@ namespace stage
                 || ((TurnPhase::PerformAnim == turnPhase_)
                     && (AnimPhase::AdvanceOrRetreat == animPhase_)))
             {
-                infoStr = SINGLE_SPACE_STR;
-                weaponHoldingStr = SINGLE_SPACE_STR;
-                armorStr = SINGLE_SPACE_STR;
-                enemyCondsStr = SINGLE_SPACE_STR;
+                infoSS.str(EMPTY_STR);
+                weaponHoldingSS.str(EMPTY_STR);
+                armorSS.str(EMPTY_STR);
+                enemyCondsSS.str(EMPTY_STR);
 
                 isPreambleShowing = true;
 
                 // preamble version of action text
-                preambleStr += combatText_.ActionText(
+                preambleSS << combatText_.ActionText(
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, false, false, true);
             }
             else
             {
-                preambleStr = SINGLE_SPACE_STR;
+                preambleSS.str(EMPTY_STR);
             }
         }
         else if (
@@ -3371,15 +3362,15 @@ namespace stage
         {
             HandlePlayingMeleeSoundEffects();
 
-            infoStr = SINGLE_SPACE_STR;
-            weaponHoldingStr = SINGLE_SPACE_STR;
-            armorStr = SINGLE_SPACE_STR;
-            enemyCondsStr = SINGLE_SPACE_STR;
+            infoSS.str(EMPTY_STR);
+            weaponHoldingSS.str(EMPTY_STR);
+            armorSS.str(EMPTY_STR);
+            enemyCondsSS.str(EMPTY_STR);
 
             isPreambleShowing = true;
 
             // perform report version of action text
-            preambleStr += combatText_.ActionTextIndexed(
+            preambleSS << combatText_.ActionTextIndexed(
                 TURN_CREATURE_PTR,
                 turnActionInfo_,
                 fightResult_,
@@ -3390,64 +3381,65 @@ namespace stage
         }
         else if (TurnPhase::TargetSelect == turnPhase_)
         {
-            infoStr = SINGLE_SPACE_STR;
-            weaponHoldingStr = SINGLE_SPACE_STR;
-            armorStr = SINGLE_SPACE_STR;
-            enemyCondsStr = SINGLE_SPACE_STR;
+            infoSS.str(EMPTY_STR);
+            weaponHoldingSS.str(EMPTY_STR);
+            armorSS.str(EMPTY_STR);
+            enemyCondsSS.str(EMPTY_STR);
 
             isPreambleShowing = true;
 
             if (!spellBeingCastPtrOpt_)
             {
-                preambleStr += "Click to select who to fight...\n\n(Press Escape or X to Cancel)";
+                preambleSS << "Click to select who to fight...\n\n"
+                           << "(Press Escape or X to Cancel)";
             }
             else
             {
-                preambleStr += "Click on the ";
+                preambleSS << "Click on the ";
 
                 if (spellBeingCastPtrOpt_.value()->Target() == combat::TargetType::SingleOpponent)
                 {
-                    preambleStr += "enemy creature";
+                    preambleSS << "enemy creature";
                 }
                 else if (
                     spellBeingCastPtrOpt_.value()->Target() == combat::TargetType::SingleCompanion)
                 {
-                    preambleStr += "character";
+                    preambleSS << "character";
                 }
 
-                preambleStr += " to cast " + spellBeingCastPtrOpt_.value()->Name() + " on...\n\n"
-                    + "(Press Escape or X to Cancel)";
+                preambleSS << " to cast " << spellBeingCastPtrOpt_.value()->Name() << " on...\n\n"
+                           << "(Press Escape or X to Cancel)";
             }
         }
         else if (
             (conditionEffectsIndex_ < conditionEffectsVec_.size())
             && (TurnPhase::ConditionEffectPause == turnPhase_))
         {
-            infoStr = SINGLE_SPACE_STR;
-            weaponHoldingStr = SINGLE_SPACE_STR;
-            armorStr = SINGLE_SPACE_STR;
-            enemyCondsStr = SINGLE_SPACE_STR;
+            infoSS.str(EMPTY_STR);
+            weaponHoldingSS.str(EMPTY_STR);
+            armorSS.str(EMPTY_STR);
+            enemyCondsSS.str(EMPTY_STR);
 
             isPreambleShowing = true;
 
             const auto & HIT_INFO { conditionEffectsVec_[conditionEffectsIndex_] };
 
-            preambleStr += HIT_INFO.ActionPhrase().Compose(
+            preambleSS << HIT_INFO.ActionPhrase().Compose(
                 HIT_INFO.ConditionPtrOpt().value()->Name(), TURN_CREATURE_PTR->Name());
         }
         else
         {
-            preambleStr = SINGLE_SPACE_STR;
+            preambleSS.str(EMPTY_STR);
         }
 
         const auto VERT_POS_SHIFT(sfutil::MapByRes(0.0f, 16.0f));
-        titleTBoxTextRegionUPtr_->SetText(titleStr);
+        titleTBoxTextRegionUPtr_->SetText(titleSS.str());
         titleTBoxTextRegionUPtr_->SetEntityPos(
             turnBoxRegion_.left,
             (turnBoxRegion_.top + (titleTBoxTextRegionUPtr_->GetEntityRegion().height * 0.5f))
                 - VERT_POS_SHIFT);
 
-        weaponTBoxTextRegionUPtr_->SetText(weaponHoldingStr);
+        weaponTBoxTextRegionUPtr_->SetText(weaponHoldingSS.str());
 
         weaponTBoxTextRegionUPtr_->SetEntityPos(
             (turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f))
@@ -3457,14 +3449,14 @@ namespace stage
                 - VERT_POS_SHIFT);
 
         const auto WEAPON_TBOXTEXT_REGION { weaponTBoxTextRegionUPtr_->GetEntityRegion() };
-        armorTBoxTextRegionUPtr_->SetText(armorStr);
+        armorTBoxTextRegionUPtr_->SetText(armorSS.str());
 
         armorTBoxTextRegionUPtr_->SetEntityPos(
             (turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f))
                 - (armorTBoxTextRegionUPtr_->GetEntityRegion().width * 0.5f),
             (WEAPON_TBOXTEXT_REGION.top + WEAPON_TBOXTEXT_REGION.height) - VERT_POS_SHIFT);
 
-        enemyCondsTBoxRegionUPtr_->SetText(enemyCondsStr);
+        enemyCondsTBoxRegionUPtr_->SetText(enemyCondsSS.str());
 
         enemyCondsTBoxRegionUPtr_->SetEntityPos(
             (turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f))
@@ -3480,14 +3472,14 @@ namespace stage
                                   + enemyCondsTBoxRegionUPtr_->GetEntityRegion().height)
                                  - VERT_POS_SHIFT };
 
-        if (enemyCondsStr == SINGLE_SPACE_STR)
+        if (enemyCondsSS.str() == EMPTY_STR)
         {
             enemyActionPosTop = (armorTBoxTextRegionUPtr_->GetEntityRegion().top
                                  + armorTBoxTextRegionUPtr_->GetEntityRegion().height)
                 - VERT_POS_SHIFT;
         }
 
-        enemyActionTBoxRegionUPtr_->SetText(preambleStr);
+        enemyActionTBoxRegionUPtr_->SetText(preambleSS.str());
 
         if (isPreambleShowing
             || ((TurnPhase::PerformReport == turnPhase_)
@@ -3502,7 +3494,7 @@ namespace stage
             enemyActionTBoxRegionUPtr_->SetEntityPos(enemyActionPosLeft, enemyActionPosTop);
         }
 
-        infoTBoxTextRegionUPtr_->SetText(infoStr);
+        infoTBoxTextRegionUPtr_->SetText(infoSS.str());
         infoTBoxTextRegionUPtr_->SetEntityPos(turnBoxRegion_.left, turnBoxRegion_.top);
 
         SetupTurnBoxButtons(TURN_CREATURE_PTR, (TURN_CREATURE_PTR->IsPlayerCharacter() == false));
@@ -3577,7 +3569,7 @@ namespace stage
                     const auto WEAPON_PTR_OPT { HIT_INFO.Weapon() };
                     if (WEAPON_PTR_OPT)
                     {
-                        combat::CombatSoundEffects::PlayShoot(WEAPON_PTR_OPT.value());
+                        combatSoundEffects_.PlayShoot(WEAPON_PTR_OPT.value());
 
                         const auto CREATURE_ATTACKING_CENTER_POSV {
                             combatDisplayStagePtr_->GetCombatNodeCenter(TURN_CREATURE_PTR)
@@ -3621,7 +3613,7 @@ namespace stage
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
-                combat::CombatSoundEffects::PlaySpell(spellBeingCastPtrOpt_.value());
+                combatSoundEffects_.PlaySpell(spellBeingCastPtrOpt_.value());
 
                 // start sparkle anim for creature doing the casting
                 combatAnimationUPtr_->SparkleAnimStart(
@@ -3642,7 +3634,7 @@ namespace stage
 
             case TurnActionPhase::Roar:
             {
-                combat::CombatSoundEffects::PlayRoar(TURN_CREATURE_PTR);
+                combatSoundEffects_.PlayRoar(TURN_CREATURE_PTR);
 
                 creature::CreaturePVec_t creaturesToShakePVec { creature::Algorithms::NonPlayers(
                     creature::Algorithms::Living) };
@@ -3667,7 +3659,7 @@ namespace stage
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
-                combat::CombatSoundEffects::PlaySong(songBeingPlayedPtrOpt_.value());
+                combatSoundEffects_.PlaySong(songBeingPlayedPtrOpt_.value());
 
                 // start the song animation for the bard playing the music
                 combatAnimationUPtr_->SongAnimStart(
@@ -4001,17 +3993,18 @@ namespace stage
     CombatStage::TurnActionPhase
         CombatStage::GetTurnActionPhaseFromWeaponType(const item::ItemPtr_t WEAPON_PTR) const
     {
-        if (WEAPON_PTR->WeaponInfo().IsMinor<item::Projectiles>(item::Projectiles::Sling))
+        if (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
         {
             return TurnActionPhase::ShootSling;
         }
         else if (
             WEAPON_PTR->WeaponInfo().IsBow()
-            || WEAPON_PTR->WeaponInfo().IsMinor<item::Projectiles>(item::Projectiles::Crossbow))
+            || WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Crossbow)
         {
             return TurnActionPhase::ShootArrow;
         }
-        else if (WEAPON_PTR->WeaponInfo().IsMinor<item::Projectiles>(item::Projectiles::Blowpipe))
+        else if (
+            WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Blowpipe)
         {
             return TurnActionPhase::ShootBlowpipe;
         }
@@ -4071,7 +4064,7 @@ namespace stage
             }
 
             const auto DAMAGE { NEXT_CREATURE_EFFECT.GetDamageTotal() };
-            if (!DAMAGE.IsZero())
+            if (DAMAGE.IsNonZero())
             {
                 damageVec.emplace_back(DAMAGE);
 
@@ -4094,7 +4087,7 @@ namespace stage
                 if (KILLED_CREATURE_PTR->IsPlayerCharacter())
                 {
                     wasPlayerKilled = true;
-                    combat::CombatSoundEffects::PlayDeath(KILLED_CREATURE_PTR);
+                    combatSoundEffects_.PlayDeath(KILLED_CREATURE_PTR);
                 }
             }
 
@@ -4126,8 +4119,7 @@ namespace stage
 
         combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
-        fightResult_
-            = combat::CreatureInteraction::Fight(TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR);
+        fightResult_ = creatureInteraction_.Fight(TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR);
 
         AppendStatusMessage(
             combatText_.ActionText(TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
@@ -4209,7 +4201,7 @@ namespace stage
                 == std::end(soundEffectsPlayedVec_))
             {
                 soundEffectsPlayedVec_.emplace_back(REPORT_INDICIES);
-                combat::CombatSoundEffects::PlayHitOrMiss(turnCreaturePtrOpt_.value(), HIT_INFO);
+                combatSoundEffects_.PlayHitOrMiss(turnCreaturePtrOpt_.value(), HIT_INFO);
             }
         }
     }
@@ -4325,7 +4317,7 @@ namespace stage
 
         // HealthGiven
         // HealthTraded
-        // BackstabHits
+        // BackstabsHits
         // SpiritsLifted
         // TODO -these achievements still need to be implemented
 
@@ -4380,11 +4372,12 @@ namespace stage
                         }
 
                         if (NEXT_HIT_INFO.Weapon().value()->WeaponType()
-                            == item::Weapon::Projectile)
+                            & item::weapon_type::Projectile)
                         {
                             ++projectileHits;
                         }
-                        else if (NEXT_HIT_INFO.Weapon().value()->WeaponInfo().IsMelee())
+                        else if (
+                            NEXT_HIT_INFO.Weapon().value()->WeaponType() & item::weapon_type::Melee)
                         {
                             ++meleeHits;
                         }
@@ -4503,8 +4496,8 @@ namespace stage
 
     void CombatStage::PerformRoarEffects()
     {
-        fightResult_ = combat::CreatureInteraction::Roar(
-            turnCreaturePtrOpt_.value(), combatDisplayStagePtr_);
+        fightResult_
+            = creatureInteraction_.Roar(turnCreaturePtrOpt_.value(), combatDisplayStagePtr_);
     }
 
     void CombatStage::AnimationCenteringStart(const creature::CreaturePVec_t & CREATURE_PVEC)

@@ -46,13 +46,13 @@ namespace misc
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: SettingsFile");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<SettingsFile *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void SettingsFile::Create()
+    void SettingsFile::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -60,11 +60,17 @@ namespace misc
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: SettingsFile");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: SettingsFile");
         }
     }
 
-    void SettingsFile::Destroy() { instanceUPtr_.reset(); }
+    void SettingsFile::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "SettingsFile::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     void SettingsFile::AcquireAndSave()
     {
@@ -134,14 +140,14 @@ namespace misc
         }
 
         const auto MUSIC_VOLUME { ValueAs(KEY_MUSIC_VOLUME_, -1.0f) };
-        if (!(MUSIC_VOLUME < 0.0f))
+        if ((MUSIC_VOLUME < 0.0f) == false)
         {
             M_HP_LOG("Settings file restoring previous music volume." + M_HP_VAR_STR(MUSIC_VOLUME));
             gui::SoundManager::Instance()->MusicVolumeSet(MUSIC_VOLUME);
         }
 
         const float SOUND_FX_VOLUME { ValueAs(KEY_SOUND_FX_VOLUME_, -1.0f) };
-        if (!(SOUND_FX_VOLUME < 0.0f))
+        if ((SOUND_FX_VOLUME < 0.0f) == false)
         {
             M_HP_LOG(
                 "Settings file restoring previous sound fx volume."
@@ -150,66 +156,67 @@ namespace misc
             gui::SoundManager::Instance()->SoundEffectVolumeSet(SOUND_FX_VOLUME);
         }
 
-        const unsigned DIMMENSION_TOO_BIG { 10000 };
-        const unsigned OTHER_TOO_BIG { 33 };
+        const unsigned DISPLAY_DIMMENSION_TOO_BIG { 10000 };
+        const unsigned DISPLAY_OTHER_TOO_BIG { 33 };
 
-        const auto WIDTH { ValueAs<unsigned>(KEY_DISPLAY_WIDTH_, DIMMENSION_TOO_BIG) };
-        const auto HEIGHT { ValueAs<unsigned>(KEY_DISPLAY_HEIGHT_, DIMMENSION_TOO_BIG) };
-        const auto BIT_DEPTH { ValueAs<unsigned>(KEY_DISPLAY_BIT_DEPTH_, OTHER_TOO_BIG) };
+        const auto DISPLAY_WIDTH { ValueAs<unsigned>(
+            KEY_DISPLAY_WIDTH_, DISPLAY_DIMMENSION_TOO_BIG) };
 
-        const auto ANTIALIAS_LEVEL { ValueAs<unsigned>(
-            KEY_DISPLAY_ANTIALIAS_LEVEL_, OTHER_TOO_BIG) };
+        const auto DISPLAY_HEIGHT { ValueAs<unsigned>(
+            KEY_DISPLAY_HEIGHT_, DISPLAY_DIMMENSION_TOO_BIG) };
 
-        const auto ARE_VALUES_INVALID { (WIDTH >= DIMMENSION_TOO_BIG)
-                                        || (HEIGHT >= DIMMENSION_TOO_BIG)
-                                        || (BIT_DEPTH >= OTHER_TOO_BIG)
-                                        || (ANTIALIAS_LEVEL >= OTHER_TOO_BIG) };
+        const auto DISPLAY_BIT_DEPTH { ValueAs<unsigned>(
+            KEY_DISPLAY_BIT_DEPTH_, DISPLAY_OTHER_TOO_BIG) };
 
-        if (ARE_VALUES_INVALID)
+        const auto DISPLAY_ANTIALIAS_LEVEL { ValueAs<unsigned>(
+            KEY_DISPLAY_ANTIALIAS_LEVEL_, DISPLAY_OTHER_TOO_BIG) };
+
+        const auto ARE_DISPLAY_VALUES_SANE { (DISPLAY_WIDTH >= DISPLAY_DIMMENSION_TOO_BIG)
+                                             && (DISPLAY_HEIGHT >= DISPLAY_DIMMENSION_TOO_BIG)
+                                             && (DISPLAY_BIT_DEPTH >= DISPLAY_OTHER_TOO_BIG)
+                                             && (DISPLAY_ANTIALIAS_LEVEL
+                                                 >= DISPLAY_OTHER_TOO_BIG) };
+
+        if (ARE_DISPLAY_VALUES_SANE)
         {
-            M_HP_LOG_ERR(
-                "Settings file display options were invalid, and will not be restored."
-                + M_HP_VAR_STR(WIDTH) + M_HP_VAR_STR(HEIGHT) + M_HP_VAR_STR(BIT_DEPTH)
-                + M_HP_VAR_STR(ANTIALIAS_LEVEL));
-        }
-        else
-        {
-            const auto ARE_VALUES_DIFFERENT_FROM_CURRENT {
-                (gui::Display::Instance()->GetWinWidthu() != WIDTH)
-                || (gui::Display::Instance()->GetWinHeightu() != HEIGHT)
-                || (gui::Display::Instance()->GetCurrentVideoMode().bitsPerPixel != BIT_DEPTH)
-                || (gui::Display::Instance()->AntialiasLevel() != ANTIALIAS_LEVEL)
+            const auto DISPLAY_WIDTH_U { static_cast<unsigned>(DISPLAY_WIDTH) };
+            const auto DISPLAY_HEIGHT_U { static_cast<unsigned>(DISPLAY_HEIGHT) };
+            const auto DISPLAY_BIT_DEPTH_U { static_cast<unsigned>(DISPLAY_BIT_DEPTH) };
+            const auto DISPLAY_ANTIALIAS_LEVEL_U { static_cast<unsigned>(DISPLAY_ANTIALIAS_LEVEL) };
+
+            const auto ARE_DISPLAY_VALUES_DIFFERENT_FROM_CURRENT {
+                (gui::Display::Instance()->GetWinWidthu() != DISPLAY_WIDTH_U)
+                || (gui::Display::Instance()->GetWinHeightu() != DISPLAY_HEIGHT_U)
+                || (gui::Display::Instance()->GetCurrentVideoMode().bitsPerPixel
+                    != DISPLAY_BIT_DEPTH_U)
+                || (gui::Display::Instance()->AntialiasLevel() != DISPLAY_ANTIALIAS_LEVEL_U)
             };
 
-            if (ARE_VALUES_DIFFERENT_FROM_CURRENT)
+            if (ARE_DISPLAY_VALUES_DIFFERENT_FROM_CURRENT)
             {
-                const sf::VideoMode VIDEO_MODE(WIDTH, HEIGHT, BIT_DEPTH);
+                const sf::VideoMode VIDEO_MODE(
+                    DISPLAY_WIDTH_U, DISPLAY_HEIGHT_U, DISPLAY_BIT_DEPTH_U);
 
                 M_HP_LOG(
-                    "Settings file attempting to restore previous video mode..."
-                    + M_HP_VAR_STR(VIDEO_MODE) + M_HP_VAR_STR(ANTIALIAS_LEVEL));
+                    "Settings file restoring previous video mode." + M_HP_VAR_STR(VIDEO_MODE)
+                    + M_HP_VAR_STR(DISPLAY_ANTIALIAS_LEVEL_U));
 
-                gui::Display::Instance()->ChangeVideoMode(VIDEO_MODE, ANTIALIAS_LEVEL);
-            }
-            else
-            {
-                M_HP_LOG("Settings file display options were identical to what has already "
-                         "been established, and will be ignored.");
+                gui::Display::Instance()->ChangeVideoMode(VIDEO_MODE, DISPLAY_ANTIALIAS_LEVEL_U);
             }
         }
 
-        const unsigned FRAME_RATE_LIMIT_TOO_BIG { 1000 };
+        const unsigned DISPLAY_FRAME_RATE_LIMIT_TOO_BIG { 1000 };
 
-        const auto FRAME_RATE_LIMIT(
-            ValueAs(KEY_DISPLAY_FRAMERATE_LIMIT_, FRAME_RATE_LIMIT_TOO_BIG));
+        const auto DISPLAY_FRAME_RATE_LIMIT(
+            ValueAs(KEY_DISPLAY_FRAMERATE_LIMIT_, DISPLAY_FRAME_RATE_LIMIT_TOO_BIG));
 
-        if (FRAME_RATE_LIMIT < FRAME_RATE_LIMIT_TOO_BIG)
+        if (DISPLAY_FRAME_RATE_LIMIT < DISPLAY_FRAME_RATE_LIMIT_TOO_BIG)
         {
             M_HP_LOG(
-                "Settings file restoring previous frame rate limit of "
-                << FRAME_RATE_LIMIT << ". (zero disables)" + M_HP_VAR_STR(FRAME_RATE_LIMIT));
+                "Settings file restoring previous frame rate limit."
+                + M_HP_VAR_STR(DISPLAY_FRAME_RATE_LIMIT));
 
-            gui::Display::Instance()->SetFrameRateLimit(FRAME_RATE_LIMIT);
+            gui::Display::Instance()->SetFrameRateLimit(DISPLAY_FRAME_RATE_LIMIT);
         }
 
         if (ContainsKey(KEY_DISPLAY_WILL_VERTICAL_SYNC_))
@@ -217,8 +224,8 @@ namespace misc
             const bool WILL_VERTICAL_SYNC { ValueOrDefault<bool>(KEY_DISPLAY_WILL_VERTICAL_SYNC_) };
 
             M_HP_LOG(
-                "Settings file restoring display vertical sync of "
-                << WILL_VERTICAL_SYNC << ". (false disables)" + M_HP_VAR_STR(WILL_VERTICAL_SYNC));
+                "Settings file restoring previous rule about display vertical sync."
+                + M_HP_VAR_STR(WILL_VERTICAL_SYNC));
 
             gui::Display::Instance()->SetVerticalSync(WILL_VERTICAL_SYNC);
         }

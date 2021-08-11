@@ -39,8 +39,8 @@ namespace creature
         ~CreatureWarehouse();
 
         static misc::NotNull<CreatureWarehouse *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         static misc::NotNullWarehouse<creature::Creature> & Access()
         {

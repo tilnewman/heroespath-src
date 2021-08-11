@@ -20,7 +20,6 @@
 #include "item/item.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
-#include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
@@ -217,7 +216,7 @@ namespace combat
 
         if (CREATURE_PTR->CanFly() == false)
         {
-            return std::string(CREATURE_PTR->RaceName()).append("s cannot fly.");
+            return CREATURE_PTR->RaceName() + "s cannot fly.";
         }
 
         return TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_;
@@ -408,7 +407,8 @@ namespace combat
                         ss << "s";
                     }
 
-                    ss << " to " << item::Algorithms::Names(HELD_WEAPONS_PVEC, misc::JoinOpt::And);
+                    ss << " to "
+                       << item::Algorithms::Names(HELD_WEAPONS_PVEC, 0, misc::Vector::JoinOpt::And);
                 }
 
                 break;
@@ -565,7 +565,7 @@ namespace combat
         else
         {
             std::ostringstream ss;
-            ss << "(error: invalid TurnAction (" << NAMEOF_ENUM(TURN_ACTION)
+            ss << "(error: invalid TurnAction (" << combat::TurnAction::ToString(TURN_ACTION)
                << ") for indexed version of combat::Text::ActionText)";
 
             return ss.str();
@@ -577,351 +577,196 @@ namespace combat
     {
         std::vector<std::string> strVec;
 
-        const auto & WEAPON_INFO { WEAPON_PTR->WeaponInfo() };
-
-        if (WEAPON_INFO.IsAxe())
+        if (WEAPON_PTR->WeaponInfo().IsAxe())
         {
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("chopping");
-            }
             else
-            {
                 strVec.emplace_back("chops");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("hacking");
-            }
             else
-            {
                 strVec.emplace_back("hacks");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("swinging");
-            }
             else
-            {
                 strVec.emplace_back("swings");
-            }
         }
 
-        if (WEAPON_INFO.IsMinor<item::BodyPartWeapons>(item::BodyPartWeapons::Bite))
+        if (WEAPON_PTR->WeaponInfo().IsBite())
         {
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("bitting");
-            }
             else
-            {
                 strVec.emplace_back("bites");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("snapping");
-            }
             else
-            {
                 strVec.emplace_back("snaps");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("gnawing");
-            }
             else
-            {
                 strVec.emplace_back("gnaws");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("chewing");
-            }
             else
-            {
                 strVec.emplace_back("chews");
-            }
         }
 
-        if (WEAPON_INFO.IsMinor<item::BodyPartWeapons>(item::BodyPartWeapons::Claws))
+        if (WEAPON_PTR->HasWeaponType(item::weapon_type::Bladed))
         {
             if (WILL_APPEND_ING)
-            {
-                strVec.emplace_back("tearing");
-            }
-            else
-            {
-                strVec.emplace_back("tears");
-            }
-
-            if (WILL_APPEND_ING)
-            {
-                strVec.emplace_back("slashing");
-            }
-            else
-            {
-                strVec.emplace_back("slashes");
-            }
-
-            if (WILL_APPEND_ING)
-            {
-                strVec.emplace_back("clawing");
-            }
-            else
-            {
-                strVec.emplace_back("claws");
-            }
-
-            if (WILL_APPEND_ING)
-            {
-                strVec.emplace_back("ripping");
-            }
-            else
-            {
-                strVec.emplace_back("rips");
-            }
-        }
-
-        if (WEAPON_INFO.IsBladed())
-        {
-            if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("slicing");
-            }
             else
-            {
                 strVec.emplace_back("slices");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("slashing");
-            }
             else
-            {
                 strVec.emplace_back("slashes");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("cutting");
-            }
             else
-            {
                 strVec.emplace_back("cuts");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("swinging");
-            }
             else
-            {
                 strVec.emplace_back("swings");
-            }
         }
 
-        if (WEAPON_INFO.IsPointed())
+        if (WEAPON_PTR->WeaponInfo().IsBladedStaff()
+            || WEAPON_PTR->HasWeaponType(item::weapon_type::Pointed)
+            || WEAPON_PTR->HasWeaponType(item::weapon_type::Knife)
+            || WEAPON_PTR->WeaponInfo().IsSpear())
         {
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("stabbing");
-            }
             else
-            {
                 strVec.emplace_back("stabs");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("thrusting");
-            }
             else
-            {
                 strVec.emplace_back("thrusts");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("jabbing");
-            }
             else
-            {
                 strVec.emplace_back("jabs");
-            }
         }
 
-        if (WEAPON_INFO.IsProjectile())
+        if (WEAPON_PTR->WeaponInfo().IsBlowpipe())
         {
             if (WILL_APPEND_ING)
-            {
+                strVec.emplace_back("darting");
+            else
+                strVec.emplace_back("darts");
+        }
+
+        if (WEAPON_PTR->WeaponInfo().IsProjectile())
+        {
+            if (WILL_APPEND_ING)
                 strVec.emplace_back("shooting");
-            }
             else
-            {
                 strVec.emplace_back("shoots");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("firing");
-            }
             else
-            {
                 strVec.emplace_back("fires");
-            }
-
-            if (WEAPON_INFO.IsMinor<item::Projectiles>(item::Projectiles::Blowpipe))
-            {
-                if (WILL_APPEND_ING)
-                {
-                    strVec.emplace_back("darting");
-                }
-                else
-                {
-                    strVec.emplace_back("darts");
-                }
-            }
-
-            if (WEAPON_INFO.IsMinor<item::Projectiles>(item::Projectiles::Sling))
-            {
-                if (WILL_APPEND_ING)
-                {
-                    strVec.emplace_back("slinging");
-                }
-                else
-                {
-                    strVec.emplace_back("slings");
-                }
-            }
         }
 
-        if (WEAPON_INFO.IsBodyPartBase())
+        if (WEAPON_PTR->WeaponInfo().IsBreath())
         {
             if (WILL_APPEND_ING)
-            {
-                strVec.emplace_back("whipping");
-            }
+                strVec.emplace_back("breathing");
             else
-            {
-                strVec.emplace_back("whips");
-            }
-
-            if (WILL_APPEND_ING)
-            {
-                strVec.emplace_back("sliming");
-            }
-            else
-            {
-                strVec.emplace_back("slimes");
-            }
-
-            if (WILL_APPEND_ING)
-            {
-                strVec.emplace_back("slapping");
-            }
-            else
-            {
-                strVec.emplace_back("slaps");
-            }
-
-            if (WILL_APPEND_ING)
-            {
-                strVec.emplace_back("squeezing");
-            }
-            else
-            {
-                strVec.emplace_back("squeezes");
-            }
-
-            if (WEAPON_INFO.IsBreath())
-            {
-                if (WILL_APPEND_ING)
-                {
-                    strVec.emplace_back("breathing");
-                }
-                else
-                {
-                    strVec.emplace_back("breathes");
-                }
-            }
+                strVec.emplace_back("breathes");
         }
 
-        if (WEAPON_INFO.IsClub() || WEAPON_INFO.IsAnyStaff())
+        if (WEAPON_PTR->WeaponInfo().IsClaws())
         {
             if (WILL_APPEND_ING)
-            {
+                strVec.emplace_back("tearing");
+            else
+                strVec.emplace_back("tears");
+            if (WILL_APPEND_ING)
+                strVec.emplace_back("slashing");
+            else
+                strVec.emplace_back("slashes");
+            if (WILL_APPEND_ING)
+                strVec.emplace_back("clawing");
+            else
+                strVec.emplace_back("claws");
+            if (WILL_APPEND_ING)
+                strVec.emplace_back("ripping");
+            else
+                strVec.emplace_back("rips");
+        }
+
+        if (WEAPON_PTR->WeaponInfo().IsClub()
+            || WEAPON_PTR->HasWeaponType(item::weapon_type::Staff))
+        {
+            if (WILL_APPEND_ING)
                 strVec.emplace_back("swinging");
-            }
             else
-            {
                 strVec.emplace_back("swings");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("bashing");
-            }
             else
-            {
                 strVec.emplace_back("bashes");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("smashing");
-            }
             else
-            {
                 strVec.emplace_back("smashes");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("slamming");
-            }
             else
-            {
                 strVec.emplace_back("slams");
-            }
-
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("crushing");
-            }
             else
-            {
                 strVec.emplace_back("crushes");
-            }
         }
 
-        if (WEAPON_INFO.IsWhip())
+        if (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
         {
             if (WILL_APPEND_ING)
-            {
-                strVec.emplace_back("whipping");
-            }
+                strVec.emplace_back("slinging");
             else
-            {
+                strVec.emplace_back("slings");
+        }
+
+        if (WEAPON_PTR->WeaponInfo().IsWhip())
+        {
+            if (WILL_APPEND_ING)
+                strVec.emplace_back("whipping");
+            else
                 strVec.emplace_back("whips");
-            }
+        }
+
+        if (WEAPON_PTR->WeaponInfo().IsTentacles())
+        {
+            if (WILL_APPEND_ING)
+                strVec.emplace_back("whipping");
+            else
+                strVec.emplace_back("whips");
+            if (WILL_APPEND_ING)
+                strVec.emplace_back("sliming");
+            else
+                strVec.emplace_back("slimes");
+            if (WILL_APPEND_ING)
+                strVec.emplace_back("slapping");
+            else
+                strVec.emplace_back("slaps");
+            if (WILL_APPEND_ING)
+                strVec.emplace_back("squeezing");
+            else
+                strVec.emplace_back("squeezes");
         }
 
         if (strVec.empty())
         {
             if (WILL_APPEND_ING)
-            {
                 strVec.emplace_back("attacking");
-            }
             else
-            {
                 strVec.emplace_back("attacks");
-            }
         }
 
         std::sort(strVec.begin(), strVec.end());
@@ -956,7 +801,7 @@ namespace combat
             }
             else
             {
-                ss << "for " << -CREATURE_EFFECT.GetDamageTotal() << " damage";
+                ss << "for " << CREATURE_EFFECT.GetDamageTotal().As<int>() * -1 << " damage";
             }
 
             ss << AttackConditionsSummaryList(CREATURE_EFFECT);
@@ -1042,7 +887,7 @@ namespace combat
             }
             else
             {
-                if (HIT_INFO.Weapon().value()->IsBodyPart() == false)
+                if (HIT_INFO.Weapon().value()->IsBodypart() == false)
                 {
                     ss << "and hits ";
                 }
@@ -1050,7 +895,7 @@ namespace combat
 
             if (HIT_INFO.Damage() < 0_health)
             {
-                ss << "for " << -HIT_INFO.Damage() << " damage";
+                ss << "for " << HIT_INFO.Damage().As<int>() * -1 << " damage";
             }
             else
             {
@@ -1204,7 +1049,7 @@ namespace combat
         }
         else if (DAMAGE < 0_health)
         {
-            ss << " doing " << DAMAGE.MakePositiveCopy() << " damage.";
+            ss << " doing " << DAMAGE.Abs() << " damage.";
         }
 
         return ss.str();
@@ -1318,7 +1163,7 @@ namespace combat
         }
         else if (DAMAGE < 0_health)
         {
-            ss << " doing " << DAMAGE.MakePositiveCopy() << " damage.";
+            ss << " doing " << DAMAGE.Abs() << " damage.";
         }
 
         return ss.str();
@@ -1395,8 +1240,7 @@ namespace combat
 
         std::ostringstream ss;
         ss << CREATURE_UNLOCKING_PTR->Name() << " is " << HIT_INFO.ActionVerb() << " for "
-           << HIT_INFO.Damage().MakePositiveCopy() << " damage"
-           << AttackConditionsSummaryList(CREATURE_EFFECT);
+           << HIT_INFO.Damage().Abs() << " damage" << AttackConditionsSummaryList(CREATURE_EFFECT);
 
         return ss.str();
     }
@@ -1485,7 +1329,9 @@ namespace combat
         }
         else
         {
-            return std::to_string(COUNT) + " times";
+            std::ostringstream ss;
+            ss << COUNT << " times";
+            return ss.str();
         }
     }
 
@@ -1521,7 +1367,8 @@ namespace combat
             ss << ", causing "
                << creature::condition::Algorithms::Names(
                       ADDED_CONDS_EXCLUDING_DEAD_VEC,
-                      misc::JoinHow(misc::JoinOpt::And, NUM_CONDS_TO_LIST));
+                      NUM_CONDS_TO_LIST,
+                      misc::Vector::JoinOpt::And);
 
             if (NUM_ADDED_CONDS > NUM_CONDS_TO_LIST)
             {
@@ -1536,7 +1383,7 @@ namespace combat
         {
             ss << ", and eliminating "
                << creature::condition::Algorithms::Names(
-                      REMOVED_CONDS_SVEC, misc::JoinHow(misc::JoinOpt::And, NUM_CONDS_TO_LIST));
+                      REMOVED_CONDS_SVEC, NUM_CONDS_TO_LIST, misc::Vector::JoinOpt::And);
 
             if (NUM_REMOVED_CONDS > NUM_CONDS_TO_LIST)
             {

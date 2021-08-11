@@ -9,71 +9,63 @@
 //
 // item-name-factory.hpp
 //
-#include "item/armor-enum.hpp"
-#include "item/material-enum.hpp"
-#include "item/misc-enum.hpp"
+#include "item/item-type-enum.hpp"
 
+#include <sstream>
 #include <string>
-#include <string_view>
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+} // namespace creature
 namespace item
 {
 
     class ItemProfile;
 
     // A base class for common operations of all item factories.
-    struct ItemNameFactory
+    class ItemNameFactory
     {
-        ItemNameFactory() = delete;
+    public:
+        ItemNameFactory(const ItemNameFactory &) = delete;
+        ItemNameFactory(ItemNameFactory &&) = delete;
+        ItemNameFactory & operator=(const ItemNameFactory &) = delete;
+        ItemNameFactory & operator=(ItemNameFactory &&) = delete;
 
-        static const std::string
-            MakeName(const ItemProfile & PROFILE, const std::string_view CREATURE_RACE_NAME);
+        ItemNameFactory() = default;
 
-        static const std::string
-            MakeDescription(const ItemProfile & PROFILE, const std::string_view CREATURE_RACE_NAME);
+        const std::string MakeWeaponBodyPartName(
+            const creature::CreaturePtr_t CREATURE_PTR, const std::string & READABLE_NAME) const;
+
+        const std::string MakeWeaponBodyPartDescription(
+            const std::string & BASE_DESCRIPTION, const creature::CreaturePtr_t CREATURE_PTR) const;
+
+        const std::string MakeArmorBodyPartName(
+            const MaterialPair_t & MATERIALS_PAIR,
+            const creature::CreaturePtr_t CREATURE_PTR) const;
+
+        const std::string MakeArmorBodyPartDescription(const MaterialPair_t & MATERIALS_PAIR) const;
+
+        const std::string MakeNonBodyPartName(const ItemProfile & PROFILE) const;
+
+        const std::string MakeNonBodyPartDescription(
+            const ItemProfile & PROFILE, const std::string & BASE_DESC) const;
 
     private:
-        static const std::string MakeWeaponBodyPartName(
-            const std::string_view READABLE_NAME, const std::string_view CREATURE_RACE_NAME);
+        const std::string HandledNamePrefix(const ItemProfile &) const;
+        const std::string ReadableNameWithoutArmorBaseType(const ItemProfile &) const;
+        const std::string PrefixAOrAn(const material::Enum) const;
+        const std::string RandomCoatedPhrase() const;
+        const std::string RandomCoatedAdjective() const;
+        const std::string JeweledAdjective() const;
+        const std::string AdornedAdjective() const;
+        const std::string RandomClaspNoun() const;
 
-        static const std::string MakeWeaponBodyPartDescription(
-            const std::string_view BASE_DESCRIPTION, const std::string_view CREATURE_RACE_NAME);
-
-        static const std::string MakeArmorBodyPartName(
-            const MaterialPair_t & MATERIALS_PAIR, const std::string_view CREATURE_RACE_NAME);
-
-        static const std::string
-            MakeArmorBodyPartDescription(const MaterialPair_t & MATERIALS_PAIR);
-
-        static const std::string MakeNonBodyPartName(const ItemProfile & PROFILE);
-
-        static const std::string MakeNonBodyPartDescription(const ItemProfile & PROFILE);
-
-        static const std::string ReadableNameWithoutArmorForm(const ItemProfile &);
-        static const std::string_view PrefixAOrAn(const Material::Enum);
-        static const std::string_view RandomCoatedAdjective();
-
-        static inline const std::string_view JeweledAdjective() { return "jeweled"; }
-        static inline const std::string_view AdornedAdjective() { return "adorned"; }
-
-        static inline bool IsNonEmptyWithoutTrailingSpace(const std::string_view STR)
-        {
-            return (!STR.empty() && (STR.back() != ' '));
-        }
-
-        static inline const std::string SpaceIfNeeded(const std::string_view STR)
-        {
-            if (IsNonEmptyWithoutTrailingSpace(STR))
-            {
-                return " ";
-            }
-            else
-            {
-                return "";
-            }
-        }
+        bool IsNonEmptyWithoutTrailingSpace(std::ostringstream &) const;
+        const std::string AppendSpaceIfNeeded(std::ostringstream &) const;
 
         enum class PhraseType
         {
@@ -81,37 +73,36 @@ namespace item
             Desc
         };
 
-        static const std::string ArmorFormNamePrefix(const Forms::Enum FORM);
-        static const std::string_view BlessedOrCursed(const Misc::Enum MISC);
-        static const std::string SeccondaryMaterialPhrase(const PhraseType, const ItemProfile &);
+        const std::string ArmorBaseTypeNamePrefix(const ItemProfile & PROFILE) const;
 
-        static const std::string SecondaryMaterialPhraseDecoration(
-            const Material::Enum MAT_SEC, const std::string_view MAT_SEC_NAME);
+        void AppendBlessedOrCursedIfNeeded(const ItemProfile & PROFILE, std::ostringstream &) const;
 
-        static const std::string SecondaryMaterialPhraseHandle(
-            const Material::Enum MAT_SEC, const std::string_view MAT_SEC_NAME);
+        void AppendPixiePhraseIfNeeded(
+            const ItemProfile & PROFILE, const PhraseType PHRASE_TYPE, std::ostringstream &) const;
 
-        static const std::string SecondaryMaterialPhraseReinforced(
-            const Material::Enum MAT_SEC, const std::string_view MAT_SEC_NAME);
+        const std::string SeccondaryMaterialPhrase(const PhraseType, const ItemProfile &) const;
 
-        static const std::string SecondaryMaterialPhraseTipped(
-            const Material::Enum MAT_SEC, const std::string_view MAT_SEC_NAME);
+        const std::string SecondaryMaterialPhraseDecoration(
+            const material::Enum SECONDARY_MATERIAL,
+            const std::string & SECONDARY_MATERIAL_NAME) const;
 
-        static const std::string SecondaryMaterialPhraseClasped(
-            const Material::Enum MAT_SEC, const std::string_view MAT_SEC_NAME);
+        const std::string SecondaryMaterialPhraseHandle(
+            const material::Enum SECONDARY_MATERIAL,
+            const std::string & SECONDARY_MATERIAL_NAME) const;
 
-        static const std::string SecondaryMaterialPhraseMisc(
-            const Material::Enum MAT_SEC,
-            const std::string_view MAT_SEC_NAME,
-            const Misc::Enum MISC);
+        const std::string SecondaryMaterialPhraseReinforced(
+            const material::Enum SECONDARY_MATERIAL,
+            const std::string & SECONDARY_MATERIAL_NAME) const;
 
-        static const std::string FirstLetterLowercaseCopy(const std::string_view);
+        const std::string SecondaryMaterialPhraseTipped(
+            const material::Enum SECONDARY_MATERIAL,
+            const std::string & SECONDARY_MATERIAL_NAME) const;
 
-        static const std::string SeccondaryMaterialPhraseForSolid(
-            const MaterialNameStyle::Enum MAT_NAME_STYLE,
-            const Material::Enum MAT_SEC,
-            const std::string_view MAT_SEC_NAME,
-            const Misc::Enum MISC);
+        const std::string SecondaryMaterialPhraseClasped(
+            const material::Enum SECONDARY_MATERIAL,
+            const std::string & SECONDARY_MATERIAL_NAME) const;
+
+        const std::string FirstLetterLowercaseCopy(const std::string &) const;
     };
 
 } // namespace item

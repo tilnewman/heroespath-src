@@ -9,7 +9,6 @@
 //
 // traits-set.hpp
 //
-#include "game/strong-types.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "trait-enum.hpp"
 #include "trait.hpp"
@@ -37,8 +36,6 @@ namespace creature
             const bool WILL_PREFIX_PERCENT) const;
 
         const std::string StatsString(const bool WILL_WRAP) const;
-
-        Score_t Score() const;
 
         friend bool operator==(const TraitSet & L, const TraitSet & R);
         friend bool operator<(const TraitSet & L, const TraitSet & R);

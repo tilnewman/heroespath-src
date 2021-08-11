@@ -11,7 +11,7 @@
 //
 #include "gui/box-entity-info.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/common.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>

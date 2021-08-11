@@ -56,7 +56,7 @@ namespace map
         {
             for (const auto & SFX_REGION : top_layers)
             {
-                if (sfutil::Contains(SFX_REGION.region, POSITION))
+                if (SFX_REGION.region.contains(POSITION))
                 {
                     return SFX_REGION.sfx;
                 }
@@ -64,7 +64,7 @@ namespace map
 
             for (const auto & SFX_REGION : bottom_layers)
             {
-                if (sfutil::Contains(SFX_REGION.region, POSITION))
+                if (SFX_REGION.region.contains(POSITION))
                 {
                     return SFX_REGION.sfx;
                 }

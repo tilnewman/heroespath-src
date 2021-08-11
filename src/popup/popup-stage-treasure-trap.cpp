@@ -15,7 +15,6 @@
 #include "misc/config-file.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -75,7 +74,7 @@ namespace popup
         tempRect.top += sfutil::MapByRes(75.0f, 225.0f);
 
         const gui::TextInfo DESC_TEXTINFO(
-            popupInfo_.GetTextInfo().text,
+            popupInfo_.TextInfo().text,
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,
@@ -93,7 +92,7 @@ namespace popup
 
     void PopupStageTreasureTrap::SetupAccentImage()
     {
-        accent1CachedTextureOpt_ = gui::CachedTexture("media-image-misc-trap");
+        accent1CachedTextureOpt_ = gui::CachedTexture("media-image-trap");
         accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
         sfutil::FitAndReCenter(

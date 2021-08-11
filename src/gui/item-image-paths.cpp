@@ -11,20 +11,29 @@
 //
 #include "item-image-paths.hpp"
 
+#include "creature/dragon-class-enum.hpp"
+#include "creature/nonplayer-inventory-types.hpp"
+#include "creature/race-enum.hpp"
+#include "creature/role-enum.hpp"
+#include "creature/wolfen-class-enum.hpp"
 #include "gui/cached-texture.hpp"
 #include "gui/content-images.hpp"
-#include "item/item-profile.hpp"
-#include "item/item-template.hpp"
-#include "item/material-enum.hpp"
+#include "item/armor-type-wrapper.hpp"
+#include "item/item.hpp"
+#include "item/weapon-type-wrapper.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/enum-common.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
+#include "stage/i-stage.hpp"
 
+#include <SFML/Graphics/Texture.hpp>
+
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 #include <vector>
 
 namespace heroespath
@@ -32,411 +41,661 @@ namespace heroespath
 namespace gui
 {
 
-    std::string ItemImagePaths::itemImageDir_ { "" };
+    std::string ItemImagePaths::imageDirectoryPath_ { "" };
 
     void ItemImagePaths::SetupFilesystemPaths()
     {
-        itemImageDir_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-item-dir");
+        imageDirectoryPath_ = misc::ConfigFile::Instance()->GetMediaPath("media-image-item-dir");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            misc::filesystem::ExistsAndIsDirectory(itemImageDir_),
+            misc::filesystem::ExistsAndIsDirectory(imageDirectoryPath_),
             "Item image directory does not exist or is not a directory."
-                + M_HP_VAR_STR(itemImageDir_));
+                + M_HP_VAR_STR(imageDirectoryPath_));
     }
 
-    const std::string
-        ItemImagePaths::Filename(const item::ItemProfile & PROFILE, const bool WILL_RANDOMIZE)
+    bool ItemImagePaths::Test(stage::IStagePtr_t iStagePtr)
     {
-        const auto FILENAMES = Filenames(PROFILE);
-
-        if (FILENAMES.empty())
+        static auto hasInitialPrompt { false };
+        if (false == hasInitialPrompt)
         {
-            M_HP_LOG_ERR(
-                "Failed to generate any image filenames for item profile: " << PROFILE.ToString());
-
-            return std::string(ContentImage::FilenameError(true));
+            hasInitialPrompt = true;
+            iStagePtr->TestingStrAppend("gui::ItemImagePaths::Test()  Starting tests...");
         }
-        else
+
+        const std::string TEST_PRE_STR { "ItemImagePaths Test " };
+
+        static auto allPaths { misc::filesystem::FindFiles(
+            false, imageDirectoryPath_, "", ContentImage::FilenameExtension()) };
+
+        for (auto & pathStr : allPaths)
         {
-            if (WILL_RANDOMIZE)
+            misc::ToLower(pathStr);
+        }
+
+        static const auto WEAPON_TYPE_WRAPPERS {
+            item::weapon::WeaponTypeWrapper::MakeCompleteSet()
+        };
+
+        static std::size_t weaponIndex { 0 };
+        if (weaponIndex < WEAPON_TYPE_WRAPPERS.size())
+        {
+            const auto & WEAPON_TYPE_WRAPPER { WEAPON_TYPE_WRAPPERS.at(weaponIndex) };
+
+            const auto FILENAME { misc::ToLowerCopy(Filename(WEAPON_TYPE_WRAPPER, false)) };
+
+            const auto IMAGE_PATH_STR { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+
+            gui::CachedTexture cachedTexture { PathWrapper(IMAGE_PATH_STR) };
+
+            auto imagePathFoundIter { std::find(
+                std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
+
+            if (imagePathFoundIter != std::end(allPaths))
             {
-                return misc::RandomSelect(FILENAMES);
-            }
-            else
-            {
-                return FILENAMES[0];
-            }
-        }
-    }
-
-    const std::vector<std::string> ItemImagePaths::Filenames(const item::ItemProfile & PROFILE)
-    {
-        std::vector<std::string> filenames;
-        filenames.reserve(1);
-
-        // Misc must come before weapon or armor because if an item is misc+weapon or
-        // misc+armor then the image is based on the misc type.
-        if (PROFILE.IsMisc())
-        {
-            filenames = MiscFilenames(PROFILE);
-        }
-        else if (PROFILE.IsWeapon())
-        {
-            filenames.emplace_back(WeaponFilename(PROFILE));
-        }
-        else
-        {
-            filenames.emplace_back(ArmorFilename(PROFILE));
-        }
-
-        if (filenames.empty())
-        {
-            M_HP_LOG_ERR(
-                "Failed to generate any image filenames for item profile: " << PROFILE.ToString());
-
-            filenames.emplace_back(ContentImage::FilenameError(false));
-        }
-
-        for (auto & rawFilename : filenames)
-        {
-            if (rawFilename.empty())
-            {
-                rawFilename = ContentImage::FilenameError(false);
+                iStagePtr->TestingImageSet(IMAGE_PATH_STR);
+                allPaths.erase(imagePathFoundIter);
             }
 
-            rawFilename = misc::CamelTo(
-                rawFilename, ContentImage::FilenameSeparator(), misc::CaseChange::LowerToUpper);
+            iStagePtr->TestingStrIncrement(TEST_PRE_STR + WEAPON_TYPE_WRAPPER.ReadableName());
+            ++weaponIndex;
+            return false;
+        }
 
-            misc::ToLower(rawFilename);
+        static const auto ARMOR_TYPE_WRAPPERS { item::armor::ArmorTypeWrapper::MakeCompleteSet() };
 
-            for (char & c : rawFilename)
+        static std::size_t armorIndex { 0 };
+        if (armorIndex < ARMOR_TYPE_WRAPPERS.size())
+        {
+            const auto & ARMOR_TYPE_WRAPPER { ARMOR_TYPE_WRAPPERS.at(armorIndex) };
+
+            const auto FILENAME { misc::ToLowerCopy(Filename(ARMOR_TYPE_WRAPPER)) };
+
+            // skip testing skin images until below
+            if (ARMOR_TYPE_WRAPPER.IsSkin() == false)
             {
-                if (!misc::IsAlphaOrDigit(c))
+                const auto IMAGE_PATH_STR { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+
+                gui::CachedTexture cachedTexture { PathWrapper(IMAGE_PATH_STR) };
+
+                auto imagePathFoundIter { std::find(
+                    std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
+
+                if (imagePathFoundIter != std::end(allPaths))
                 {
-                    c = ContentImage::FilenameSeparatorChar();
+                    iStagePtr->TestingImageSet(IMAGE_PATH_STR);
+                    allPaths.erase(imagePathFoundIter);
                 }
+
+                iStagePtr->TestingStrIncrement(TEST_PRE_STR + ARMOR_TYPE_WRAPPER.ReadableName());
             }
 
-            rawFilename += ContentImage::FilenameExtension();
+            ++armorIndex;
+            return false;
         }
 
-        return filenames;
+        static std::size_t skinIndex { 0 };
+        if (skinIndex <= 2)
+        {
+            const auto MATERIAL_ENUM { [&]() {
+                // keep in sync with item::material::SkinMaterial()
+                if (0 == skinIndex)
+                {
+                    return item::material::Hide;
+                }
+                else if (1 == skinIndex)
+                {
+                    return item::material::Plant;
+                }
+                else
+                {
+                    return item::material::Scales;
+                }
+            }() };
+
+            const auto FILENAME { misc::ToLowerCopy(GetSkinImageFilename(MATERIAL_ENUM)) };
+
+            const auto IMAGE_PATH_STR { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+
+            gui::CachedTexture cachedTexture { PathWrapper(IMAGE_PATH_STR) };
+
+            auto imagePathFoundIter { std::find(
+                std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
+
+            if (imagePathFoundIter != std::end(allPaths))
+            {
+                iStagePtr->TestingImageSet(IMAGE_PATH_STR);
+                allPaths.erase(imagePathFoundIter);
+            }
+
+            iStagePtr->TestingStrIncrement(TEST_PRE_STR + FILENAME);
+
+            ++skinIndex;
+            return false;
+        }
+
+        // test misc items
+        static auto miscIndex { 1 }; // start at 1 to avoid item::misc_type::Not
+        if (miscIndex < static_cast<int>(item::misc_type::Count))
+        {
+            static auto extrasIndex { 0 };
+
+            if (extrasIndex < 4)
+            {
+                const auto IS_JEWELED { ((1 == extrasIndex) || (3 == extrasIndex)) };
+                const auto IS_BONE { (extrasIndex >= 2) };
+                const auto ENUM { static_cast<item::misc_type::Enum>(miscIndex) };
+                const auto ENUM_STR { item::misc_type::ToString(ENUM) };
+                const auto FILENAMES_VEC { Filenames(ENUM, IS_JEWELED, IS_BONE) };
+
+                M_HP_ASSERT_OR_LOG_AND_THROW(
+                    (FILENAMES_VEC.empty() == false),
+                    "gui::ItemImagePaths::Test() While testing misc item #"
+                        << miscIndex << " \"" << ENUM_STR << "\", is_jeweled=" << std::boolalpha
+                        << IS_JEWELED << ", Filenames() returned an empty vector.");
+
+                static std::size_t fileIndex { 0 };
+                if (fileIndex < FILENAMES_VEC.size())
+                {
+                    const auto FILENAME { misc::ToLowerCopy(FILENAMES_VEC[fileIndex]) };
+
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
+                        (FILENAME.empty() == false),
+                        "gui::ItemImagePaths::Test() (rand)  "
+                            << "While testing misc item #" << miscIndex << " \"" << ENUM_STR
+                            << "\", filename #" << fileIndex << ", is_jeweled=" << std::boolalpha
+                            << IS_JEWELED << ", found an empty filename string.");
+
+                    std::ostringstream ss;
+                    ss << "ItemImagePaths Testing \"" << ENUM_STR << "\", file_index=" << fileIndex
+                       << " (" << ((IS_JEWELED) ? "jeweled" : "not-jeweled") << ")";
+
+                    iStagePtr->TestingStrIncrement(ss.str());
+
+                    const auto IMAGE_PATH_STR { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+
+                    gui::CachedTexture cachedTexture { PathWrapper(IMAGE_PATH_STR) };
+
+                    auto imagePathFoundIter { std::find(
+                        std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
+
+                    if (imagePathFoundIter != std::end(allPaths))
+                    {
+                        iStagePtr->TestingImageSet(IMAGE_PATH_STR);
+                        allPaths.erase(imagePathFoundIter);
+                    }
+
+                    ++fileIndex;
+                    return false;
+                }
+
+                fileIndex = 0;
+                ++extrasIndex;
+                return false;
+            }
+
+            extrasIndex = 0;
+            ++miscIndex;
+            return false;
+        }
+
+        std::sort(std::begin(allPaths), std::end(allPaths));
+
+        for (const auto & FILENAME : allPaths)
+        {
+            M_HP_LOG_WRN(
+                "gui::ItemImagePaths::Test() found the following item image "
+                "unused: "
+                << FILENAME);
+        }
+
+        iStagePtr->TestingStrAppend("gui::ItemImagePaths::Test()  ALL TESTS PASSED.");
+        return true;
     }
 
     const std::string ItemImagePaths::PathFromFilename(const std::string & FILE_NAME)
     {
-        std::string path;
-        path.reserve(64);
-
-        if (FILE_NAME == ContentImage::FilenameTodo(true))
+        if (FILE_NAME == ContentImage::TodoFilename())
         {
-            path += ContentImage::PathFullTodo();
+            return ContentImage::TodoPath();
         }
-        else if (FILE_NAME == ContentImage::FilenameError(true))
+        else if (FILE_NAME == ContentImage::ErrorFilename())
         {
-            path += ContentImage::PathFullError();
+            return ContentImage::ErrorPath();
         }
         else
         {
-            path += misc::filesystem::CombinePaths(itemImageDir_, FILE_NAME);
+            return misc::filesystem::CombinePaths(imageDirectoryPath_, FILE_NAME);
         }
-
-        return path;
     }
 
-    const std::vector<std::string> ItemImagePaths::MiscFilenames(const item::ItemProfile & PROFILE)
+    const std::string ItemImagePaths::Filename(const item::Item & ITEM, const bool WILL_RANDOMIZE)
     {
-        const auto MISC = PROFILE.MiscType();
-
-        switch (MISC)
+        if (ITEM.Name().empty())
         {
-            // these Miscs have specific filenames
-            case item::Misc::FlagFanatics:
-            case item::Misc::FlagRegalCaptains:
-            case item::Misc::FlagTribal: return { "flag" };
+            return ContentImage::ErrorFilename();
+        }
 
-            case item::Misc::CapeCommanders:
-            case item::Misc::CapeGenerals:
-            case item::Misc::CapeKings: return { "cape" };
+        if (ITEM.IsMisc())
+        {
+            return Filename(
+                ITEM.MiscType(),
+                ITEM.IsJeweled(),
+                (ITEM.MaterialPrimary() == item::material::Bone),
+                WILL_RANDOMIZE);
+        }
 
-            case item::Misc::ManaAmulet:
-            case item::Misc::Pendant: return MakeNumberedFilenames("amulet", 23);
+        if (ITEM.IsWeapon())
+        {
+            return Filename(ITEM.WeaponInfo(), ITEM.IsJeweled());
+        }
 
-            case item::Misc::Ring:
+        if (ITEM.IsArmor())
+        {
+            if (ITEM.ArmorInfo().IsSkin())
             {
-                if (PROFILE.MaterialPrimary() == item::Material::Bone)
+                return GetSkinImageFilename(ITEM.MaterialPrimary());
+            }
+            else
+            {
+                return Filename(ITEM.ArmorInfo());
+            }
+        }
+
+        M_HP_LOG_ERR(
+            "Failed to find the image filename for that item because it was not misc, weapon, or "
+            "armor.  Returning the ContentImage::ErrorFilename()."
+            + M_HP_VAR_STR(ITEM.ToString()) + M_HP_VAR_STR(WILL_RANDOMIZE));
+
+        return ContentImage::ErrorFilename();
+    }
+
+    const std::vector<std::string> ItemImagePaths::Filenames(
+        const item::misc_type::Enum MISC_TYPE, const bool IS_JEWELED, const bool IS_BONE)
+    {
+        namespace ba = boost::algorithm;
+
+        switch (MISC_TYPE)
+        {
+            // these misc_types are compound names where underscores need to be converted to
+            // dashes
+            case item::misc_type::Brooch_Crown:
+            case item::misc_type::Brooch_Feather:
+            case item::misc_type::Brooch_Fist:
+            case item::misc_type::Brooch_Hourglass:
+            case item::misc_type::Brooch_Key:
+            case item::misc_type::Brooch_Mask:
+            case item::misc_type::Charm_Crown:
+            case item::misc_type::Charm_Feather:
+            case item::misc_type::Charm_Fist:
+            case item::misc_type::Charm_Hourglass:
+            case item::misc_type::Charm_Key:
+            case item::misc_type::Charm_Mask:
+            case item::misc_type::Pin_Crown:
+            case item::misc_type::Pin_Feather:
+            case item::misc_type::Pin_Fist:
+            case item::misc_type::Pin_Hourglass:
+            case item::misc_type::Pin_Key:
+            case item::misc_type::Pin_Mask:
+            {
+                const auto TYPE_STR { ba::replace_all_copy(
+                    misc::ToLowerCopy(item::misc_type::ToString(MISC_TYPE)),
+                    "_",
+                    ContentImage::FilenameSeparator()) };
+
+                return { (TYPE_STR + ContentImage::FilenameExtension()) };
+            }
+
+                // these misc_types have specific filenames
+            case item::misc_type::ManaAmulet:
+            case item::misc_type::Pendant:
+            {
+                return MakeFilenames("amulet", 23);
+            }
+            case item::misc_type::CapeCommanders:
+            case item::misc_type::CapeGenerals:
+            case item::misc_type::CapeKings:
+            {
+                return { ("cape" + ContentImage::FilenameExtension()) };
+            }
+            case item::misc_type::ShadeCloak:
+            {
+                return { ("cloak" + ContentImage::FilenameExtension()) };
+            }
+            case item::misc_type::SpecterRobe:
+            {
+                return { ("robe" + ContentImage::FilenameExtension()) };
+            }
+            case item::misc_type::Goblet:
+            {
+                return MakeFilenames("goblet", 8);
+            }
+            case item::misc_type::Key:
+            {
+                return MakeFilenames("key", 11);
+            }
+            case item::misc_type::LockPicks:
+            {
+                return MakeFilenames("lockpicks", 6);
+            }
+            case item::misc_type::Mirror:
+            {
+                return MakeFilenames("mirror", 10);
+            }
+            case item::misc_type::DrumLute:
+            {
+                return MakeFilenames("drumlute", 13);
+            }
+            case item::misc_type::Orb:
+            {
+                return MakeFilenames("orb", 9);
+            }
+            case item::misc_type::Ring:
+            {
+                if (IS_JEWELED)
                 {
-                    return { "ring-bone" };
+                    return MakeFilenames("ring-jeweled", 13);
                 }
-                else if (item::Material::IsJeweled(
-                             PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()))
+                else if (IS_BONE)
                 {
-                    return MakeNumberedFilenames("ring-jeweled", 13);
+                    return { ("ring-bone" + ContentImage::FilenameExtension()) };
                 }
                 else
                 {
-                    return { "ring" };
+                    return { "ring" + ContentImage::FilenameExtension() };
                 }
             }
-
-            case item::Misc::ShadeCloak: return { "cloak" };
-            case item::Misc::SpecterRobe: return { "robe" };
-            case item::Misc::RingHobo: return { "ring" };
-            case item::Misc::Doll: return { "doll-1" };
-            case item::Misc::BloodyDragonScale: return { "scales" };
-            case item::Misc::MinotaurHide: return { "hide" };
-            case item::Misc::ReaperScythe: return { "bladedstaff-scythe" };
-            case item::Misc::Goblet: return MakeNumberedFilenames("goblet", 8);
-            case item::Misc::Key: return MakeNumberedFilenames("key", 11);
-            case item::Misc::LockPicks: return MakeNumberedFilenames("lockpicks", 6);
-            case item::Misc::Mirror: return MakeNumberedFilenames("mirror", 10);
-            case item::Misc::DrumLute: return MakeNumberedFilenames("drumlute", 13);
-            case item::Misc::Orb: return MakeNumberedFilenames("orb", 9);
-            case item::Misc::Shard: return MakeNumberedFilenames("shard", 7);
-            case item::Misc::Wand: return MakeNumberedFilenames("wand", 11);
-            case item::Misc::Scepter: return MakeNumberedFilenames("scepter", 26);
-            case item::Misc::DollBlessed: return MakeNumberedFilenames("doll", 4, 2);
-            case item::Misc::DollCursed: return MakeNumberedFilenames("doll", 10, 5);
-            case item::Misc::FigurineBlessed: return MakeNumberedFilenames("figurine", 6);
-            case item::Misc::FigurineCursed: return MakeNumberedFilenames("figurine-evil", 6);
-            case item::Misc::SummoningStatue: return MakeNumberedFilenames("summoning-statue", 3);
-
-            // these Miscs have single word names that are simply converted to lower-case
-            case item::Misc::Crumhorn:
-            case item::Misc::Icicle:
-            case item::Misc::Lyre:
-            case item::Misc::Recorder:
-            case item::Misc::Viol:
-            case item::Misc::Bust:
-            case item::Misc::Egg:
-            case item::Misc::Embryo:
-            case item::Misc::Seeds:
-                // fallthrough
-
-            // these Miscs are compound words whose filenames have dashes between each word but that
-            // will be done by Filenames() above
-            case item::Misc::AngelBraid:
-            case item::Misc::DevilHorn:
-            case item::Misc::GolemFinger:
-            case item::Misc::HurdyGurdy:
-            case item::Misc::LichHand:
-            case item::Misc::MummyHand:
-            case item::Misc::PetrifiedSnake:
-            case item::Misc::PipeAndTabor:
-            case item::Misc::UnicornHorn:
-            case item::Misc::BasiliskTongue:
-            case item::Misc::BerserkersBeard:
-            case item::Misc::BishopsHanky:
-            case item::Misc::BleedingTrophy:
-            case item::Misc::BottleOfBansheeScreams:
-            case item::Misc::BronzeTroll:
-            case item::Misc::BurialShroud:
-            case item::Misc::ChimeraBone:
-            case item::Misc::CobraTooth:
-            case item::Misc::CrystalChimes:
-            case item::Misc::DemonDiary:
-            case item::Misc::DoveBloodVial:
-            case item::Misc::DragonToothWhistle:
-            case item::Misc::DriedFrog:
-            case item::Misc::DriedGecko:
-            case item::Misc::DriedIguana:
-            case item::Misc::DriedLizard:
-            case item::Misc::DriedSalamander:
-            case item::Misc::DriedSkink:
-            case item::Misc::DriedToad:
-            case item::Misc::DruidLeaf:
-            case item::Misc::EvilRabbitsFoot:
-            case item::Misc::ExoticGoldenGong:
-            case item::Misc::EyeCyclops:
-            case item::Misc::EyeGiantOwl:
-            case item::Misc::EyeHawk:
-            case item::Misc::FriarsChronicle:
-            case item::Misc::FuneralRecord:
-            case item::Misc::GhostSheet:
-            case item::Misc::GlassCat:
-            case item::Misc::GriffinFeather:
-            case item::Misc::HangmansNoose:
-            case item::Misc::HobgoblinNose:
-            case item::Misc::HolyEpic:
-            case item::Misc::HornOfTheHorde:
-            case item::Misc::ImpTail:
-            case item::Misc::IslanderHeaddress:
-            case item::Misc::JeweledArmband:
-            case item::Misc::JeweledHandbag:
-            case item::Misc::JeweledPrincessVeil:
-            case item::Misc::LastRitesScroll:
-            case item::Misc::MacabreManuscript:
-            case item::Misc::MadRatJuju:
-            case item::Misc::MagicHorseshoe:
-            case item::Misc::MagnifyingGlass:
-            case item::Misc::MaskMourners:
-            case item::Misc::MaskRascal:
-            case item::Misc::MortuaryOrnament:
-            case item::Misc::NecklaceJeweledAnkh:
-            case item::Misc::NecklaceSharkTooth:
-            case item::Misc::NecklaceVampiresTooth:
-            case item::Misc::PantherPaw:
-            case item::Misc::PixieBell:
-            case item::Misc::RattlesnakeTail:
-            case item::Misc::RavenClaw:
-            case item::Misc::RequiemRegister:
-            case item::Misc::RingMendicant:
-            case item::Misc::RingMonk:
-            case item::Misc::RingPriest:
-            case item::Misc::RoyalScoutSpyglass:
-            case item::Misc::SaintCameoPin:
-            case item::Misc::SaintsJournal:
-            case item::Misc::SanguineRelic:
-            case item::Misc::ScoundrelSack:
-            case item::Misc::SepultureDecoration:
-            case item::Misc::ShamanRainmaker:
-            case item::Misc::SirenConch:
-            case item::Misc::SpecterChains:
-            case item::Misc::SpiderEggs:
-            case item::Misc::SprintersLegtie:
-            case item::Misc::SwindlersBag:
-            case item::Misc::TricksterPouch:
-            case item::Misc::TuningFork:
-            case item::Misc::TurtleShell:
-            case item::Misc::VultureGizzard:
-            case item::Misc::WarhorseMarionette:
-            case item::Misc::WarTrumpet:
-            case item::Misc::WeaselTotem:
-            case item::Misc::WolfenFur:
-            case item::Misc::WraithTalisman:
-            case item::Misc::DriedHead:
-            case item::Misc::PuppetBlessed:
-            case item::Misc::PuppetCursed:
-            case item::Misc::BroochCrown:
-            case item::Misc::BroochFeather:
-            case item::Misc::BroochFist:
-            case item::Misc::BroochHourglass:
-            case item::Misc::BroochKey:
-            case item::Misc::BroochMask:
-            case item::Misc::CharmCrown:
-            case item::Misc::CharmFeather:
-            case item::Misc::CharmFist:
-            case item::Misc::CharmHourglass:
-            case item::Misc::CharmKey:
-            case item::Misc::CharmMask:
-            case item::Misc::PinCrown:
-            case item::Misc::PinFeather:
-            case item::Misc::PinFist:
-            case item::Misc::PinHourglass:
-            case item::Misc::PinKey:
-            case item::Misc::PinMask:
+            case item::misc_type::RingHobo:
             {
-                return { std::string(NAMEOF_ENUM(MISC)) };
+                return { "ring" + ContentImage::FilenameExtension() };
+            }
+            case item::misc_type::Shard:
+            {
+                return MakeFilenames("shard", 7);
+            }
+            case item::misc_type::Wand:
+            {
+                return MakeFilenames("wand", 11);
+            }
+            case item::misc_type::Scepter:
+            {
+                return MakeFilenames("scepter", 26);
+            }
+            case item::misc_type::DollBlessed:
+            {
+                return MakeFilenames("doll", 4, 2);
+            }
+            case item::misc_type::DollCursed:
+            {
+                return MakeFilenames("doll", 10, 5);
+            }
+            case item::misc_type::Doll:
+            {
+                return { "doll-1" + ContentImage::FilenameExtension() };
+            }
+            case item::misc_type::FigurineBlessed:
+            {
+                return MakeFilenames("figurine", 6);
+            }
+            case item::misc_type::FigurineCursed:
+            {
+                return MakeFilenames("figurine-evil", 6);
+            }
+            case item::misc_type::Staff:
+            {
+                return MakeFilenames("staff", 21);
+            }
+            case item::misc_type::SummoningStatue:
+            {
+                return MakeFilenames("summoning-statue", 3);
+            }
+            case item::misc_type::BloodyDragonScale:
+            {
+                return { "scales" + ContentImage::FilenameExtension() };
+            }
+            case item::misc_type::FlagFanatics:
+            case item::misc_type::FlagRegalCaptains:
+            case item::misc_type::FlagTribal:
+            {
+                return { "flag" + ContentImage::FilenameExtension() };
+            }
+            case item::misc_type::MinotaurHide:
+            {
+                return { "hide" + ContentImage::FilenameExtension() };
+            }
+            case item::misc_type::ReaperScythe:
+            {
+                return { "bladedstaff-scythe" + ContentImage::FilenameExtension() };
             }
 
-            case item::Misc::Count:
+            // these misc_types are compound words whose filenames have dashes between each word
+            case item::misc_type::AngelBraid:
+            case item::misc_type::DevilHorn:
+            case item::misc_type::GolemFinger:
+            case item::misc_type::HurdyGurdy:
+            case item::misc_type::LichHand:
+            case item::misc_type::MummyHand:
+            case item::misc_type::PetrifiedSnake:
+            case item::misc_type::PipeAndTabor:
+            case item::misc_type::UnicornHorn:
+            case item::misc_type::BasiliskTongue:
+            case item::misc_type::BerserkersBeard:
+            case item::misc_type::BishopsHanky:
+            case item::misc_type::BleedingTrophy:
+            case item::misc_type::BottleOfBansheeScreams:
+            case item::misc_type::BronzeTroll:
+            case item::misc_type::BurialShroud:
+            case item::misc_type::ChimeraBone:
+            case item::misc_type::CobraTooth:
+            case item::misc_type::CrystalChimes:
+            case item::misc_type::DemonDiary:
+            case item::misc_type::DoveBloodVial:
+            case item::misc_type::DragonToothWhistle:
+            case item::misc_type::DriedFrog:
+            case item::misc_type::DriedGecko:
+            case item::misc_type::DriedIguana:
+            case item::misc_type::DriedLizard:
+            case item::misc_type::DriedSalamander:
+            case item::misc_type::DriedSkink:
+            case item::misc_type::DriedToad:
+            case item::misc_type::DruidLeaf:
+            case item::misc_type::EvilRabbitsFoot:
+            case item::misc_type::ExoticGoldenGong:
+            case item::misc_type::EyeCyclops:
+            case item::misc_type::EyeGiantOwl:
+            case item::misc_type::EyeHawk:
+            case item::misc_type::FriarsChronicle:
+            case item::misc_type::FuneralRecord:
+            case item::misc_type::GhostSheet:
+            case item::misc_type::GlassCat:
+            case item::misc_type::GriffinFeather:
+            case item::misc_type::HangmansNoose:
+            case item::misc_type::HobgoblinNose:
+            case item::misc_type::HolyEpic:
+            case item::misc_type::HornOfTheHorde:
+            case item::misc_type::ImpTail:
+            case item::misc_type::IslanderHeaddress:
+            case item::misc_type::JeweledArmband:
+            case item::misc_type::JeweledHandbag:
+            case item::misc_type::JeweledPrincessVeil:
+            case item::misc_type::LastRitesScroll:
+            case item::misc_type::MacabreManuscript:
+            case item::misc_type::MadRatJuju:
+            case item::misc_type::MagicHorseshoe:
+            case item::misc_type::MagnifyingGlass:
+            case item::misc_type::MaskMourners:
+            case item::misc_type::MaskRascal:
+            case item::misc_type::MortuaryOrnament:
+            case item::misc_type::NecklaceJeweledAnkh:
+            case item::misc_type::NecklaceSharkTooth:
+            case item::misc_type::NecklaceVampiresTooth:
+            case item::misc_type::PantherPaw:
+            case item::misc_type::PixieBell:
+            case item::misc_type::RattlesnakeTail:
+            case item::misc_type::RavenClaw:
+            case item::misc_type::RequiemRegister:
+            case item::misc_type::RingMendicant:
+            case item::misc_type::RingMonk:
+            case item::misc_type::RingPriest:
+            case item::misc_type::RoyalScoutSpyglass:
+            case item::misc_type::SaintCameoPin:
+            case item::misc_type::SaintsJournal:
+            case item::misc_type::SanguineRelic:
+            case item::misc_type::ScoundrelSack:
+            case item::misc_type::SepultureDecoration:
+            case item::misc_type::ShamanRainmaker:
+            case item::misc_type::SirenConch:
+            case item::misc_type::SpecterChains:
+            case item::misc_type::SpiderEggs:
+            case item::misc_type::SprintersLegtie:
+            case item::misc_type::SwindlersBag:
+            case item::misc_type::TricksterPouch:
+            case item::misc_type::TuningFork:
+            case item::misc_type::TurtleShell:
+            case item::misc_type::VultureGizzard:
+            case item::misc_type::WarhorseMarionette:
+            case item::misc_type::WarTrumpet:
+            case item::misc_type::WeaselTotem:
+            case item::misc_type::WolfenFur:
+            case item::misc_type::WraithTalisman:
+            case item::misc_type::DriedHead:
+            case item::misc_type::PuppetBlessed:
+            case item::misc_type::PuppetCursed:
+            {
+                const auto SEP_STR { misc::CamelTo(
+                    item::misc_type::ToString(MISC_TYPE),
+                    ContentImage::FilenameSeparator(),
+                    misc::CaseChange::LowerToUpper) };
+
+                return { misc::ToLowerCopy(SEP_STR) + ContentImage::FilenameExtension() };
+            }
+
+            // these misc_types have single word names that are simply converted to lower-case
+            case item::misc_type::Crumhorn:
+            case item::misc_type::Icicle:
+            case item::misc_type::Lyre:
+            case item::misc_type::Recorder:
+            case item::misc_type::Viol:
+            case item::misc_type::Bust:
+            case item::misc_type::Egg:
+            case item::misc_type::Embryo:
+            case item::misc_type::Seeds:
+            {
+                return { misc::ToLowerCopy(item::misc_type::ToString(MISC_TYPE))
+                         + ContentImage::FilenameExtension() };
+            }
+
+            case item::misc_type::Not:
+            case item::misc_type::Count:
             default:
             {
-                M_HP_LOG_ERR("Unable to generate a filename for: " << PROFILE.ToString());
-                return { std::string(ContentImage::FilenameError(false)) };
+                M_HP_LOG_ERR(
+                    "MISC_TYPE enum is invalid, so returning the error image filename.  "
+                    "(misc_type_enum_count="
+                    << misc::ToString(item::misc_type::Count)
+                    << ")(MISC_TYPE=" << item::misc_type::ToString(MISC_TYPE)
+                    << M_HP_VAR_STR(IS_JEWELED) << M_HP_VAR_STR(IS_BONE));
+
+                return { ContentImage::ErrorFilename() };
             }
         }
     }
 
-    const std::string ItemImagePaths::WeaponFilename(const item::ItemProfile & PROFILE)
+    const std::string ItemImagePaths::Filename(
+        const item::misc_type::Enum MISC_TYPE,
+        const bool IS_JEWELED,
+        const bool IS_BONE,
+        const bool WILL_RANDOMIZE)
     {
-        const auto & WEAPON_INFO = PROFILE.WeaponInfo();
+        const auto FILENAMES { Filenames(MISC_TYPE, IS_JEWELED, IS_BONE) };
 
-        std::string str;
-        str.reserve(32);
-        str += WEAPON_INFO.TypeString();
-        str += ContentImage::FilenameSeparator();
-        str += WEAPON_INFO.SubTypeString();
-        return str;
-    }
-
-    const std::string ItemImagePaths::ArmorFilename(const item::ItemProfile & PROFILE)
-    {
-        const auto & ARMOR_INFO = PROFILE.ArmorInfo();
-
-        std::string str;
-        str.reserve(32);
-
-        if (ARMOR_INFO.IsSkin())
-        {
-            str += SkinArmorFilename(PROFILE);
-        }
-        else
-        {
-            str += ARMOR_INFO.TypeString();
-
-            // these vary by item::Forms::Enum but I don't have images for those variations yet
-            if (!ARMOR_INFO.IsAventail() && !ARMOR_INFO.IsBracer() && !ARMOR_INFO.IsPant())
-            {
-                str += ContentImage::FilenameSeparator();
-                str += ARMOR_INFO.SubTypeString();
-
-                if (ARMOR_INFO.HasForm())
-                {
-                    str += ContentImage::FilenameSeparator();
-                    str += NAMEOF_ENUM(ARMOR_INFO.FormEnum());
-                }
-            }
-        }
-
-        return str;
-    }
-
-    const std::string ItemImagePaths::SkinArmorFilename(const item::ItemProfile & PROFILE)
-    {
-        switch (PROFILE.ArmorInfo().MinorAs<item::Skins>())
-        {
-            // still neeed to find an image for fur, so use hide until then
-            case item::Skins::Fur:
-            case item::Skins::Hide: return "hide";
-
-            case item::Skins::Plant:
-            {
-                std::string plantSkinStr;
-                plantSkinStr.reserve(16);
-                plantSkinStr += NAMEOF_ENUM(item::Weapon::BodyPart);
-                plantSkinStr += ContentImage::FilenameSeparator();
-                plantSkinStr += NAMEOF_ENUM(PROFILE.MaterialPrimary());
-                return plantSkinStr;
-            }
-
-            case item::Skins::Scale: return "scales";
-
-            case item::Skins::Flesh:
-            case item::Skins::Count:
-            default: return std::string(ContentImage::FilenameError(false));
-        }
-    }
-
-    const std::vector<std::string> ItemImagePaths::MakeNumberedFilenames(
-        const std::string_view PREFIX, const int LAST_NUMBER, const int FIRST_NUMBER)
-    {
-        const int DIFF((LAST_NUMBER - FIRST_NUMBER) + 1);
-
-        if (DIFF <= 0)
+        if (FILENAMES.empty())
         {
             M_HP_LOG_ERR(
-                "prefix=" << PREFIX << ", first_number=" << std::to_string(FIRST_NUMBER)
-                          << ", last_number=" << std::to_string(LAST_NUMBER) << ":  first <= last");
+                "The Filenames() function returned an empty string, so returning the error image "
+                "filename."
+                "(MISC_TYPE="
+                << item::misc_type::ToString(MISC_TYPE) << M_HP_VAR_STR(IS_JEWELED)
+                << M_HP_VAR_STR(IS_BONE) << M_HP_VAR_STR(WILL_RANDOMIZE));
 
-            return { std::string(ContentImage::FilenameError(false)) };
+            return ContentImage::ErrorFilename();
+        }
+
+        if (WILL_RANDOMIZE)
+        {
+            return misc::RandomSelect(FILENAMES);
         }
         else
         {
-            std::vector<std::string> filenames;
-            filenames.reserve(static_cast<std::size_t>(DIFF));
-
-            std::string prefixWithSeparator;
-            prefixWithSeparator += PREFIX;
-            prefixWithSeparator += ContentImage::FilenameSeparator();
-
-            for (int i(FIRST_NUMBER); i <= LAST_NUMBER; ++i)
-            {
-                filenames.emplace_back(prefixWithSeparator + std::to_string(i));
-            }
-
-            return filenames;
+            return FILENAMES[0];
         }
+    }
+
+    const std::string
+        ItemImagePaths::GetSkinImageFilename(const item::material::Enum PRIMARY_MATERIAL)
+    {
+        auto materialToUseForName { PRIMARY_MATERIAL };
+        if (PRIMARY_MATERIAL == item::material::Fur)
+        {
+            materialToUseForName = item::material::Hide;
+        }
+
+        return misc::ToLowerCopy(
+            item::material::ToString(materialToUseForName) + ContentImage::FilenameExtension());
+    }
+
+    const std::string ItemImagePaths::Filename(
+        const item::weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER, const bool IS_JEWELED)
+    {
+        if (WEAPON_TYPE_WRAPPER.IsStaff())
+        {
+            if (IS_JEWELED)
+            {
+                return "staff-2" + ContentImage::FilenameExtension();
+            }
+            else
+            {
+                return "staff-plain" + ContentImage::FilenameExtension();
+            }
+        }
+        else
+        {
+            return WEAPON_TYPE_WRAPPER.ImageFilename(
+                ContentImage::FilenameSeparator(), ContentImage::FilenameExtension());
+        }
+    }
+
+    const std::string
+        ItemImagePaths::Filename(const item::armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER)
+    {
+        if (ARMOR_TYPE_WRAPPER.IsPants() || ARMOR_TYPE_WRAPPER.IsBracers()
+            || ARMOR_TYPE_WRAPPER.IsAventail())
+        {
+            return ARMOR_TYPE_WRAPPER.SpecificName() + ContentImage::FilenameExtension();
+        }
+        else
+        {
+            return ARMOR_TYPE_WRAPPER.ImageFilename(
+                ContentImage::FilenameSeparator(), ContentImage::FilenameExtension());
+        }
+    }
+
+    const std::vector<std::string> ItemImagePaths::MakeFilenames(
+        const std::string & PREFIX, const int LAST_NUMBER, const int FIRST_NUMBER)
+    {
+        std::vector<std::string> filenames;
+        filenames.reserve(static_cast<std::size_t>((LAST_NUMBER - FIRST_NUMBER) + 1));
+
+        for (int i(FIRST_NUMBER); i <= LAST_NUMBER; ++i)
+        {
+            std::ostringstream ss;
+
+            ss << PREFIX << ContentImage::FilenameSeparator() << i
+               << ContentImage::FilenameExtension();
+
+            filenames.emplace_back(ss.str());
+        }
+
+        return filenames;
     }
 
 } // namespace gui

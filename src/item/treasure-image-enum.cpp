@@ -11,6 +11,7 @@
 //
 #include "treasure-image-enum.hpp"
 
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 
 namespace heroespath
@@ -18,7 +19,46 @@ namespace heroespath
 namespace item
 {
 
-    const std::string_view TreasureImage::ImageConfigKey(const TreasureImage::Enum IMAGE)
+    const std::string TreasureImage::ToString(const TreasureImage::Enum IMAGE)
+    {
+        switch (IMAGE)
+        {
+            case BonePile:
+            {
+                return "BonePile";
+            }
+            case ChestClosed:
+            {
+                return "ChestClosed";
+            }
+            case ChestOpen:
+            {
+                return "ChestOpen";
+            }
+            case LockboxClosed:
+            {
+                return "LockboxClosed";
+            }
+            case LockboxOpen:
+            {
+                return "LockboxOpen";
+            }
+            case Count:
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(IMAGE) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
+                return "";
+            }
+        }
+    }
+
+    const std::string TreasureImage::ImageConfigKey(const TreasureImage::Enum IMAGE)
     {
         switch (IMAGE)
         {
@@ -38,14 +78,66 @@ namespace item
                     return "media-image-bone-pile-bone-pile-3";
                 }
             }
-            case ChestClosed: return "media-image-misc-chest-closed";
-            case ChestOpen: return "media-image-misc-chest-open";
-            case LockboxClosed: return "media-image-misc-lockbox-closed";
-            case LockboxOpen: return "media-image-misc-lockbox-open";
-            case Count: return "Count";
-            default: return "item::TreasureImage::ImageConfigKey(ENUM=out_of_range)";
+            case ChestClosed:
+            {
+                return "media-image-misc-chest-closed";
+            }
+            case ChestOpen:
+            {
+                return "media-image-misc-chest-open";
+            }
+            case LockboxClosed:
+            {
+                return "media-image-misc-lockbox-closed";
+            }
+            case LockboxOpen:
+            {
+                return "media-image-misc-lockbox-open";
+            }
+            case Count:
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(IMAGE) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
+                return "";
+            }
         }
     }
 
+    const std::string
+        TreasureImage::ToContainerName(const TreasureImage::Enum IMAGE, const bool WILL_CAPITALIZE)
+    {
+        if ((IMAGE == ChestClosed) || (IMAGE == ChestOpen))
+        {
+            if (WILL_CAPITALIZE)
+            {
+                return "Chest";
+            }
+            else
+            {
+                return "chest";
+            }
+        }
+        else if ((IMAGE == LockboxClosed) || (IMAGE == LockboxOpen))
+        {
+            if (WILL_CAPITALIZE)
+            {
+                return "Lockbox";
+            }
+            else
+            {
+                return "lockbox";
+            }
+        }
+        else
+        {
+            return "";
+        }
+    }
 } // namespace item
 } // namespace heroespath

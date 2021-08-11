@@ -15,7 +15,6 @@
 #include "misc/log-macros.hpp"
 
 #include <algorithm>
-#include <sstream>
 
 namespace heroespath
 {
@@ -85,15 +84,18 @@ namespace combat
                 standPounceFreqChanceMap.Clear();
 
                 const auto RACE_ENUM(static_cast<creature::race::Enum>(i));
-                const auto RACE_STR(NAMEOF_ENUM_STR(RACE_ENUM));
-                const std::string KEY("nonplayer-combat-strategy-race-" + RACE_STR);
-                const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));
+                const auto RACE_STR(creature::race::ToString(RACE_ENUM));
 
+                std::ostringstream keySS;
+                keySS << "nonplayer-combat-strategy-race-" << RACE_STR;
+                const std::string KEY(keySS.str());
+
+                const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (VALUE.empty() == false),
-                    "combat::strategy::CreatureStrategies::Initialize()  (while parsing i="
-                        << i << ", race=\"" << RACE_STR
-                        << "\")  failed to find gamedatafile value with key=\"" << KEY << "\"");
+                    "combat::strategy::CreatureStrategies::Initialize()  (while parsing race=\""
+                        << RACE_STR << "\")  failed to find gamedatafile value with key=\"" << KEY
+                        << "\"");
 
                 const std::vector<std::string> PARTS_VEC { misc::SplitByChars(
                     VALUE, misc::SplitHow("|")) };
@@ -200,10 +202,13 @@ namespace combat
                 standPounceFreqChanceMap.Clear();
 
                 const auto ROLE_ENUM(static_cast<creature::role::Enum>(i));
-                const auto ROLE_STR(NAMEOF_ENUM_STR(ROLE_ENUM));
-                const std::string KEY("nonplayer-combat-strategy-adjustment-role-" + ROLE_STR);
-                const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));
+                const auto ROLE_STR(creature::role::ToString(ROLE_ENUM));
 
+                std::ostringstream keySS;
+                keySS << "nonplayer-combat-strategy-adjustment-role-" << ROLE_STR;
+                const std::string KEY(keySS.str());
+
+                const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (VALUE.empty() == false),
                     "combat::strategy::CreatureStrategies::Initialize()  (while parsing role=\""
@@ -522,8 +527,6 @@ namespace combat
             const std::vector<std::string> & SUBPARTS_VEC,
             OutnumberRetreatChanceMap_t & OutParam_OutnumberRetreatChanceMap) const
         {
-            const int ERROR_NUMBER(-1);
-
             for (const auto & NEXT_SUBSTRING : SUBPARTS_VEC)
             {
                 if (NEXT_SUBSTRING == SUBPART_TITLE_OUTNUMBER_RETREAT_)
@@ -567,7 +570,14 @@ namespace combat
                         auto rangeEnd = int { 0 };
                         if (RANGE_NUMBER_STR_VEC.size() == 2)
                         {
-                            rangeEnd = misc::ToNumberOr(RANGE_NUMBER_STR_VEC.at(1), ERROR_NUMBER);
+                            try
+                            {
+                                rangeEnd = boost::lexical_cast<int>(RANGE_NUMBER_STR_VEC.at(1));
+                            }
+                            catch (...)
+                            {
+                                rangeEnd = -1;
+                            }
 
                             M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (rangeEnd >= 0),
@@ -579,8 +589,15 @@ namespace combat
                         }
 
                         // parse the first number third
-                        const auto rangeStart
-                            = misc::ToNumberOr(RANGE_NUMBER_STR_VEC.at(0), ERROR_NUMBER);
+                        auto rangeStart = int { 0 };
+                        try
+                        {
+                            rangeStart = boost::lexical_cast<int>(RANGE_NUMBER_STR_VEC.at(0));
+                        }
+                        catch (...)
+                        {
+                            rangeStart = -1;
+                        }
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             (rangeStart >= 0),
@@ -591,14 +608,12 @@ namespace combat
                                    "equal to zero.");
 
                         if (rangeEnd > 0)
-                        {
                             M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (rangeStart < rangeEnd),
                                 "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid "
                                 "range string: \""
                                     << COUNT_COLON_CHANCE_STR_VEC.at(0)
                                     << "\".  The start was not less than the end.");
-                        }
 
                         if (0 == rangeEnd)
                         {
@@ -625,8 +640,16 @@ namespace combat
                             "initial:count:chance string: \""
                                 << COUNT_COLON_CHANCE_STR_VEC.at(0) << "\".");
 
-                        auto initialCount
-                            = misc::ToNumberOr(COUNT_COLON_CHANCE_STR_VEC.at(1), ERROR_NUMBER);
+                        auto initialCount = int { 0 };
+                        try
+                        {
+                            initialCount
+                                = boost::lexical_cast<int>(COUNT_COLON_CHANCE_STR_VEC.at(1));
+                        }
+                        catch (...)
+                        {
+                            initialCount = -1;
+                        }
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             (initialCount >= 0),
@@ -653,7 +676,14 @@ namespace combat
 
         float CreatureStrategies::ParseChanceString(const std::string & FLOAT_STR) const
         {
-            return misc::ToNumberOr(FLOAT_STR, -1.0f);
+            try
+            {
+                return boost::lexical_cast<float>(FLOAT_STR);
+            }
+            catch (...)
+            {
+                return -1.0f;
+            }
         }
 
     } // namespace strategy

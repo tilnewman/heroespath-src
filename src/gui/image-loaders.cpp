@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -66,16 +64,12 @@ namespace gui
         renderTexture.draw(sprite);
         renderTexture.display();
 
-        std::string str;
-        str.reserve(512);
-        str += "FAKE_PATH_FOR_gui::ImageLoader::LoadAndCacheImage(avatar_enum=";
-        str += NAMEOF_ENUM(WHICH_AVATAR);
-        str += ", image_options=";
-        str += OPTIONS.ToString();
-        str += ") requested by ";
-        str += REQUESTER_DESCRIPTION;
-
-        return gui::CachedTexture(str, renderTexture.getTexture(), OPTIONS);
+        return gui::CachedTexture(
+            "FAKE_PATH_FOR_gui::ImageLoader::LoadAndCacheImage(avatar_enum="
+                + avatar::Avatar::ToString(WHICH_AVATAR) + ", image_options=" + OPTIONS.ToString()
+                + ") requested by " + REQUESTER_DESCRIPTION,
+            renderTexture.getTexture(),
+            OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(

@@ -17,10 +17,10 @@
 #include "creature/trait.hpp"
 #include "creature/traits-set.hpp"
 #include "game/phase-enum.hpp"
-#include "game/strong-types.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 #include "spell/spell-enum.hpp"
 
 #include <memory>
@@ -138,14 +138,14 @@ namespace creature
 
         void UseEffect(const CreaturePtr_t);
 
-        Score_t Score() const { return score_; }
+        Score_t TreasureScore() const { return score_; }
 
         const std::string ToString() const;
 
         friend bool operator==(const Enchantment & L, const Enchantment & R);
 
     private:
-        Score_t CalcScore() const;
+        Score_t CalcTreasureScore() const;
 
     private:
         EnchantmentType::Enum type_;

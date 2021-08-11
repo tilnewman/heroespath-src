@@ -12,12 +12,11 @@
 #include "gui/cached-texture.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "sfutil/color.hpp"
-#include "sfutil/sprite.hpp"
+#include "sfutil/sprite-texture.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Sprite.hpp>
 
 #include <tuple>
 
@@ -25,10 +24,6 @@ namespace heroespath
 {
 namespace gui
 {
-
-    using Vector2fOpt_t = boost::optional<sf::Vector2f>;
-    using FloatRectOpt_t = boost::optional<sf::FloatRect>;
-    using IntRectOpt_t = boost::optional<sf::IntRect>;
 
     // Responsible for wrapping all the information required by a Entity to store and draw an
     // image.

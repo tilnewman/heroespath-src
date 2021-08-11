@@ -9,8 +9,8 @@
 //
 // item-cache.hpp
 //
-#include "game/strong-types.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 
 #include <vector>
 

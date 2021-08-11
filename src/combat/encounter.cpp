@@ -32,8 +32,8 @@
 #include "game/game-controller.hpp"
 
 #include <algorithm>
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 #include <utility>
 
 namespace heroespath
@@ -123,13 +123,13 @@ namespace combat
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: Encounter");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<Encounter *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void Encounter::Create()
+    void Encounter::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -137,11 +137,17 @@ namespace combat
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: Encounter");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: Encounter");
         }
     }
 
-    void Encounter::Destroy() { instanceUPtr_.reset(); }
+    void Encounter::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "combat::Encounter::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     bool Encounter::IsRunaway(const creature::CreaturePtr_t CREATURE_PTR) const
     {
@@ -317,7 +323,7 @@ namespace combat
             // unequip non-bodypart items
             for (const auto & EQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().ItemsEquipped())
             {
-                if (EQUIPPED_ITEM_PTR->IsBodyPart() == false)
+                if (EQUIPPED_ITEM_PTR->IsBodypart() == false)
                 {
                     CREATURE_PTR->ItemUnEquip(EQUIPPED_ITEM_PTR);
                 }
@@ -326,7 +332,7 @@ namespace combat
             // move non-bodypart item pointers into deadNonPlayerItemsHeld_
             for (const auto & UNEQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().Items())
             {
-                if (UNEQUIPPED_ITEM_PTR->IsBodyPart() == false)
+                if (UNEQUIPPED_ITEM_PTR->IsBodypart() == false)
                 {
                     CREATURE_PTR->ItemRemove(UNEQUIPPED_ITEM_PTR);
                     deadNonPlayerItemsHeld_.items_pvec.emplace_back(UNEQUIPPED_ITEM_PTR);
@@ -460,8 +466,7 @@ namespace combat
         // count all race/role combinations
         for (const auto & CREATURE_PTR : CREATURES_PVEC)
         {
-            raceRoleMap[std::make_pair(
-                CREATURE_PTR->RaceNameForced(), CREATURE_PTR->RoleNameForced())]++;
+            raceRoleMap[std::make_pair(CREATURE_PTR->RaceName(), CREATURE_PTR->RoleName())]++;
         }
 
         // make a single string summary of all race/role combinations

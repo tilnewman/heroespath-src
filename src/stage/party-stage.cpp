@@ -54,13 +54,13 @@ namespace stage
 
     PartyStage::PartyStage()
         : StageBase(
-              "Party",
-              gui::Display::Instance()->FullScreenRect(),
-              { gui::GuiFont::Default,
-                gui::GuiFont::System,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::Number,
-                gui::GuiFont::Handwriting })
+            "Party",
+            gui::Display::Instance()->FullScreenRect(),
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting })
         , LISTBOX_FONT_ENUM_(gui::GuiFont::System)
         , LISTBOX_FONT_SIZE_(gui::FontManager::Instance()->Size_Largeish())
         , LISTBOX_WIDTH_(sfutil::ScreenRatioToPixelsHoriz(0.33f))
@@ -615,12 +615,12 @@ namespace stage
 
             const auto MOUSEOVER_ELEMENT_PTR_OPT
                 = [&]() -> gui::ListElementPtrOpt_t<creature::CreaturePtr_t> {
-                if (characterListBoxUPtr_->Contains(mousePosV_))
+                if (characterListBoxUPtr_->GetEntityRegion().contains(mousePosV_))
                 {
                     isMouseOverCharacterListBox = true;
                     return characterListBoxUPtr_->AtPos(mousePosV_);
                 }
-                else if (partyListBoxUPtr_->Contains(mousePosV_))
+                else if (partyListBoxUPtr_->GetEntityRegion().contains(mousePosV_))
                 {
                     isMouseOverCharacterListBox = false;
                     return partyListBoxUPtr_->AtPos(mousePosV_);
@@ -644,9 +644,9 @@ namespace stage
 
                 const auto ELEMENT_RECT { (
                     (isMouseOverCharacterListBox) ? characterListBoxUPtr_->ElementRegion(
-                                                        MOUSEOVER_ELEMENT_PTR_OPT.value(), true)
+                        MOUSEOVER_ELEMENT_PTR_OPT.value(), true)
                                                   : partyListBoxUPtr_->ElementRegion(
-                                                        MOUSEOVER_ELEMENT_PTR_OPT.value(), true)) };
+                                                      MOUSEOVER_ELEMENT_PTR_OPT.value(), true)) };
 
                 listboxSelectedItemColoredRectSlider_ = gui::ColoredRectSlider(
                     ELEMENT_RECT,
@@ -721,7 +721,7 @@ namespace stage
                 sfutil::Fit(
                     mouseOverCreatureSprite_,
                     sf::Vector2f(
-                        misc::Min(IMAGE_WIDTH_AVAIL, MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_),
+                        std::min(IMAGE_WIDTH_AVAIL, MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_),
                         IMAGE_HEIGHT_AVAIL));
             }
         }

@@ -26,18 +26,30 @@ namespace interact
         {
             switch (CATEGORY)
             {
-                case Category::Common: { return "Common";
+                case Category::Common:
+                {
+                    return "Common";
                 }
-                case Category::Town: { return "Town";
+                case Category::Town:
+                {
+                    return "Town";
                 }
-                case Category::Child: { return "Child";
+                case Category::Child:
+                {
+                    return "Child";
                 }
-                case Category::Monk: { return "Monk";
+                case Category::Monk:
+                {
+                    return "Monk";
                 }
-                case Category::Drunk: { return "Drunk";
+                case Category::Drunk:
+                {
+                    return "Drunk";
                 }
                 case Category::Guard:
-                default: { return "Guard";
+                default:
+                {
+                    return "Guard";
                 }
             }
         }
@@ -98,7 +110,14 @@ namespace interact
 
             const std::string CapFirstLetter(const std::string & STRING)
             {
-                return misc::ToUpperCopy(STRING);
+                if (STRING.empty())
+                {
+                    return "";
+                }
+
+                std::string result { STRING };
+                misc::ToUpper(result.front());
+                return result;
             }
 
         } // namespace compose

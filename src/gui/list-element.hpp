@@ -17,14 +17,16 @@
 #include "gui/text-region.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-optional-that-throws.hpp"
-#include "misc/nameof.hpp"
 #include "misc/not-null.hpp"
-#include "sfutil/common.hpp"
 #include "sfutil/fitting.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
+#include "misc/nameof.hpp"
+
 #include <memory>
+#include <sstream>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -63,13 +65,13 @@ namespace gui
         {
             if (LE.textRegionUPtr_)
             {
-                const auto GUI_NAME(
-                    LE.textRegionUPtr_->GetEntityName() + "CopyMadeBy_ListElement<"
-                    + NAMEOF_TYPE(Element_t) + ">::CopyConstructor(MakingCopyOf_" + LE.ToString()
-                    + ")_");
+                std::ostringstream ss;
+                ss << LE.textRegionUPtr_->GetEntityName() << "CopyMadeBy_ListElement<"
+                   << NAMEOF_TYPE_T_STR(Element_t)
+                   << ">::CopyConstructor(MakingCopyOf_" + LE.ToString() << ")_";
 
                 textRegionUPtr_
-                    = std::make_unique<TextRegion>(GUI_NAME, LE.textRegionUPtr_->GetTextInfo());
+                    = std::make_unique<TextRegion>(ss.str(), LE.textRegionUPtr_->GetTextInfo());
             }
         }
 
@@ -77,12 +79,12 @@ namespace gui
         {
             if (LE.textRegionUPtr_)
             {
-                const auto GUI_NAME(
-                    LE.textRegionUPtr_->GetEntityName() + "CopyMadeBy_" + ToString()
-                    + "'s::CopyAssignmentOperator(MakingCopyOf_" + LE.ToString() + ")_");
+                std::ostringstream ss;
+                ss << LE.textRegionUPtr_->GetEntityName() << "CopyMadeBy_" << ToString()
+                   << "'s::CopyAssignmentOperator(MakingCopyOf_" << LE.ToString() << ")_";
 
                 textRegionUPtr_
-                    = std::make_unique<TextRegion>(GUI_NAME, LE.textRegionUPtr_->GetTextInfo());
+                    = std::make_unique<TextRegion>(ss.str(), LE.textRegionUPtr_->GetTextInfo());
             }
 
             cachedTextureOpt_ = LE.cachedTextureOpt_;
@@ -118,11 +120,11 @@ namespace gui
 
             if (TEXT_INFO_OPT)
             {
-                const auto GUI_NAME(
-                    "TextRegionMadeBy_" + ToString() + "'s_Constructor_ThatSays_\""
-                    + TEXT_INFO_OPT->text + "\"");
+                std::ostringstream ss;
+                ss << "TextRegionMadeBy_" << ToString() << "'s_Constructor_ThatSays_\""
+                   << TEXT_INFO_OPT->text << "\"";
 
-                textRegionUPtr_ = std::make_unique<TextRegion>(GUI_NAME, TEXT_INFO_OPT.value());
+                textRegionUPtr_ = std::make_unique<TextRegion>(ss.str(), TEXT_INFO_OPT.value());
             }
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -197,13 +199,13 @@ namespace gui
 
         bool HasCachedTexture() const { return HasImage(); }
 
-        const CachedTextureOpt_t & GetCachedTextureOpt() const { return cachedTextureOpt_; }
+        const CachedTextureOpt_t & CachedTextureOpt() const { return cachedTextureOpt_; }
 
-        const CachedTexture & GetCachedTexture() const
+        const CachedTexture & CachedTexture() const
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (cachedTextureOpt_),
-                ToString() << "::GetCachedTexture() but the cachedTextureOpt_ is not initialized.");
+                ToString() << "::CachedTexture() but the cachedTextureOpt_ is not initialized.");
 
             return cachedTextureOpt_.value();
         }
@@ -243,7 +245,7 @@ namespace gui
 
         // returns TextRegion.GetTextInfo(), returns a default constructed TextInfo if there is
         // no TextRegion
-        const TextInfo GetTextInfo() const
+        const TextInfo TextInfo() const
         {
             if (textRegionUPtr_)
             {
@@ -297,20 +299,19 @@ namespace gui
             sprite_.setColor(COLOR);
         }
 
-        template <typename T>
-        friend bool operator==(const ListElement<T> & L, const ListElement<T> & R);
+        friend bool operator==(const ListElement<Element_t> & L, const ListElement<Element_t> & R);
 
-        template <typename T>
-        friend bool operator<(const ListElement<T> & L, const ListElement<T> & R);
+        friend bool operator<(const ListElement<Element_t> & L, const ListElement<Element_t> & R);
 
         const std::string ToString() const
         {
-            return "ListElement<" + std::string(NAMEOF_TYPE(Element_t))
-                + ((HasElement()) ? ">(HasElement)(" : ">(NoElement)(")
-                + std::string(
-                      (cachedTextureOpt_) ? cachedTextureOpt_->Path() : std::string("NoImage"))
-                      .append(")(")
-                + ((textRegionUPtr_) ? "\"" + textRegionUPtr_->GetText() + "\"" : "NoText") + ")";
+            std::ostringstream ss;
+            ss << "ListElement<" << NAMEOF_TYPE_T_STR(Element_t) << ">("
+               << ((HasElement()) ? "HasElement" : "NoElement") << ")("
+               << ((cachedTextureOpt_) ? cachedTextureOpt_->Path() : "NoImage") << ")("
+               << ((textRegionUPtr_) ? "\"" + textRegionUPtr_->GetText() + "\"" : "NoText") << ")";
+
+            return ss.str();
         }
 
     private:

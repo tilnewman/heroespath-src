@@ -79,12 +79,12 @@ namespace gui
             size = SIZE;
         }
 
-        if (LETTERS_FONT < GuiFont::Count)
+        if (LETTERS_FONT != GuiFont::Count)
         {
             font_letters = LETTERS_FONT;
         }
 
-        if (NUMBERS_FONT < GuiFont::Count)
+        if (NUMBERS_FONT != GuiFont::Count)
         {
             font_numbers = NUMBERS_FONT;
         }
@@ -99,31 +99,20 @@ namespace gui
     const std::string TextInfo::ToString(
         const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        std::string str;
-        str.reserve(128);
+        std::ostringstream ss;
 
-        auto appendWithSeparator = [&](const std::string & STR) {
-            if (!str.empty())
+        auto appendWithSeparator = [&](const auto & THING) {
+            if (ss.str().empty() == false)
             {
-                str += SEPARATOR;
+                ss << SEPARATOR;
             }
 
-            str += STR;
+            ss << THING;
         };
-
-        if (WILL_PREFIX)
-        {
-            str += std::string("TextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=");
-        }
-
-        if (WILL_WRAP == Wrap::Yes)
-        {
-            str += '(';
-        }
 
         if (*this == TextInfo())
         {
-            str += "default";
+            ss << "default";
         }
         else
         {
@@ -137,19 +126,26 @@ namespace gui
             }
 
             appendWithSeparator(misc::Quoted(misc::MakeLoggableString(text)));
-            appendWithSeparator("font=" + NAMEOF_ENUM_STR(font_letters));
-            appendWithSeparator("num_font=" + NAMEOF_ENUM_STR(font_numbers));
-            appendWithSeparator(misc::ToString(color));
-            appendWithSeparator(NAMEOF_ENUM_STR(justified));
+            appendWithSeparator("font=" + GuiFont::ToString(font_letters));
+            appendWithSeparator("num_font=" + GuiFont::ToString(font_numbers));
+            appendWithSeparator(sfutil::ToString(color, misc::ToStringPrefix::SimpleName));
+            appendWithSeparator(gui::Justified::ToString(justified));
             appendWithSeparator(sfutil::TextStyleToString(style));
         }
 
         if (WILL_WRAP == Wrap::Yes)
         {
-            str += ')';
+            ss.str("(" + ss.str() + ")");
         }
 
-        return str;
+        if (WILL_PREFIX)
+        {
+            return std::string("TextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=") + ss.str();
+        }
+        else
+        {
+            return ss.str();
+        }
     }
 
     bool operator<(const TextInfo & L, const TextInfo & R)

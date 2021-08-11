@@ -10,12 +10,12 @@
 // combat-anim.hpp
 //
 #include "creature/trait.hpp"
-#include "game/strong-types.hpp"
 #include "gui/animation-enum.hpp"
 #include "gui/cached-texture.hpp"
 #include "gui/sliders.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>

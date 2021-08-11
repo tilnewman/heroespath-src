@@ -19,6 +19,7 @@
 #include "stage/stage-setup-packet.hpp"
 
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -51,34 +52,31 @@ namespace game
 
         const std::string AllStageNames() const
         {
-            std::string namesStr;
-            namesStr.reserve(64);
+            std::ostringstream ss;
 
             if (popupUPtr_)
             {
-                namesStr += popupUPtr_->GetStageName();
+                ss << popupUPtr_->GetStageName();
             }
 
             for (const auto & ISTAGE_UPTR : nonPopupUVec_)
             {
-                if (namesStr.empty() == false)
+                if (ss.str().empty() == false)
                 {
-                    namesStr += ", ";
+                    ss << ", ";
                 }
 
-                namesStr += ISTAGE_UPTR->GetStageName();
+                ss << ISTAGE_UPTR->GetStageName();
             }
 
-            if (namesStr.empty())
+            if (ss.str().empty())
             {
-                namesStr = "ActiveStages(none)";
+                return "ActiveStages(none)";
             }
             else
             {
-                namesStr = "ActiveStages(" + namesStr + ")";
+                return "ActiveStages(" + ss.str() + ")";
             }
-
-            return namesStr;
         }
 
         void SetIsFadingForAllStages(const bool IS_FADING);

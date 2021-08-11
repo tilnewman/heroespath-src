@@ -27,8 +27,8 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include <algorithm>
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 
 namespace heroespath
 {
@@ -273,7 +273,8 @@ namespace stage
             std::string text("");
 
             // check if focused entity is hovered first
-            if (entityWithFocusPtrOpt_ && entityWithFocusPtrOpt_.value()->Contains(MOUSE_POS_V))
+            if (entityWithFocusPtrOpt_
+                && (entityWithFocusPtrOpt_.value()->GetEntityRegion().contains(MOUSE_POS_V)))
             {
                 text = entityWithFocusPtrOpt_.value()->GetMouseHoverText();
             }
@@ -283,7 +284,7 @@ namespace stage
             {
                 for (const auto & NEXT_ENTITY_PTR : entityPVec_)
                 {
-                    if (NEXT_ENTITY_PTR->Contains(MOUSE_POS_V))
+                    if (NEXT_ENTITY_PTR->GetEntityRegion().contains(MOUSE_POS_V))
                     {
                         text = NEXT_ENTITY_PTR->GetMouseHoverText();
 
@@ -347,6 +348,21 @@ namespace stage
                 hoverTextBoxUPtr_.reset();
             }
         }
+    }
+
+    void StageBase::TestingStrAppend(const std::string & MESSAGE)
+    {
+        game::GameController::Instance()->TestingStrAppend(MESSAGE);
+    }
+
+    void StageBase::TestingStrIncrement(const std::string & MESSAGE)
+    {
+        game::GameController::Instance()->TestingStrIncrement(MESSAGE);
+    }
+
+    void StageBase::TestingImageSet(const std::string & MESSAGE)
+    {
+        game::GameController::Instance()->TestingImageSet(MESSAGE);
     }
 
     void StageBase::ClearAllEntities()

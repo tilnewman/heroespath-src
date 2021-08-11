@@ -15,16 +15,18 @@
 #include "creature/title-holder.hpp"
 #include "misc/assertlogandthrow.hpp"
 
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 
 namespace heroespath
 {
 namespace creature
 {
 
-    Achievements::Achievements(const creature::role::Enum & OWNING_CREATURE_ROLE)
-        : role_(OWNING_CREATURE_ROLE)
+    Achievements::Achievements(
+        const std::string & OWNING_CREATURE_NAME, const creature::role::Enum & OWNING_CREATURE_ROLE)
+        : name_(OWNING_CREATURE_NAME)
+        , role_(OWNING_CREATURE_ROLE)
         , map_()
     {
         map_.Reserve(64);
@@ -35,7 +37,7 @@ namespace creature
         AchievementMapInsertPair(
             AchievementType::DodgedFlying, Titles::SkyDodger, Titles::SkyShadow);
 
-        AchievementMapInsertPair(AchievementType::BackstabHits, Titles::Sneak, Titles::Assassin);
+        AchievementMapInsertPair(AchievementType::BackstabsHits, Titles::Sneak, Titles::Assassin);
 
         AchievementMapInsertPair(
             AchievementType::BattlesSurvived,
@@ -111,6 +113,7 @@ namespace creature
         {
             std::ostringstream ss;
             ss << "creature::Achievements::Increment(which_enum=" << ENUM
+               << ", creature_name=" << name_
                << ") was given an AchievementType::Enum that was not found in the map.";
 
             throw std::runtime_error(ss.str());

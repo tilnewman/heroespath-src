@@ -18,8 +18,8 @@
 #include "misc/serialize-helpers.hpp"
 #include "misc/strings.hpp"
 
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 
 namespace heroespath
 {

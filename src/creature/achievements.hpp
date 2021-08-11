@@ -36,6 +36,7 @@ namespace creature
     {
     public:
         explicit Achievements(
+            const std::string & OWNING_CREATURE_NAME = "",
             const creature::role::Enum & OWNING_CREATURE_ROLE = creature::role::Count);
 
         // these functions will throw on invalid enum or if a valid enum was not found in the map
@@ -54,6 +55,7 @@ namespace creature
             const Titles::Enum TITLE_LAST);
 
     private:
+        std::string name_;
         creature::role::Enum role_;
         AchievementMap_t map_;
 
@@ -62,6 +64,7 @@ namespace creature
         template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
+            ar & name_;
             ar & role_;
             ar & map_;
         }
@@ -69,12 +72,12 @@ namespace creature
 
     inline bool operator<(const Achievements & L, const Achievements & R)
     {
-        return std::tie(L.role_, L.map_) < std::tie(R.role_, R.map_);
+        return std::tie(L.name_, L.role_, L.map_) < std::tie(R.name_, R.role_, R.map_);
     }
 
     inline bool operator==(const Achievements & L, const Achievements & R)
     {
-        return std::tie(L.role_, L.map_) == std::tie(R.role_, R.map_);
+        return std::tie(L.name_, L.role_, L.map_) == std::tie(R.name_, R.role_, R.map_);
     }
 
     inline bool operator!=(const Achievements & L, const Achievements & R) { return !(L == R); }

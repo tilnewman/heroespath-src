@@ -6,16 +6,23 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-//
-// unit-test-vector-map.cpp
-//
-#define BOOST_TEST_MODULE "vector_map"
+#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_VectorMap"
+
+#include "misc/vector-map.hpp"
+
+#include "misc/platform.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4266)
+#endif
 
 #include <boost/test/unit_test.hpp>
 
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(pop)
+#endif
+
 #include "misc/nameof.hpp"
-#include "misc/vector-map.hpp"
-#include "test/util/game-engine-global-fixture.hpp"
 
 #include <algorithm>
 #include <iomanip>
@@ -26,16 +33,7 @@
 #include <utility>
 
 using namespace heroespath;
-using namespace heroespath::test;
 using namespace heroespath::misc;
-
-void GameEngineGlobalFixture::setupBeforeAllTests()
-{
-    m_unitTestFilename = __FILE__;
-    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
-}
-
-BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
 
 using Test_t = int;
 using VectorMap_t = VectorMap<Test_t, Test_t>;
@@ -112,22 +110,23 @@ template <typename T, typename U>
 void printIteratorCompareInfo(const std::string & S1, const std::string & S2)
 {
     std::cout << S1 << "\n"
-              << S2 << "\n\t" << NAMEOF_TYPE(T) << "\n\t" << NAMEOF_TYPE(U)
-              << "\n\t\titer_category=" << NAMEOF_TYPE(typename T::iterator_category)
-              << "\n\t\t           \"\"=" << NAMEOF_TYPE(typename U::iterator_category)
-              << "\n\t\t   value_type=" << NAMEOF_TYPE(typename T::value_type)
-              << "\n\t\t           \"\"=" << NAMEOF_TYPE(typename U::value_type)
-              << "\n\t\t,  pointer_type=" << NAMEOF_TYPE(typename T::pointer_type)
-              << "\n\t\t,          \"\"=" << NAMEOF_TYPE(typename U::pointer_type) << std::endl;
+              << S2 << "\n\t" << NAMEOF_TYPE_T_STR(T) << "\n\t" << NAMEOF_TYPE_T_STR(U)
+              << "\n\t\titer_category=" << NAMEOF_TYPE_T_STR(typename T::iterator_category)
+              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T_STR(typename U::iterator_category)
+              << "\n\t\t   value_type=" << NAMEOF_TYPE_T_STR(typename T::value_type)
+              << "\n\t\t           \"\"=" << NAMEOF_TYPE_T_STR(typename U::value_type)
+              << "\n\t\t,  pointer_type=" << NAMEOF_TYPE_T_STR(typename T::pointer_type)
+              << "\n\t\t,          \"\"=" << NAMEOF_TYPE_T_STR(typename U::pointer_type)
+              << std::endl;
 };
 
 template <typename T>
 void printIteratorInfo(const std::string & S, T)
 {
-    std::cout << S << ", " << NAMEOF_TYPE(T)
-              << ", \titer_category=" << NAMEOF_TYPE(typename T::iterator_category)
-              << ", \t   value_type=" << NAMEOF_TYPE(typename T::value_type)
-              << ", \t,  pointer_type=" << NAMEOF_TYPE(typename T::pointer_type) << std::endl;
+    std::cout << S << ", " << NAMEOF_TYPE_T_STR(T)
+              << ", \titer_category=" << NAMEOF_TYPE_T_STR(typename T::iterator_category)
+              << ", \t   value_type=" << NAMEOF_TYPE_T_STR(typename T::value_type)
+              << ", \t,  pointer_type=" << NAMEOF_TYPE_T_STR(typename T::pointer_type) << std::endl;
 };
 
 inline void testSet1(VectorMap_t & vm, const std::string & MESSAGE, const std::size_t TEST_INDEX)
@@ -260,14 +259,14 @@ inline void relationalTestsAll(const Vector_t & A, const Vector_t & B)
 
     std::ostringstream ss;
     ss << "relationalTests[";
-    for (std::size_t i(0); i < misc::Min(A.size(), std::size_t(4)); ++i)
+    for (std::size_t i(0); i < std::min(A.size(), std::size_t(4)); ++i)
     {
         if (0 != i)
             ss << ",";
         ss << std::to_string(A[i]);
     }
     ss << "][";
-    for (std::size_t i(0); i < misc::Min(B.size(), std::size_t(4)); ++i)
+    for (std::size_t i(0); i < std::min(B.size(), std::size_t(4)); ++i)
     {
         if (0 != i)
             ss << ",";
@@ -295,7 +294,7 @@ inline void relationalTestsAll(const Vector_t & A, const Vector_t & B)
     relationalTests(VMA_REV, VMB_REV, PVA_REV, PVB_REV, FAIL_MESSAGE + " AR-BR");
 }
 
-BOOST_AUTO_TEST_CASE(vector_map_all)
+BOOST_AUTO_TEST_CASE(Misc_VectorMap_Tests)
 {
     const std::size_t TEST_SIZE(123);
 

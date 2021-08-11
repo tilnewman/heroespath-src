@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -16,7 +14,7 @@
 #include "gui/radio-or-check-entity.hpp"
 #include "gui/text-entity.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -301,11 +299,10 @@ namespace gui
 
         const Callback_t::Packet_t EVENT_PACKET(misc::MakeNotNull(this), INDEX);
 
-        Callback_t::HandleAndLog(
-            *callbackHandlerPtr_,
-            EVENT_PACKET,
-            ("RadioOrCheckSet(" + GetEntityName() + "\", index-changed=" + std::to_string(INDEX)
-             + ")"));
+        std::ostringstream ss;
+        ss << "RadioOrCheckSet(" << GetEntityName() << "\", index-changed=" << INDEX << ")";
+
+        Callback_t::HandleAndLog(*callbackHandlerPtr_, EVENT_PACKET, ss.str());
     }
 
     void RadioOrCheckSet::Setup(

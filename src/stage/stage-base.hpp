@@ -95,23 +95,9 @@ namespace stage
         void RemoveFocus() override;
         void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) override;
 
-        template <typename T>
-        void SetFocus(const std::unique_ptr<T> & UPTR)
-        {
-            SetFocus(gui::IEntityPtr_t(UPTR.get()));
-        }
-
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         void HandleResolutionChange() override {}
-
-        template <typename T>
-        void EntityAdd(
-            const std::unique_ptr<T> & UPTR,
-            const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false)
-        {
-            EntityAdd(gui::IEntityPtr_t(UPTR.get()), WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK);
-        }
 
         void EntityAdd(
             const gui::IEntityPtr_t,
@@ -119,13 +105,11 @@ namespace stage
 
         void EntityRemove(const gui::IEntityPtr_t) override;
 
-        template <typename T>
-        void EntityRemove(const std::unique_ptr<T> & UPTR)
-        {
-            EntityRemove(gui::IEntityPtr_t(UPTR.get()));
-        }
-
         void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) override;
+
+        void TestingStrAppend(const std::string &) override;
+        void TestingStrIncrement(const std::string &) override;
+        void TestingImageSet(const std::string &) override;
 
         void PerformNextTest() override {}
         void ClearAllEntities() override;

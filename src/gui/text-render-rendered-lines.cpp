@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -12,8 +10,8 @@
 #include "text-render-rendered-lines.hpp"
 
 #include "misc/enum-util.hpp"
-#include "sfutil/common.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -41,7 +39,7 @@ namespace gui
 
         bool RenderedLines::IsValid() const
         {
-            return ((Empty() == false) && (sfutil::IsZeroOrLessAny(sfutil::Size(region)) == false));
+            return ((Empty() == false) && (sfutil::IsSizeZeroOrLessEither(region) == false));
         }
 
         bool RenderedLines::IsCurrentLineEmpty() const
@@ -128,22 +126,13 @@ namespace gui
 
         const std::string RenderedLines::ToString() const
         {
-            std::string str;
-            str.reserve(lines.size() * 1024);
-
-            str += "\nRender (";
-            str += std::to_string(lines.size());
-            str += ")  region=";
-            str += misc::ToString(region);
-            str += "\n\t";
-
+            std::ostringstream ss;
+            ss << "\nRender (" << lines.size() << ")  region=" << region << "\n\t";
             for (const auto & LINE : lines)
             {
-                str += LINE.ToString();
-                str += "\n\t";
+                ss << LINE.ToString() << "\n\t";
             }
-
-            return str;
+            return ss.str();
         }
 
         RenderedLine & RenderedLines::CurrentLine()

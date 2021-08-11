@@ -165,8 +165,10 @@ namespace stage
 
         for (const auto & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
-            const gui::TextInfo TEXT_INFO { (CHARACTER_PTR->HealthCurrent().ToString() + "/"
-                                             + CHARACTER_PTR->HealthNormal().ToString()),
+            std::ostringstream ss;
+            ss << CHARACTER_PTR->HealthCurrent() << "/" << CHARACTER_PTR->HealthNormal();
+
+            const gui::TextInfo TEXT_INFO { ss.str(),
                                             gui::GuiFont::Number,
                                             gui::FontManager::Instance()->Size_Smallish(),
                                             FadedDarkColor_Text() };
@@ -197,8 +199,10 @@ namespace stage
 
         for (const auto & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
-            const gui::TextInfo TEXT_INFO { (CHARACTER_PTR->Mana().ToString() + "/"
-                                             + CHARACTER_PTR->ManaNormal().ToString()),
+            std::ostringstream ss;
+            ss << CHARACTER_PTR->Mana() << "/" << CHARACTER_PTR->ManaNormal();
+
+            const gui::TextInfo TEXT_INFO { ss.str(),
                                             gui::GuiFont::Number,
                                             gui::FontManager::Instance()->Size_Smallish(),
                                             FadedDarkColor_Text() };
@@ -628,7 +632,7 @@ namespace stage
                                      / imagePair.second.getLocalBounds().height)
                                     * RESIZE_RATIO };
 
-            const auto FINAL_SCALE { misc::Min(SCALE_HORIZ, SCALE_VERT) };
+            const auto FINAL_SCALE { std::min(SCALE_HORIZ, SCALE_VERT) };
 
             imagePair.second.setScale(FINAL_SCALE, FINAL_SCALE);
 
@@ -647,7 +651,19 @@ namespace stage
     const std::string
         AdventureCharacterList::NameButtonMouseoverText(const creature::CreaturePtr_t CHARACTER_PTR)
     {
-        return CHARACTER_PTR->NameAndRaceAndRole() + " of Rank " + CHARACTER_PTR->Rank().ToString();
+        const auto NAME_STR { CHARACTER_PTR->Name() };
+        const auto RACE_STR { CHARACTER_PTR->RaceName() };
+
+        std::ostringstream ss;
+        ss << NAME_STR << " the " << CHARACTER_PTR->RankClassName();
+
+        if (NAME_STR != RACE_STR)
+        {
+            ss << " " << creature::race::RaceRoleName(CHARACTER_PTR->Race(), CHARACTER_PTR->Role());
+        }
+
+        ss << " of Rank " << CHARACTER_PTR->Rank();
+        return ss.str();
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Line() const

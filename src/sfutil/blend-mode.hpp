@@ -9,9 +9,12 @@
 //
 // blend-mode.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/to-string-prefix-enum.hpp"
+
 #include <SFML/Graphics/BlendMode.hpp>
 
-#include <iosfwd>
+#include <string>
 
 namespace sf
 {
@@ -21,5 +24,20 @@ bool operator<(const sf::BlendMode & L, const sf::BlendMode & R);
 std::ostream & operator<<(std::ostream & os, const sf::BlendMode & BM);
 
 } // namespace sf
+
+namespace heroespath
+{
+
+using BlendModeOpt_t = boost::optional<sf::BlendMode>;
+
+namespace sfutil
+{
+
+    const std::string ToString(
+        const sf::BlendMode & BM,
+        const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default);
+
+} // namespace sfutil
+} // namespace heroespath
 
 #endif // HEROESPATH_SFUTIL_BLENDMODE_HPP_INCLUDED

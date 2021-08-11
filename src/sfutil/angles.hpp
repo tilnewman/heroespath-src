@@ -21,32 +21,23 @@ namespace heroespath
 namespace sfutil
 {
 
-    // the sfutil library:
-    // always returns the type of the first parameter
-
     // assumes 'facing right' on the typical screen where horiz pixels increase to the right and
-    // vert pixels increase down, all math done as float
+    // vert pixels increase down
     template <typename T>
-    T GetAngleInDegrees(
-        const sf::Vector2<T> & BEGIN_POS_V, const sf::Vector2<T> & END_POS_V) noexcept
+    constexpr T
+        GetAngleInDegrees(const sf::Vector2<T> & BEGIN_POS_V, const sf::Vector2<T> & END_POS_V)
     {
-        const float BEGIN_POS_X { static_cast<float>(BEGIN_POS_V.x) };
-        const float BEGIN_POS_Y { static_cast<float>(BEGIN_POS_V.y) };
+        const auto ANGLE_RADIANS { std::atan(
+            (std::max(BEGIN_POS_V.y, END_POS_V.y) - std::min(BEGIN_POS_V.y, END_POS_V.y))
+            / (std::max(BEGIN_POS_V.x, END_POS_V.x) - std::min(BEGIN_POS_V.x, END_POS_V.x))) };
 
-        const float END_POS_X { static_cast<float>(END_POS_V.x) };
-        const float END_POS_Y { static_cast<float>(END_POS_V.y) };
+        const auto ANGLE_DEGREES { misc::math::RadiansToDegrees(ANGLE_RADIANS) };
 
-        const float ANGLE_RADIANS { std::atan(
-            (misc::Max(BEGIN_POS_Y, END_POS_Y) - misc::Min(BEGIN_POS_Y, END_POS_Y))
-            / (misc::Max(BEGIN_POS_X, END_POS_X) - misc::Min(BEGIN_POS_X, END_POS_X))) };
-
-        const float ANGLE_DEGREES { misc::math::RadiansToDegrees(ANGLE_RADIANS) };
-
-        if (BEGIN_POS_X < END_POS_X)
+        if (BEGIN_POS_V.x < END_POS_V.x)
         {
-            if (BEGIN_POS_Y > END_POS_Y)
+            if (BEGIN_POS_V.y > END_POS_V.y)
             {
-                return ANGLE_DEGREES * -1.0f; // QI
+                return ANGLE_DEGREES * T(-1); // QI
             }
             else
             {
@@ -55,148 +46,123 @@ namespace sfutil
         }
         else
         {
-            if (BEGIN_POS_Y > END_POS_Y)
+            if (BEGIN_POS_V.y > END_POS_V.y)
             {
-                return (180.0f - ANGLE_DEGREES) * -1.0f; // QII
+                return (T(180) - ANGLE_DEGREES) * -T(-1); // QII
             }
             else
             {
-                return (180.0f + ANGLE_DEGREES) * -1.0f; // QIII
+                return (T(180) + ANGLE_DEGREES) * -T(-1); // QIII
             }
         }
     }
 
-    // return either x will be 0 or SCREEN_SIZE_V.x, or y will be 0 or SCREEN_SIZE_V.y, all math as
-    // float
+    // return either x will be 0 or SCREEN_SIZE_V.x, or y will be 0 or SCREEN_SIZE_V.y
     template <typename T>
-    const sf::Vector2<T> ProjectToScreenEdge(
+    constexpr sf::Vector2<T> ProjectToScreenEdge(
         const sf::Vector2<T> & FIRST_POS_V,
         const sf::Vector2<T> & SECOND_POS_V,
-        const sf::Vector2<T> & SCREEN_SIZE_V) noexcept
+        const sf::Vector2<T> & SCREEN_SIZE_V)
     {
-        float finalPosX { 0.0f };
-        float finalPosY { 0.0f };
+        sf::Vector2<T> finalPosV { 0, 0 };
 
-        const float FIRST_POS_X { static_cast<float>(FIRST_POS_V.x) };
-        const float FIRST_POS_Y { static_cast<float>(FIRST_POS_V.y) };
-
-        const float SECOND_POS_X { static_cast<float>(SECOND_POS_V.x) };
-        const float SECOND_POS_Y { static_cast<float>(SECOND_POS_V.y) };
-
-        const float SCREEN_SIZE_X { static_cast<float>(SCREEN_SIZE_V.x) };
-        const float SCREEN_SIZE_Y { static_cast<float>(SCREEN_SIZE_V.y) };
-
-        const bool IS_FIRST_X_LESS_SECOND_X { FIRST_POS_X < SECOND_POS_X };
-        const bool IS_FIRST_Y_LESS_SECOND_Y { FIRST_POS_Y < SECOND_POS_Y };
-
-        if (misc::IsRealClose(FIRST_POS_X, SECOND_POS_X))
+        if (misc::IsRealClose(FIRST_POS_V.x, SECOND_POS_V.x))
         {
-            finalPosX = FIRST_POS_X;
-
-            if (IS_FIRST_Y_LESS_SECOND_Y)
+            finalPosV.x = FIRST_POS_V.x;
+            if (FIRST_POS_V.y < SECOND_POS_V.y)
             {
-                finalPosY = SECOND_POS_Y;
+                finalPosV.y = SCREEN_SIZE_V.y;
             }
             else
             {
-                finalPosY = 0.0f;
+                finalPosV.y = T(0);
             }
         }
-        else if (misc::IsRealClose(FIRST_POS_Y, SECOND_POS_Y))
+        else if (misc::IsRealClose(FIRST_POS_V.y, SECOND_POS_V.y))
         {
-            finalPosY = static_cast<float>(FIRST_POS_Y);
-
-            if (IS_FIRST_X_LESS_SECOND_X)
+            finalPosV.y = FIRST_POS_V.y;
+            if (FIRST_POS_V.x < SECOND_POS_V.x)
             {
-                finalPosX = SECOND_POS_X;
+                finalPosV.x = SCREEN_SIZE_V.x;
             }
             else
             {
-                finalPosX = 0.0f;
+                finalPosV.x = T(0);
             }
         }
         else
         {
             // use linear relations to find the edge-of-screen miss point using horiz/vert
-            finalPosY = ((IS_FIRST_Y_LESS_SECOND_Y) ? SCREEN_SIZE_Y : 0.0f);
+            finalPosV.y = ((FIRST_POS_V.y < SECOND_POS_V.y) ? SCREEN_SIZE_V.y : T(0));
 
-            const float MAX_MINUS_MIN_POS_X { (
-                misc::Max(FIRST_POS_X, SECOND_POS_X) - misc::Min(FIRST_POS_X, SECOND_POS_X)) };
-
-            const float MAX_MINUS_MIN_POS_Y { (
-                misc::Max(FIRST_POS_Y, SECOND_POS_Y) - misc::Min(FIRST_POS_Y, SECOND_POS_Y)) };
-
-            const auto AV_HORIZ_OVER_VERT { MAX_MINUS_MIN_POS_X / MAX_MINUS_MIN_POS_Y };
+            const auto AV_HORIZ_OVER_VERT { (std::max(FIRST_POS_V.x, SECOND_POS_V.x)
+                                             - std::min(FIRST_POS_V.x, SECOND_POS_V.x))
+                                            / (std::max(FIRST_POS_V.y, SECOND_POS_V.y)
+                                               - std::min(FIRST_POS_V.y, SECOND_POS_V.y)) };
 
             const auto AV_VERTICAL_EXTENT { (
-                (IS_FIRST_Y_LESS_SECOND_Y) ? (SCREEN_SIZE_Y - FIRST_POS_Y) : FIRST_POS_Y) };
+                (SECOND_POS_V.y > FIRST_POS_V.y) ? (SCREEN_SIZE_V.y - FIRST_POS_V.y)
+                                                 : FIRST_POS_V.y) };
 
             const auto AV_HORIZ_EXTENT { AV_HORIZ_OVER_VERT * AV_VERTICAL_EXTENT };
 
-            if (IS_FIRST_X_LESS_SECOND_X)
+            if (SECOND_POS_V.x > FIRST_POS_V.x)
             {
-                finalPosX = (FIRST_POS_X + AV_HORIZ_EXTENT);
+                finalPosV.x = FIRST_POS_V.x + AV_HORIZ_EXTENT;
             }
             else
             {
-                finalPosX = (FIRST_POS_X - AV_HORIZ_EXTENT);
+                finalPosV.x = FIRST_POS_V.x - AV_HORIZ_EXTENT;
             }
 
             //...okay so that didn't work, so use vert/horiz instead
-            if ((finalPosX < 0.0f) || (finalPosX > SCREEN_SIZE_X))
+            if ((finalPosV.x < T(0)) || (finalPosV.x > SCREEN_SIZE_V.x))
             {
-                finalPosX = ((IS_FIRST_X_LESS_SECOND_X) ? SCREEN_SIZE_X : 0.0f);
+                finalPosV.x = ((FIRST_POS_V.x < SECOND_POS_V.x) ? SCREEN_SIZE_V.x : T(0));
 
-                const auto AH_VERT_OVER_HORIZ { MAX_MINUS_MIN_POS_Y / MAX_MINUS_MIN_POS_X };
+                const auto AH_VERT_OVER_HORIZ { (std::max(FIRST_POS_V.y, SECOND_POS_V.y)
+                                                 - std::min(FIRST_POS_V.y, SECOND_POS_V.y))
+                                                / (std::max(FIRST_POS_V.x, SECOND_POS_V.x)
+                                                   - std::min(FIRST_POS_V.x, SECOND_POS_V.x)) };
 
                 const auto AH_HORIZ_EXTENT { (
-                    (IS_FIRST_X_LESS_SECOND_X) ? (SCREEN_SIZE_X - FIRST_POS_X) : FIRST_POS_X) };
+                    (SECOND_POS_V.x > FIRST_POS_V.x) ? (SCREEN_SIZE_V.x - FIRST_POS_V.x)
+                                                     : FIRST_POS_V.x) };
 
                 const auto AH_VERT_EXTENT { AH_VERT_OVER_HORIZ * AH_HORIZ_EXTENT };
 
-                if (IS_FIRST_Y_LESS_SECOND_Y)
+                if (SECOND_POS_V.y > FIRST_POS_V.y)
                 {
-                    finalPosY = (FIRST_POS_Y + AH_VERT_EXTENT);
+                    finalPosV.y = FIRST_POS_V.y + AH_VERT_EXTENT;
                 }
                 else
                 {
-                    finalPosY = (FIRST_POS_Y - AH_VERT_EXTENT);
+                    finalPosV.y = FIRST_POS_V.y - AH_VERT_EXTENT;
                 }
             }
         }
 
-        return sf::Vector2<T>(static_cast<T>(finalPosX), static_cast<T>(finalPosY));
-    }
-
-    template <typename T>
-    const typename std::enable_if_t<!misc::are_signed_v<T>, sf::Vector2<T>> ProjectToScreenEdge(
-        const sf::Vector2<T> & FIRST_POS_V,
-        const sf::Vector2<T> & SECOND_POS_V,
-        const sf::Vector2<T> & SCREEN_SIZE_V) noexcept
-    {
-        return sf::Vector2<T>(ProjectToScreenEdge(
-            sf::Vector2f(FIRST_POS_V), sf::Vector2f(SECOND_POS_V), sf::Vector2f(SCREEN_SIZE_V)));
+        return finalPosV;
     }
 
     // return either x will be 0 or SCREEN_SIZE_V.x, or y will be 0 or SCREEN_SIZE_V.y
     template <typename T>
-    const sf::Vector2<T>
+    constexpr sf::Vector2<T>
         ProjectToScreenEdge(const sf::Vector2<T> & FIRST_POS_V, const sf::Vector2<T> & SECOND_POS_V)
     {
-        return ProjectToScreenEdge(FIRST_POS_V, SECOND_POS_V, sf::Vector2<T>(DisplaySize()));
+        return ProjectToScreenEdge(FIRST_POS_V, SECOND_POS_V, sf::Vector2<T> { DisplaySize() });
     }
 
     // same as ProjectToScreenEdge() but result is nudged just off screen
     // the bigger PROJECTED_IMAGE_SIZE_V is the greater error in the angle
     template <typename T>
-    const typename std::enable_if_t<misc::are_signed_v<T>, sf::Vector2<T>>
-        ProjectJustPastScreenEdge(
-            const sf::Vector2<T> & FIRST_POS_V,
-            const sf::Vector2<T> & SECOND_POS_V,
-            const sf::Vector2<T> & SCREEN_SIZE_V,
-            const sf::Vector2<T> & PROJECTED_IMAGE_SIZE_V) noexcept
+    constexpr sf::Vector2<T> ProjectJustPastScreenEdge(
+        const sf::Vector2<T> & FIRST_POS_V,
+        const sf::Vector2<T> & SECOND_POS_V,
+        const sf::Vector2<T> & SCREEN_SIZE_V,
+        const sf::Vector2<T> & PROJECTED_IMAGE_SIZE_V)
     {
-        auto posV = ProjectToScreenEdge(FIRST_POS_V, SECOND_POS_V, SCREEN_SIZE_V);
+        auto posV { ProjectToScreenEdge(FIRST_POS_V, SECOND_POS_V, SCREEN_SIZE_V) };
 
         if (misc::IsRealZero(posV.x))
         {
@@ -219,44 +185,28 @@ namespace sfutil
         return posV;
     }
 
-    template <typename T>
-    const typename std::enable_if_t<!misc::are_signed_v<T>, sf::Vector2<T>>
-        ProjectJustPastScreenEdge(
-            const sf::Vector2<T> & FIRST_POS_V,
-            const sf::Vector2<T> & SECOND_POS_V,
-            const sf::Vector2<T> & SCREEN_SIZE_V,
-            const sf::Vector2<T> & PROJECTED_IMAGE_SIZE_V) noexcept
-    {
-        return sf::Vector2<T>(ProjectJustPastScreenEdge(
-            sf::Vector2f(FIRST_POS_V),
-            sf::Vector2f(SECOND_POS_V),
-            sf::Vector2f(SCREEN_SIZE_V),
-            sf::Vector2f(PROJECTED_IMAGE_SIZE_V)));
-    }
-
     // same as ProjectToScreenEdge() but result is nudged just off screen
     // the bigger PROJECTED_IMAGE_SIZE_V is the greater error in the angle
     template <typename T>
-    const sf::Vector2<T> ProjectJustPastScreenEdge(
+    constexpr sf::Vector2<T> ProjectJustPastScreenEdge(
         const sf::Vector2<T> & FIRST_POS_V,
         const sf::Vector2<T> & SECOND_POS_V,
         const sf::Vector2<T> & PROJECTED_IMAGE_SIZE_V)
     {
         return ProjectJustPastScreenEdge(
-            FIRST_POS_V, SECOND_POS_V, sf::Vector2<T>(DisplaySize()), PROJECTED_IMAGE_SIZE_V);
+            FIRST_POS_V, SECOND_POS_V, sf::Vector2<T> { DisplaySize() }, PROJECTED_IMAGE_SIZE_V);
     }
 
     // same as ProjectToScreenEdge() but result is nudged back on screen of not there already
     // the bigger PROJECTED_IMAGE_SIZE_V is the greater error in the angle
     template <typename T>
-    const typename std::enable_if_t<misc::are_signed_v<T>, sf::Vector2<T>>
-        ProjectJustWithinScreenEdge(
-            const sf::Vector2<T> & FIRST_POS_V,
-            const sf::Vector2<T> & SECOND_POS_V,
-            const sf::Vector2<T> & SCREEN_SIZE_V,
-            const sf::Vector2<T> & PROJECTED_IMAGE_SIZE_V) noexcept
+    constexpr sf::Vector2<T> ProjectJustWithinScreenEdge(
+        const sf::Vector2<T> & FIRST_POS_V,
+        const sf::Vector2<T> & SECOND_POS_V,
+        const sf::Vector2<T> & SCREEN_SIZE_V,
+        const sf::Vector2<T> & PROJECTED_IMAGE_SIZE_V)
     {
-        auto posV = ProjectToScreenEdge(FIRST_POS_V, SECOND_POS_V, SCREEN_SIZE_V);
+        auto posV { ProjectToScreenEdge(FIRST_POS_V, SECOND_POS_V, SCREEN_SIZE_V) };
 
         if ((posV.x + PROJECTED_IMAGE_SIZE_V.x) > SCREEN_SIZE_V.x)
         {
@@ -271,31 +221,16 @@ namespace sfutil
         return posV;
     }
 
-    template <typename T>
-    const typename std::enable_if_t<!misc::are_signed_v<T>, sf::Vector2<T>>
-        ProjectJustWithinScreenEdge(
-            const sf::Vector2<T> & FIRST_POS_V,
-            const sf::Vector2<T> & SECOND_POS_V,
-            const sf::Vector2<T> & SCREEN_SIZE_V,
-            const sf::Vector2<T> & PROJECTED_IMAGE_SIZE_V) noexcept
-    {
-        return sf::Vector2<T>(ProjectJustWithinScreenEdge(
-            sf::Vector2f(FIRST_POS_V),
-            sf::Vector2f(SECOND_POS_V),
-            sf::Vector2f(SCREEN_SIZE_V),
-            sf::Vector2f(PROJECTED_IMAGE_SIZE_V)));
-    }
-
     // same as ProjectToScreenEdge() but result is nudged back on screen of not there already
     // the bigger PROJECTED_IMAGE_SIZE_V is the greater error in the angle
     template <typename T>
-    const sf::Vector2<T> ProjectJustWithinScreenEdge(
+    constexpr sf::Vector2<T> ProjectJustWithinScreenEdge(
         const sf::Vector2<T> & FIRST_POS_V,
         const sf::Vector2<T> & SECOND_POS_V,
         const sf::Vector2<T> & PROJECTED_IMAGE_SIZE_V)
     {
         return ProjectJustWithinScreenEdge(
-            FIRST_POS_V, SECOND_POS_V, sf::Vector2<T>(DisplaySize()), PROJECTED_IMAGE_SIZE_V);
+            FIRST_POS_V, SECOND_POS_V, sf::Vector2<T> { DisplaySize() }, PROJECTED_IMAGE_SIZE_V);
     }
 
 } // namespace sfutil

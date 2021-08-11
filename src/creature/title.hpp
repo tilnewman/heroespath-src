@@ -14,9 +14,9 @@
 #include "creature/role-enum.hpp"
 #include "creature/stat-set.hpp"
 #include "creature/title-enum.hpp"
-#include "game/strong-types.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 
 #include <algorithm>
 #include <memory>
@@ -49,21 +49,21 @@ namespace creature
         explicit Title(
             const Titles::Enum TITLE = Titles::Count,
             const AchievementType::Enum ACHIEVEMENT_TYPE = AchievementType::None,
-            const std::size_t & ACHIEVEMENT_INDEX = 0, // 0 is invalid
-            const std::size_t & ACHIEVEMENT_COUNT = 0,
+            const Index_t & ACHIEVEMENT_INDEX = 0_index, // 0 is invalid
+            const Count_t & ACHIEVEMENT_COUNT = 0_count,
             const RoleVec_t & ROLES_VEC = RoleVec_t(),
             const StatSet & STATS_BONUS = StatSet(),
             const Rank_t & RANK_BONUS = 0_rank,
             const Experience_t & EXPERIENCE_BONUS = 0_exp,
             const Health_t & HEALTH_BONUS = 0_health);
 
-        const std::string Name() const { return std::string(Titles::Name(title_)); }
+        const std::string Name() const { return Titles::Name(title_); }
         const std::string Desc() const { return Titles::Desc(title_); }
         Titles::Enum Which() const { return title_; }
         const StatSet StatBonus() const { return statBonus_; }
         AchievementType::Enum GetAchievementType() const { return achievementType_; }
-        std::size_t AchievementCount() const { return achievementCount_; }
-        std::size_t AchievementIndex() const { return achievementIndex_; }
+        Count_t AchievementCount() const { return achievementCount_; }
+        Index_t AchievementIndex() const { return achievementIndex_; }
         void Roles(RoleVec_t & rolesVec_OutParam) const { rolesVec_OutParam = rolesVec_; }
         const RoleVec_t RolesCopy() const { return rolesVec_; }
 
@@ -92,8 +92,8 @@ namespace creature
     protected:
         Titles::Enum title_;
         AchievementType::Enum achievementType_;
-        std::size_t achievementCount_;
-        std::size_t achievementIndex_;
+        Count_t achievementCount_;
+        Index_t achievementIndex_;
         RoleVec_t rolesVec_;
         Rank_t rankBonus_;
         Experience_t expBonus_;

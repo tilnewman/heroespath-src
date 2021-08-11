@@ -13,7 +13,7 @@
 
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
-//#include "creature/nonplayer-inventory-factory.hpp"
+#include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/player-initial-setup.hpp"
 #include "creature/stat-set.hpp"
 #include "game/game-state-factory.hpp"
@@ -77,17 +77,16 @@ namespace creature
             (std::find(std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE)
              != std::end(VALID_ROLES)),
             "creature::CreatureFactory::MakeAndEquipEnemy(sex="
-                << NAMEOF_ENUM(SEX) << ", race=" << NAMEOF_ENUM(RACE)
-                << ", role=" << NAMEOF_ENUM(ROLE) << ", stats=" << STATS.ToString(true)
+                << creature::sex::ToString(SEX) << ", race=" << creature::race::ToString(RACE)
+                << ", role=" << creature::role::ToString(ROLE) << ", stats=" << STATS.ToString(true)
                 << ", health=" << HEALTH << ", rank=" << RANK << ", experience=" << EXPERIENCE
                 << ") but that race/role combination is invalid.");
 
         const auto CREATURE_PTR { CreatureWarehouse::Access().Store(std::make_unique<Creature>(
             false, race::Name(RACE), SEX, RACE, ROLE, STATS, "", HEALTH, RANK, EXPERIENCE, MANA)) };
 
-        // TODO PUT BACK AFTER re-tooling
-        // creature::nonplayer::InventoryFactory inventoryFactory;
-        // inventoryFactory.SetupCreatureInventory(CREATURE_PTR);
+        creature::nonplayer::InventoryFactory inventoryFactory;
+        inventoryFactory.SetupCreatureInventory(CREATURE_PTR);
         return CREATURE_PTR;
     }
 
@@ -114,26 +113,28 @@ namespace creature
         const auto CHARACTER_PTR { CreatureWarehouse::Access().Store(
             std::make_unique<Creature>(true, NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME)) };
 
-        PlayerInitialSetup::Setup(CHARACTER_PTR);
+        PlayerInitialSetup playerSetup;
+        playerSetup.Setup(CHARACTER_PTR);
+
         return CHARACTER_PTR;
     }
 
     const CreaturePtr_t CreatureFactory::MakeGoblinGrunt() const
     {
         const StatSet STATS(
-            Strength_t::Make(13 + misc::Random(5)),
-            Accuracy_t::Make(13 + misc::Random(5)),
-            Charm_t::Make(5 + misc::Random(5)),
-            Luck_t::Make(5 + misc::Random(5)),
-            Speed_t::Make(13 + misc::Random(5)),
-            Intel_t::Make(3 + misc::Random(5)));
+            Strength_t(13 + misc::Random(5)),
+            Accuracy_t(13 + misc::Random(5)),
+            Charm_t(5 + misc::Random(5)),
+            Luck_t(5 + misc::Random(5)),
+            Speed_t(13 + misc::Random(5)),
+            Intell_t(3 + misc::Random(5)));
 
         return MakeAndEquipEnemy(
             ((misc::Random(100) < 75) ? sex::Male : sex::Female),
             race::Goblin,
             role::Grunt,
             STATS,
-            Health_t::Make(misc::Random(10, 20)));
+            Health_t(misc::Random(10, 20)));
     }
 
 } // namespace creature

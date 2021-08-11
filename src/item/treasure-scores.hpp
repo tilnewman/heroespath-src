@@ -4,14 +4,13 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_ITEM_TREASURE_SCORE_SET_HPP_INCLUDED
-#define HEROESPATH_ITEM_TREASURE_SCORE_SET_HPP_INCLUDED
+#ifndef HEROESPATH_ITEM_TREASURESCORES_HPP_INCLUDED
+#define HEROESPATH_ITEM_TREASURESCORES_HPP_INCLUDED
 //
-// treasure-score-set.hpp
+// treasure-scores.hpp
 //
-#include "game/strong-types.hpp"
+#include "misc/types.hpp"
 
-#include <ostream>
 #include <string>
 #include <tuple>
 
@@ -21,165 +20,74 @@ namespace item
 {
 
     // Describes the chance or the amount of treasure with integers from roughly [0, 400].
-    struct TreasureScores
+    class TreasureScores
     {
-        constexpr explicit TreasureScores(
+    public:
+        explicit TreasureScores(
             const Score_t & COIN = 0_score,
             const Score_t & GEM = 0_score,
             const Score_t & MAGIC = 0_score,
-            const Score_t & RELIGIOUS = 0_score) noexcept
-            : coin(COIN)
-            , gem(GEM)
-            , magic(MAGIC)
-            , religious(RELIGIOUS)
-        {}
+            const Score_t & RELIGIOUS = 0_score);
 
-        constexpr TreasureScores(const TreasureScores &) noexcept = default;
-        constexpr TreasureScores(TreasureScores &&) noexcept = default;
-        constexpr TreasureScores & operator=(const TreasureScores &) noexcept = default;
-        constexpr TreasureScores & operator=(TreasureScores &&) noexcept = default;
+        Score_t Coin() const { return coin_; }
+        Score_t Gem() const { return gem_; }
+        Score_t Magic() const { return magic_; }
+        Score_t Religious() const { return religious_; }
 
-        constexpr bool IsEmpty() const noexcept
+        void Coin(const Score_t & SCORE) { coin_ = SCORE; }
+        void Gem(const Score_t & SCORE) { gem_ = SCORE; }
+        void Magic(const Score_t & SCORE) { magic_ = SCORE; }
+        void Religious(const Score_t & SCORE) { religious_ = SCORE; }
+
+        Score_t AdjustCoin(const Score_t & SCORE) { return coin_ += SCORE; }
+        Score_t AdjustGem(const Score_t & SCORE) { return gem_ += SCORE; }
+        Score_t AdjustMagic(const Score_t & SCORE) { return magic_ += SCORE; }
+        Score_t AdjustReligious(const Score_t & SCORE) { return religious_ += SCORE; }
+
+        bool IsEmpty() const
         {
-            return !(!coin.IsZero() || !gem.IsZero() || !magic.IsZero() | !religious.IsZero());
+            return (
+                (0_score == coin_) && (0_score == gem_) && (0_score == magic_)
+                && (0_score == religious_));
         }
 
-        const std::string ToString(const bool WILL_WRAP = false) const
-        {
-            std::string str;
-            str.reserve(32);
+        TreasureScores & operator+=(const TreasureScores &);
+        TreasureScores & operator-=(const TreasureScores &);
+        TreasureScores & operator*=(const TreasureScores &);
+        TreasureScores & operator/=(const TreasureScores &);
+        TreasureScores operator+(const TreasureScores &);
+        TreasureScores operator-(const TreasureScores &);
+        TreasureScores operator*(const TreasureScores &);
+        TreasureScores operator/(const TreasureScores &);
 
-            if (WILL_WRAP)
-            {
-                str += '(';
-            }
+        const std::string ToString(const bool WILL_WRAP = false) const;
 
-            str += "Coin=";
-            str += coin.ToString();
-            str += ", Gem=";
-            str += gem.ToString();
-            str += ", Magic=";
-            str += magic.ToString();
-            str += ", Religious=";
-            str += religious.ToString();
+        friend bool operator==(const TreasureScores & L, const TreasureScores & R);
+        friend bool operator<(const TreasureScores & L, const TreasureScores & R);
 
-            if (WILL_WRAP)
-            {
-                str += ')';
-            }
-
-            return str;
-        }
-
-        constexpr TreasureScores & operator+=(const TreasureScores & RHS) noexcept
-        {
-            coin += RHS.coin;
-            gem += RHS.gem;
-            magic += RHS.magic;
-            religious += RHS.religious;
-            return *this;
-        }
-
-        constexpr TreasureScores & operator-=(const TreasureScores & RHS) noexcept
-        {
-            coin -= RHS.coin;
-            gem -= RHS.gem;
-            magic -= RHS.magic;
-            religious -= RHS.religious;
-            return *this;
-        }
-
-        constexpr TreasureScores & operator*=(const TreasureScores & RHS) noexcept
-        {
-            coin *= RHS.coin;
-            gem *= RHS.gem;
-            magic *= RHS.magic;
-            religious *= RHS.religious;
-            return *this;
-        }
-
-        constexpr TreasureScores & operator/=(const TreasureScores & RHS) noexcept
-        {
-            coin /= RHS.coin;
-            gem /= RHS.gem;
-            magic /= RHS.magic;
-            religious /= RHS.religious;
-            return *this;
-        }
-
-        Score_t coin;
-        Score_t gem;
-        Score_t magic;
-        Score_t religious;
+    private:
+        Score_t coin_;
+        Score_t gem_;
+        Score_t magic_;
+        Score_t religious_;
     };
 
-    //
-
-    inline std::ostream & operator<<(std::ostream & os, const TreasureScores & R)
-    {
-        os << R.ToString();
-        return os;
-    }
-
-    //
-
-    constexpr bool operator==(const TreasureScores & L, const TreasureScores & R) noexcept
-    {
-        return !(
-            (L.coin != R.coin) || (L.gem != R.gem) || (L.magic != R.magic)
-            || (L.religious != R.religious));
-    }
-
-    constexpr bool operator!=(const TreasureScores & L, const TreasureScores & R) noexcept
-    {
-        return !(L == R);
-    }
-
-    constexpr bool operator<(const TreasureScores & L, const TreasureScores & R) noexcept
+    inline bool operator==(const TreasureScores & L, const TreasureScores & R)
     {
         return (
-            std::tie(L.coin, L.gem, L.magic, L.religious)
-            < std::tie(R.coin, R.gem, R.magic, R.religious));
+            std::tie(L.coin_, L.gem_, L.magic_, L.religious_)
+            == std::tie(R.coin_, L.gem_, R.magic_, R.religious_));
     }
 
-    constexpr bool operator>(const TreasureScores & L, const TreasureScores & R) noexcept
+    inline bool operator!=(const TreasureScores & L, const TreasureScores & R) { return !(L == R); }
+
+    inline bool operator<(const TreasureScores & L, const TreasureScores & R)
     {
-        return (R < L);
+        return (
+            std::tie(L.coin_, L.gem_, L.magic_, L.religious_)
+            < std::tie(R.coin_, R.gem_, R.magic_, R.religious_));
     }
-
-    constexpr bool operator<=(const TreasureScores & L, const TreasureScores & R) noexcept
-    {
-        return !(L > R);
-    }
-
-    constexpr bool operator>=(const TreasureScores & L, const TreasureScores & R) noexcept
-    {
-        return !(L < R);
-    }
-
-    //
-
-    constexpr TreasureScores operator+(const TreasureScores & L, const TreasureScores & R) noexcept
-    {
-        return (TreasureScores(L) += R);
-    }
-
-    constexpr TreasureScores operator-(const TreasureScores & L, const TreasureScores & R) noexcept
-    {
-        return (TreasureScores(L) -= R);
-    }
-
-    constexpr TreasureScores operator*(const TreasureScores & L, const TreasureScores & R) noexcept
-    {
-        return (TreasureScores(L) *= R);
-    }
-
-    constexpr TreasureScores operator/(const TreasureScores & L, const TreasureScores & R) noexcept
-    {
-        return (TreasureScores(L) /= R);
-    }
-
 } // namespace item
 } // namespace heroespath
 
-#endif // HEROESPATH_ITEM_TREASURE_SCORE_SET_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_TREASUREINFO_HPP_INCLUDED

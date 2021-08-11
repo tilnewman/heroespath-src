@@ -18,7 +18,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct GuiEvent : public EnumBaseBitField<>
+    struct GuiEvent : public EnumBaseBitField
     {
         enum Enum : EnumUnderlying_t
         {
@@ -28,10 +28,14 @@ namespace gui
             MouseWheel = 1 << 2,
             SelectionChange = 1 << 3,
             Keypress = 1 << 4,
-            FocusChange = 1 << 5
+            FocusChange = 1 << 5,
+            Last = FocusChange
         };
 
-        static constexpr Enum Last = FocusChange;
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
+
+        static const std::string
+            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
 } // namespace gui

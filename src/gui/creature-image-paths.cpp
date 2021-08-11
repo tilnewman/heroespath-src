@@ -42,6 +42,239 @@ namespace gui
                 + M_HP_VAR_STR(imageDirectoryPath_));
     }
 
+    bool CreatureImagePaths::Test(stage::IStagePtr_t iStagePtr)
+    {
+        static auto didPostInitial { false };
+        if (false == didPostInitial)
+        {
+            didPostInitial = true;
+            iStagePtr->TestingStrAppend("gui::CreatureImagePaths::Test() Starting Tests...");
+        }
+
+        static auto allPaths { misc::filesystem::FindFiles(
+            false, imageDirectoryPath_, "", ".png") };
+
+        for (auto & pathStr : allPaths)
+        {
+            misc::ToLower(pathStr);
+        }
+
+        static EnumUnderlying_t raceIndex { 0 };
+        if (raceIndex < creature::race::Count)
+        {
+            const auto RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
+            const auto RACE_STR { creature::race::ToString(RACE_ENUM) };
+            const auto ROLE_VEC { creature::race::Roles(RACE_ENUM) };
+
+            static EnumUnderlying_t roleIndex { 0 };
+            if (roleIndex < ROLE_VEC.size())
+            {
+                const auto ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
+                const auto ROLE_STR { creature::role::ToString(ROLE_ENUM) };
+
+                static EnumUnderlying_t sexIndex { 0 };
+                if (sexIndex < creature::sex::Count)
+                {
+                    const auto SEX_ENUM { static_cast<creature::sex::Enum>(sexIndex) };
+                    const auto SEX_STR { creature::sex::ToString(SEX_ENUM) };
+
+                    // test to ensure that BodyType maker will not throw
+                    creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM);
+
+                    static EnumUnderlying_t classIndex { 0 };
+                    static std::size_t fileIndex { 0 };
+                    if (RACE_ENUM == creature::race::Wolfen)
+                    {
+                        if (classIndex < creature::wolfen_class::Count)
+                        {
+                            const auto CLASS_ENUM { static_cast<creature::wolfen_class::Enum>(
+                                classIndex) };
+
+                            const auto CLASS_STR { creature::wolfen_class::ToString(CLASS_ENUM) };
+
+                            const auto FILENAMES { Filenames(
+                                RACE_ENUM,
+                                ROLE_ENUM,
+                                SEX_ENUM,
+                                CLASS_ENUM,
+                                creature::dragon_class::Count) };
+
+                            M_HP_ASSERT_OR_LOG_AND_THROW(
+                                (FILENAMES.empty() == false),
+                                "gui::CreatureImagePaths() (wolfen_classes) race="
+                                    << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
+                                    << ", wolfen_class=" << CLASS_STR
+                                    << ", GetFilenames() failed to return anything.");
+
+                            if (fileIndex < FILENAMES.size())
+                            {
+                                const auto FILENAME { FILENAMES.at(fileIndex) };
+                                const auto PATH { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+                                CachedTexture cachedTexture { PathWrapper(PATH) };
+
+                                auto imagePathFoundIter { std::find(
+                                    std::begin(allPaths), std::end(allPaths), PATH) };
+
+                                if (imagePathFoundIter != std::end(allPaths))
+                                {
+                                    iStagePtr->TestingImageSet(PATH);
+                                    allPaths.erase(imagePathFoundIter);
+                                }
+
+                                std::ostringstream ss;
+                                ss << " CreatureImagePaths Tested race=" << RACE_STR
+                                   << " role=" << ROLE_STR << " sex=" << SEX_STR
+                                   << " wolfen_class=" << CLASS_STR << " filename=" << FILENAME;
+
+                                iStagePtr->TestingStrAppend(ss.str());
+
+                                allPaths.erase(
+                                    std::remove(std::begin(allPaths), std::end(allPaths), PATH),
+                                    std::end(allPaths));
+
+                                ++fileIndex;
+                                return false;
+                            }
+
+                            fileIndex = 0;
+                            ++classIndex;
+                            return false;
+                        }
+                    }
+                    else if (RACE_ENUM == creature::race::Dragon)
+                    {
+                        if (classIndex < creature::dragon_class::Count)
+                        {
+                            const auto CLASS_ENUM { static_cast<creature::dragon_class::Enum>(
+                                classIndex) };
+
+                            const auto CLASS_STR { creature::dragon_class::ToString(CLASS_ENUM) };
+
+                            const auto FILENAMES { Filenames(
+                                RACE_ENUM,
+                                ROLE_ENUM,
+                                SEX_ENUM,
+                                creature::wolfen_class::Count,
+                                CLASS_ENUM) };
+
+                            M_HP_ASSERT_OR_LOG_AND_THROW(
+                                (FILENAMES.empty() == false),
+                                "gui::CreatureImagePaths() (dragon_classes) race="
+                                    << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
+                                    << ", dragon_class=" << CLASS_STR
+                                    << ", GetFilenames() failed to return anything.");
+
+                            if (fileIndex < FILENAMES.size())
+                            {
+                                const auto FILENAME { FILENAMES.at(fileIndex) };
+                                const auto PATH { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+                                CachedTexture cachedTexture { PathWrapper(PATH) };
+
+                                auto imagePathFoundIter { std::find(
+                                    std::begin(allPaths), std::end(allPaths), PATH) };
+
+                                if (imagePathFoundIter != std::end(allPaths))
+                                {
+                                    iStagePtr->TestingImageSet(PATH);
+                                    allPaths.erase(imagePathFoundIter);
+                                }
+
+                                std::ostringstream ss;
+                                ss << " CreatureImagePaths Tested race=" << RACE_STR
+                                   << " role=" << ROLE_STR << " sex=" << SEX_STR
+                                   << " dragon_class=" << CLASS_STR << " filename=" << FILENAME;
+
+                                iStagePtr->TestingStrAppend(ss.str());
+
+                                allPaths.erase(
+                                    std::remove(std::begin(allPaths), std::end(allPaths), PATH),
+                                    std::end(allPaths));
+
+                                ++fileIndex;
+                                return false;
+                            }
+
+                            fileIndex = 0;
+                            ++classIndex;
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        const auto FILENAMES { Filenames(
+                            RACE_ENUM,
+                            ROLE_ENUM,
+                            SEX_ENUM,
+                            creature::wolfen_class::Count,
+                            creature::dragon_class::Count) };
+
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
+                            (FILENAMES.empty() == false),
+                            "gui::CreatureImagePaths() race="
+                                << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
+                                << ", GetFilenames() failed to return anything.");
+
+                        if (fileIndex < FILENAMES.size())
+                        {
+                            const auto FILENAME { FILENAMES.at(fileIndex) };
+                            const auto PATH { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+                            CachedTexture cachedTexture { PathWrapper(PATH) };
+
+                            auto imagePathFoundIter { std::find(
+                                std::begin(allPaths), std::end(allPaths), PATH) };
+
+                            if (imagePathFoundIter != std::end(allPaths))
+                            {
+                                iStagePtr->TestingImageSet(PATH);
+                                allPaths.erase(imagePathFoundIter);
+                            }
+
+                            std::ostringstream ss;
+                            ss << " CreatureImagePaths Tested race=" << RACE_STR
+                               << " role=" << ROLE_STR << " sex=" << SEX_STR
+                               << " filename=" << FILENAME;
+
+                            iStagePtr->TestingStrAppend(ss.str());
+
+                            allPaths.erase(
+                                std::remove(std::begin(allPaths), std::end(allPaths), PATH),
+                                std::end(allPaths));
+
+                            ++fileIndex;
+                            return false;
+                        }
+                    }
+
+                    fileIndex = 0;
+                    classIndex = 0;
+                    ++sexIndex;
+                    return false;
+                }
+
+                sexIndex = 0;
+                ++roleIndex;
+                return false;
+            }
+
+            roleIndex = 0;
+            ++raceIndex;
+            return false;
+        }
+
+        std::sort(std::begin(allPaths), std::end(allPaths));
+
+        for (const auto & PATH : allPaths)
+        {
+            M_HP_LOG_WRN(
+                "gui::CreatureImagePaths::Test() found the following item image "
+                "unused: "
+                << PATH);
+        }
+
+        iStagePtr->TestingStrAppend("gui::CreatureImagePaths::Test()  ALL TESTS PASSED.");
+        return true;
+    }
+
     const std::string CreatureImagePaths::PathFromFilename(const std::string & FILENAME)
     {
         return misc::filesystem::CombinePaths(imageDirectoryPath_, FILENAME);
@@ -53,7 +286,7 @@ namespace gui
             CREATURE.Race(),
             CREATURE.Role(),
             CREATURE.Sex(),
-            CREATURE.WolfenClassType(),
+            CREATURE.WolfenClass(),
             CREATURE.DragonClass()) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -74,7 +307,7 @@ namespace gui
         const creature::race::Enum RACE,
         const creature::role::Enum ROLE,
         const creature::sex::Enum SEX,
-        const creature::WolfenClass::Enum WOLFEN_CLASS,
+        const creature::wolfen_class::Enum WOLFEN_CLASS,
         const creature::dragon_class::Enum DRAGON_CLASS)
     {
         if (RACE == creature::race::Troll)
@@ -169,12 +402,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
-                const std::size_t COUNT(13);
                 std::vector<std::string> filenames;
-                filenames.reserve(COUNT + 1);
-                for (std::size_t i(1); i <= COUNT; ++i)
+                for (std::size_t i(1); i <= 13; ++i)
                 {
-                    filenames.emplace_back("orc-grunt-" + std::to_string(i) + ".png");
+                    std::ostringstream ss;
+                    ss << "orc-grunt-" << i << ".png";
+                    filenames.emplace_back(ss.str());
                 }
 
                 return filenames;
@@ -230,12 +463,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
-                const std::size_t COUNT(6);
                 std::vector<std::string> filenames;
-                filenames.reserve(COUNT + 1);
-                for (std::size_t i(1); i <= COUNT; ++i)
+                for (std::size_t i(1); i <= 6; ++i)
                 {
-                    filenames.emplace_back("newt-" + std::to_string(i) + ".png");
+                    std::ostringstream ss;
+                    ss << "newt-" << i << ".png";
+                    filenames.emplace_back(ss.str());
                 }
                 return filenames;
             }
@@ -246,7 +479,9 @@ namespace gui
             std::vector<std::string> filenames;
             for (std::size_t i(1); i <= 9; ++i)
             {
-                filenames.emplace_back("spider-giant-" + std::to_string(i) + ".png");
+                std::ostringstream ss;
+                ss << "spider-giant-" << i << ".png";
+                filenames.emplace_back(ss.str());
             }
             return filenames;
         }
@@ -357,12 +592,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
-                const std::size_t COUNT(12);
                 std::vector<std::string> filenames;
-                filenames.reserve(COUNT + 1);
-                for (std::size_t i(1); i <= COUNT; ++i)
+                for (std::size_t i(1); i <= 12; ++i)
                 {
-                    filenames.emplace_back("lizard-walker-" + std::to_string(i) + ".png");
+                    std::ostringstream ss;
+                    ss << "lizard-walker-" << i << ".png";
+                    filenames.emplace_back(ss.str());
                 }
                 return filenames;
             }
@@ -508,12 +743,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
-                const std::size_t COUNT(8);
                 std::vector<std::string> filenames;
-                filenames.reserve(COUNT + 1);
-                for (std::size_t i(1); i <= COUNT; ++i)
+                for (std::size_t i(1); i <= 8; ++i)
                 {
-                    filenames.emplace_back("skeleton-" + std::to_string(i) + ".png");
+                    std::ostringstream ss;
+                    ss << "skeleton-" << i << ".png";
+                    filenames.emplace_back(ss.str());
                 }
                 return filenames;
             }
@@ -566,12 +801,12 @@ namespace gui
 
             if (ROLE == creature::role::Whelp)
             {
-                const std::size_t COUNT(4);
                 std::vector<std::string> filenames;
-                filenames.reserve(COUNT + 1);
-                for (std::size_t i(1); i <= COUNT; ++i)
+                for (std::size_t i(1); i <= 4; ++i)
                 {
-                    filenames.emplace_back("demon-whelp-" + std::to_string(i) + ".png");
+                    std::ostringstream ss;
+                    ss << "demon-whelp-" << i << ".png";
+                    filenames.emplace_back(ss.str());
                 }
                 return filenames;
             }
@@ -583,12 +818,12 @@ namespace gui
 
             if (ROLE == creature::role::Grunt)
             {
-                const std::size_t COUNT(9);
                 std::vector<std::string> filenames;
-                filenames.reserve(COUNT + 1);
-                for (std::size_t i(1); i <= COUNT; ++i)
+                for (std::size_t i(1); i <= 9; ++i)
                 {
-                    filenames.emplace_back("demon-" + std::to_string(i) + ".png");
+                    std::ostringstream ss;
+                    ss << "demon-" << i << ".png";
+                    filenames.emplace_back(ss.str());
                 }
                 return filenames;
             }
@@ -727,12 +962,12 @@ namespace gui
                 }
                 else
                 {
-                    const std::size_t COUNT(13);
                     std::vector<std::string> filenames;
-                    filenames.reserve(COUNT + 1);
-                    for (std::size_t i(1); i <= COUNT; ++i)
+                    for (std::size_t i(1); i <= 13; ++i)
                     {
-                        filenames.emplace_back("goblin-grunt-" + std::to_string(i) + ".png");
+                        std::ostringstream ss;
+                        ss << "goblin-grunt-" << i << ".png";
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1216,7 +1451,7 @@ namespace gui
 
         if (RACE == creature::race::Wolfen)
         {
-            if (WOLFEN_CLASS >= creature::WolfenClass::Count)
+            if (WOLFEN_CLASS == creature::wolfen_class::Count)
             {
                 if (ROLE == creature::role::TwoHeaded)
                 {
@@ -1232,31 +1467,31 @@ namespace gui
             {
                 switch (WOLFEN_CLASS)
                 {
-                    case creature::WolfenClass::Pup:
+                    case creature::wolfen_class::Pup:
                     {
                         return { "wolfen-pup.png" };
                     }
-                    case creature::WolfenClass::Juvenile:
+                    case creature::wolfen_class::Juvenile:
                     {
                         return { "wolfen-juvenile.png" };
                     }
-                    case creature::WolfenClass::Adult:
+                    case creature::wolfen_class::Adult:
                     {
                         return { "wolfen-adult.png" };
                     }
-                    case creature::WolfenClass::Noble:
+                    case creature::wolfen_class::Noble:
                     {
                         return { "wolfen-noble.png" };
                     }
-                    case creature::WolfenClass::Highborn:
+                    case creature::wolfen_class::Highborn:
                     {
                         return { "wolfen-highborn.png" };
                     }
-                    case creature::WolfenClass::Elder:
+                    case creature::wolfen_class::Elder:
                     {
                         return { "wolfen-elder.png" };
                     }
-                    case creature::WolfenClass::Count:
+                    case creature::wolfen_class::Count:
                     default:
                     {
                         break;
@@ -1420,9 +1655,12 @@ namespace gui
         }
 
         std::ostringstream ss;
-        ss << "gui::CreatureImagePaths::GetFilenames(race=" << NAMEOF_ENUM(RACE)
-           << ", role=" << NAMEOF_ENUM(ROLE) << ", sex=" << NAMEOF_ENUM(SEX)
-           << ", WolfenClass=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS
+        ss << "gui::CreatureImagePaths::GetFilenames(race="
+           << ((RACE == creature::race::Count) ? "(count)" : creature::race::ToString(RACE))
+           << ", role="
+           << ((ROLE == creature::role::Count) ? "(count)" : creature::role::ToString(ROLE))
+           << ", sex=" << ((SEX == creature::sex::Count) ? "(count)" : creature::sex::ToString(SEX))
+           << ", wolfen_class=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS
            << ") -No filenames found for that creature information.";
 
         throw std::runtime_error(ss.str());

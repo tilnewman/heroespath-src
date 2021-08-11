@@ -19,12 +19,13 @@ namespace gui
 {
 
     // Responsible for enumerating all possible alterations for a cached texture.
-    struct ImageOpt : public EnumBaseBitField<SeparatorAlwaysSlash>
+    struct ImageOpt : public EnumBaseBitField
     {
         enum Enum : EnumUnderlying_t
         {
             None = 0,
             Smooth = 1 << 0,
+            Default = Smooth,
             FlipHoriz = 1 << 1,
             FlipVert = 1 << 2,
             Repeated = 1 << 3,
@@ -32,11 +33,15 @@ namespace gui
             InvertAfterMask = 1 << 5,
             InvertIncludesAlpha = 1 << 6,
             ShadowMaskNormal = 1 << 7,
-            ShadowMaskForShadowImage = 1 << 8
+            ShadowMaskForShadowImage = 1 << 8,
+            Last = ShadowMaskForShadowImage
         };
 
-        static constexpr Enum Default = Smooth;
-        static constexpr Enum Last = ShadowMaskForShadowImage;
+        static const std::string
+            ToString(const Enum ENUM_VALUE, const EnumStringHow & HOW = EnumStringHow("/"));
+
+        static const std::string ToStringPopulate(
+            const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR = "/");
     };
 
 } // namespace gui

@@ -25,11 +25,11 @@
 #include "creature/trait.hpp"
 #include "creature/traits-set.hpp"
 #include "creature/wolfen-class-enum.hpp"
-#include "game/strong-types.hpp"
 #include "gui/date-time.hpp"
 #include "item/inventory.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
 
@@ -88,12 +88,12 @@ namespace creature
         // Note:  This constructor will add the default 'Good' status if CONDITIONS is empty.
         explicit Creature(
             const bool IS_PLAYER = false,
-            const std::string_view NAME = "no_name_error",
+            const std::string & NAME = "no_name_error",
             const sex::Enum SEX = creature::sex::Unknown,
             const race::Enum & RACE = race::Human,
             const role::Enum & ROLE = role::Archer,
             const StatSet & STATS = StatSet(),
-            const std::string_view IMAGE_FILENAME = "",
+            const std::string & IMAGE_FILENAME = "",
             const Health_t & HEALTH = 0_health,
             const Rank_t & RANK = 1_rank,
             const Experience_t & EXPERIENCE = 0_exp,
@@ -118,12 +118,10 @@ namespace creature
 
         sex::Enum Sex() const { return sex_; }
 
-        const std::string SexName() const { return NAMEOF_ENUM_STR(sex_); }
+        const std::string SexName() const { return creature::sex::ToString(sex_); }
 
         race::Enum Race() const { return race_; }
-        constexpr std::string_view RaceName() const noexcept { return race::Name(race_); }
-        const std::string RaceNameForced() const { return std::string(RaceName()); }
-
+        const std::string RaceName() const { return race::Name(race_); }
         bool IsPixie() const { return (race_ == race::Pixie); }
 
         bool IsBeast() const
@@ -133,7 +131,7 @@ namespace creature
 
         dragon_class::Enum DragonClass() const { return dragon_class::ClassFromRank(Rank()); }
 
-        WolfenClass::Enum WolfenClassType() const { return WolfenClass::ClassFromRank(Rank()); }
+        wolfen_class::Enum WolfenClass() const { return wolfen_class::ClassFromRank(Rank()); }
 
         Rank_t Rank() const { return rank_; }
 
@@ -157,8 +155,7 @@ namespace creature
         Health_t HealthNormalAdj(const Health_t &);
 
         role::Enum Role() const { return role_; }
-        const std::string RoleName() const { return std::string(role::Name(role_)); }
-        const std::string RoleNameForced() const { return RoleName(); }
+        const std::string RoleName() const { return role::Name(role_); }
 
         void TitleAdd(const Titles::Enum ENUM, const bool ALLOW_CHANGES = true);
         const TitleEnumVec_t Titles() const { return titlesVec_; }
@@ -166,46 +163,46 @@ namespace creature
 
         float HealthRatio() const
         {
-            return (healthCurrent_.GetAs<float>() / healthNormal_.GetAs<float>());
+            return (healthCurrent_.As<float>() / healthNormal_.As<float>());
         }
 
         Health_t HealthMissing() const { return healthNormal_ - healthCurrent_; }
 
         Mana_t ManaMissing() const
         {
-            return Mana_t::Make(TraitNormal(Traits::Mana) - TraitWorking(Traits::Mana));
+            return Mana_t(TraitNormal(Traits::Mana) - TraitWorking(Traits::Mana));
         }
 
-        Mana_t Mana() const { return Mana_t::Make(TraitWorking(Traits::Mana)); }
+        Mana_t Mana() const { return Mana_t(TraitWorking(Traits::Mana)); }
 
         Mana_t ManaAdj(const Mana_t & ADJ)
         {
-            return Mana_t::Make(TraitCurrentAdj(Traits::Mana, ADJ.GetAsTrait()));
+            return Mana_t(TraitCurrentAdj(Traits::Mana, ADJ.As<int>()));
         }
 
-        Mana_t ManaNormal() const { return Mana_t::Make(TraitNormal(Traits::Mana)); }
+        Mana_t ManaNormal() const { return Mana_t(TraitNormal(Traits::Mana)); }
 
         Mana_t ManaNormalAdj(const Mana_t & ADJ)
         {
-            return Mana_t::Make(TraitNormalAdj(Traits::Mana, ADJ.GetAsTrait()));
+            return Mana_t(TraitNormalAdj(Traits::Mana, ADJ.As<int>()));
         }
 
-        float ManaRatio() const { return (Mana().GetAs<float>() / ManaNormal().GetAs<float>()); }
+        float ManaRatio() const { return (Mana().As<float>() / ManaNormal().As<float>()); }
 
         bool IsDead() const { return HasCondition(Conditions::Dead); }
         bool IsAlive() const { return !IsDead(); }
 
-        Strength_t Strength() const { return Strength_t::Make(TraitWorking(Traits::Strength)); }
+        Strength_t Strength() const { return Strength_t(TraitWorking(Traits::Strength)); }
 
-        Accuracy_t Accuracy() const { return Accuracy_t::Make(TraitWorking(Traits::Accuracy)); }
+        Accuracy_t Accuracy() const { return Accuracy_t(TraitWorking(Traits::Accuracy)); }
 
-        Charm_t Charm() const { return Charm_t::Make(TraitWorking(Traits::Charm)); }
+        Charm_t Charm() const { return Charm_t(TraitWorking(Traits::Charm)); }
 
-        Luck_t Luck() const { return Luck_t::Make(TraitWorking(Traits::Luck)); }
+        Luck_t Luck() const { return Luck_t(TraitWorking(Traits::Luck)); }
 
-        Speed_t Speed() const { return Speed_t::Make(TraitWorking(Traits::Speed)); }
+        Speed_t Speed() const { return Speed_t(TraitWorking(Traits::Speed)); }
 
-        Intel_t Intelligence() const { return Intel_t::Make(TraitWorking(Traits::Intelligence)); }
+        Intell_t Intelligence() const { return Intell_t(TraitWorking(Traits::Intelligence)); }
 
         const gui::DateTime DateTimeCreated() const { return dateTimeCreated_; }
 
@@ -250,7 +247,7 @@ namespace creature
 
         // these functions return false if attempt to reduce beyond zero
         bool CoinsAdj(const Coin_t & C) { return inventory_.CoinsAdj(C); }
-        bool ShardsAdj(const Shard_t & M) { return inventory_.ShardsAdj(M); }
+        bool MeteorShardsAdj(const MeteorShard_t & M) { return inventory_.MeteorShardsAdj(M); }
         bool GemsAdj(const Gem_t & G) { return inventory_.GemsAdj(G); }
 
         // These functions return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
@@ -260,7 +257,7 @@ namespace creature
         const std::string ItemIsAddAllowed(const item::ItemPtr_t) const;
         const std::string ItemEquip(const item::ItemPtr_t);
         const std::string ItemIsEquipAllowed(const item::ItemPtr_t) const;
-        const std::string ItemIsEquipAllowedByRaceAndRole(const item::ItemPtr_t) const;
+        const std::string ItemIsEquipAllowedByRole(const item::ItemPtr_t) const;
 
         // This function will not remove an equipped item.  Unequip first.
         void ItemRemove(const item::ItemPtr_t);
@@ -332,10 +329,7 @@ namespace creature
 
         void ReCalculateTraitBonuses();
 
-        Trait_t TraitNormal(const Traits::Enum ENUM) const
-        {
-            return actualSet_.GetCopy(ENUM).Normal();
-        }
+        int TraitNormal(const Traits::Enum ENUM) const { return actualSet_.GetCopy(ENUM).Normal(); }
 
         Trait_t TraitNormalAdj(const Traits::Enum ENUM, const Trait_t ADJ)
         {

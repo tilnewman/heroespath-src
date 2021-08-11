@@ -34,13 +34,13 @@ namespace game
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: NpcWarehouse");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<NpcWarehouse *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void NpcWarehouse::Create()
+    void NpcWarehouse::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -48,11 +48,17 @@ namespace game
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: NpcWarehouse");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: NpcWarehouse");
         }
     }
 
-    void NpcWarehouse::Destroy() { instanceUPtr_.reset(); }
+    void NpcWarehouse::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "creature::NpcWarehouse::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
 } // namespace game
 } // namespace heroespath

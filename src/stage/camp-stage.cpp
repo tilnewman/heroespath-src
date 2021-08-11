@@ -49,14 +49,14 @@ namespace stage
 
     CampStage::CampStage()
         : StageBase(
-              "Camp",
-              { gui::GuiFont::Default,
-                gui::GuiFont::System,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::Number,
-                gui::GuiFont::Handwriting })
+            "Camp",
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting })
         , stageTitle_(gui::MenuImage::Count)
-        , campfireCachedTexture_("media-image-misc-campfire")
+        , campfireCachedTexture_("media-image-campfire")
         , campfireSprite_(campfireCachedTexture_.Get())
         , backgroundBox_(
               "CampStage'sBackground",
@@ -223,12 +223,15 @@ namespace stage
 
     const std::string CampStage::ComposeNewGamePopupText1()
     {
-        return misc::ConfigFile::Instance()->Value("intro-text1");
+        std::ostringstream ss;
+        ss << misc::ConfigFile::Instance()->Value("intro-text1");
+        return ss.str();
     }
 
     const std::string CampStage::ComposeNewGamePopupText2()
     {
-        std::string result(misc::ConfigFile::Instance()->Value("intro-text2"));
+        std::ostringstream ss;
+        ss << misc::ConfigFile::Instance()->Value("intro-text2");
 
         const auto PLAYERS_PVEC(creature::Algorithms::Players());
 
@@ -242,10 +245,10 @@ namespace stage
 
         if (humansAndGnomesPVec.empty() == false)
         {
-            result += " where " + creature::Algorithms::Names(humansAndGnomesPVec) + " call home";
+            ss << " where " << creature::Algorithms::Names(humansAndGnomesPVec) << " call home";
         }
 
-        result += ".\n\n" + misc::ConfigFile::Instance()->Value("intro-text3");
+        ss << ".\n\n" << misc::ConfigFile::Instance()->Value("intro-text3");
 
         auto pixiesAndBeastmastersPVec(
             creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Pixie));
@@ -258,12 +261,11 @@ namespace stage
 
         if (pixiesAndBeastmastersPVec.empty() == false)
         {
-            result += " such as " + creature::Algorithms::Names(pixiesAndBeastmastersPVec) + ",";
+            ss << " such as " << creature::Algorithms::Names(pixiesAndBeastmastersPVec) << ",";
         }
 
-        result += ' ';
-        result += misc::ConfigFile::Instance()->Value("intro-text4");
-        return result;
+        ss << " " << misc::ConfigFile::Instance()->Value("intro-text4");
+        return ss.str();
     }
 
     const std::string CampStage::ComposeNewGamePopupText3()
@@ -358,18 +360,16 @@ namespace stage
             }
         }
 
-        auto & charToUseCreaturePtr { charToUsePtrOpt.value() };
-
         std::ostringstream ss;
-        ss << misc::ConfigFile::Instance()->Value("intro-text5") << charToUseCreaturePtr->Name()
+        ss << misc::ConfigFile::Instance()->Value("intro-text5") << charToUsePtrOpt.value()->Name()
            << " " << misc::ConfigFile::Instance()->Value("intro-text6") << "  "
-           << creature::sex::HeSheIt(charToUseCreaturePtr->Sex(), false) << " "
+           << creature::sex::HeSheIt(charToUsePtrOpt.value()->Sex(), false) << " "
            << misc::ConfigFile::Instance()->Value("intro-text7") << " "
-           << creature::sex::HimHerIt(charToUseCreaturePtr->Sex(), false) << ", but ";
+           << creature::sex::HimHerIt(charToUsePtrOpt.value()->Sex(), false) << ", but ";
 
         const auto BEAST_PVEC { creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
         const auto NONLOAD_NONBEAST_PVEC { misc::Vector::Exclude(
-            NOTBEASTS_PVEC, charToUseCreaturePtr) };
+            NOTBEASTS_PVEC, charToUsePtrOpt.value()) };
 
         if (NONLOAD_NONBEAST_PVEC.empty())
         {
@@ -385,7 +385,7 @@ namespace stage
 
                 if (NEXT_BEAST_PTR->Race() == creature::race::Dragon)
                 {
-                    ss << "the " << NAMEOF_ENUM(NEXT_BEAST_PTR->Role()) << " Dragon";
+                    ss << "the " << creature::role::ToString(NEXT_BEAST_PTR->Role()) << " Dragon";
                 }
                 else
                 {
@@ -408,8 +408,9 @@ namespace stage
                         && ((NONLOAD_NONBEAST_PVEC.size() - 1) == i++))
                            ? "and "
                            : "")
-                   << NEXT_CHAR_PTR->Name() << " the " << NAMEOF_ENUM(NEXT_CHAR_PTR->Race()) << " "
-                   << NAMEOF_ENUM(NEXT_CHAR_PTR->Role());
+                   << NEXT_CHAR_PTR->Name() << " the "
+                   << creature::race::ToString(NEXT_CHAR_PTR->Race()) << " "
+                   << creature::role::ToString(NEXT_CHAR_PTR->Role());
 
                 appendedFirstName = true;
             }
@@ -429,7 +430,8 @@ namespace stage
 
                     if (NEXT_BEAST_PTR->Race() == creature::race::Dragon)
                     {
-                        ss << "the " << NAMEOF_ENUM(NEXT_BEAST_PTR->Role()) << " Dragon";
+                        ss << "the " << creature::role::ToString(NEXT_BEAST_PTR->Role())
+                           << " Dragon";
                     }
                     else
                     {
@@ -448,7 +450,9 @@ namespace stage
 
     const std::string CampStage::ComposeNewGamePopupText4()
     {
-        return misc::ConfigFile::Instance()->Value("intro-text9");
+        std::ostringstream ss;
+        ss << misc::ConfigFile::Instance()->Value("intro-text9");
+        return ss.str();
     }
 
 } // namespace stage

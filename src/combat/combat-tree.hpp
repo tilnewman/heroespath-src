@@ -13,10 +13,12 @@
 //  because Boost Graph would not provide required features.  So this implementation may be slower
 //  than Boost Graph, but not in a noticeable way, and will have a much simpler interface.
 //
+#include "creature/race-enum.hpp"
+#include "creature/role-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
-#include "misc/enum-common.hpp"
 #include "misc/not-null.hpp"
 
+#include <list>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -32,9 +34,6 @@ namespace creature
 } // namespace creature
 namespace combat
 {
-
-    using ID_t = std::size_t;
-    using IDVec_t = std::vector<ID_t>;
 
     class CombatNode;
     using CombatNodePtr_t = misc::NotNull<CombatNode *>;
@@ -67,10 +66,11 @@ namespace combat
             // blocking position is linked shoulder-to-shoulder.
             ShoulderToShoulder,
 
-            Count
+            Count,
+            All = Count
         };
 
-        static constexpr Enum All = Count;
+        static const std::string ToString(const Enum);
     };
 
     // Manages the combat tree and provides functions to ease common operations

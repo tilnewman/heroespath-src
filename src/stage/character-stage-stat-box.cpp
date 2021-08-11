@@ -56,7 +56,7 @@ namespace stage
         statsBoxInfo.SetupImage(gui::CachedTexture(
             "media-image-background-tile-wood", gui::ImageOpt::Default | gui::ImageOpt::Repeated));
         statsBoxInfo.SetupBorder(true);
-        statsBoxInfo.focus_colors = gui::GuiFocusColors;
+        statsBoxInfo.focus_colors = sfutil::color::GuiFocusColors;
 
         boxUPtr_
             = std::make_unique<gui::BoxEntity>("CharacterStageStatBox", REGION_ORIG, statsBoxInfo);
@@ -260,11 +260,11 @@ namespace stage
     {
         if (IsValid(TRAIT))
         {
-            return static_cast<std::size_t>(TRAIT);
+            return TRAIT;
         }
         else
         {
-            return static_cast<std::size_t>(StatInvalid());
+            return StatInvalid();
         }
     }
 
@@ -328,7 +328,11 @@ namespace stage
             }
         }();
 
-        const std::string TEXT(MODIFIER_NAME + ((VALUE > 0) ? "+" : "") + std::to_string(VALUE));
+        const auto TEXT = [&]() {
+            std::ostringstream ss;
+            ss << MODIFIER_NAME << ((VALUE > 0) ? "+" : "") << VALUE;
+            return ss.str();
+        }();
 
         const gui::TextInfo TEXT_INFO(
             TEXT, gui::GuiFont::System, gui::FontManager::Instance()->Size_Small(), TEXT_COLOR);
@@ -379,7 +383,7 @@ namespace stage
     {
         if (IsValid(TRAIT))
         {
-            return NAMEOF_ENUM_STR(TRAIT);
+            return creature::Traits::ToString(TRAIT);
         }
         else
         {
@@ -437,14 +441,18 @@ namespace stage
             }
             else
             {
+                std::ostringstream ss;
+
                 if (willShowModValues_)
                 {
-                    textValue.setString(std::to_string(currentSet_.Get(TRAIT)));
+                    ss << currentSet_.Get(TRAIT);
                 }
                 else
                 {
-                    textValue.setString(std::to_string(baseSet_.Get(TRAIT)));
+                    ss << baseSet_.Get(TRAIT);
                 }
+
+                textValue.setString(ss.str());
 
                 textValue.setPosition(sfutil::CenterToCopy(
                     sfutil::Size(textValue.getGlobalBounds()), numberRegions_.at(i)));

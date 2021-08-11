@@ -11,7 +11,6 @@
 //  A class that handles drawing the combat tree.
 //
 #include "combat/combat-tree.hpp"
-#include "creature/role-enum.hpp"
 #include "gui/cached-texture.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"

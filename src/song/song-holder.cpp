@@ -100,11 +100,67 @@ namespace song
 
     void Holder::Empty() { songsUVec_.clear(); }
 
+    bool Holder::Test(stage::IStagePtr_t iStagePtr)
+    {
+        static auto hasInitialPrompt { false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            iStagePtr->TestingStrAppend("song::Holder::Test() Starting Tests...");
+        }
+
+        static std::size_t songIndex { 0 };
+        if (songIndex < Songs::Count)
+        {
+            const auto NEXT_ENUM { static_cast<Songs::Enum>(songIndex) };
+            const auto SONG_PTR { Get(NEXT_ENUM) };
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SONG_PTR->Name().empty() == false),
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in an empty Name().");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SONG_PTR->Desc().empty() == false),
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in an empty Desc().");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SONG_PTR->DescExtra().empty() == false),
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in an empty DescExtra().");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SONG_PTR->ManaCost().IsNonZero()),
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in a zero Mana cost.");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SONG_PTR->Rank().IsNonZero()),
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in a zero Rank.");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SONG_PTR->Name() == Songs::Name(NEXT_ENUM)),
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") Song is out of order.");
+
+            ++songIndex;
+            iStagePtr->TestingStrIncrement("Song Test \"" + SONG_PTR->Name() + "\"");
+
+            return false;
+        }
+
+        iStagePtr->TestingStrAppend("song::Holder::Test()  ALL TESTS PASSED.");
+        return true;
+    }
+
     const SongPtr_t Holder::Get(const Songs::Enum ENUM)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (songsUVec_.empty() == false),
-            "song::Holder::Get(" << NAMEOF_ENUM(ENUM) << ") was called when the holder was empty.");
+            "song::Holder::Get(" << Songs::ToString(ENUM)
+                                 << ") was called when the holder was empty.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<Songs>::IsValid(ENUM)),
@@ -114,7 +170,7 @@ namespace song
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < songsUVec_.size()),
-            "song::Holder::Get(" << NAMEOF_ENUM(
+            "song::Holder::Get(" << Songs::ToString(
                 ENUM) << ") found insuff sized songsUVec_, probably from a bug in Setup().");
 
         return SongPtr_t(songsUVec_[INDEX].get());

@@ -42,7 +42,7 @@ namespace map
         void ResetForReDraw() { vert_array.clear(); }
 
         // zero is the bottom that must be drawn first
-        std::size_t index = 0;
+        std::size_t index;
     };
 
     using LayerVec_t = std::vector<Layer>;

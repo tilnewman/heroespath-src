@@ -36,8 +36,8 @@ namespace misc
         ConfigFile & operator=(ConfigFile &&) = delete;
 
         static misc::NotNull<ConfigFile *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         void Initialize();
 

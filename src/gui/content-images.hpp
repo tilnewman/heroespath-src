@@ -9,8 +9,9 @@
 //
 // content-images.hpp
 //
+#include <SFML/System/Vector2.hpp>
+
 #include <string>
-#include <string_view>
 
 namespace heroespath
 {
@@ -23,50 +24,16 @@ namespace gui
 
         static void SetupFilesystemPaths();
 
-        static constexpr std::string_view FilenameExtension() { return ".png"; }
-
-        static constexpr std::string_view FilenameSeparator() { return separator_; }
-        static constexpr char FilenameSeparatorChar() { return separator_[0]; }
-
-        static constexpr std::string_view FilenameTodo(const bool WILL_INCLUDE_EXTENSION)
-        {
-            if (WILL_INCLUDE_EXTENSION)
-            {
-                return filenameTodo_;
-            }
-            else
-            {
-                return filenameFullTodo_;
-            }
-        }
-
-        static constexpr std::string_view FilenameError(const bool WILL_INCLUDE_EXTENSION)
-        {
-            if (WILL_INCLUDE_EXTENSION)
-            {
-                return filenameError_;
-            }
-            else
-            {
-                return filenameFullError_;
-            }
-        }
-
-        static const std::string PathDirTodo() { return pathMiscImageDir_; }
-        static const std::string PathFullTodo() { return pathFullTodo_; }
-
-        static const std::string PathDirError() { return pathMiscImageDir_; }
-        static const std::string PathFullError() { return pathFullError_; }
+        static const std::string FilenameExtension();
+        static const std::string FilenameSeparator();
+        static const std::string TodoFilename();
+        static const std::string TodoPath();
+        static const std::string ErrorFilename();
+        static const std::string ErrorPath();
 
     private:
-        static inline constexpr std::string_view separator_ = "-";
-        static inline constexpr std::string_view filenameTodo_ = "todo";
-        static inline constexpr std::string_view filenameFullTodo_ = "todo.png";
-        static inline constexpr std::string_view filenameError_ = "error";
-        static inline constexpr std::string_view filenameFullError_ = "error.png";
-        static std::string pathMiscImageDir_;
-        static std::string pathFullTodo_;
-        static std::string pathFullError_;
+        static std::string todoPath_;
+        static std::string errorPath_;
     };
 
 } // namespace gui

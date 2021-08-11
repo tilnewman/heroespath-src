@@ -29,7 +29,7 @@
 #include "misc/config-file.hpp"
 #include "sfutil/angles.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 #include "spell/spell.hpp"
 
 namespace heroespath
@@ -227,18 +227,24 @@ namespace combat
         projAnimWillSpin_ = !WILL_HIT;
 
         const auto COMBAT_IMAGE_TYPE = [&]() {
-            switch (WEAPON_PTR->WeaponInfo().MinorAs<item::Projectiles>())
+            if (WEAPON_PTR->WeaponInfo().IsBow())
             {
-                case item::Projectiles::Blowpipe: return gui::CombatImageType::Dart;
-                case item::Projectiles::Sling: return gui::CombatImageType::Stone;
-
-                case item::Projectiles::Crossbow: return gui::CombatImageType::Bolt;
-
-                case item::Projectiles::Longbow:
-                case item::Projectiles::Shortbow:
-                case item::Projectiles::Compositebow:
-                case item::Projectiles::Count:
-                default: return gui::CombatImageType::Arrow;
+                return gui::CombatImageType::Arrow;
+            }
+            else if (
+                WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
+            {
+                return gui::CombatImageType::Stone;
+            }
+            else if (
+                WEAPON_PTR->WeaponInfo().ProjectileType()
+                == item::weapon::projectile_type::Crossbow)
+            {
+                return gui::CombatImageType::Bolt;
+            }
+            else
+            {
+                return gui::CombatImageType::Dart;
             }
         }();
 
@@ -328,12 +334,12 @@ namespace combat
 
         const auto PROJ_ANIM_SPRITE_GBOUNDS { projAnimSprite_.getGlobalBounds() };
 
-        if (!sfutil::Contains(
-                BATTLEFIELD_RECT, PROJ_ANIM_SPRITE_GBOUNDS.left, PROJ_ANIM_SPRITE_GBOUNDS.top)
-            || !sfutil::Contains(
-                BATTLEFIELD_RECT,
-                (PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width),
-                (PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height)))
+        if ((BATTLEFIELD_RECT.contains(PROJ_ANIM_SPRITE_GBOUNDS.left, PROJ_ANIM_SPRITE_GBOUNDS.top)
+             == false)
+            || (BATTLEFIELD_RECT.contains(
+                    PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width,
+                    PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height)
+                == false))
         {
             ProjectileShootAnimStop();
         }
@@ -803,9 +809,7 @@ namespace combat
             }
 
             case spell::Spells::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -1096,23 +1100,22 @@ namespace combat
                 continue;
             }
 
-            std::string result;
-            result.reserve(16);
+            std::ostringstream ss;
             sf::Color startColor(255, 0, 0);
             sf::Color endColor(255, 0, 0, 0);
             if (NEXT_DAMAGE_VALUE > 0_health)
             {
-                result += '+';
+                ss << "+";
                 startColor.g = 232;
                 startColor.b = 232;
                 endColor.g = 232;
                 endColor.b = 232;
             }
 
-            result += NEXT_DAMAGE_VALUE.ToString();
+            ss << NEXT_DAMAGE_VALUE;
 
             textAnimUVec_.emplace_back(std::make_unique<gui::animation::TextAnimation>(
-                result,
+                ss.str(),
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 1.0f,
                 1,

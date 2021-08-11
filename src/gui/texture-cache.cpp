@@ -17,6 +17,8 @@
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 
+#include <boost/lexical_cast.hpp>
+
 #include <algorithm>
 #include <sstream>
 #include <utility>
@@ -58,13 +60,13 @@ namespace gui
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: TextureCache");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<TextureCache *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void TextureCache::Create()
+    void TextureCache::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -72,11 +74,17 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: TextureCache");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: TextureCache");
         }
     }
 
-    void TextureCache::Destroy() { instanceUPtr_.reset(); }
+    void TextureCache::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "gui::TextureCache::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     std::size_t TextureCache::AddByKey(
         const std::string & GAMEDATAFILE_KEY_STR, const ImageOptions & OPTIONS)
@@ -701,29 +709,24 @@ namespace gui
 
     const std::string TextureCache::BytesToString(const long long BYTES) const
     {
-        std::string str;
-        str.reserve(16);
-
+        std::ostringstream ss;
         const long long MB { 1 << 20 };
         const long long KB { 1 << 10 };
 
         if (BYTES >= MB)
         {
-            str += std::to_string(static_cast<long double>(BYTES) / static_cast<long double>(MB));
-            str += "MB";
+            ss << static_cast<long double>(BYTES) / static_cast<long double>(MB) << "MB";
         }
         else if (BYTES >= KB)
         {
-            str += std::to_string(static_cast<long double>(BYTES) / static_cast<long double>(KB));
-            str += "KB";
+            ss << static_cast<long double>(BYTES) / static_cast<long double>(KB) << "KB";
         }
         else
         {
-            str += std::to_string(BYTES);
-            str += 'B';
+            ss << BYTES << "B";
         }
 
-        return str;
+        return ss.str();
     }
 
 } // namespace gui

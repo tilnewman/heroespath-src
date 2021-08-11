@@ -11,12 +11,14 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace gui
 {
 
-    struct Direction : public EnumBaseCounting<>
+    struct Direction : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -27,18 +29,8 @@ namespace gui
             Count
         };
 
-        static constexpr Enum Opposite(const Enum ENUM) noexcept
-        {
-            switch (ENUM)
-            {
-                case Left: return Right;
-                case Right: return Left;
-                case Up: return Down;
-                case Down: return Up;
-                case Count:
-                default: return Count;
-            }
-        }
+        static const std::string ToString(const Direction::Enum);
+        static gui::Direction::Enum Opposite(const Direction::Enum);
     };
 
 } // namespace gui

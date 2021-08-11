@@ -6,79 +6,75 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-//
-// unit-test-vectors.cpp
-//
-#define BOOST_TEST_MODULE "vectors_library"
+#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Vectors"
+
+#include "misc/platform.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4266)
+#endif
 
 #include <boost/test/unit_test.hpp>
 
-#include "game/setup-teardown.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(pop)
+#endif
+
+#include "unit-test-test-stuff.hpp"
+
 #include "misc/vectors.hpp"
-#include "test/util/common.hpp"
-#include "test/util/game-engine-global-fixture.hpp"
 
 #include <algorithm>
 
+namespace ts = test_stuff;
+
 using namespace heroespath;
-using namespace heroespath::test;
-using namespace heroespath::misc;
 
-void GameEngineGlobalFixture::setupBeforeAllTests()
+BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToSingle)
 {
-    m_unitTestFilename = __FILE__;
-    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
-}
+    const ts::IntVec_t EMPTY;
 
-BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
-
-using IntVec_t = std::vector<int>;
-
-BOOST_AUTO_TEST_CASE(append_nothing_to_single)
-{
-    const IntVec_t EMPTY;
-
-    for (const auto VALUE : smallValuesWorthTestingInt)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
-        IntVec_t singleValue(1, VALUE);
-        const IntVec_t SINGLE_VALUE_BEFORE { singleValue };
-        Vector::Append(EMPTY, singleValue, Vector::SortOpt::None);
+        ts::IntVec_t singleValue(1, VALUE);
+        const ts::IntVec_t SINGLE_VALUE_BEFORE { singleValue };
+        misc::Vector::Append(EMPTY, singleValue, misc::Vector::SortOpt::None);
 
         BOOST_CHECK_MESSAGE(
             singleValue == SINGLE_VALUE_BEFORE,
-            "single value vec before=" << containerToString(SINGLE_VALUE_BEFORE)
+            "single value vec before=" << ts::vectorToString(SINGLE_VALUE_BEFORE)
                                        << ", single value vec after="
-                                       << containerToString(singleValue));
+                                       << ts::vectorToString(singleValue));
 
-        Vector::Append(EMPTY, singleValue, Vector::SortOpt::SortAndUnique);
+        misc::Vector::Append(EMPTY, singleValue, misc::Vector::SortOpt::SortAndUnique);
 
         BOOST_CHECK_MESSAGE(
             singleValue == SINGLE_VALUE_BEFORE,
-            "single value vec before=" << containerToString(SINGLE_VALUE_BEFORE)
+            "single value vec before=" << ts::vectorToString(SINGLE_VALUE_BEFORE)
                                        << ", single value vec after="
-                                       << containerToString(singleValue));
+                                       << ts::vectorToString(singleValue));
     }
 }
 
-BOOST_AUTO_TEST_CASE(append_nothing_to_multiple)
+BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToMultiple)
 {
-    const IntVec_t EMPTY;
+    const ts::IntVec_t EMPTY;
 
-    for (const auto VALUE : smallValuesWorthTestingInt)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
-        IntVec_t multipleValues(static_cast<std::size_t>(VALUE), VALUE);
-        const IntVec_t MULTIPLE_VALUES_BEFORE { multipleValues };
-        Vector::Append(EMPTY, multipleValues, Vector::SortOpt::None);
+        ts::IntVec_t multipleValues(static_cast<std::size_t>(VALUE), VALUE);
+        const ts::IntVec_t MULTIPLE_VALUES_BEFORE { multipleValues };
+        misc::Vector::Append(EMPTY, multipleValues, misc::Vector::SortOpt::None);
 
         BOOST_CHECK_MESSAGE(
             multipleValues == MULTIPLE_VALUES_BEFORE,
-            "multiple values vec before=" << containerToString(MULTIPLE_VALUES_BEFORE)
+            "multiple values vec before=" << ts::vectorToString(MULTIPLE_VALUES_BEFORE)
                                           << ", multiple values vec after="
-                                          << containerToString(multipleValues));
+                                          << ts::vectorToString(multipleValues));
 
-        Vector::Append(EMPTY, multipleValues, Vector::SortOpt::SortAndUnique);
+        misc::Vector::Append(EMPTY, multipleValues, misc::Vector::SortOpt::SortAndUnique);
 
-        IntVec_t sortedAndUniqued { multipleValues };
+        ts::IntVec_t sortedAndUniqued { multipleValues };
 
         std::sort(sortedAndUniqued.begin(), sortedAndUniqued.end());
 
@@ -88,283 +84,292 @@ BOOST_AUTO_TEST_CASE(append_nothing_to_multiple)
         BOOST_CHECK_MESSAGE(
             multipleValues == sortedAndUniqued,
             "multiple values vec before="
-                << containerToString(MULTIPLE_VALUES_BEFORE)
-                << ", multiple values vec after=" << containerToString(multipleValues)
-                << ", sortedAndUnique vec=" << containerToString(sortedAndUniqued));
+                << ts::vectorToString(MULTIPLE_VALUES_BEFORE)
+                << ", multiple values vec after=" << ts::vectorToString(multipleValues)
+                << ", sortedAndUnique vec=" << ts::vectorToString(sortedAndUniqued));
     }
 }
 
-BOOST_AUTO_TEST_CASE(append_nothing_to_reverse_duplicated_counting)
+BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
 {
-    const IntVec_t EMPTY;
+    const ts::IntVec_t EMPTY;
 
-    for (const auto VALUE : smallValuesWorthTestingInt)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
-        IntVec_t reverseDuplicatedCountingValues;
+        ts::IntVec_t reverseDuplicatedCountingValues;
         for (int i { VALUE }; i >= 0; --i)
         {
             reverseDuplicatedCountingValues.emplace_back(i);
             reverseDuplicatedCountingValues.emplace_back(i);
         }
 
-        const IntVec_t REV_DUP_COUNT_VALUES_BEFORE { reverseDuplicatedCountingValues };
+        const ts::IntVec_t REV_DUP_COUNT_VALUES_BEFORE { reverseDuplicatedCountingValues };
 
-        Vector::Append(EMPTY, reverseDuplicatedCountingValues, Vector::SortOpt::None);
+        misc::Vector::Append(EMPTY, reverseDuplicatedCountingValues, misc::Vector::SortOpt::None);
 
         BOOST_CHECK_MESSAGE(
             reverseDuplicatedCountingValues == REV_DUP_COUNT_VALUES_BEFORE,
             "(no sorting) reverse duplicated counting values vec before="
-                << containerToString(REV_DUP_COUNT_VALUES_BEFORE)
+                << ts::vectorToString(REV_DUP_COUNT_VALUES_BEFORE)
                 << ", reverse duplicated counting values vec after="
-                << containerToString(reverseDuplicatedCountingValues));
+                << ts::vectorToString(reverseDuplicatedCountingValues));
 
-        IntVec_t sortedAndUniqued { reverseDuplicatedCountingValues };
+        ts::IntVec_t sortedAndUniqued { reverseDuplicatedCountingValues };
 
         std::sort(sortedAndUniqued.begin(), sortedAndUniqued.end());
 
         sortedAndUniqued.erase(
             std::unique(sortedAndUniqued.begin(), sortedAndUniqued.end()), sortedAndUniqued.end());
 
-        Vector::Append(EMPTY, reverseDuplicatedCountingValues, Vector::SortOpt::SortAndUnique);
+        misc::Vector::Append(
+            EMPTY, reverseDuplicatedCountingValues, misc::Vector::SortOpt::SortAndUnique);
 
         BOOST_CHECK_MESSAGE(
             reverseDuplicatedCountingValues == sortedAndUniqued,
             "(with sort and unique) reverse duplicated counting values vec before="
-                << containerToString(REV_DUP_COUNT_VALUES_BEFORE)
+                << ts::vectorToString(REV_DUP_COUNT_VALUES_BEFORE)
                 << ", reverse duplicated counting values vec after="
-                << containerToString(reverseDuplicatedCountingValues)
-                << ", sortedAndUniqued vec=" << containerToString(sortedAndUniqued));
+                << ts::vectorToString(reverseDuplicatedCountingValues)
+                << ", sortedAndUniqued vec=" << ts::vectorToString(sortedAndUniqued));
     }
 }
 
-BOOST_AUTO_TEST_CASE(append_corner_cases)
+BOOST_AUTO_TEST_CASE(Vector_Append_CornerCases)
 {
-    IntVec_t a;
-    IntVec_t b;
+    ts::IntVec_t a;
+    ts::IntVec_t b;
 
     const auto A_BEFORE_EMPTY_APPEND { a };
     const auto B_BEFORE_EMPTY_APPEND { b };
 
-    Vector::Append(a, b, Vector::SortOpt::None);
+    misc::Vector::Append(a, b, misc::Vector::SortOpt::None);
 
     BOOST_CHECK_MESSAGE(
         a == A_BEFORE_EMPTY_APPEND,
         "append two empty vecs, a should remain unchanged, "
-            << "a_before=" << containerToString(A_BEFORE_EMPTY_APPEND)
-            << ", a_after=" << containerToString(a));
+            << "a_before=" << ts::vectorToString(A_BEFORE_EMPTY_APPEND)
+            << ", a_after=" << ts::vectorToString(a));
 
     BOOST_CHECK_MESSAGE(
         b == B_BEFORE_EMPTY_APPEND,
-        "append two empty vecs, a=" << containerToString(a)
-                                    << ", b=" << containerToString(B_BEFORE_EMPTY_APPEND)
-                                    << ", result=" << containerToString(b));
+        "append two empty vecs, a=" << ts::vectorToString(a)
+                                    << ", b=" << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
+                                    << ", result=" << ts::vectorToString(b));
 
-    Vector::Append(a, b, Vector::SortOpt::SortAndUnique);
+    misc::Vector::Append(a, b, misc::Vector::SortOpt::SortAndUnique);
 
     BOOST_CHECK_MESSAGE(
         a == A_BEFORE_EMPTY_APPEND,
         "append two empty vecs with SortAndUnique, a should remain unchanged, "
-            << "a_before=" << containerToString(A_BEFORE_EMPTY_APPEND)
-            << ", a_after=" << containerToString(a));
+            << "a_before=" << ts::vectorToString(A_BEFORE_EMPTY_APPEND)
+            << ", a_after=" << ts::vectorToString(a));
 
     BOOST_CHECK_MESSAGE(
         b == B_BEFORE_EMPTY_APPEND,
-        "append two empty vecs with SortAndUnique, a=" << containerToString(a) << ", b="
-                                                       << containerToString(B_BEFORE_EMPTY_APPEND)
-                                                       << ", result=" << containerToString(b));
+        "append two empty vecs with SortAndUnique, a=" << ts::vectorToString(a) << ", b="
+                                                       << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
+                                                       << ", result=" << ts::vectorToString(b));
 
     a.emplace_back(0);
 
     const auto SINGLE_ZERO { a };
 
-    Vector::Append(a, b, Vector::SortOpt::None);
+    misc::Vector::Append(a, b, misc::Vector::SortOpt::None);
 
     BOOST_CHECK_MESSAGE(
         a == SINGLE_ZERO,
         "append zero to empty vec, a should remain unchanged, "
-            << "a_before=" << containerToString(SINGLE_ZERO)
-            << ", a_after=" << containerToString(a));
+            << "a_before=" << ts::vectorToString(SINGLE_ZERO)
+            << ", a_after=" << ts::vectorToString(a));
 
     BOOST_CHECK_MESSAGE(
         b == SINGLE_ZERO,
-        "append zero to empty vec, a=" << containerToString(a)
-                                       << ", b=" << containerToString(B_BEFORE_EMPTY_APPEND)
-                                       << ", result=" << containerToString(b));
+        "append zero to empty vec, a=" << ts::vectorToString(a)
+                                       << ", b=" << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
+                                       << ", result=" << ts::vectorToString(b));
 
-    Vector::Append(a, b, Vector::SortOpt::SortAndUnique);
+    misc::Vector::Append(a, b, misc::Vector::SortOpt::SortAndUnique);
 
     BOOST_CHECK_MESSAGE(
         a == SINGLE_ZERO,
         "append zero to empty vec with SortAndUnique, a should remain unchanged, "
-            << "a_before=" << containerToString(SINGLE_ZERO)
-            << ", a_after=" << containerToString(a));
+            << "a_before=" << ts::vectorToString(SINGLE_ZERO)
+            << ", a_after=" << ts::vectorToString(a));
 
     BOOST_CHECK_MESSAGE(
         b == SINGLE_ZERO,
         "append zero to empty vec, with SortAndUnique, a="
-            << containerToString(a) << ", b=" << containerToString(B_BEFORE_EMPTY_APPEND)
-            << ", result=" << containerToString(b));
+            << ts::vectorToString(a) << ", b=" << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
+            << ", result=" << ts::vectorToString(b));
 }
 
-BOOST_AUTO_TEST_CASE(add_ab_no_sort)
+BOOST_AUTO_TEST_CASE(Vector_Add_AB_NoSort)
 {
-    const IntVec_t A = { 1, 1, 2, 3 };
-    const IntVec_t B = { 4, 5, 6, 6 };
-    const IntVec_t AB_NOSORT_EXPECTED = { 1, 1, 2, 3, 4, 5, 6, 6 };
-    const auto AB_NOSORT_RESULT { Vector::Combine(A, B) };
+    const ts::IntVec_t A = { 1, 1, 2, 3 };
+    const ts::IntVec_t B = { 4, 5, 6, 6 };
+    const ts::IntVec_t AB_NOSORT_EXPECTED = { 1, 1, 2, 3, 4, 5, 6, 6 };
+    const auto AB_NOSORT_RESULT { misc::Vector::AndCopy(A, B) };
 
     BOOST_CHECK_MESSAGE(
         (AB_NOSORT_RESULT == AB_NOSORT_EXPECTED),
-        "add 1,1,2,3 + 4,5,6,6 No_SortAndUnique result=" << containerToString(
-            AB_NOSORT_RESULT) << ", expected=" << containerToString(AB_NOSORT_EXPECTED));
+        "add 1,1,2,3 + 4,5,6,6 No_SortAndUnique result=" << ts::vectorToString(
+            AB_NOSORT_RESULT) << ", expected=" << ts::vectorToString(AB_NOSORT_EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(add_ab_sort_and_unique)
+BOOST_AUTO_TEST_CASE(Vector_Add_AB_SortAndUnique)
 {
-    const IntVec_t A = { 1, 1, 2, 3 };
-    const IntVec_t B = { 4, 5, 6, 6 };
-    const IntVec_t AB_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
+    const ts::IntVec_t A = { 1, 1, 2, 3 };
+    const ts::IntVec_t B = { 4, 5, 6, 6 };
+    const ts::IntVec_t AB_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
 
-    const auto AB_SORTANDUNIQUE_RESULT { Vector::Combine(A, B, Vector::SortOpt::SortAndUnique) };
+    const auto AB_SORTANDUNIQUE_RESULT { misc::Vector::AndCopy(
+        A, B, misc::Vector::SortOpt::SortAndUnique) };
 
     BOOST_CHECK_MESSAGE(
         (AB_SORTANDUNIQUE_RESULT == AB_SORTANDUNIQUE_EXPECTED),
         "add 1,1,2,3 + 4,5,6,6 SortAndUnique result="
-            << containerToString(AB_SORTANDUNIQUE_RESULT)
-            << ", expected=" << containerToString(AB_SORTANDUNIQUE_EXPECTED));
+            << ts::vectorToString(AB_SORTANDUNIQUE_RESULT)
+            << ", expected=" << ts::vectorToString(AB_SORTANDUNIQUE_EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(add_ba_no_sort)
+BOOST_AUTO_TEST_CASE(Vector_Add_BA_NoSort)
 {
-    const IntVec_t A = { 1, 1, 2, 3 };
-    const IntVec_t B = { 4, 5, 6, 6 };
-    const IntVec_t BA_NOSORT_EXPECTED = { 4, 5, 6, 6, 1, 1, 2, 3 };
-    const auto BA_NOSORT_RESULT { Vector::Combine(B, A) };
+    const ts::IntVec_t A = { 1, 1, 2, 3 };
+    const ts::IntVec_t B = { 4, 5, 6, 6 };
+    const ts::IntVec_t BA_NOSORT_EXPECTED = { 4, 5, 6, 6, 1, 1, 2, 3 };
+    const auto BA_NOSORT_RESULT { misc::Vector::AndCopy(B, A) };
 
     BOOST_CHECK_MESSAGE(
         (BA_NOSORT_RESULT == BA_NOSORT_EXPECTED),
-        "add 4,5,6,6 + 1,1,2,3 No_SortAndUnique result=" << containerToString(
-            BA_NOSORT_RESULT) << ", expected=" << containerToString(BA_NOSORT_EXPECTED));
+        "add 4,5,6,6 + 1,1,2,3 No_SortAndUnique result=" << ts::vectorToString(
+            BA_NOSORT_RESULT) << ", expected=" << ts::vectorToString(BA_NOSORT_EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(add_ba_sort_and_unique)
+BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)
 {
-    const IntVec_t A = { 1, 1, 2, 3 };
-    const IntVec_t B = { 4, 5, 6, 6 };
-    const IntVec_t BA_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
+    const ts::IntVec_t A = { 1, 1, 2, 3 };
+    const ts::IntVec_t B = { 4, 5, 6, 6 };
+    const ts::IntVec_t BA_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
 
-    const auto BA_SORTANDUNIQUE_RESULT { Vector::Combine(B, A, Vector::SortOpt::SortAndUnique) };
+    const auto BA_SORTANDUNIQUE_RESULT { misc::Vector::AndCopy(
+        B, A, misc::Vector::SortOpt::SortAndUnique) };
 
     BOOST_CHECK_MESSAGE(
         (BA_SORTANDUNIQUE_RESULT == BA_SORTANDUNIQUE_EXPECTED),
         "add 4,5,6,6 + 1,1,2,3 SortAndUnique result="
-            << containerToString(BA_SORTANDUNIQUE_RESULT)
-            << ", expected=" << containerToString(BA_SORTANDUNIQUE_EXPECTED));
+            << ts::vectorToString(BA_SORTANDUNIQUE_RESULT)
+            << ", expected=" << ts::vectorToString(BA_SORTANDUNIQUE_EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(exclude_empty_from_empty)
+BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptyEmpty)
 {
-    const IntVec_t EMPTY;
-    const auto EMPTYEMPTY_RESULT { Vector::Exclude(EMPTY, EMPTY) };
+    const ts::IntVec_t EMPTY;
+    const auto EMPTYEMPTY_RESULT { misc::Vector::Exclude(EMPTY, EMPTY) };
 
     BOOST_CHECK_MESSAGE(
         (EMPTYEMPTY_RESULT == EMPTY),
-        "two empty vecs, result=" << containerToString(EMPTYEMPTY_RESULT) << ", expected empty");
+        "two empty vecs, result=" << ts::vectorToString(EMPTYEMPTY_RESULT) << ", expected empty");
 }
 
-BOOST_AUTO_TEST_CASE(exclude_full_from_empty)
+BOOST_AUTO_TEST_CASE(Vector_Exclude_SomethingEmpty)
 {
-    const IntVec_t EMPTY;
-    const IntVec_t A = { 1, 2, 3 };
-    const auto AEMPTY_RESULT { Vector::Exclude(A, EMPTY) };
+    const ts::IntVec_t EMPTY;
+    const ts::IntVec_t A = { 1, 2, 3 };
+    const auto AEMPTY_RESULT { misc::Vector::Exclude(A, EMPTY) };
 
     BOOST_CHECK_MESSAGE(
         (AEMPTY_RESULT == A),
-        "A exclude empty, result=" << containerToString(AEMPTY_RESULT)
-                                   << ", expected=" << containerToString(A));
+        "A exclude empty, result=" << ts::vectorToString(AEMPTY_RESULT)
+                                   << ", expected=" << ts::vectorToString(A));
 }
 
-BOOST_AUTO_TEST_CASE(exclude_empty_from_full)
+BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptySomething)
 {
-    const IntVec_t EMPTY;
-    const IntVec_t A = { 1, 2, 3 };
+    const ts::IntVec_t EMPTY;
+    const ts::IntVec_t A = { 1, 2, 3 };
 
-    const auto EMPTYA_RESULT { Vector::Exclude(EMPTY, A) };
+    const auto EMPTYA_RESULT { misc::Vector::Exclude(EMPTY, A) };
 
     BOOST_CHECK_MESSAGE(
         (EMPTYA_RESULT == EMPTY),
-        "empty exclude A, result=" << containerToString(EMPTYA_RESULT)
-                                   << ", expected=" << containerToString(EMPTY));
+        "empty exclude A, result=" << ts::vectorToString(EMPTYA_RESULT)
+                                   << ", expected=" << ts::vectorToString(EMPTY));
 }
 
-BOOST_AUTO_TEST_CASE(exclude_duplicate)
+BOOST_AUTO_TEST_CASE(Vector_Exclude_Duplicate)
 {
-    const IntVec_t EMPTY;
-    const IntVec_t A = { 1, 2, 3 };
+    const ts::IntVec_t EMPTY;
+    const ts::IntVec_t A = { 1, 2, 3 };
 
-    const auto DUPLICATE_RESULT { Vector::Exclude(A, A) };
+    const auto DUPLICATE_RESULT { misc::Vector::Exclude(A, A) };
 
     BOOST_CHECK_MESSAGE(
         (DUPLICATE_RESULT == EMPTY),
-        "duplicate exclude, result=" << containerToString(DUPLICATE_RESULT)
-                                     << ", expected=" << containerToString(EMPTY));
+        "duplicate exclude, result=" << ts::vectorToString(DUPLICATE_RESULT)
+                                     << ", expected=" << ts::vectorToString(EMPTY));
 }
 
-BOOST_AUTO_TEST_CASE(exclude_single)
+BOOST_AUTO_TEST_CASE(Vector_Exclude_Single)
 {
-    const IntVec_t A = { 1, 2, 2, 3, 3, 3 };
+    const ts::IntVec_t A = { 1, 2, 2, 3, 3, 3 };
     const int B { 2 };
-    const IntVec_t EXPECTED = { 1, 3, 3, 3 };
-    const auto SINGLE_RESULT { Vector::Exclude(A, B) };
+    const ts::IntVec_t EXPECTED = { 1, 3, 3, 3 };
+    const auto SINGLE_RESULT { misc::Vector::Exclude(A, B) };
 
     BOOST_CHECK_MESSAGE(
         (SINGLE_RESULT == EXPECTED),
-        "1,2,2,3,3,3 exclude 2, result=" << containerToString(SINGLE_RESULT)
-                                         << ", expected=" << containerToString(EXPECTED));
+        "1,2,2,3,3,3 exclude 2, result=" << ts::vectorToString(SINGLE_RESULT)
+                                         << ", expected=" << ts::vectorToString(EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(exclude_multiple)
+BOOST_AUTO_TEST_CASE(Vector_Exclude_Multiple)
 {
-    const IntVec_t A = { 1, 2, 2, 3, 3, 3 };
-    const IntVec_t B = { 1, 1, 3 };
-    const IntVec_t EXPECTED = { 2, 2 };
-    const auto MUTLIPLE_RESULT { Vector::Exclude(A, B) };
+    const ts::IntVec_t A = { 1, 2, 2, 3, 3, 3 };
+    const ts::IntVec_t B = { 1, 1, 3 };
+    const ts::IntVec_t EXPECTED = { 2, 2 };
+    const auto MUTLIPLE_RESULT { misc::Vector::Exclude(A, B) };
 
     BOOST_CHECK_MESSAGE(
         (MUTLIPLE_RESULT == EXPECTED),
-        "1,2,2,3,3,3 exclude 1,1,3, result=" << containerToString(MUTLIPLE_RESULT)
-                                             << ", expected=" << containerToString(EXPECTED));
+        "1,2,2,3,3,3 exclude 1,1,3, result=" << ts::vectorToString(MUTLIPLE_RESULT)
+                                             << ", expected=" << ts::vectorToString(EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(select_random_single)
+BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Single)
 {
-    for (std::size_t i { 0 }; i < randomRetryCount; ++i)
+    ts::Constants constants;
+
+    for (int i { 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
-        const IntVec_t A = { 1 };
-        const auto SINGLE_RESULT { RandomSelect(A) };
+        const ts::IntVec_t A = { 1 };
+        const auto SINGLE_RESULT { misc::RandomSelect(A) };
 
         BOOST_CHECK_MESSAGE((SINGLE_RESULT == 1), "SelectRandom single, result=" << SINGLE_RESULT);
     }
 }
 
-BOOST_AUTO_TEST_CASE(select_random_duplicates)
+BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Duplicates)
 {
-    for (std::size_t i { 0 }; i < randomRetryCount; ++i)
+    ts::Constants constants;
+
+    for (int i { 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
-        const IntVec_t A = { 1, 1, 1 };
-        const auto DUPLICATE_RESULT { RandomSelect(A) };
+        const ts::IntVec_t A = { 1, 1, 1 };
+        const auto DUPLICATE_RESULT { misc::RandomSelect(A) };
 
         BOOST_CHECK_MESSAGE(
             (DUPLICATE_RESULT == 1), "SelectRandom duplicates, result=" << DUPLICATE_RESULT);
     }
 }
 
-BOOST_AUTO_TEST_CASE(select_random_multiple)
+BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Multiple)
 {
-    for (std::size_t i { 0 }; i < randomRetryCount; ++i)
+    ts::Constants constants;
+
+    for (int i { 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
-        const IntVec_t A = { 1, 2, 3 };
-        const auto MULT_RESULT { RandomSelect(A) };
+        const ts::IntVec_t A = { 1, 2, 3 };
+        const auto MULT_RESULT { misc::RandomSelect(A) };
 
         BOOST_CHECK_MESSAGE(
             (MULT_RESULT == 1) || (MULT_RESULT == 2) || (MULT_RESULT == 3),
@@ -372,77 +377,101 @@ BOOST_AUTO_TEST_CASE(select_random_multiple)
     }
 }
 
-BOOST_AUTO_TEST_CASE(orderless_compare_empty)
+BOOST_AUTO_TEST_CASE(Vector_Join_Empty)
 {
-    const IntVec_t EMPTY;
-    BOOST_CHECK(Vector::OrderlessCompareEqual(EMPTY, EMPTY));
+    const ts::IntVec_t EMPTY;
+    for (const auto VALUE : ts::TEST_COUNTS)
+    {
+        const auto SIZET_VALUE { static_cast<std::size_t>(VALUE) };
 
-    const IntVec_t A = { 1, 2, 3 };
-    BOOST_CHECK(Vector::OrderlessCompareEqual(EMPTY, A) == false);
-    BOOST_CHECK(Vector::OrderlessCompareEqual(A, EMPTY) == false);
+        const auto EMPTY_RESULT_1 { misc::Vector::Join(EMPTY, SIZET_VALUE) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_1 == ""),
+            "Join(empty, " << VALUE << ") result=\"" << EMPTY_RESULT_1 << "\"");
+
+        const auto EMPTY_RESULT_2 { misc::Vector::Join(EMPTY, SIZET_VALUE, misc::Vector::Wrap) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_2 == ""),
+            "Join(empty, " << VALUE << ", Wrap) result=\"" << EMPTY_RESULT_2 << "\"");
+
+        const auto EMPTY_RESULT_3 { misc::Vector::Join(EMPTY, SIZET_VALUE, misc::Vector::And) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_3 == ""),
+            "Join(empty, " << VALUE << ", And) result=\"" << EMPTY_RESULT_3 << "\"");
+
+        const auto EMPTY_RESULT_4 { misc::Vector::Join(
+            EMPTY, SIZET_VALUE, misc::Vector::Ellipsis) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_4 == ""),
+            "Join(empty, " << VALUE << ", Ellipsis) result=\"" << EMPTY_RESULT_4 << "\"");
+
+        const auto EMPTY_RESULT_5 { misc::Vector::Join(
+            EMPTY,
+            SIZET_VALUE,
+            static_cast<misc::Vector::JoinOpt>(
+                misc::Vector::Wrap | misc::Vector::And | misc::Vector::Ellipsis)) };
+
+        BOOST_CHECK_MESSAGE(
+            (EMPTY_RESULT_5 == ""),
+            "Join(empty, " << VALUE << ", Wrap/And/Ellipsis) result=\"" << EMPTY_RESULT_5 << "\"");
+    }
 }
 
-BOOST_AUTO_TEST_CASE(orderless_compare_123)
+BOOST_AUTO_TEST_CASE(Vector_Join_123)
 {
-    const IntVec_t A = { 1, 2, 3 };
-    const IntVec_t B = { 1, 3, 2 };
-    const IntVec_t C = { 2, 1, 3 };
-    const IntVec_t D = { 2, 3, 1 };
-    const IntVec_t E = { 3, 1, 2 };
-    const IntVec_t F = { 3, 2, 1 };
+    const ts::IntVec_t A = { 1, 2, 3 };
 
-    BOOST_CHECK(Vector::OrderlessCompareEqual(A, A));
-    BOOST_CHECK(Vector::OrderlessCompareEqual(B, B));
+    BOOST_CHECK(misc::Vector::Join(A, 0) == "1, 2, 3");
+    BOOST_CHECK(misc::Vector::Join(A, 9) == "1, 2, 3");
+    BOOST_CHECK(misc::Vector::Join(A, 3) == "1, 2, 3");
+    BOOST_CHECK(misc::Vector::Join(A, 2) == "1, 2");
+    BOOST_CHECK(misc::Vector::Join(A, 1) == "1");
 
-    BOOST_CHECK(Vector::OrderlessCompareEqual(A, B));
-    BOOST_CHECK(Vector::OrderlessCompareEqual(B, A));
+    BOOST_CHECK(misc::Vector::Join(A, 0, misc::Vector::Wrap) == "(1, 2, 3)");
+    BOOST_CHECK(misc::Vector::Join(A, 2, misc::Vector::Wrap) == "(1, 2)");
+    BOOST_CHECK(misc::Vector::Join(A, 1, misc::Vector::Wrap) == "(1)");
 
-    BOOST_CHECK(Vector::OrderlessCompareEqual(B, C));
-    BOOST_CHECK(Vector::OrderlessCompareEqual(C, D));
-    BOOST_CHECK(Vector::OrderlessCompareEqual(D, E));
-    BOOST_CHECK(Vector::OrderlessCompareEqual(E, F));
-    BOOST_CHECK(Vector::OrderlessCompareEqual(F, A));
+    BOOST_CHECK(misc::Vector::Join(A, 0, misc::Vector::And) == "1, 2, and 3");
+    BOOST_CHECK(misc::Vector::Join(A, 2, misc::Vector::And) == "1, 2");
+    BOOST_CHECK(misc::Vector::Join(A, 1, misc::Vector::And) == "1");
 
-    auto testIncompleteFails = [&](const IntVec_t & NOT_EQUAL) {
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(A, NOT_EQUAL));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(B, NOT_EQUAL));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(C, NOT_EQUAL));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(D, NOT_EQUAL));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(E, NOT_EQUAL));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(F, NOT_EQUAL));
+    BOOST_CHECK(misc::Vector::Join(A, 0, misc::Vector::Ellipsis) == "1, 2, 3");
+    BOOST_CHECK(misc::Vector::Join(A, 2, misc::Vector::Ellipsis) == "1, 2...");
+    BOOST_CHECK(misc::Vector::Join(A, 1, misc::Vector::Ellipsis) == "1...");
+}
 
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(NOT_EQUAL, A));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(NOT_EQUAL, B));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(NOT_EQUAL, C));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(NOT_EQUAL, D));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(NOT_EQUAL, E));
-        BOOST_CHECK(!Vector::OrderlessCompareEqual(NOT_EQUAL, F));
-    };
+BOOST_AUTO_TEST_CASE(Vector_OrderlessCompare_Empty)
+{
+    const ts::IntVec_t EMPTY;
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(EMPTY, EMPTY));
 
-    testIncompleteFails({ 1 });
-    testIncompleteFails({ 1, 2 });
-    testIncompleteFails({ 2, 1 });
-    testIncompleteFails({ 1, 3 });
-    testIncompleteFails({ 3, 1 });
-    testIncompleteFails({ 1, 1 });
-    testIncompleteFails({ 1, 1, 1 });
-    testIncompleteFails({ 1, 1, 1, 1 });
+    const ts::IntVec_t A = { 1, 2, 3 };
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(EMPTY, A) == false);
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(A, EMPTY) == false);
+}
 
-    testIncompleteFails({ 2 });
-    testIncompleteFails({ 2, 1 });
-    testIncompleteFails({ 1, 2 });
-    testIncompleteFails({ 2, 3 });
-    testIncompleteFails({ 3, 2 });
-    testIncompleteFails({ 2, 2 });
-    testIncompleteFails({ 2, 2, 2 });
-    testIncompleteFails({ 2, 2, 2, 2 });
+BOOST_AUTO_TEST_CASE(Vector_OrderlessCompare_123)
+{
+    const ts::IntVec_t A = { 1, 2, 3 };
+    const ts::IntVec_t B = { 1, 3, 2 };
+    const ts::IntVec_t C = { 2, 1, 3 };
+    const ts::IntVec_t D = { 2, 3, 1 };
+    const ts::IntVec_t E = { 3, 1, 2 };
+    const ts::IntVec_t F = { 3, 2, 1 };
 
-    testIncompleteFails({ 3 });
-    testIncompleteFails({ 3, 1 });
-    testIncompleteFails({ 1, 3 });
-    testIncompleteFails({ 3, 2 });
-    testIncompleteFails({ 2, 3 });
-    testIncompleteFails({ 3, 3 });
-    testIncompleteFails({ 3, 3, 3 });
-    testIncompleteFails({ 3, 3, 3, 3 });
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(A, A));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(B, B));
+
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(A, B));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(B, A));
+
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(B, C));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(C, D));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(D, E));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(E, F));
+    BOOST_CHECK(misc::Vector::OrderlessCompareEqual(F, A));
 }

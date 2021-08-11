@@ -48,11 +48,6 @@ namespace gui
         virtual const sf::FloatRect GetEntityRegion() const = 0;
         virtual void SetEntityRegion(const sf::FloatRect & R) = 0;
 
-        virtual bool Contains(const sf::Vector2f &) const = 0;
-        virtual bool Contains(const float LEFT, const float TOP) const = 0;
-        virtual bool Contains(const sf::FloatRect &) const = 0;
-        virtual bool Intersects(const sf::FloatRect &) const = 0;
-
         virtual void SetEntityColors(const FocusColors & COLOR_SET) = 0;
         virtual void SetEntityColorFg(const sf::Color & FG_COLOR) = 0;
         virtual void SetEntityColorFgBoth(const sf::Color & FG_COLOR) = 0;

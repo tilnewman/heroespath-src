@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -329,7 +327,7 @@ namespace map
 
         std::vector<sf::Vertex> copyQuadvertexes;
 
-        const auto NEW_TEXTURE_TILE_COUNT { misc::Min(
+        const auto NEW_TEXTURE_TILE_COUNT { std::min(
             TILE_DRAW_INDEXES_COUNT_BEFORE, MAX_TILES_PER_NEW_TEXTURE) };
 
         const sf::Vector2<std::size_t> TILE_SIZE_T_V { TILE_SIZE_V };
@@ -627,26 +625,19 @@ namespace map
 
         auto makePercentString
             = [&](const auto NUMBER_A, const auto NUMBER_B, const std::string & DESCRIPTION) {
-                  std::string str;
-                  str.reserve(32);
-
+                  std::ostringstream pss;
                   const auto NUMBER_A_D { static_cast<double>(NUMBER_A) };
                   const auto NUMBER_B_D { static_cast<double>(NUMBER_B) };
-
                   if (misc::IsRealZero(NUMBER_B_D))
                   {
-                      str += "(div_by_zero_error%)";
+                      pss << "(div_by_zero_error%)";
                   }
                   else
                   {
                       const auto PERCENT { static_cast<int>((NUMBER_A_D / NUMBER_B_D) * 100.0) };
-                      str += '(';
-                      str += std::to_string(PERCENT);
-                      str += "% ";
-                      str += DESCRIPTION + ")";
+                      pss << "(" << PERCENT << "% " << DESCRIPTION << ")";
                   }
-
-                  return str;
+                  return pss.str();
               };
 
         const auto LAYER_COUNT { uniqueLayerCountMapper.Size() };
@@ -804,8 +795,8 @@ namespace map
             }
         }
 
-        const auto TILES_PER_LAYER_COUNT { static_cast<std::size_t>(PACKET.tile_count_v.x)
-                                           * static_cast<std::size_t>(PACKET.tile_count_v.y) };
+        const auto TILES_PER_LAYER_COUNT { static_cast<std::size_t>(
+            PACKET.tile_count_v.x * PACKET.tile_count_v.y) };
 
         const auto TOTAL_TILES_IN_SET_LAYERS { uniqueLayerCountMap.Size() * TILES_PER_LAYER_COUNT };
         const auto TOTAL_TEXTURES_COUNT { PACKET.MapTileTextureCount() };
@@ -910,9 +901,7 @@ namespace map
 
     std::size_t MapTileOptimizer::PixelsInTexture(const sf::Texture & TEXTURE)
     {
-        return (
-            static_cast<std::size_t>(TEXTURE.getSize().x)
-            * static_cast<std::size_t>(TEXTURE.getSize().y));
+        return static_cast<std::size_t>(TEXTURE.getSize().x * TEXTURE.getSize().y);
     }
 
     std::size_t MapTileOptimizer::TilesInTexture(

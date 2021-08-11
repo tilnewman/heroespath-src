@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -17,12 +15,52 @@
 #include "misc/timing.hpp"
 
 #include <chrono>
+#include <exception>
 #include <iostream>
 #include <sstream>
-#include <stdexcept>
 
 namespace heroespath
 {
+
+const std::string TimeRes::ToString(const Enum RES)
+{
+    switch (RES)
+    {
+        case Nano:
+        {
+            return "ns";
+        }
+        case Milli:
+        {
+            return "ms";
+        }
+        case Micro:
+        {
+            return "us";
+        }
+        case Second:
+        {
+            return "s";
+        }
+        case Count:
+        {
+            return "(Count)";
+        }
+        default:
+        {
+            std::ostringstream ss;
+
+            ss << "enum_value=" << static_cast<EnumUnderlying_t>(RES)
+               << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count) << ")";
+
+            // can't use log macros because they can cause endless recursion in the timing code
+            misc::Log::Instance()->Append(
+                misc::LogPriority::Error, ss.str(), __FILE__, __func__, __LINE__);
+
+            return "";
+        }
+    }
+}
 
 namespace misc
 {
@@ -48,14 +86,13 @@ namespace misc
                 || (Log::Instance()->LineCount() == logCountBeforeStarting_))
             {
                 // can't use log macros because they can cause endless recursion in the timing code
+                std::ostringstream ss;
+
+                ss << "ScopedLogTimer \"" << message_ << "\" took " << DURATION
+                   << TimeRes::ToString(resolution_);
 
                 Log::Instance()->Append(
-                    LogPriority::Default,
-                    ("ScopedLogTimer \"" + message_ + "\" took " + std::to_string(DURATION)
-                     + NAMEOF_ENUM_STR(resolution_)),
-                    __FILE__,
-                    __func__,
-                    __LINE__);
+                    LogPriority::Default, ss.str(), __FILE__, __func__, __LINE__);
             }
         }
         catch (const std::exception & EXCEPTION)

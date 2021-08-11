@@ -9,6 +9,7 @@
 //
 // treasure-stage.hpp
 //
+#include "combat/creature-interaction.hpp"
 #include "combat/fight-results.hpp"
 #include "combat/trap.hpp"
 #include "combat/turn-action-info.hpp"
@@ -177,6 +178,7 @@ namespace stage
         mutable bool updateItemDisplayNeeded_;
         bool willProcessLockpickTitle_;
         interact::LockPicking lockPicking_;
+        combat::CreatureInteraction creatureInteraction_;
     };
 
     using TreasureStagePtr_t = misc::NotNull<TreasureStage *>;

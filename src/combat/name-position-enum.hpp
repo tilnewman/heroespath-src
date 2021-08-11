@@ -19,7 +19,7 @@ namespace heroespath
 namespace combat
 {
 
-    struct NamePosition : public EnumBaseCounting<>
+    struct NamePosition : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -32,6 +32,8 @@ namespace combat
             TargetThenSource,
             Count
         };
+
+        static const std::string ToString(const Enum);
     };
 
     class ContentAndNamePos

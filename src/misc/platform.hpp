@@ -9,67 +9,88 @@
 //
 // platform.hpp
 //
-#include <string_view>
+#include "misc/not-null.hpp"
+
+#include <memory>
+#include <string>
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(WIN64) || defined(_WIN64)   \
+    || defined(__WINDOWS__)
+#define HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#elif defined(macintosh) || defined(Macintosh)
+#define HEROESPATH_PLATFORM_DETECTED_IS_APPLE9
+#elif defined(__APPLE__) || defined(__MACH__)
+#define HEROESPATH_PLATFORM_DETECTED_IS_APPLE
+#elif defined(linux) || defined(__linux) || defined(__linux__)
+#define HEROESPATH_PLATFORM_DETECTED_IS_LINUX
+#endif
+
+#if defined(__unix) || defined(__unix__)
+#define HEROESPATH_PLATFORM_DETECTED_IS_UNIX
+#endif
+
+#if defined(__posix) || defined(__posix__)
+#define HEROESPATH_PLATFORM_DETECTED_IS_POSIX
+#endif
+
+#if defined(__CYGWIN__)
+#define HEROESPATH_PLATFORM_DETECTED_IS_CYGWIN
+#endif
+
+#if defined(__gnu_linux__)
+#define HEROESPATH_PLATFORM_DETECTED_IS_LINUX_GNU
+#endif
 
 namespace heroespath
 {
 namespace misc
 {
 
-    enum class platforms : unsigned
+    // defines supported platforms
+    struct platform_type
     {
-        Unknown = 0,
-        Windows,
-        Linux,
-        LinuxGNU,
-        Posix,
-        Apple9,
-        Apple,
-        Cygwin
+        enum Enum
+        {
+            Unknown = 0,
+            Windows,
+            Linux,
+            Apple,
+            Unsupported,
+            Count
+        };
+
+        static const std::string ToString(const platform_type::Enum);
     };
 
-#if (                                                                                              \
-    defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(WIN64) || defined(_WIN64)   \
-    || defined(__WINDOWS__))
-    constexpr auto platform_enum = platforms::Windows;
-    constexpr std::string_view platform_name = "Windows";
-#elif (defined(macintosh) || defined(Macintosh))
-    constexpr auto platform_enum = platforms::Apple9;
-    constexpr std::string_view platform_name = "Apple9";
-#elif (defined(__APPLE__) || defined(__MACH__))
-    constexpr auto platform_enum = platforms::Apple;
-    constexpr std::string_view platform_name = "Apple";
-#elif (defined(linux) || defined(__linux) || defined(__linux__))
-    constexpr auto platform_enum = platforms::Linux;
-    constexpr std::string_view platform_name = "Linux";
-#elif (defined(__unix) || defined(__unix__))
-    constexpr auto platform_enum = platforms::Linux;
-    constexpr std::string_view platform_name = "Unix";
-#elif (defined(__posix) || defined(__posix__))
-    constexpr auto platform_enum = platforms::Posix;
-    constexpr std::string_view platform_name = "Posix";
-#elif defined(__CYGWIN__)
-    constexpr auto platform_enum = platforms::Cygwin;
-    constexpr std::string_view platform_name = "Cygwin";
-#elif defined(__gnu_linux__)
-    constexpr auto platform_enum = platforms::LinuxGNU;
-    constexpr std::string_view platform_name = "GNULinux";
-#else
-    constexpr auto platform = platforms::Unknown;
-    constexpr std::string_view platform_name = "Unknown";
-#endif
+    // Responsible for detecting, logging, and storing the platform this app is running on.
+    class Platform
+    {
+    public:
+        Platform(const Platform &) = delete;
+        Platform(Platform &&) = delete;
+        Platform & operator=(const Platform &) = delete;
+        Platform & operator=(Platform &&) = delete;
 
-    constexpr bool platform_is_any_windows = (platform_enum == platforms::Windows);
+        Platform();
 
-    constexpr bool platform_is_any_linux
-        = ((platform_enum == platforms::Linux) || (platform_enum == platforms::LinuxGNU));
+        void Log() const;
+        platform_type::Enum Get() const { return platform_; }
+        const std::string GetName() const { return platform_type::ToString(platform_); }
+        bool IsWindows() const { return (platform_type::Windows == platform_); }
+        bool IsLinux() const { return (platform_type::Linux == platform_); }
+        bool IsMacOS() const { return (platform_type::Apple == platform_); }
 
-    constexpr bool platform_is_any_apple
-        = ((platform_enum == platforms::Apple) || (platform_enum == platforms::Apple9));
+        bool IsSupported() const
+        {
+            return (platform_type::Unknown != platform_)
+                && (platform_type::Unsupported != platform_);
+        }
 
-    constexpr bool platform_is_supported
-        = ((platform_enum == platforms::Windows) || (platform_enum == platforms::Apple)
-           || (platform_enum == platforms::Linux));
+    private:
+        platform_type::Enum Detect() const;
+
+        platform_type::Enum platform_;
+    };
 
 } // namespace misc
 } // namespace heroespath

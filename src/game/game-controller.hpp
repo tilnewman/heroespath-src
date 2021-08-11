@@ -55,8 +55,8 @@ namespace game
         GameController & operator=(GameController &&) = delete;
 
         static misc::NotNull<GameController *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
         static void Initialize();
 
         static void SetStartupStage(const std::string & STARTUP_STAGE_NAME)
@@ -66,7 +66,7 @@ namespace game
 
         const std::string GetStageName() const
         {
-            return NAMEOF_ENUM_STR(stageTracker_.GetCurrent());
+            return stage::Stage::ToString(stageTracker_.GetCurrent());
         }
 
         Phase::Enum GetPhase() const { return stageTracker_.GetPhase(); }
@@ -85,6 +85,11 @@ namespace game
             const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const gui::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL);
+
+        // TODO TEMP REMOVE remove this crap once all testing is in unit tests
+        void TestingStrAppend(const std::string & MESSAGE);
+        void TestingStrIncrement(const std::string & MESSAGE);
+        void TestingImageSet(const std::string & PATH_STR);
 
     private:
         void ExecptionLogging(const Command & COMMAND) const;

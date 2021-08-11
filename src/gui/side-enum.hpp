@@ -16,7 +16,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Side : public EnumBaseBitField<>
+    struct Side : public EnumBaseBitField
     {
         enum Enum : EnumUnderlying_t
         {
@@ -24,10 +24,14 @@ namespace gui
             Top = 1 << 0,
             Bottom = 1 << 1,
             Left = 1 << 2,
-            Right = 1 << 3
+            Right = 1 << 3,
+            Last = Right
         };
 
-        static constexpr Enum Last = Right;
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
+
+        static const std::string
+            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
 } // namespace gui

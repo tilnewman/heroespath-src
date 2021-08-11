@@ -30,6 +30,7 @@ namespace heroespath
 {
 
 using FontPtr_t = misc::NotNull<sf::Font *>;
+using FontPtrOpt_t = boost::optional<FontPtr_t>;
 using FontUPtr_t = std::unique_ptr<sf::Font>;
 using FontUVec_t = std::vector<FontUPtr_t>;
 
@@ -49,8 +50,8 @@ namespace gui
         FontManager & operator=(FontManager &&) = delete;
 
         static misc::NotNull<FontManager *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         const FontPtr_t GetFont(const GuiFont::Enum);
         void Load(const GuiFont::Enum);
@@ -78,6 +79,8 @@ namespace gui
         const std::string NumberFontFamilyName() { return numberFontFamilyName_; }
 
     private:
+        FontUPtr_t & GetFontRef(const GuiFont::Enum);
+
         static const unsigned int SIZE_LARGER_MAX_;
         static const unsigned int SIZE_LARGER_MIN_;
         static const unsigned int SIZE_LARGE_MAX_;

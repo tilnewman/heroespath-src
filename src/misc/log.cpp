@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -14,23 +12,23 @@
 #include "gui/date-time.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/filesystem.hpp"
-#include "misc/platform.hpp"
 
 #include <boost/algorithm/string/join.hpp>
 
 #include <algorithm>
-#include <fstream>
+#include <exception>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <stdexcept>
 
 namespace heroespath
 {
 namespace misc
 {
 
-    std::unique_ptr<Log> Log::instanceUPtr_;
+    const int Log::LINE_NUMBER_INVALID_ { -1 }; // anything less than zero works here
+    const std::string Log::SEPARATOR_STR_ { "  " };
+    std::unique_ptr<Log> Log::instanceUPtr_ {};
 
     Log::Log(
         const std::string & FILE_NAME,
@@ -38,17 +36,17 @@ namespace misc
         const LogPriority::Enum LOWEST_PRI_TO_CONSOLE_ECHO,
         const std::size_t FILE_APPEND_COUNT_BEFORE_FLUSH,
         const std::size_t CONSOLE_APPEND_COUNT_BEFORE_FLUSH)
-        : fileName_((unitTestName_.empty()) ? FILE_NAME : unitTestName_)
+        : fileName_(FILE_NAME)
         , fileNameExtension_(FILE_EXT)
         , lowestPriToConsoleEcho_(LOWEST_PRI_TO_CONSOLE_ECHO)
-        , fileStreamUPtr_(std::make_unique<std::ofstream>())
+        , fileStream_()
         , fileAppendCountBeforeFlush_(FILE_APPEND_COUNT_BEFORE_FLUSH)
         , fileAppendCountSinceLastFlush_(0)
         , consoleAppendCountBeforeFlush_(CONSOLE_APPEND_COUNT_BEFORE_FLUSH)
         , consoleAppendCountSinceLastFlush_(0)
         , lineCount_(0)
     {
-        if (FILE_NAME.empty())
+        if (FILE_NAME.empty() || !EnumUtil<LogPriority>::IsValid(LOWEST_PRI_TO_CONSOLE_ECHO))
         {
             // can't use log or assert macros or Enum::ToString() inside the logger
             std::ostringstream ss;
@@ -73,13 +71,13 @@ namespace misc
     {
         if (!instanceUPtr_)
         {
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<Log *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void Log::Create()
+    void Log::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -87,7 +85,7 @@ namespace misc
         }
     }
 
-    void Log::Destroy()
+    void Log::Release()
     {
         if (!instanceUPtr_)
         {
@@ -95,7 +93,7 @@ namespace misc
             std::ostringstream ss;
 
             ss << __FILE__ << ":" << __func__ << "():" << __LINE__
-               << "misc::Log::Destroy() found instanceUPtr that was null.";
+               << "misc::Log::Release() found instanceUPtr that was null.";
 
             std::cerr << ss.str() << std::endl;
             throw std::runtime_error(ss.str());
@@ -118,19 +116,19 @@ namespace misc
 
         if (IsFileReadyForWriting())
         {
-            *(fileStreamUPtr_) << COMPLETE_MESSAGE;
+            fileStream_ << COMPLETE_MESSAGE;
 
             if (++fileAppendCountSinceLastFlush_ > fileAppendCountBeforeFlush_)
             {
                 fileAppendCountSinceLastFlush_ = 0;
-                *(fileStreamUPtr_) << std::endl;
+                fileStream_ << std::endl;
             }
             else
             {
-                *(fileStreamUPtr_) << '\n';
+                fileStream_ << '\n';
             }
 
-            if (PRIORITY >= lowestPriToConsoleEcho_)
+            if (EnumUtil<LogPriority>::IsValid(PRIORITY) && (PRIORITY >= lowestPriToConsoleEcho_))
             {
                 EchoToConsole(PRIORITY, COMPLETE_MESSAGE);
             }
@@ -154,7 +152,7 @@ namespace misc
 
         const auto DID_EXIST_PRIOR { misc::filesystem::ExistsAndIsFile(FILE_PATH_STR) };
 
-        fileStreamUPtr_->open(FILE_PATH_STR, std::ios::out);
+        fileStream_.open(FILE_PATH_STR, std::ios::out);
 
         if (IsFileReadyForWriting() == false)
         {
@@ -279,17 +277,8 @@ namespace misc
 
     void Log::EchoToConsole(const LogPriority::Enum PRIORITY, const std::string & COMPLETED_MSG)
     {
-        if constexpr (!platform_is_any_windows)
-        {
-            std::clog << LogPriority::ConsoleColorStringBegin(PRIORITY);
-        }
-
-        std::clog << COMPLETED_MSG;
-
-        if constexpr (!platform_is_any_windows)
-        {
-            std::clog << LogPriority::ConsoleColorStringEnd();
-        }
+        std::clog << LogPriority::ConsoleColorStringBegin(PRIORITY) << COMPLETED_MSG
+                  << LogPriority::ConsoleColorStringEnd();
 
         if (++consoleAppendCountSinceLastFlush_ > consoleAppendCountBeforeFlush_)
         {
@@ -304,7 +293,7 @@ namespace misc
 
     bool Log::IsFileReadyForWriting() const
     {
-        return (fileStreamUPtr_->good()) && (fileStreamUPtr_->is_open());
+        return (fileStream_.good()) && (fileStream_.is_open());
     }
 
 } // namespace misc

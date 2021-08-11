@@ -11,12 +11,14 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace gui
 {
 
-    struct sound_effect_set : public EnumBaseCounting<>
+    struct sound_effect_set : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -27,7 +29,7 @@ namespace gui
             Thock,
             Coin,
             Gem,
-            Shard,
+            MeteorShard,
             ItemGive,
             ItemDrop,
             BlowpipeShoot,
@@ -52,6 +54,8 @@ namespace gui
             CombatLose,
             Count
         };
+
+        static const std::string ToString(const Enum);
     };
 
 } // namespace gui

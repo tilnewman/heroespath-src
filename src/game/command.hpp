@@ -18,6 +18,7 @@
 #include "stage/stage-setup-packet.hpp"
 
 #include <memory>
+#include <sstream>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -33,7 +34,7 @@ namespace game
         FadeCommand(
             const FadeDirection DIRECTION,
             const float SPEED,
-            const BoolOpt_t & SET_WILL_DRAW_UNDER_POPUP_OPT,
+            const BoolOpt_t SET_WILL_DRAW_UNDER_POPUP_OPT,
             const sf::Color & COLOR)
             : direction(DIRECTION)
             , speed(SPEED)
@@ -46,7 +47,21 @@ namespace game
         FadeCommand & operator=(const FadeCommand &) = default;
         FadeCommand & operator=(FadeCommand &&) = default;
 
-        const std::string ToString() const;
+        const std::string ToString() const
+        {
+            std::ostringstream ss;
+
+            ss << "fade, " << ((FadeDirection::In == direction) ? "in" : "out")
+               << ", fade_speed=" << speed << ", fade_color=" << color;
+
+            if (set_will_draw_under_popup_opt)
+            {
+                ss << ", set_will_drawn_under_popup_to=" << std::boolalpha
+                   << set_will_draw_under_popup_opt.value();
+            }
+
+            return ss.str();
+        }
 
         FadeDirection direction;
         float speed;
@@ -85,11 +100,11 @@ namespace game
                     will_mouse_ignore,
                     will_mouse_click_exit)
                 == std::tie(
-                       OTHER_CMD.will_hide_mouse,
-                       OTHER_CMD.will_keystroke_exit,
-                       OTHER_CMD.will_keystroke_ignore,
-                       OTHER_CMD.will_mouse_ignore,
-                       OTHER_CMD.will_mouse_click_exit));
+                    OTHER_CMD.will_hide_mouse,
+                    OTHER_CMD.will_keystroke_exit,
+                    OTHER_CMD.will_keystroke_ignore,
+                    OTHER_CMD.will_mouse_ignore,
+                    OTHER_CMD.will_mouse_click_exit));
         }
 
         static const ExecuteCommand MakeDefaultWithMouseHidden()
@@ -109,7 +124,57 @@ namespace game
             return executeCommand;
         }
 
-        const std::string ToString() const;
+        const std::string ToString() const
+        {
+            std::ostringstream ss;
+
+            auto prefixSeparatorString = [&]() {
+                if (ss.str().empty() == false)
+                {
+                    ss << ", ";
+                }
+            };
+
+            ss << "run_game_loop";
+
+            if (fade_opt)
+            {
+                prefixSeparatorString();
+                ss << fade_opt->ToString();
+            }
+
+            if (will_hide_mouse)
+            {
+                prefixSeparatorString();
+                ss << "hide_mouse";
+            }
+
+            if (will_keystroke_exit)
+            {
+                prefixSeparatorString();
+                ss << "keystrokes_exit";
+            }
+
+            if (will_keystroke_ignore)
+            {
+                prefixSeparatorString();
+                ss << "keystrokes_ignored";
+            }
+
+            if (will_mouse_ignore)
+            {
+                prefixSeparatorString();
+                ss << "mouse_ignored";
+            }
+
+            if (will_mouse_click_exit)
+            {
+                prefixSeparatorString();
+                ss << "mouse_clicks_exit";
+            }
+
+            return ss.str();
+        }
 
         bool will_hide_mouse = false;
         bool will_keystroke_exit = false;
@@ -132,12 +197,12 @@ namespace game
                 L.will_mouse_click_exit,
                 L.fade_opt)
             == std::tie(
-                   R.will_hide_mouse,
-                   R.will_keystroke_exit,
-                   R.will_keystroke_ignore,
-                   R.will_mouse_ignore,
-                   R.will_mouse_click_exit,
-                   R.fade_opt));
+                R.will_hide_mouse,
+                R.will_keystroke_exit,
+                R.will_keystroke_ignore,
+                R.will_mouse_ignore,
+                R.will_mouse_click_exit,
+                R.fade_opt));
     }
 
     inline bool operator!=(const ExecuteCommand & L, const ExecuteCommand & R) { return !(L == R); }
@@ -226,7 +291,44 @@ namespace game
         Command & operator=(const Command &) = default;
         Command & operator=(Command &&) = default;
 
-        const std::string ToString() const;
+        const std::string ToString() const
+        {
+            std::ostringstream ss;
+
+            if (music_opt)
+            {
+                ss << music_opt->ToString();
+            }
+
+            if (stage_opt)
+            {
+                ss << stage_opt->ToString();
+            }
+
+            if (popup_replace_opt)
+            {
+                ss << popup_replace_opt->ToString();
+            }
+
+            if (will_remove_popup)
+            {
+                ss << "popup_remove";
+            }
+
+            if (execute_opt)
+            {
+                ss << execute_opt->ToString();
+            }
+
+            if (ss.str().empty())
+            {
+                return "GameCommand(empty=ERROR=\"game commands should never be empty\")";
+            }
+            else
+            {
+                return "GameCommand(" + ss.str() + ")";
+            }
+        }
 
         MusicCommandOpt_t music_opt = boost::none;
         StageReplaceCommandOpt_t stage_opt = boost::none;
@@ -244,11 +346,7 @@ namespace game
             std::tie(
                 L.music_opt, L.stage_opt, L.popup_replace_opt, L.will_remove_popup, L.execute_opt)
             == std::tie(
-                   R.music_opt,
-                   R.stage_opt,
-                   R.popup_replace_opt,
-                   R.will_remove_popup,
-                   R.execute_opt));
+                R.music_opt, R.stage_opt, R.popup_replace_opt, R.will_remove_popup, R.execute_opt));
     }
 
     inline bool operator!=(const Command & L, const Command & R) { return !(L == R); }

@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -15,8 +13,8 @@
 #include "gui/gui-images.hpp"
 #include "gui/image-entity.hpp"
 #include "gui/text-entity.hpp"
-
-#include "sfutil/scale.hpp"
+#include "sfutil/center-of.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -33,12 +31,12 @@ namespace gui
         const float TEXT_POS_TOP,
         const float BETWEEN_SPACER)
         : ImageTextEntity(
-              NAME + "_RadioOrCheckEntity",
-              MouseImageInfo(),
-              MouseTextInfo(),
-              boost::none,
-              ImageTextEntity::MouseStateSync::Image,
-              true)
+            NAME + "_RadioOrCheckEntity",
+            MouseImageInfo(),
+            MouseTextInfo(),
+            boost::none,
+            ImageTextEntity::MouseStateSync::Image,
+            true)
         , isRadioButton_(IS_RADIO_BUTTON)
         , isMouseDownOnImage_(false)
         , isMouseOverRegion_(false)
@@ -91,7 +89,8 @@ namespace gui
 
     bool RadioOrCheckEntity::MouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (!IsInvalid() && isMouseDownOnImage_ && imageEntityUPtr_->Contains(MOUSE_POS_V))
+        if (!IsInvalid() && isMouseDownOnImage_
+            && imageEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
         {
             // radio buttons cannot be un-selected
             if (!isRadioButton_ || !IsSelected())
@@ -106,7 +105,7 @@ namespace gui
 
     bool RadioOrCheckEntity::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (!IsInvalid() && imageEntityUPtr_->Contains(MOUSE_POS_V))
+        if (!IsInvalid() && imageEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
         {
             isMouseDownOnImage_ = true;
             return true;
@@ -117,7 +116,7 @@ namespace gui
 
     bool RadioOrCheckEntity::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (Contains(MOUSE_POS_V))
+        if (GetEntityRegion().contains(MOUSE_POS_V))
         {
             if (!isMouseOverRegion_)
             {

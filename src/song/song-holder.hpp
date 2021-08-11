@@ -17,6 +17,13 @@
 
 namespace heroespath
 {
+
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace song
 {
 
@@ -31,6 +38,7 @@ namespace song
     {
         static void Fill();
         static void Empty();
+        static bool Test(stage::IStagePtr_t iStagePtr);
         static const SongPtr_t Get(const Songs::Enum);
 
     private:

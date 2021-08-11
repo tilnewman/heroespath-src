@@ -10,11 +10,8 @@
 // vector-map.hpp
 //
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-serialize-includes.hpp"
 #include "misc/vectors.hpp"
-
-#include <boost/serialization/serialization.hpp>
-#include <boost/serialization/utility.hpp>
-#include <boost/serialization/vector.hpp>
 
 #include <algorithm>
 #include <utility>

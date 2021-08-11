@@ -47,8 +47,8 @@ namespace gui
     bool SfxWrapper::IsValid() const
     {
         return (
-            (which_ < sound_effect::Count) && (which_ != sound_effect::None) && soundUPtr_
-            && bufferUPtr_);
+            (which_ != sound_effect::Count) && (which_ != sound_effect::None) && (soundUPtr_)
+            && (bufferUPtr_));
     }
 
     void SfxWrapper::Reset()

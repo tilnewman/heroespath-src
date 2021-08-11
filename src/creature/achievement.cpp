@@ -17,6 +17,7 @@
 #include "misc/boost-string-includes.hpp"
 
 #include <limits>
+#include <sstream>
 
 namespace heroespath
 {
@@ -89,27 +90,18 @@ namespace creature
 
     const std::string Achievement::ToString() const
     {
-        std::string str;
-        str.reserve(512);
+        std::ostringstream ss;
+        ss << Name() << "s current count=" << count_
+           << ", and has the following achievable titles: ";
 
-        str += Name();
-        str += "s current count=";
-        str += std::to_string(count_);
-        str += ", and has the following achievable titles: ";
-
+        const auto SEP_STR { ", " };
         for (const auto & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
-            if (!str.empty())
-            {
-                str += ", ";
-            }
-
-            str += Titles::Name(NEXT_TITLE_COUNT_PAIR.second);
-            str += " at count ";
-            str += std::to_string(NEXT_TITLE_COUNT_PAIR.first);
+            ss << Titles::Name(NEXT_TITLE_COUNT_PAIR.second) << " at count "
+               << NEXT_TITLE_COUNT_PAIR.first << SEP_STR;
         }
 
-        return str;
+        return boost::algorithm::erase_last_copy(ss.str(), SEP_STR);
     }
 
     bool Achievement::IsRoleInList(const role::Enum ENUM) const
@@ -121,10 +113,8 @@ namespace creature
     {
         // Keep incrementing past the count of the final Title so the player can track
         // progress even if there are no more Titles to earn.  Don't stop until the
-        // count reaches a large recognizable limit...something with lots of 9's so that players
-        // understand they are past a sane limit when they see it but it does not cause the game to
-        // crash
-        if (999999 <= count_)
+        // count reaches a large recognizable limit...something with lots of 9's...
+        if (999999_count <= count_)
         {
             return boost::none;
         }

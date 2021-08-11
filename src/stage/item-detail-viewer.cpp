@@ -20,6 +20,8 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include <sstream>
+
 namespace heroespath
 {
 namespace stage
@@ -199,39 +201,52 @@ namespace stage
 
         const auto ITEM_PTR { ITEM_PTR_OPT.value() };
 
-        std::string str(ITEM_PTR->Name() + "\n" + ITEM_PTR->Desc() + "\n\n");
+        std::ostringstream ss;
+        ss << ITEM_PTR->Name() << "\n" << ITEM_PTR->Desc() << "\n\n";
 
-        if (ITEM_PTR->Category() != item::Category::None)
+        if (ITEM_PTR->Category() != item::category::None)
         {
-            str += item::Category::Name(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n";
+            ss << item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) << "\n";
         }
 
-        str += "\nweighs " + ITEM_PTR->Weight().ToString() + "\n" + "worth about "
-            + ITEM_PTR->Price().ToString() + " coins\n";
+        if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
+        {
+            ss << "(can only be used by " << creature::role::ToString(ITEM_PTR->ExclusiveRole())
+               << "s)\n";
+        }
+
+        ss << "\n";
+
+        ss << "weighs " << ITEM_PTR->Weight() << "\n"
+           << "worth about " << ITEM_PTR->Price() << " coins\n";
 
         if (ITEM_PTR->IsWeapon())
         {
-            str += "Damage:  " + ITEM_PTR->DamageMin().ToString() + "-"
-                + ITEM_PTR->DamageMax().ToString();
+            ss << "Damage:  " << ITEM_PTR->DamageMin() << "-" << ITEM_PTR->DamageMax();
         }
         else if (ITEM_PTR->IsArmor())
         {
-            str += "Armor Bonus:  " + ITEM_PTR->ArmorRating().ToString();
+            ss << "Armor Bonus:  " << ITEM_PTR->ArmorRating();
         }
 
-        str += "\n\n";
+        ss << "\n\n";
 
         const gui::TextInfo TEXT_INFO(
-            str,
+            ss.str(),
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
             gui::Justified::Center);
 
         const auto TEXT_LEFT { TARGET_RECT_.left + INNER_SPACER_ };
-        const auto TEXT_TOP { sfutil::Bottom(sprite_.getGlobalBounds()) + INNER_SPACER_ };
+
+        const auto TEXT_TOP { sprite_.getGlobalBounds().top + sprite_.getGlobalBounds().height
+                              + INNER_SPACER_ };
+
         const auto TEXT_WIDTH { TARGET_RECT_.width - DOUBLE_INNER_SPACER_ };
+
         const auto SPRITE_BOTTOM { sprite_.getPosition().y + sprite_.getGlobalBounds().height };
+
         const auto TEXT_HEIGHT { (TARGET_RECT_.height - SPRITE_BOTTOM) - DOUBLE_INNER_SPACER_ };
 
         const sf::FloatRect TEXT_RECT { TEXT_LEFT, TEXT_TOP, TEXT_WIDTH, TEXT_HEIGHT };

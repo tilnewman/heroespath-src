@@ -17,13 +17,14 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <string>
+#include <utility> //for std::pair
 
 namespace heroespath
 {
 namespace gui
 {
 
-    struct Animations : public EnumBaseCounting<>
+    struct Animations : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -60,52 +61,9 @@ namespace gui
             Count
         };
 
+        static const std::string ToString(const Enum);
         static const std::string MediaPath(const Enum);
-
-        static constexpr float TimePerFrameSec(const Enum ANIM) noexcept
-        {
-            const auto ANIM_TIME_BETWEEN_FRAMES_DEFAULT { 0.055f };
-
-            switch (ANIM)
-            {
-                case CandleFlamePixel: return 0.1f;
-
-                case Burst:
-                case Campfire:
-                case CandleFlame:
-                case DualCharge:
-                case DualSwirl:
-                case ExplosionLarge:
-                case ExplosionSmall:
-                case ExplosionMedium1:
-                case ExplosionMedium2:
-                case ExplosionMedium3:
-                case FireTorch:
-                case Flash:
-                case FlashSparkle:
-                case Inferno:
-                case LightningBall:
-                case LightningBolt:
-                case OrbCharge:
-                case OrbShimmer:
-                case Puff:
-                case PuffShort:
-                case Swirl:
-                case Shimmer:
-                case Smoke:
-                case SmokeSwirl: return 0.035f;
-
-                case SpiderFlare:
-                case Splash1:
-                case Splash2:
-                case Splash3:
-                case SymbolReduce: return ANIM_TIME_BETWEEN_FRAMES_DEFAULT;
-
-                case Count:
-                default: return ANIM_TIME_BETWEEN_FRAMES_DEFAULT;
-            }
-        }
-
+        static float TimePerFrameSec(const Enum);
         static const MusicEnumVec_t Sfx(const Enum);
         static const sf::IntRect TextureRectTrim(const Enum);
 

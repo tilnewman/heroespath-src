@@ -47,9 +47,12 @@ namespace popup
 
                 if (secondCounter_ > 0)
                 {
-                    gui::TextInfo textInfo(popupInfo_.GetTextInfo());
+                    gui::TextInfo textInfo(popupInfo_.TextInfo());
 
-                    textInfo.text = textInfo.text + "\n" + std::to_string(secondCounter_);
+                    std::ostringstream ss;
+                    ss << textInfo.text << "\n" << secondCounter_;
+
+                    textInfo.text = ss.str();
 
                     textRegionUPtr_->Setup(
                         textInfo, ContentRegion(), gui::BoxEntityInfo(), stage::IStagePtr_t(this));

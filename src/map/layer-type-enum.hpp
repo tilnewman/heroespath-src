@@ -11,12 +11,14 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace map
 {
 
-    struct LayerType : public EnumBaseCounting<>
+    struct LayerType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -25,6 +27,8 @@ namespace map
             Shadow,
             Count
         };
+
+        static const std::string ToString(const Enum);
     };
 
 } // namespace map

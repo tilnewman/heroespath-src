@@ -11,12 +11,14 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace avatar
 {
 
-    struct Pose : public EnumBaseCounting<>
+    struct Pose : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -29,6 +31,8 @@ namespace avatar
             Dead,
             Count
         };
+
+        static const std::string ToString(const Enum);
     };
 
 } // namespace avatar

@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -73,7 +71,8 @@ namespace game
         ExecuteCommandOpt_t executeCommandOpt { MakeCommandForStateChangeExecute(
             STAGE_SETUP_COMMAND.stage) };
 
-        if ((HAS_CURRENT_STAGE == false) || (STAGE_SETUP_COMMAND.stage == stage::Stage::Intro))
+        if ((HAS_CURRENT_STAGE == false) || (STAGE_SETUP_COMMAND.stage == stage::Stage::Intro)
+            || (STAGE_SETUP_COMMAND.stage == stage::Stage::Test))
         {
             fadeOutCommandOpt = boost::none;
         }
@@ -225,6 +224,7 @@ namespace game
             case stage::Stage::Help:
             case stage::Stage::Inn:
             case stage::Stage::Combat:
+            case stage::Stage::Test:
             case stage::Stage::Treasure:
             case stage::Stage::Count:
             default:
@@ -254,7 +254,7 @@ namespace game
     const FadeCommand CommandFactory::MakeCommandForStateChangeFade(
         const FadeDirection DIRECTION,
         const ForPopup IS_FOR_POPUP,
-        const BoolOpt_t & SET_WILL_DRAW_UNDER_POPUP_OPT) const
+        const BoolOpt_t SET_WILL_DRAW_UNDER_POPUP_OPT) const
     {
         const auto FADE_SPEED = [&]() {
             if (DIRECTION == FadeDirection::In)

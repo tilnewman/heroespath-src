@@ -19,7 +19,7 @@ namespace heroespath
 namespace stage
 {
 
-    struct Stage : public EnumBaseCounting<EnumNameOfZeroIsNone>
+    struct Stage : public EnumBaseCounting<EnumFirstValue::None>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -39,6 +39,7 @@ namespace stage
             Exit,
             Inventory,
             Treasure,
+            Test,
             Previous,
             Next,
             Save,
@@ -46,17 +47,9 @@ namespace stage
             Count
         };
 
-        static constexpr bool IsPlayable(const Stage::Enum STAGE) noexcept
-        {
-            return !(
-                (STAGE == Stage::Next) || (STAGE == Stage::Previous) || (STAGE == Stage::Help)
-                || (STAGE == Stage::None) || (STAGE == Stage::Count));
-        }
-
-        static constexpr bool IsPlayableAndNotPopup(const Stage::Enum STAGE) noexcept
-        {
-            return (IsPlayable(STAGE) && (STAGE != Stage::Popup));
-        }
+        static const std::string ToString(const Enum);
+        static bool IsPlayable(const Enum);
+        static bool IsPlayableAndNotPopup(const Enum);
     };
 
 } // namespace stage

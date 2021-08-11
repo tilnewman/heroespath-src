@@ -14,6 +14,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/enum-util.hpp"
 
+#include <sstream>
 #include <string>
 
 namespace heroespath
@@ -36,7 +37,7 @@ namespace creature
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<Traits>::IsValid(ENUM)),
-            "TraitSet::Get(trait_enum=" << NAMEOF_ENUM(ENUM)
+            "TraitSet::Get(trait_enum=" << Traits::ToString(ENUM)
                                         << ") but that trait value is invalid.");
 
         return traitVec_[static_cast<std::size_t>(ENUM)];
@@ -46,7 +47,7 @@ namespace creature
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<Traits>::IsValid(ENUM)),
-            "TraitSet::GetCopy(" << NAMEOF_ENUM(ENUM) << ") but that trait value is invalid.");
+            "TraitSet::GetCopy(" << Traits::ToString(ENUM) << ") but that trait value is invalid.");
 
         return traitVec_[static_cast<std::size_t>(ENUM)];
     }
@@ -57,13 +58,7 @@ namespace creature
         const bool WILL_PREVENT_NEGATIVE,
         const bool WILL_PREFIX_PERCENT) const
     {
-        std::string str;
-        str.reserve(128);
-
-        if (WILL_WRAP)
-        {
-            str += '(';
-        }
+        std::ostringstream ss;
 
         for (EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
@@ -77,157 +72,80 @@ namespace creature
                     continue;
                 }
 
-                if (!str.empty())
+                if (ss.str().empty() == false)
                 {
-                    str += ", ";
+                    ss << ", ";
                 }
 
                 if (WILL_ABBR)
                 {
-                    str += Traits::Abbr(NEXT_ENUM);
+                    ss << Traits::Abbr(NEXT_ENUM);
                 }
                 else
                 {
-                    str += Traits::Name(NEXT_ENUM);
+                    ss << Traits::Name(NEXT_ENUM);
                 }
 
-                str += ' ';
-                str += std::to_string(NEXT_CURR);
+                ss << " " << NEXT_CURR;
 
                 if (WILL_PREFIX_PERCENT)
                 {
-                    str += '%';
+                    ss << "%";
                 }
             }
         }
 
-        if (str.compare("(") == 0)
+        const auto RESULT_STR { ss.str() };
+        if ((RESULT_STR.empty() == false) && WILL_WRAP)
         {
-            str.clear();
+            return "(" + RESULT_STR + ")";
         }
-        else if (WILL_WRAP)
+        else
         {
-            str += ')';
+            return RESULT_STR;
         }
-
-        return str;
     }
 
     const std::string TraitSet::StatsString(const bool WILL_WRAP) const
     {
-        std::string str;
-        str.reserve(128);
+        std::ostringstream ss;
+
+        ss << StatStringHelper(Traits::Strength, false) << StatStringHelper(Traits::Accuracy)
+           << StatStringHelper(Traits::Charm) << StatStringHelper(Traits::Luck)
+           << StatStringHelper(Traits::Speed) << StatStringHelper(Traits::Intelligence);
 
         if (WILL_WRAP)
         {
-            str += '(';
+            return "(" + ss.str() + ")";
         }
-
-        str += StatStringHelper(Traits::Strength, false);
-        str += StatStringHelper(Traits::Accuracy);
-        str += StatStringHelper(Traits::Charm);
-        str += StatStringHelper(Traits::Luck);
-        str += StatStringHelper(Traits::Speed);
-        str += StatStringHelper(Traits::Intelligence);
-
-        if (WILL_WRAP)
+        else
         {
-            str += ')';
+            return ss.str();
         }
-
-        return str;
     }
 
     const std::string
         TraitSet::StatStringHelper(const Traits::Enum ENUM, const bool WILL_PREFIX) const
     {
-        std::string str;
-        str.reserve(8);
+        std::ostringstream ss;
 
         if (WILL_PREFIX)
         {
-            str += ", ";
+            ss << ", ";
         }
 
-        str += Traits::Abbr(ENUM);
-        str += '=';
+        const auto TRAIT { traitVec_[static_cast<std::size_t>(ENUM)] };
 
-        const auto & TRAIT { traitVec_[static_cast<std::size_t>(ENUM)] };
+        ss << Traits::Abbr(ENUM) << "=";
 
         if (TRAIT.Current() != TRAIT.Normal())
         {
-            str += std::to_string(TRAIT.Current());
-            str += '/';
+            ss << TRAIT.Current() << "/";
         }
 
-        str += std::to_string(TRAIT.Normal());
+        ss << TRAIT.Normal();
 
-        return str;
-    }
-
-    Score_t TraitSet::Score() const
-    {
-        auto score { 0_score };
-
-        for (EnumUnderlying_t i(0); i < creature::Traits::Count; ++i)
-        {
-            const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
-            const auto NEXT_TRAIT_VALUE { GetCopy(NEXT_TRAIT_ENUM).Current() };
-
-            if (NEXT_TRAIT_VALUE == 0)
-            {
-                continue;
-            }
-
-            auto traitScore { [NEXT_TRAIT_VALUE]() {
-                const auto MULTIPLIER { ((NEXT_TRAIT_VALUE >= 0) ? 10 : 5) };
-                const auto NEXT_TRAIT_VALUE_ABS { misc::Abs(NEXT_TRAIT_VALUE) };
-
-                const Trait_t MAX_VALUE_BEFORE_REDUCTION = 100;
-                if (NEXT_TRAIT_VALUE_ABS < MAX_VALUE_BEFORE_REDUCTION)
-                {
-                    return NEXT_TRAIT_VALUE_ABS * MULTIPLIER;
-                }
-                else
-                {
-                    double traitReduced { static_cast<double>(MAX_VALUE_BEFORE_REDUCTION) };
-
-                    traitReduced += std::sqrt(
-                        static_cast<double>(NEXT_TRAIT_VALUE_ABS)
-                        - static_cast<double>(MAX_VALUE_BEFORE_REDUCTION));
-
-                    return static_cast<int>(traitReduced) * MULTIPLIER;
-                }
-            }() };
-
-            if ((NEXT_TRAIT_ENUM == creature::Traits::HealthGainAll)
-                || (NEXT_TRAIT_ENUM == creature::Traits::HealthGainMelee))
-            {
-                traitScore *= 10;
-            }
-            else if (
-                (NEXT_TRAIT_ENUM == creature::Traits::AnimalResist)
-                || (NEXT_TRAIT_ENUM == creature::Traits::ArmorRating)
-                || (NEXT_TRAIT_ENUM == creature::Traits::Backstab)
-                || (NEXT_TRAIT_ENUM == creature::Traits::CurseOnDamage)
-                || (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusAll)
-                || (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusMelee)
-                || (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusProj)
-                || (NEXT_TRAIT_ENUM == creature::Traits::FindCoinsAmount)
-                || (NEXT_TRAIT_ENUM == creature::Traits::PoisonOnAll)
-                || (NEXT_TRAIT_ENUM == creature::Traits::PoisonOnMelee))
-            {
-                traitScore *= 2;
-            }
-            else if (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusFist)
-            {
-                traitScore /= 4;
-            }
-
-            score += Score_t::Make(traitScore);
-        }
-
-        return score;
+        return ss.str();
     }
 
 } // namespace creature

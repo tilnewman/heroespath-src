@@ -42,9 +42,7 @@ namespace map
             tile_count_v.y = 0;
             layer_vec.clear();
             tiles_panel_vec.clear();
-            tiles_panel_vec.reserve(62);
             texture_vec.clear();
-            texture_vec.reserve(255);
             background_color = sf::Color::Transparent;
         }
 

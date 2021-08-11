@@ -65,14 +65,6 @@ namespace misc
             const std::vector<std::string> & STRING_MATCHES_TO_EXCLUDE
             = std::vector<std::string>());
 
-        // returns the full/cleaned/absolute paths of all matching directories in DIR_PATH or an
-        // empty vector,  if DIR_PATH is empty, does not exist, or is not a directory then the
-        // returned vector will also be empty
-        static const std::vector<std::string> FindDirectories(
-            const bool IS_RECURSIVE,
-            const std::string & DIR_PATH,
-            const std::string & DIR_NAME_PREFIX = "");
-
         // returns the full/cleaned/absolute path of the first available numbered filename or an
         // empty string, FILE_NAME_EXTENSION should start with a period unless it is empty, if
         // DIR_PATH is empty or does not exist or is not a directory then the returned vector

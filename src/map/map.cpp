@@ -27,10 +27,10 @@
 #include "misc/vector-map.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/overlap.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 #include <utility>
 
 namespace heroespath
@@ -42,11 +42,17 @@ namespace map
     const float Map::NONPLAYER_MOVE_DISTANCE_ { 3.0f };
 
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
-        : WALK_SFX_VOLUME_RATIO_(
-            misc::ConfigFile::Instance()->ValueOrDefault<float>("sound-map-walk-sfx-volume-ratio"))
+        : WALK_SFX_VOLUME_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
+              "sound-map-walk-sfx-volume-ratio"))
         , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(REGION))
         , interactionManager_(interactionManager)
         , collisionVec_()
+        , quadTree_()
+        , collisionGrid_()
+        , collisionTimeTrials_("Collision Detection", TimeRes::Nano, true, 50, 0.1)
+        , collisionNaiveIndex_(collisionTimeTrials_.AddCollecter("Naive"))
+        , collisionQuadIndex_(collisionTimeTrials_.AddCollecter("Quad"))
+        , collisionGridIndex_(collisionTimeTrials_.AddCollecter("Grid"))
         , transitionVec_()
         , level_(Level::Count)
         , player_(game::Game::Instance()->State().Party().Avatar())
@@ -110,6 +116,12 @@ namespace map
         player_.MapPos(mapDisplayUPtr_->PlayerPosMap());
 
         ResetNonPlayers();
+
+        quadTree_.Setup(sf::FloatRect(sf::Vector2f(), mapDisplayUPtr_->MapSize()), collisionVec_);
+
+        collisionGrid_.Setup(mapDisplayUPtr_->MapSize(), collisionVec_);
+
+        collisionTimeTrials_.EndAllContests();
     }
 
     bool Map::MovePlayer(const gui::Direction::Enum DIRECTION)
@@ -138,12 +150,12 @@ namespace map
         }
 
         // check if the player just walked into an exit transition
-        const auto COLLIDING_EXIT_TRANSITION_ITER = std::find_if(
+        const auto COLLIDING_EXIT_TRANSITION_ITER { std::find_if(
             std::begin(transitionVec_), std::end(transitionVec_), [&](const auto & TRANSITION) {
                 return (
-                    !TRANSITION.IsEntry()
-                    && sfutil::Contains(TRANSITION.Rect(), MOVED_PLAYER_POS_V));
-            });
+                    (TRANSITION.IsEntry() == false)
+                    && (TRANSITION.Rect().contains(MOVED_PLAYER_POS_V)));
+            }) };
 
         if (COLLIDING_EXIT_TRANSITION_ITER != std::end(transitionVec_))
         {
@@ -188,8 +200,8 @@ namespace map
                     avatar.CurrentSprite().getGlobalBounds()),
                 MOVE_V) };
 
-            if (sfutil::Intersects(
-                    MOVED_RECT_FOR_COLL_DET_WITH_OTHER_NPC, PLAYER_RECT_FOR_COLL_DET_WITH_NPCS))
+            if (MOVED_RECT_FOR_COLL_DET_WITH_OTHER_NPC.intersects(
+                    PLAYER_RECT_FOR_COLL_DET_WITH_NPCS))
             {
                 avatar.StopWalking();
                 avatar.SetIsNextToPlayer(true, player_.MapPos(), false);
@@ -270,7 +282,7 @@ namespace map
             const auto OTHER_AVATAR_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
                 otherAvatar.CurrentSprite().getGlobalBounds()) };
 
-            if (sfutil::Intersects(MOVED_PLAYER_RECT, OTHER_AVATAR_RECT))
+            if (MOVED_PLAYER_RECT.intersects(OTHER_AVATAR_RECT))
             {
                 player_.MovingIntoSet(npcPtrAvatarPair.first);
                 otherAvatar.SetIsNextToPlayer(true, player_.MapPos(), true);
@@ -300,8 +312,8 @@ namespace map
         errorSS << "Tried to find where to place the player in the new map but failed to find the "
                    "matching entry transition among "
                 << TRANS_VEC.size()
-                << " possibilities. Transitioning from map=" << NAMEOF_ENUM(LEVEL_FROM) << " to "
-                << NAMEOF_ENUM(LEVEL_TO_LOAD)
+                << " possibilities. Transitioning from map=" << Level::ToString(LEVEL_FROM)
+                << " to " << Level::ToString(LEVEL_TO_LOAD)
                 << ".  You probably need to break out the Tiled app "
                    "and add or fix some transitions...";
 
@@ -319,16 +331,11 @@ namespace map
                    "they are all there and correct.  Since there is no known valid point in "
                    "the map to place the player, crashing.");
 
-        // this if the LEVEL_FROM is invalid because that can only happen during unit tests
-        if (LEVEL_FROM < Level::Count)
-        {
-            M_HP_LOG_ERR(
-                errorSS.str()
-                << "  Placing the player into the first entry transition point found, "
-                   "which is for map "
-                << NAMEOF_ENUM(FOUND_ITER->WhichLevel())
-                << ", which is better than crashing I guess.");
-        }
+        M_HP_LOG_ERR(
+            errorSS.str() << "  Placing the player into the first entry transition point found, "
+                             "which is for map "
+                          << map::Level::ToString(FOUND_ITER->WhichLevel())
+                          << ", which is better than crashing I guess.");
 
         return sfutil::CenterOf(FOUND_ITER->Rect());
     }
@@ -512,7 +519,7 @@ namespace map
         struct WalkRegion
         {
             sf::FloatRect rect;
-            std::size_t index = 0;
+            std::size_t index;
         };
 
         std::vector<WalkRegion> walkRegions;
@@ -554,7 +561,7 @@ namespace map
                 const auto FINAL_PROPOSED_NPC_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
                     RAW_PROPOSED_NPC_RECT) };
 
-                if (sfutil::Intersects(FINAL_PROPOSED_NPC_RECT, PLAYER_RECT))
+                if (FINAL_PROPOSED_NPC_RECT.intersects(PLAYER_RECT))
                 {
                     continue;
                 }
@@ -582,15 +589,74 @@ namespace map
 
     bool Map::DoesRectCollideWithMap(const sf::FloatRect & RECT) const
     {
+        // TEMP TODO REMOVE AFTER TESTING run all three collision detection algorithms so that
+        // each can be timed
+
+        //// determine if the player's new position collides with a map object
+        //// use naive algorithm if the collision rect count is low enough
+        // if (collisionVec_.size() < 40)
+        //{
+        //    if (DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(
+        //            PLAYER_RECT_FOR_MAP_COLLISIONS))
+        //    {
+        //        return true;
+        //    }
+        //}
+        // else
+        //{
+        //    if (DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(
+        //            PLAYER_RECT_FOR_MAP_COLLISIONS))
+        //    {
+        //        return true;
+        //    }
+        //}
+
+        bool didCollideWithMap { false };
+
+        {
+            M_HP_SCOPED_TIME_TRIAL(collisionTimeTrials_, collisionQuadIndex_);
+            DoesRectCollideWithMap_UsingAlgorithm_Quad(RECT);
+        }
+
+        {
+            M_HP_SCOPED_TIME_TRIAL(collisionTimeTrials_, collisionNaiveIndex_);
+            DoesRectCollideWithMap_UsingAlgorithm_Naive(RECT);
+        }
+
+        {
+            M_HP_SCOPED_TIME_TRIAL(collisionTimeTrials_, collisionGridIndex_);
+            didCollideWithMap = DoesRectCollideWithMap_UsingAlgorithm_Grid(RECT);
+        }
+
+        if (collisionTimeTrials_.ContestCount() == 6)
+        {
+            collisionTimeTrials_.EndAllContests();
+        }
+
+        return didCollideWithMap;
+    }
+
+    bool Map::DoesRectCollideWithMap_UsingAlgorithm_Naive(const sf::FloatRect & RECT) const
+    {
         for (const auto & COLLISION_RECT : collisionVec_)
         {
-            if (sfutil::Intersects(COLLISION_RECT, RECT))
+            if (COLLISION_RECT.intersects(RECT))
             {
                 return true;
             }
         }
 
         return false;
+    }
+
+    bool Map::DoesRectCollideWithMap_UsingAlgorithm_Quad(const sf::FloatRect & RECT) const
+    {
+        return collisionGrid_.DoesRectCollide(RECT);
+    }
+
+    bool Map::DoesRectCollideWithMap_UsingAlgorithm_Grid(const sf::FloatRect & RECT) const
+    {
+        return quadTree_.DoesRectCollide(RECT);
     }
 
     const sf::Vector2f
@@ -708,8 +774,8 @@ namespace map
                         OTHER_AVATAR.CurrentSprite().getGlobalBounds())
                 };
 
-                return sfutil::Intersects(
-                    RECT_ADJ_FOR_COLL_DET_WITH_NPCS, OTHER_AVATAR_RECT_FOR_COLL_DET_WITH_OTHER_NPC);
+                return RECT_ADJ_FOR_COLL_DET_WITH_NPCS.intersects(
+                    OTHER_AVATAR_RECT_FOR_COLL_DET_WITH_OTHER_NPC);
             });
     }
 

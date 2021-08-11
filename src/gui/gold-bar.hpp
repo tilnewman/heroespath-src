@@ -13,7 +13,6 @@
 #include "gui/orientation-enum.hpp"
 #include "gui/side-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
-#include "sfutil/common.hpp"
 #include "sfutil/vector-and-rect.hpp"
 #include "sfutil/vertex.hpp"
 

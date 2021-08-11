@@ -19,18 +19,19 @@
 #include "gui/sound-manager.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/callback.hpp"
-#include "misc/nameof.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
-#include "sfutil/common.hpp"
+#include "sfutil/center-of.hpp"
 #include "sfutil/event.hpp"
-#include "sfutil/keyboard.hpp"
+#include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
 #include "stage/i-stage.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
+
+#include "misc/nameof.hpp"
 
 #include <algorithm>
 #include <array>
@@ -172,7 +173,7 @@ namespace gui
 
         SizetOpt_t IndexAtPos(const sf::Vector2f & POS_V) const
         {
-            if (!Empty() && Contains(POS_V))
+            if ((Empty() == false) && (entityRegion_.contains(POS_V)))
             {
                 const auto DISTANCE_FROM_TOP { POS_V.y - entityRegion_.top };
 
@@ -1053,26 +1054,23 @@ namespace gui
 
         const std::string MakeTypeString(const std::string & ENTITY_NAME = "") const
         {
-            std::string str;
-            str.reserve(128);
+            std::ostringstream ss;
 
-            str += "ListBox<" + std::string(NAMEOF_TYPE(Stage_t));
-            str += ", ";
-            str += std::string(NAMEOF_TYPE(Element_t));
-            str += ">(entity_name=\"";
+            ss << "ListBox<" << NAMEOF_TYPE_T_STR(Stage_t) << ", " << NAMEOF_TYPE_T_STR(Element_t)
+               << ">(entity_name=\"";
 
             if (ENTITY_NAME.empty())
             {
-                str += GetEntityName();
+                ss << GetEntityName();
             }
             else
             {
-                str += ENTITY_NAME;
+                ss << ENTITY_NAME;
             }
 
-            str += "\")";
+            ss << "\")";
 
-            return str;
+            return ss.str();
         }
 
         std::size_t MaxFirstDisplayableIndex() const
@@ -1094,11 +1092,10 @@ namespace gui
                 const ListBoxEventPacket<Stage_t, Element_t> EVENT_PACKET(
                     misc::MakeNotNull(this), GuiEvent::Keypress, KEY_EVENT);
 
-                Callback_t::HandleAndLog(
-                    *callbackHandlerPtr_,
-                    EVENT_PACKET,
-                    ("ListBoxEvent(" + MakeTypeString()
-                     + "\", keypress=" + std::string(sfutil::sfKeyToString(KEY_EVENT.code)) + ")"));
+                std::ostringstream ss;
+                ss << "ListBoxEvent(" << MakeTypeString() << "\", keypress=" << KEY_EVENT << ")";
+
+                Callback_t::HandleAndLog(*callbackHandlerPtr_, EVENT_PACKET, ss.str());
             }
         }
 
@@ -1138,10 +1135,10 @@ namespace gui
                 const ListBoxEventPacket<Stage_t, Element_t> EVENT_PACKET(
                     misc::MakeNotNull(this), GuiEvent::DoubleClick);
 
-                Callback_t::HandleAndLog(
-                    *callbackHandlerPtr_,
-                    EVENT_PACKET,
-                    "ListBoxEvent(" + MakeTypeString() + "\", double-click)");
+                std::ostringstream ss;
+                ss << "ListBoxEvent(" << MakeTypeString() << "\", double-click)";
+
+                Callback_t::HandleAndLog(*callbackHandlerPtr_, EVENT_PACKET, ss.str());
             }
         }
 
@@ -1175,7 +1172,7 @@ namespace gui
             }
             else
             {
-                return misc::Min((displayIndex_ + maxVisibleCount_) - 1, elements_.size() - 1);
+                return std::min((displayIndex_ + maxVisibleCount_) - 1, elements_.size() - 1);
             }
         }
 
@@ -1187,7 +1184,7 @@ namespace gui
             }
             else
             {
-                return misc::Min(
+                return std::min(
                     (selectionDisplayIndex_ + maxVisibleCount_) - 1, elements_.size() - 1);
             }
         }

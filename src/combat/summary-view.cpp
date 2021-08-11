@@ -21,7 +21,7 @@
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -253,117 +253,99 @@ namespace combat
     }
 
     void SummaryView::SetupAndStartTransition(
-        const CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMBAT_REGION)
+        CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMBAT_REGION)
     {
         itemWithTextUVec_.clear();
 
         auto creaturePtr { combatNodePtr->Creature() };
-
-        // name
+        std::ostringstream ss;
+        if (creaturePtr->Name() != creaturePtr->RaceName())
         {
-            std::string nameStr;
-            if (creaturePtr->Name() != creaturePtr->RaceNameForced())
-            {
-                nameStr += creaturePtr->Name() + "\n";
-            }
-
-            nameStr += creaturePtr->RaceName();
-
-            if (creature::race::RaceRoleMatch(creaturePtr->Race(), creaturePtr->Role()) == false)
-            {
-                nameStr += ", " + creaturePtr->RoleName();
-            }
-
-            const gui::TextInfo CREATURE_NAME_TEXT_INFO(
-                nameStr,
-                gui::GuiFont::Default,
-                gui::FontManager::Instance()->Size_Small(),
-                sfutil::color::Light);
-
-            nameTextRegionUPtr_
-                = std::make_unique<gui::TextRegion>("SummaryView'sName", CREATURE_NAME_TEXT_INFO);
+            ss << creaturePtr->Name() << "\n";
         }
 
-        // rank
+        ss << creaturePtr->RaceName();
+
+        if (creature::race::RaceRoleMatch(creaturePtr->Race(), creaturePtr->Role()) == false)
         {
-            const std::string RANK_STR(
-                "Rank " + creaturePtr->Rank().ToString() + " (" + creaturePtr->RankClassName()
-                + ")");
-
-            const gui::TextInfo CREATURE_RANK_TEXT_INFO(
-                RANK_STR,
-                gui::GuiFont::Default,
-                gui::FontManager::Instance()->Size_Small(),
-                sfutil::color::Light);
-
-            rankTextRegionUPtr_
-                = std::make_unique<gui::TextRegion>("SummaryView'sRank", CREATURE_RANK_TEXT_INFO);
+            ss << ", " + creaturePtr->RoleName();
         }
 
-        // health
+        const gui::TextInfo CREATURE_NAME_TEXT_INFO(
+            ss.str(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
+            sfutil::color::Light);
+
+        nameTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("SummaryView'sName", CREATURE_NAME_TEXT_INFO);
+
+        std::ostringstream rankSS;
+        rankSS << "Rank " << creaturePtr->Rank() << " (" << creaturePtr->RankClassName() << ")";
+
+        const gui::TextInfo CREATURE_RANK_TEXT_INFO(
+            rankSS.str(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
+            sfutil::color::Light);
+
+        rankTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("SummaryView'sRank", CREATURE_RANK_TEXT_INFO);
+
+        std::ostringstream healthSS;
+        healthSS << "Health: ";
+        if (creaturePtr->IsPlayerCharacter())
         {
-            std::string healthStr("Health: ");
-            if (creaturePtr->IsPlayerCharacter())
-            {
-                healthStr += creaturePtr->HealthCurrent().ToString() + "/"
-                    + creaturePtr->HealthNormal().ToString();
-            }
-            else
-            {
-                healthStr += creaturePtr->HealthPercentStr();
-            }
-
-            const gui::TextInfo CREATURE_HEALTH_TEXT_INFO(
-                healthStr,
-                gui::GuiFont::Default,
-                gui::FontManager::Instance()->Size_Small(),
-                sfutil::color::Light);
-
-            healthTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO);
+            healthSS << creaturePtr->HealthCurrent() << "/" << creaturePtr->HealthNormal();
+        }
+        else
+        {
+            healthSS << creaturePtr->HealthPercentStr();
         }
 
-        // armor
-        {
-            const std::string ARMOR_STR("Armor Rating: " + creaturePtr->ArmorRating().ToString());
+        const gui::TextInfo CREATURE_HEALTH_TEXT_INFO(
+            healthSS.str(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
+            sfutil::color::Light);
 
-            const gui::TextInfo CREATURE_ARMORRATING_TEXT_INFO(
-                ARMOR_STR,
-                gui::GuiFont::Default,
-                gui::FontManager::Instance()->Size_Small(),
-                sfutil::color::Light);
+        healthTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO);
 
-            armorTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO);
-        }
+        std::ostringstream armorRatingSS;
+        armorRatingSS << "Armor Rating: " << creaturePtr->ArmorRating();
 
-        // description
-        {
-            const gui::TextInfo CREATURE_DESC_TEXT_INFO(
-                creaturePtr->Body().ToString(),
-                gui::GuiFont::Default,
-                gui::FontManager::Instance()->Size_Small(),
-                sfutil::color::Light,
-                gui::Justified::Left,
-                sf::Text::Italic);
+        const gui::TextInfo CREATURE_ARMORRATING_TEXT_INFO(
+            armorRatingSS.str(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
+            sfutil::color::Light);
 
-            descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "SummaryView'sDesc", CREATURE_DESC_TEXT_INFO, sf::FloatRect());
-        }
+        armorTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+            "SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO);
 
-        // condition
-        {
-            const std::string COND_STR("Condition:  " + creaturePtr->ConditionNames(6));
+        const gui::TextInfo CREATURE_DESC_TEXT_INFO(
+            creaturePtr->Body().ToString(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
+            sfutil::color::Light,
+            gui::Justified::Left,
+            sf::Text::Italic);
 
-            const gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(
-                COND_STR,
-                gui::GuiFont::Default,
-                gui::FontManager::Instance()->Size_Small(),
-                sfutil::color::Light);
+        descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+            "SummaryView'sDesc", CREATURE_DESC_TEXT_INFO, sf::FloatRect());
 
-            condTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
-                "SummaryView'sCondition", CREATURE_CONDITIONS_TEXT_INFO);
-        }
+        std::ostringstream condSS;
+        condSS << "Condition:  " << creaturePtr->ConditionNames(6);
+
+        const gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(
+            condSS.str(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
+            sfutil::color::Light);
+
+        condTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
+            "SummaryView'sCondition", CREATURE_CONDITIONS_TEXT_INFO);
 
         const float IMAGE_POS_LEFT(COMBAT_REGION.left + BLOCK_POS_LEFT_ + IMAGE_EDGE_PAD_);
         const float IMAGE_POS_TOP(COMBAT_REGION.top + BLOCK_POS_TOP_ + IMAGE_EDGE_PAD_);
@@ -440,18 +422,15 @@ namespace combat
 
         // populate the enemy equipped item list with the following priority:
         // weapons first, then armor, then misc, then plain clothes
-        const auto ITEMS_EQUIPPED_VEC { creaturePtr->Inventory().ItemsEquipped() };
 
         // first weapons
         item::ItemPVec_t weaponItemsToDisplay;
-        weaponItemsToDisplay.reserve(ITEMS_EQUIPPED_VEC.size());
-
         item::ItemPVec_t weaponItemsToIgnore;
-        weaponItemsToIgnore.reserve(ITEMS_EQUIPPED_VEC.size());
 
+        const auto ITEMS_EQUIPPED_VEC { creaturePtr->Inventory().ItemsEquipped() };
         for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
-            if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodyPart() == false))
+            if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
             {
                 weaponItemsToDisplay.emplace_back(NEXT_ITEM_PTR);
             }
@@ -462,7 +441,7 @@ namespace combat
         {
             for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
-                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodyPart()))
+                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
                     weaponItemsToDisplay.emplace_back(NEXT_ITEM_PTR);
                 }
@@ -472,7 +451,7 @@ namespace combat
         {
             for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
-                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodyPart()))
+                if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
                     weaponItemsToIgnore.emplace_back(NEXT_ITEM_PTR);
                 }
@@ -500,7 +479,7 @@ namespace combat
         // then misc
         for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
-            if (NEXT_ITEM_PTR->MiscType() < item::Misc::Count)
+            if (NEXT_ITEM_PTR->MiscType() != item::misc_type::Not)
             {
                 makeAndppendItemWithText(NEXT_ITEM_PTR);
             }
@@ -591,9 +570,8 @@ namespace combat
             nextItemTextUPtr->sprite.setPosition(
                 ITEM_IMAGE_POS_LEFT, ITEM_IMAGE_POS_TOP_START + itemListHeight);
 
-            const auto NAME { nextItemTextUPtr->item_ptr->Name() };
             const gui::TextInfo ITEM_NAME_TEXT_INFO(
-                NAME,
+                nextItemTextUPtr->item_ptr->Name(),
                 gui::GuiFont::Default,
                 gui::FontManager::Instance()->Size_Small(),
                 sfutil::color::Light,
@@ -607,7 +585,8 @@ namespace combat
                 0.0f);
 
             nextItemTextUPtr->name_text_region_uptr = std::make_unique<gui::TextRegion>(
-                "CombatDisplay_EnemyDetails_ItemList_ItemName_" + NAME,
+                "CombatDisplay_EnemyDetails_ItemList_ItemName_"
+                    + nextItemTextUPtr->item_ptr->Name(),
                 ITEM_NAME_TEXT_INFO,
                 ITEM_NAME_RECT);
 
@@ -627,38 +606,39 @@ namespace combat
                 0.0f);
 
             nextItemTextUPtr->desc_text_region_uptr = std::make_unique<gui::TextRegion>(
-                "CombatDisplay_EnemyDetails_ItemList_ItemDesc_" + NAME,
+                "CombatDisplay_EnemyDetails_ItemList_ItemDesc_"
+                    + nextItemTextUPtr->item_ptr->Name(),
                 ITEM_DESC_TEXT_INFO,
                 ITEM_DESC_RECT);
 
-            std::string infoStr;
+            std::ostringstream infoSS;
 
-            if (nextItemTextUPtr->item_ptr->IsQuest())
+            if (nextItemTextUPtr->item_ptr->IsQuestItem())
             {
-                infoStr += "(Quest Item)";
+                infoSS << ((infoSS.str().empty()) ? "" : ", ") << "(Quest Item)";
             }
 
             if (nextItemTextUPtr->item_ptr->IsWeapon())
             {
-                infoStr += std::string((infoStr.empty()) ? "" : ", ")
-                    + "Damage: " + nextItemTextUPtr->item_ptr->DamageMin().ToString() + "-"
-                    + nextItemTextUPtr->item_ptr->DamageMax().ToString();
+                infoSS << ((infoSS.str().empty()) ? "" : ", ")
+                       << "Damage: " << nextItemTextUPtr->item_ptr->DamageMin() << "-"
+                       << nextItemTextUPtr->item_ptr->DamageMax();
             }
             else if (
                 nextItemTextUPtr->item_ptr->IsArmor()
                 || (nextItemTextUPtr->item_ptr->ArmorRating() > 0_armor))
             {
-                infoStr += std::string((infoStr.empty()) ? "" : ", ")
-                    + "Armor Rating: " + nextItemTextUPtr->item_ptr->ArmorRating().ToString();
+                infoSS << ((infoSS.str().empty()) ? "" : ", ")
+                       << "Armor Rating: " << nextItemTextUPtr->item_ptr->ArmorRating();
             }
 
-            if (infoStr.empty())
+            if (infoSS.str().empty())
             {
-                infoStr += ' ';
+                infoSS << " ";
             }
 
             const gui::TextInfo INFO_TEXT_INFO(
-                infoStr,
+                infoSS.str(),
                 gui::GuiFont::Default,
                 gui::FontManager::Instance()->Size_Small(),
                 sfutil::color::Light,
@@ -673,7 +653,10 @@ namespace combat
                 0.0f);
 
             nextItemTextUPtr->info_text_region_uptr = std::make_unique<gui::TextRegion>(
-                "CombatDisplay_EnemyDetails_ItemList_ItemInfo_" + NAME, INFO_TEXT_INFO, INFO_RECT);
+                "CombatDisplay_EnemyDetails_ItemList_ItemInfo_"
+                    + nextItemTextUPtr->item_ptr->Name(),
+                INFO_TEXT_INFO,
+                INFO_RECT);
 
             const float CURR_ITEM_HORIZ_EXTENT(
                 ITEM_IMAGE_POS_LEFT + nextItemTextUPtr->sprite.getGlobalBounds().width
@@ -686,7 +669,7 @@ namespace combat
             }
 
             const float CURR_ITEM_VERT_TEXT_EXTENT { (
-                (infoStr == " ")
+                (infoSS.str() == " ")
                     ? (ITEM_DESC_RECT.top
                        + nextItemTextUPtr->desc_text_region_uptr->GetEntityRegion().height)
                         - (ITEM_IMAGE_POS_TOP_START + itemListHeight)
@@ -711,9 +694,7 @@ namespace combat
 
         // establish enemy details display extents
         if (enemyDetailsDisplayExtentHoriz < longestItemHorizExtent)
-        {
             enemyDetailsDisplayExtentHoriz = longestItemHorizExtent;
-        }
 
         enemyDetailsDisplayExtentVert = (ITEM_IMAGE_POS_TOP_START + itemListHeight);
 

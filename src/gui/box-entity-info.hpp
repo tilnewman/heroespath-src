@@ -27,8 +27,6 @@ namespace heroespath
 namespace gui
 {
 
-    using IntRectOpt_t = boost::optional<sf::IntRect>;
-
     // Responsible for wrapping all the information needed to construct a Background entity except
     // for position.  The default constructor will result in a valid object that when used to
     // create a Background entity will also result in a valid object that will draw nothing.

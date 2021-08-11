@@ -92,8 +92,6 @@ namespace interact
                       "Nice " + std::string(BEAST_RACE_NAME) + ".  Does he" }) };
 
                 std::string secondPart { "" };
-                secondPart.reserve(32);
-
                 switch (misc::Random(6))
                 {
                     case 0:
@@ -140,7 +138,9 @@ namespace interact
 
             switch (misc::Random(20))
             {
-                case 0: { return AppendIf(RandomOrEmpty(TavernNoises())) + "Who said that?";
+                case 0:
+                {
+                    return AppendIf(RandomOrEmpty(TavernNoises())) + "Who said that?";
                 }
                 case 1:
                 {
@@ -170,9 +170,8 @@ namespace interact
                     return AppendIf(RandomOrEmpty(TavernNoises())) + "Why did "
                         + Random({ "he", "she" }) + " leave me "
                         + Random(std::vector<std::vector<std::string>> {
-                              Combinations(
-                                  { "for my" }, { "brother", "sister", "cousin", "friend" }),
-                              Combinations({ "for that", "for a" }, { RandomRaceOrRole() }) })
+                            Combinations({ "for my" }, { "brother", "sister", "cousin", "friend" }),
+                            Combinations({ "for that", "for a" }, { RandomRaceOrRole() }) })
                         + "?" + PrependIf(RandomOrEmpty(TavernNoises()));
                 }
                 case 6:
@@ -192,12 +191,14 @@ namespace interact
                 {
                     return "You look like you could use "
                         + Random(std::vector<std::vector<std::string>> {
-                              { "a drink", "a beer", "an ale" },
-                              { "some of this "
-                                + Random(Combinations(TavernDrinkAdjectives(), TavernDrinks())) } })
+                            { "a drink", "a beer", "an ale" },
+                            { "some of this "
+                              + Random(Combinations(TavernDrinkAdjectives(), TavernDrinks())) } })
                         + ".";
                 }
-                case 9: { return "Ninety-nine bottles of beer on the wall...";
+                case 9:
+                {
+                    return "Ninety-nine bottles of beer on the wall...";
                 }
                 case 10:
                 {

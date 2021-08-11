@@ -14,6 +14,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 namespace heroespath
@@ -29,14 +30,9 @@ namespace gui
 
     const std::string Date::ToString() const
     {
-        std::string str;
-        str.reserve(32);
-        str += std::to_string(year);
-        str += '-';
-        str += std::to_string(month);
-        str += '-';
-        str += std::to_string(day);
-        return str;
+        std::ostringstream ss;
+        ss << year << "-" << month << "-" << day;
+        return ss.str();
     }
 
     bool Date::IsValid() const { return ((year > 0) && (month > 0) && (day > 0)); }
@@ -103,7 +99,12 @@ namespace gui
         , time(TIME)
     {}
 
-    const std::string DateTime::ToString() const { return date.ToString() + " " + time.ToString(); }
+    const std::string DateTime::ToString() const
+    {
+        std::ostringstream ss;
+        ss << date.ToString() << " " << time.ToString();
+        return ss.str();
+    }
 
 } // namespace gui
 } // namespace heroespath

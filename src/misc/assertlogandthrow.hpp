@@ -10,120 +10,83 @@
 // assertlogandthrow.hpp
 //
 #include "misc/log-macros.hpp"
-#include "misc/string-stream-holder.hpp"
+
+#include <cassert>
+#include <exception>
+#include <sstream>
 
 #if !defined(HEROESPATH_MACRO_DISABLE_ALL) && !defined(HEROESPATH_MACRO_DISABLE_ASSERT)
 
 #if defined(NDEBUG)
 
-// release mode
+// in release builds use throw
 
-#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_STR(exp, str)                                          \
+#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(exp, str_stuff)                                        \
     {                                                                                              \
-        misc::StringStreamHolder::log(                                                             \
-            heroespath::misc::LogPriority::Fatal, __FILE__, __func__, __LINE__, str);              \
+        M_HP_LOG_FAT(str_stuff);                                                                   \
                                                                                                    \
-        std::ostringstream _m_hp_ass_ss;                                                           \
-        _m_hp_ass_ss << "FATAL: " << __FILE__ << __func__ << __LINE__ << str;                      \
+        std::ostringstream _m_oss_assertorlogandthrow_temp;                                        \
                                                                                                    \
-        throw std::runtime_error(_m_hp_ass_ss.str());                                              \
+        _m_oss_assertorlogandthrow_temp << "M_HP_ASSERT_OR_LOG_AND_THROW  FAILED: " << str_stuff   \
+                                        << M_HP_FILE_FUNC_LINE_STR << " (" << #exp << ")==false";  \
+                                                                                                   \
+        throw std::runtime_error(_m_oss_assertorlogandthrow_temp.str());                           \
     }
 
-#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_SS(exp, str_streams)                                   \
+#define M_HP_ASSERT_OR_LOG_AND_THROW(exp, str_stuff)                                               \
     {                                                                                              \
-        std::ostringstream _m_hp_ass_ss;                                                           \
-        _m_hp_ass_ss << str_streams;                                                               \
-                                                                                                   \
-        misc::StringStreamHolder::log(                                                             \
-            heroespath::misc::LogPriority::Fatal,                                                  \
-            __FILE__,                                                                              \
-            __func__,                                                                              \
-            __LINE__,                                                                              \
-            _m_hp_ass_ss.str());                                                                   \
-                                                                                                   \
-        _m_hp_ass_ss.clear();                                                                      \
-        _m_hp_ass_ss.str("");                                                                      \
-        _m_hp_ass_ss << "FATAL: " << __FILE__ << __func__ << __LINE__ << str_streams;              \
-                                                                                                   \
-        throw std::runtime_error(_m_hp_ass_ss.str());                                              \
+        {                                                                                          \
+            if (!(exp))                                                                            \
+            {                                                                                      \
+                M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(exp, str_stuff)                                \
+            }                                                                                      \
+        }                                                                                          \
+    }
+
+#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(exp, str_stuff)                                     \
+    {                                                                                              \
+        {                                                                                          \
+            if constexpr (!(exp))                                                                  \
+            {                                                                                      \
+                M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(exp, str_stuff)                                \
+            }                                                                                      \
+        }                                                                                          \
     }
 
 #else
 
-// debug mode
-#include <cassert>
+// in debug (and all other builds) use assert
 
-#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_STR(exp, str)                                          \
+#define M_HP_ASSERT_OR_LOG_AND_THROW(exp, str_stuff)                                               \
     {                                                                                              \
-        misc::StringStreamHolder::log(                                                             \
-            heroespath::misc::LogPriority::Fatal, __FILE__, __func__, __LINE__, str);              \
-                                                                                                   \
-        assert((exp));                                                                             \
+        {                                                                                          \
+            if (!(exp))                                                                            \
+            {                                                                                      \
+                M_HP_LOG_FAT(str_stuff);                                                           \
+                assert((exp));                                                                     \
+            }                                                                                      \
+        }                                                                                          \
     }
 
-#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_SS(exp, str_streams)                                   \
+#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(exp, str_stuff)                                     \
     {                                                                                              \
-        std::ostringstream _m_hp_ass_ss;                                                           \
-        _m_hp_ass_ss << str_streams;                                                               \
-                                                                                                   \
-        misc::StringStreamHolder::log(                                                             \
-            heroespath::misc::LogPriority::Fatal,                                                  \
-            __FILE__,                                                                              \
-            __func__,                                                                              \
-            __LINE__,                                                                              \
-            _m_hp_ass_ss.str());                                                                   \
-                                                                                                   \
-        assert((exp));                                                                             \
+        {                                                                                          \
+            if constexpr (!(exp))                                                                  \
+            {                                                                                      \
+                M_HP_LOG_FAT(str_stuff);                                                           \
+                assert((exp));                                                                     \
+            }                                                                                      \
+        }                                                                                          \
     }
 
-#endif
+#endif // end if debug or not
 
 #else
 
-// macros turned off
-#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_STR(exp, str) ;
-#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_SS(exp, str_streams) ;
+// if disabled by ASSERT_OR_THROW_DISABLED, then produce no code
+#define M_HP_ASSERT_OR_LOG_AND_THROW(exp, str_stuff) ;
+#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(exp, str_stuff) ;
 
-#endif
-
-//
-
-#define M_HP_ASSERT_OR_LOG_AND_THROW_STR(exp, str)                                                 \
-    {                                                                                              \
-        if (!(exp))                                                                                \
-        {                                                                                          \
-            M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_STR(exp, str)                                      \
-        }                                                                                          \
-    }
-
-#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR_STR(exp, str)                                       \
-    {                                                                                              \
-        if constexpr (!(exp))                                                                      \
-        {                                                                                          \
-            M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_STR(exp, str)                                      \
-        }                                                                                          \
-    }
-
-#define M_HP_ASSERT_OR_LOG_AND_THROW_SS(exp, str_streams)                                          \
-    {                                                                                              \
-        if (!(exp))                                                                                \
-        {                                                                                          \
-            M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_SS(exp, str_streams)                               \
-        }                                                                                          \
-    }
-
-#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR_SS(exp, str_streams)                                \
-    {                                                                                              \
-        if constexpr (!(exp))                                                                      \
-        {                                                                                          \
-            M_HP_ASSERT_OR_LOG_AND_THROW_HELPER_SS(exp, str_streams)                               \
-        }                                                                                          \
-    }
-
-#define M_HP_ASSERT_OR_LOG_AND_THROW(exp, str_streams)                                             \
-    M_HP_ASSERT_OR_LOG_AND_THROW_SS(exp, str_streams)
-
-#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(exp, str_streams)                                   \
-    M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR_SS(exp, str_streams)
+#endif // end if assert macros enabled
 
 #endif // MISC_ASSERTORLOGANDTHROW_HPP_INCLUDED

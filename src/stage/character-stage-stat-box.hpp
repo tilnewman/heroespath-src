@@ -70,7 +70,7 @@ namespace stage
 
         static bool IsValid(const creature::Traits::Enum TRAIT);
         static bool IsValid(const std::size_t INDEX);
-        static std::size_t StatCount() { return static_cast<std::size_t>(StatInvalid()); }
+        static std::size_t StatCount() { return StatInvalid(); }
         static std::size_t IndexInvalid() { return StatCount(); }
         static creature::Traits::Enum StatInvalid() { return creature::Traits::StatCount; }
 

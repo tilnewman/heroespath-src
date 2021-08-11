@@ -13,9 +13,9 @@
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-action-info.hpp"
 #include "creature/trait.hpp"
-#include "game/strong-types.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 
 #include <utility>

@@ -14,6 +14,7 @@
 #include "stage/i-stage.hpp"
 #include "stage/stage-enum.hpp"
 
+#include <sstream>
 #include <string>
 #include <tuple>
 
@@ -92,24 +93,21 @@ namespace stage
 
         const std::string ToString() const
         {
-            std::string str;
-            str.reserve(128);
+            std::ostringstream ss;
 
-            str += "stage_setup=";
-            str += NAMEOF_ENUM(stage);
+            ss << "stage_setup=" << stage::Stage::ToString(stage);
 
             if (will_advance_turn)
             {
-                str += ", stage_setup_will_advance_turn";
+                ss << ", stage_setup_will_advance_turn";
             }
 
             if (inventory_packet_opt)
             {
-                str += ", ";
-                str += inventory_packet_opt->ToString();
+                ss << ", " << inventory_packet_opt->ToString();
             }
 
-            return str;
+            return ss.str();
         }
 
         stage::Stage::Enum stage;

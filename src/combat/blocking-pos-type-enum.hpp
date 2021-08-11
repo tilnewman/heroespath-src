@@ -11,13 +11,15 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace combat
 {
 
     // Responsible for enumerating blocking position types.
-    struct BlockingPosType : public EnumBaseCounting<>
+    struct BlockingPosType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -29,6 +31,8 @@ namespace combat
             Last,
             Count
         };
+
+        static const std::string ToString(const Enum);
     };
 
 } // namespace combat

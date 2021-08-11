@@ -18,7 +18,7 @@ namespace heroespath
 namespace combat
 {
 
-    struct CombatEnd : public EnumBaseCounting<>
+    struct CombatEnd : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -27,6 +27,8 @@ namespace combat
             Ran,
             Count
         };
+
+        static const std::string ToString(const CombatEnd::Enum);
     };
 
 } // namespace combat

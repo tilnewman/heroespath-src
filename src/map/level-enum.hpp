@@ -18,7 +18,7 @@ namespace heroespath
 namespace map
 {
 
-    struct LevelType : public EnumBaseCounting<>
+    struct LevelType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -28,9 +28,11 @@ namespace map
             Realm,
             Count
         };
+
+        static const std::string ToString(const Enum);
     };
 
-    struct Level : public EnumBaseCounting<>
+    struct Level : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -44,23 +46,10 @@ namespace map
             Count
         };
 
-        static constexpr std::string_view const FILENAME_EXTENSION { ".tmx" };
-
-        static const std::string Path(const Level::Enum LEVEL);
-
-        static constexpr LevelType::Enum Type(const Level::Enum LEVEL) noexcept
-        {
-            switch (LEVEL)
-            {
-                case Thornberry: return LevelType::Town;
-                case Thornberry_GuardPostWest: return LevelType::Inside;
-                case Thornberry_GuardPostEast: return LevelType::Inside;
-                case ThornberryMeadows: return LevelType::Realm;
-                case ThornberryHighlands: return LevelType::Realm;
-                case Count:
-                default: return LevelType::Count;
-            }
-        }
+        static const std::string FILENAME_EXTENSION;
+        static const std::string ToString(const Level::Enum);
+        static const std::string Path(const Level::Enum);
+        static LevelType::Enum Type(const Level::Enum);
     };
 
 } // namespace map

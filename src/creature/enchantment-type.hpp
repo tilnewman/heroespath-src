@@ -19,7 +19,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct EnchantmentType : public EnumBaseBitField<>
+    struct EnchantmentType : public EnumBaseBitField
     {
         enum Enum : EnumUnderlying_t
         {
@@ -33,12 +33,14 @@ namespace creature
             AllowsFlight = 1 << 6,
             CurseWithoutItem = 1 << 7,
             BlessWithoutItem = 1 << 8,
-            OnlyIfSetIsComplete = 1 << 9
+            OnlyIfSetIsComplete = 1 << 9,
+            Last = OnlyIfSetIsComplete
         };
 
-        static constexpr Enum Last = OnlyIfSetIsComplete;
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
 
-        static const std::string EffectStr(const Enum);
+        static const std::string
+            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
 } // namespace creature

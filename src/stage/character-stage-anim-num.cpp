@@ -11,7 +11,6 @@
 //
 #include "character-stage-anim-num.hpp"
 
-#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -61,8 +60,9 @@ namespace stage
 
     void AnimNum::CreateNewTextRegion()
     {
-        textInfo_.text.reserve(8);
-        textInfo_.text += std::to_string(value_);
+        std::ostringstream ss;
+        ss << value_;
+        textInfo_.text = ss.str();
 
         if (textInfo_.text == "0")
         {
@@ -138,7 +138,7 @@ namespace stage
 
     bool AnimNum::MouseDown(const float POS_LEFT, const float POS_TOP)
     {
-        if (sfutil::Contains(text_, POS_LEFT, POS_TOP))
+        if (text_.getGlobalBounds().contains(POS_LEFT, POS_TOP))
         {
             isHeldDown_ = true;
             return true;

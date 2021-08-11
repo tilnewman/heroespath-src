@@ -6,19 +6,17 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-//
-// unit-test-filesystem.cpp
-//
-#define BOOST_TEST_MODULE "filesystem"
+
+#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Filesystem"
 
 #include <boost/test/unit_test.hpp>
 
-#include "misc/boost-string-includes.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/platform.hpp"
 #include "misc/strings.hpp"
-#include "test/util/game-engine-global-fixture.hpp"
 
+#include <boost/algorithm/algorithm.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
 #include <algorithm>
@@ -28,17 +26,7 @@
 #include <vector>
 
 using namespace heroespath;
-using namespace heroespath::test;
 using namespace heroespath::misc;
-
-void GameEngineGlobalFixture::setupBeforeAllTests()
-{
-    m_unitTestFilename = __FILE__;
-    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
-}
-
-BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
-
 namespace bfs = boost::filesystem;
 
 struct Help
@@ -167,6 +155,19 @@ struct Help
         return filenameVec;
     }
 
+    static void
+        coutVectorOfStrings(const std::vector<std::string> & VEC, const std::string & TITLE = "")
+    {
+        std::cout << TITLE << ":";
+
+        for (const auto & STRING : VEC)
+        {
+            std::cout << "\n\t\"" << STRING << "\"";
+        }
+
+        std::cout << std::endl << std::endl;
+    }
+
     const std::string JUNK_WHITESPACE_STR;
     const std::string TEST_DIR_NAME_STR;
     const std::string TEST_DIR_PATH_STR;
@@ -186,7 +187,7 @@ struct Help
     const std::string TO_CREATE_DIR_FINAL_PATH_STR;
 };
 
-BOOST_AUTO_TEST_CASE(clean_Path)
+BOOST_AUTO_TEST_CASE(misc_filesystem__CleanPath_A)
 {
     Help help;
 
@@ -280,7 +281,7 @@ BOOST_AUTO_TEST_CASE(clean_Path)
         filesystem::CleanPath("/") == filesystem::CleanPath(bfs::path("/").root_path().string()));
 }
 
-BOOST_AUTO_TEST_CASE(current_directory)
+BOOST_AUTO_TEST_CASE(misc_filesystem__CurrentDirectory)
 {
     BOOST_CHECK(filesystem::CurrentDirectory() == bfs::current_path().make_preferred().string());
 
@@ -289,7 +290,7 @@ BOOST_AUTO_TEST_CASE(current_directory)
         == bfs::canonical(bfs::current_path()).make_preferred().string());
 }
 
-BOOST_AUTO_TEST_CASE(combine_paths_and_clean)
+BOOST_AUTO_TEST_CASE(misc_filesystem__CombinePathsAndClean)
 {
     Help help;
 
@@ -380,7 +381,7 @@ BOOST_AUTO_TEST_CASE(combine_paths_and_clean)
             + help.TEST_DIR_NAME_STR));
 }
 
-BOOST_AUTO_TEST_CASE(append_paths_to_current_and_clean)
+BOOST_AUTO_TEST_CASE(misc_filesystem__AppendPathsToCurrentAndClean)
 {
     Help help;
 
@@ -648,7 +649,7 @@ BOOST_AUTO_TEST_CASE(append_paths_to_current_and_clean)
 //    BOOST_CHECK(filesystem::EndsWithDirectoryGuess("foo/bar.txt\\..") == true);
 //}
 
-BOOST_AUTO_TEST_CASE(filename_with_extension)
+BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_INCLUDING_EXTENSION)
 {
     Help help;
 
@@ -737,7 +738,7 @@ BOOST_AUTO_TEST_CASE(filename_with_extension)
     BOOST_CHECK(filesystem::Filename("foo/bar.txt\\..") == "");
 }
 
-BOOST_AUTO_TEST_CASE(filename_witout_extension)
+BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_EXLUDING_EXTENSION)
 {
     Help help;
 
@@ -826,7 +827,7 @@ BOOST_AUTO_TEST_CASE(filename_witout_extension)
     BOOST_CHECK(filesystem::Filename("foo/bar.txt\\..", true) == "");
 }
 
-BOOST_AUTO_TEST_CASE(extenion_with_dot)
+BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_INCLUDING_DOT)
 {
     Help help;
 
@@ -915,7 +916,7 @@ BOOST_AUTO_TEST_CASE(extenion_with_dot)
     BOOST_CHECK(filesystem::Extension("foo/bar.txt\\..") == "");
 }
 
-BOOST_AUTO_TEST_CASE(extension_without_dot)
+BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_EXCLUDING_DOT)
 {
     Help help;
 
@@ -1004,7 +1005,7 @@ BOOST_AUTO_TEST_CASE(extension_without_dot)
     BOOST_CHECK(filesystem::Extension("foo/bar.txt\\..", true) == "");
 }
 
-BOOST_AUTO_TEST_CASE(exists)
+BOOST_AUTO_TEST_CASE(misc_filesystem__Exists)
 {
     Help help;
 
@@ -1019,7 +1020,7 @@ BOOST_AUTO_TEST_CASE(exists)
     BOOST_CHECK(filesystem::Exists(help.TEST_DIR_PATH_STR) == true);
 }
 
-BOOST_AUTO_TEST_CASE(exists_and_is_file)
+BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsFile)
 {
     Help help;
 
@@ -1034,7 +1035,7 @@ BOOST_AUTO_TEST_CASE(exists_and_is_file)
     BOOST_CHECK(filesystem::ExistsAndIsFile(help.TEST_DIR_PATH_STR) == false);
 }
 
-BOOST_AUTO_TEST_CASE(exists_and_is_directory)
+BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsDirectory)
 {
     Help help;
 
@@ -1050,7 +1051,7 @@ BOOST_AUTO_TEST_CASE(exists_and_is_directory)
     BOOST_CHECK(filesystem::ExistsAndIsDirectory(help.TEST_DIR_PATH_STR) == true);
 }
 
-BOOST_AUTO_TEST_CASE(find_files)
+BOOST_AUTO_TEST_CASE(misc_filesystem__FindFiles)
 {
     Help help;
 
@@ -1084,6 +1085,26 @@ BOOST_AUTO_TEST_CASE(find_files)
     BOOST_CHECK(
         help.KeepOnlyFilenameAndStdSort(filesystem::FindFiles(false, help.NON_EMPTY_DIR_PATH_STR))
         == help.ALL_FILES_IN_FIRST_DIR_ONLY);
+
+    for (const auto & FILE : filesystem::FindFiles(false, help.NON_EMPTY_DIR_PATH_STR))
+    {
+        std::cout << "\n" << FILE;
+    }
+
+    std::cout << std::endl;
+
+    for (const auto & FILE :
+         help.KeepOnlyFilenameAndStdSort(filesystem::FindFiles(false, help.NON_EMPTY_DIR_PATH_STR)))
+    {
+        std::cout << "\n" << FILE;
+    }
+
+    std::cout << std::endl;
+
+    for (const auto & FILE : help.ALL_FILES_IN_FIRST_DIR_ONLY)
+    {
+        std::cout << "\n" << FILE;
+    }
 
     BOOST_CHECK(
         help.KeepOnlyFilenameAndStdSort(
@@ -1137,7 +1158,7 @@ BOOST_AUTO_TEST_CASE(find_files)
         == help.ALL_VALID_FILES_RECURSIVE);
 }
 
-BOOST_AUTO_TEST_CASE(find_first_available_numbered_filename_path)
+BOOST_AUTO_TEST_CASE(misc_filesystem__FindFirstAvailableNumberedFilenamePath)
 {
     Help help;
 
@@ -1152,7 +1173,7 @@ BOOST_AUTO_TEST_CASE(find_first_available_numbered_filename_path)
         == "log-4.txt");
 }
 
-BOOST_AUTO_TEST_CASE(sort_by_last_number_in_filename)
+BOOST_AUTO_TEST_CASE(misc_filesystem__SortByLastNumberInFilename)
 {
     Help help;
 
@@ -1255,7 +1276,7 @@ BOOST_AUTO_TEST_CASE(sort_by_last_number_in_filename)
     }
 }
 
-BOOST_AUTO_TEST_CASE(limit_path_depth)
+BOOST_AUTO_TEST_CASE(misc_filesystem__LimitPathDept)
 {
     const std::string PATH_STR { Help::PreferredSlashes("one/two/three/file.ext") };
 
@@ -1293,7 +1314,7 @@ BOOST_AUTO_TEST_CASE(limit_path_depth)
         filesystem::LimitPathDept(PATH_STR, std::numeric_limits<std::size_t>::max()) == PATH_STR);
 }
 
-BOOST_AUTO_TEST_CASE(create_directory_and_then_delete_it)
+BOOST_AUTO_TEST_CASE(misc_filesystem__CreateDirectory_and_Delete)
 {
     // this block is only to force ~Help() that will cleanup any mess left by these tests
     {

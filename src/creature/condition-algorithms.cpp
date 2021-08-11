@@ -26,43 +26,42 @@ namespace creature
 
         const std::string Algorithms::Names(
             const CondEnumVec_t & CONDITIONS_VEC,
-            const misc::JoinHow JOIN_HOW,
+            const std::size_t MAX_COUNT,
             const std::size_t MIN_SEVERITY,
-            const SortOpt SORT_OPTION)
+            const SortOpt SORT_OPTION,
+            const misc::Vector::JoinOpt JOIN_OPTIONS)
         {
-            if (CONDITIONS_VEC.empty())
-            {
-                return "";
-            }
-
             auto tempVec { CONDITIONS_VEC };
             RemoveByMinSeverity(tempVec, MIN_SEVERITY);
             SortBySeverity(tempVec, SORT_OPTION);
 
-            return misc::Join(
-                tempVec, JOIN_HOW, [](const auto & ENUM) { return Conditions::Name(ENUM); });
+            return misc::Vector::Join<Conditions::Enum>(
+                tempVec,
+                MAX_COUNT,
+                JOIN_OPTIONS,
+                [](const Conditions::Enum & ENUM) -> const std::string {
+                    return Conditions::Name(ENUM);
+                });
         }
 
         void Algorithms::SortBySeverity(CondEnumVec_t & conditionsVec, const SortOpt SORT_OPTION)
         {
-            if (conditionsVec.size() <= 1)
+            if (conditionsVec.size() > 1)
             {
-                return;
+                std::sort(
+                    conditionsVec.begin(),
+                    conditionsVec.end(),
+                    [SORT_OPTION](const Conditions::Enum A, const Conditions::Enum B) {
+                        if (SORT_OPTION == SortOpt::Ascending)
+                        {
+                            return (condition::Severity::Get(A) < condition::Severity::Get(B));
+                        }
+                        else
+                        {
+                            return (condition::Severity::Get(A) > condition::Severity::Get(B));
+                        }
+                    });
             }
-
-            std::sort(
-                conditionsVec.begin(),
-                conditionsVec.end(),
-                [SORT_OPTION](const Conditions::Enum A, const Conditions::Enum B) {
-                    if (SORT_OPTION == SortOpt::Ascending)
-                    {
-                        return (condition::Severity::Get(A) < condition::Severity::Get(B));
-                    }
-                    else
-                    {
-                        return (condition::Severity::Get(A) > condition::Severity::Get(B));
-                    }
-                });
         }
 
         const CondEnumVec_t Algorithms::SortBySeverityCopy(
@@ -76,36 +75,28 @@ namespace creature
         void Algorithms::RemoveByMinSeverity(
             CondEnumVec_t & conditionsVec, const std::size_t MIN_SEVERITY)
         {
-            if (conditionsVec.empty())
+            if (conditionsVec.empty() == false)
             {
-                return;
+                conditionsVec.erase(
+                    std::remove_if(
+                        conditionsVec.begin(),
+                        conditionsVec.end(),
+                        [=](const Conditions::Enum ENUM) {
+                            return (
+                                (MIN_SEVERITY != 0)
+                                && (condition::Severity::Get(ENUM) <= MIN_SEVERITY));
+                        }),
+                    conditionsVec.end());
             }
-
-            conditionsVec.erase(
-                std::remove_if(
-                    conditionsVec.begin(),
-                    conditionsVec.end(),
-                    [=](const Conditions::Enum ENUM) {
-                        return (
-                            (MIN_SEVERITY != 0)
-                            && (condition::Severity::Get(ENUM) <= MIN_SEVERITY));
-                    }),
-                conditionsVec.end());
         }
 
         const CondEnumVec_t Algorithms::RemoveByMinSeverityCopy(
             const CondEnumVec_t & CONDITIONS_VEC, const std::size_t MIN_SEVERITY)
         {
-            if (CONDITIONS_VEC.empty() || (MIN_SEVERITY == 0))
-            {
-                return CONDITIONS_VEC;
-            }
-
             auto tempVec { CONDITIONS_VEC };
             RemoveByMinSeverity(tempVec, MIN_SEVERITY);
             return tempVec;
         }
-
     } // namespace condition
 } // namespace creature
 } // namespace heroespath

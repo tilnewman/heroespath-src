@@ -27,7 +27,7 @@ namespace combat
 
     Trap::Trap()
         : playerCountRange_(0, 0)
-        , damageRange_(0.0, 0.0)
+        , damageRange_(0_health, 0_health)
         , soundEffect_(gui::sound_effect::None)
         , descPrefix_("")
         , descPostfix_("")
@@ -44,7 +44,7 @@ namespace combat
         const gui::sound_effect::Enum SOUND_EFFECT,
         const std::string & DESCRIPTION)
         : playerCountRange_(PLAYER_COUNT_MIN, PLAYER_COUNT_MAX)
-        , damageRange_(DAMAGE_MIN.GetAs<double>(), DAMAGE_MAX.GetAs<double>())
+        , damageRange_(DAMAGE_MIN, DAMAGE_MAX)
         , soundEffect_(SOUND_EFFECT)
         , descPrefix_(DESCRIPTION)
         , descPostfix_("")
@@ -62,7 +62,7 @@ namespace combat
         const std::string & DESC_PREFIX,
         const std::string & DES_POSTFIX)
         : playerCountRange_(PLAYER_COUNT_MIN, PLAYER_COUNT_MAX)
-        , damageRange_(DAMAGE_MIN.GetAs<double>(), DAMAGE_MAX.GetAs<double>())
+        , damageRange_(DAMAGE_MIN, DAMAGE_MAX)
         , soundEffect_(SOUND_EFFECT)
         , descPrefix_(DESC_PREFIX)
         , descPostfix_(DES_POSTFIX)
@@ -84,31 +84,29 @@ namespace combat
 
     Health_t Trap::RandomDamage() const
     {
-        const auto RANDOM_DAMAGE { Health_t::Make(
-            misc::Random(damageRange_.Min(), damageRange_.Max())) };
+        const auto RANDOM_DAMAGE { static_cast<double>(
+            misc::Random(damageRange_.Min().Get(), damageRange_.Max().Get())) };
 
-        const auto SQRT_RANDOM_DAMAGE { Health_t::Make(std::sqrt(RANDOM_DAMAGE.GetAs<double>())) };
+        const auto SQRT_RANDOM_DAMAGE { std::sqrt(static_cast<double>(RANDOM_DAMAGE)) };
 
         const auto AVG_PLAYER_RANK_MINUS_ONE { [&]() {
-            const auto AVG_PLAYER_RANK { FindAveragePlayerRank() };
-            if (AVG_PLAYER_RANK < 2_rank)
+            const auto AVG_PLAYER_RANK { FindAveragePlayerRank().As<double>() };
+            if (AVG_PLAYER_RANK < 2.0)
             {
-                return 1_rank;
+                return 1.0;
             }
             else
             {
-                return (AVG_PLAYER_RANK - 1_rank);
+                return AVG_PLAYER_RANK - 1.0;
             }
         }() };
 
-        const auto SQRT_AVG_PLAYER_RANK_MINUS_ONE { Rank_t::Make(
-            std::sqrt(AVG_PLAYER_RANK_MINUS_ONE.GetAs<double>())) };
+        const auto SQRT_AVG_PLAYER_RANK_MINUS_ONE { std::sqrt(AVG_PLAYER_RANK_MINUS_ONE) };
 
         const auto TOTAL_DAMAGE { RANDOM_DAMAGE
-                                  + (SQRT_RANDOM_DAMAGE
-                                     * Health_t::Make(SQRT_AVG_PLAYER_RANK_MINUS_ONE.Get())) };
+                                  + (SQRT_RANDOM_DAMAGE * SQRT_AVG_PLAYER_RANK_MINUS_ONE) };
 
-        return TOTAL_DAMAGE;
+        return Health_t::Make(TOTAL_DAMAGE);
     }
 
     int Trap::Severity() const
@@ -116,7 +114,7 @@ namespace combat
         const auto SQRT_AVG_PLAYER_COUNT { std::sqrt(
             static_cast<double>(playerCountRange_.Mid()) * 10.0) };
 
-        const auto SQRT_AVG_DAMAGE { std::sqrt(damageRange_.Mid() * 10.0) };
+        const auto SQRT_AVG_DAMAGE { std::sqrt(damageRange_.Mid().As<double>() * 10.0) };
 
         return static_cast<int>(SQRT_AVG_PLAYER_COUNT * SQRT_AVG_DAMAGE);
     }

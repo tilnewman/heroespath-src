@@ -14,6 +14,7 @@
 #include "misc/vector-map.hpp"
 
 #include <algorithm>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -62,32 +63,26 @@ namespace interact
 
         const std::string ToString() const
         {
-            std::string str;
-            str.reserve(128);
+            std::ostringstream ss;
 
-            str += "NpcConversationPoint: \"";
-            str += text_;
-            str += "\", buttons=(";
+            ss << "NpcConversationPoint: \"" << text_ << "\", buttons=(";
 
             for (const auto BUTTON : buttons_)
             {
-                str += NAMEOF_ENUM(BUTTON);
-                str += ',';
+                ss << Buttons::ToString(BUTTON) << ",";
             }
 
-            str += "), transition_map=(";
+            ss << "), transition_map=(";
 
             for (const auto & BUTTON_INDEX_PAIR : transitionMap_)
             {
-                str += NAMEOF_ENUM(BUTTON_INDEX_PAIR.first);
-                str += '=';
-                str += std::to_string(BUTTON_INDEX_PAIR.second);
-                str += ',';
+                ss << Buttons::ToString(BUTTON_INDEX_PAIR.first) << "=" << BUTTON_INDEX_PAIR.second
+                   << ",";
             }
 
-            str += ')';
+            ss << ")";
 
-            return str;
+            return ss.str();
         }
 
     private:

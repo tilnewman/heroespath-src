@@ -23,6 +23,58 @@ namespace heroespath
 namespace gui
 {
 
+    const std::string music_update_status::ToString(const music_update_status::Enum ENUM)
+    {
+        switch (ENUM)
+        {
+            case Stopped:
+            {
+                return "Stopped";
+            }
+            case Playing:
+            {
+                return "Playing";
+            }
+            case FadingOut:
+            {
+                return "FadingOut";
+            }
+            case FadedOut:
+            {
+                return "FadedOut";
+            }
+            case FadedOutKill:
+            {
+                return "FadedOutKill";
+            }
+            case FadingIn:
+            {
+                return "FadingIn";
+            }
+            case FadedIn:
+            {
+                return "FadedIn";
+            }
+            case Count:
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
+                return "";
+            }
+        }
+    }
+
+    const float MusicOperator::VOLUME_USE_GLOBAL_(-1.0f); // any negative value will work here
+    const float MusicOperator::FADE_MULT_IMMEDIATE_(-1.0f); //""
+    const float MusicOperator::FADE_MULT_DEFAULT_IN_(50.0f);
+    const float MusicOperator::FADE_MULT_DEFAULT_OUT_(30.0f);
+
     MusicOperator::MusicOperator(
         const MusicInfo & MUSIC_INFO,
         MusicUPtr_t MUSIC_UPTR,
@@ -168,12 +220,12 @@ namespace gui
                 L.killAfterFadeOut_,
                 L.musicUPtr_)
             == std::tie(
-                   R.info_,
-                   R.targetVolume_,
-                   R.fadeInMult_,
-                   R.fadeOutMult_,
-                   R.killAfterFadeOut_,
-                   R.musicUPtr_));
+                R.info_,
+                R.targetVolume_,
+                R.fadeInMult_,
+                R.fadeOutMult_,
+                R.killAfterFadeOut_,
+                R.musicUPtr_));
     }
 } // namespace gui
 } // namespace heroespath

@@ -13,7 +13,7 @@
 #include "misc/log-macros.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
-#include "sfutil/common.hpp"
+#include "sfutil/position.hpp"
 
 namespace heroespath
 {

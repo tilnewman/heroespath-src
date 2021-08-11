@@ -14,11 +14,11 @@
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
-#include "misc/enum-util.hpp"
 #include "misc/random.hpp"
 #include "misc/strings.hpp"
 
 #include <algorithm>
+#include <sstream>
 
 namespace heroespath
 {
@@ -54,43 +54,47 @@ namespace song
              || (TARGET_TYPE == combat::TargetType::AllOpponents)
              || (TARGET_TYPE == combat::TargetType::QuestSpecific)),
             "song::Song::Constructor(which="
-                << NAMEOF_ENUM(WHICH) << ", song_type=" << NAMEOF_ENUM(TYPE) << ", effect_type="
-                << NAMEOF_ENUM(EFFECT_TYPE) << ", mana_cost=" << MANA_COST << ", rank=" << RANK
-                << ") had an invalid TargetType of " << NAMEOF_ENUM(TARGET_TYPE)
+                << Songs::ToString(WHICH) << ", song_type=" << SongType::ToString(TYPE)
+                << ", effect_type=" << combat::EffectType::ToString(EFFECT_TYPE)
+                << ", mana_cost=" << MANA_COST << ", rank=" << RANK
+                << ") had an invalid TargetType of " << combat::TargetType::ToString(TARGET_TYPE)
                 << ".  The only allowed TargetTypes are AllCompanions, AllOpponents, and "
                 << "QuestSpecific.");
     }
 
-    const std::string Song::ToString() const { return Name() + "  -" + DescDetails(); }
+    const std::string Song::ToString() const
+    {
+        std::ostringstream ss;
+        ss << Name() << "  -" << DescDetails();
+        return ss.str();
+    }
 
     const std::string Song::DescDetails() const
     {
-        std::string result;
-        result.reserve(128);
-
-        result
-            += ("A " + misc::NumberToStringWithOrdinalSuffix(rank_.GetAs<int>()) + " rank"
-                + std::string(combat::EffectType::Name(effectType_)) + " magical ");
+        std::ostringstream ss;
+        ss << "A " << misc::NumberToStringWithOrdinalSuffix(rank_.As<int>()) << " rank"
+           << combat::EffectType::Name(effectType_) << " magical ";
 
         if (SongType::Guitar == type_)
         {
-            result += "guitar tune";
+            ss << "guitar tune";
         }
         else
         {
-            result += "drum beat";
+            ss << "drum beat";
         }
 
-        result += " that can be played during " + EnumUtil<game::Phase>::ToString(validPhases_)
-            + ", targeting " + EnumUtil<combat::TargetType>::NameStd(targetType_) + ", and costing "
-            + manaCost_.ToString() + " mana.";
+        ss << " that can be played during " << game::Phase::ToString(validPhases_) << ", targeting "
+           << combat::TargetType::Name(targetType_) << ", and costing " << manaCost_ << " mana.";
 
-        return result;
+        return ss.str();
     }
 
     const std::string Song::DescComplete() const
     {
-        return Desc() + "  " + DescExtra() + " " + DescDetails();
+        std::ostringstream ss;
+        ss << Desc() << "  " << DescExtra() << " " << DescDetails();
+        return ss.str();
     }
 
     bool Song::EffectCreature(
@@ -110,9 +114,7 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because "
-                            + std::string(
-                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is already emboldened.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -149,8 +151,7 @@ namespace song
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
-                                + std::string(
-                                    creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -183,10 +184,13 @@ namespace song
                 {
                     CREATURE_LISTENING_PTR->ManaAdj(MANA_GAIN_FINAL);
 
+                    std::ostringstream ss;
+                    ss << "'s mana for " << MANA_GAIN_FINAL << ".";
+
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + " recharges ",
-                        ("'s mana for " + MANA_GAIN_FINAL.ToString() + "."),
+                        ss.str(),
                         combat::NamePosition::SourceThenTarget);
 
                     return true;
@@ -196,9 +200,7 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because "
-                            + std::string(
-                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " already has full mana.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -229,9 +231,7 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because "
-                            + std::string(
-                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " did not need rousing.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -258,9 +258,7 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because "
-                            + std::string(
-                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is already tripped.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -273,9 +271,7 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because "
-                            + std::string(
-                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is flying.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -318,8 +314,7 @@ namespace song
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
-                                + std::string(
-                                    creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -334,9 +329,7 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because "
-                            + std::string(
-                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is already panicked.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -379,8 +372,7 @@ namespace song
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
-                                + std::string(
-                                    creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -396,9 +388,7 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because "
-                            + std::string(
-                                creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is already sleeping.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -436,8 +426,7 @@ namespace song
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
                             " because "
-                                + std::string(
-                                    creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false))
+                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -467,73 +456,72 @@ namespace song
 
     const std::string Song::ActionPhrasePreamble() const
     {
-        std::string result;
-        result.reserve(32);
+        std::ostringstream ss;
 
-        result += ("'s ");
+        ss << "'s ";
 
         if (SongType::Guitar == type_)
         {
-            result += "fingers ";
+            ss << "fingers ";
 
             switch (misc::Random(3))
             {
                 case 1:
                 {
-                    result += "tickle";
+                    ss << "tickle";
                     break;
                 }
                 case 2:
                 {
-                    result += "pluck";
+                    ss << "pluck";
                     break;
                 }
                 case 3:
                 {
-                    result += "strum";
+                    ss << "strum";
                     break;
                 }
                 default:
                 {
-                    result += "dance along";
+                    ss << "dance along";
                     break;
                 }
             }
 
-            result += " the strings";
+            ss << " the strings";
         }
         else
         {
-            result += "hands ";
+            ss << "hands ";
 
             switch (misc::Random(3))
             {
                 case 1:
                 {
-                    result += "tap";
+                    ss << "tap";
                     break;
                 }
                 case 2:
                 {
-                    result += "rap";
+                    ss << "rap";
                     break;
                 }
                 case 3:
                 {
-                    result += "drum";
+                    ss << "drum";
                     break;
                 }
                 default:
                 {
-                    result += "pound";
+                    ss << "pound";
                     break;
                 }
             }
 
-            result += " the back of the lute";
+            ss << " the back of the lute";
         }
 
-        return result;
+        return ss.str();
     }
 
     const std::string Song::TypeToVerb() const
@@ -542,21 +530,13 @@ namespace song
         {
             switch (misc::Random(3))
             {
-                case 1:
-                {
-                    return "melody";
+                case 1: { return "melody";
                 }
-                case 2:
-                {
-                    return "tune";
+                case 2: { return "tune";
                 }
-                case 3:
-                {
-                    return "song";
+                case 3: { return "song";
                 }
-                default:
-                {
-                    return "strumming";
+                default: { return "strumming";
                 }
             }
         }
@@ -564,21 +544,13 @@ namespace song
         {
             switch (misc::Random(3))
             {
-                case 1:
-                {
-                    return "drumming";
+                case 1: { return "drumming";
                 }
-                case 2:
-                {
-                    return "pounding";
+                case 2: { return "pounding";
                 }
-                case 3:
-                {
-                    return "rapping";
+                case 3: { return "rapping";
                 }
-                default:
-                {
-                    return "tapping";
+                default: { return "tapping";
                 }
             }
         }
@@ -590,17 +562,11 @@ namespace song
         {
             switch (misc::Random(2))
             {
-                case 1:
-                {
-                    return "melody";
+                case 1: { return "melody";
                 }
-                case 2:
-                {
-                    return "tune";
+                case 2: { return "tune";
                 }
-                default:
-                {
-                    return "song";
+                default: { return "song";
                 }
             }
         }

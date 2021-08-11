@@ -11,153 +11,104 @@
 //
 #include "misc/real.hpp"
 #include "sfutil/center.hpp"
-#include "sfutil/common.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
+
+namespace sf
+{
+class Sprite;
+}
 
 namespace heroespath
 {
 namespace sfutil
 {
 
-    // ScaleThatFits()
-    //  Returns a float that when multiplied to ORIG will make it fit LIMIT, or put another way,
-    //  that will make the largest dimmension of ORIG match that dimmension of LIMIT.
-
-    // returns a scale that would make ORIG fit within LIMIT, if any ORIG OR LIMIT are <= zero then
-    // that dimension is ignored
-    template <typename T1, typename T2>
-    float ScaleThatFits(const sf::Vector2<T1> & ORIG, const sf::Vector2<T2> & LIMIT) noexcept
+    // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
+    // if either ORIG or LIMIT is <= zero then that dimension is ignored during fitting, if both
+    // LIMITs are <= zero then fitting is skipped but SCALE is still applied
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Vector2<T1> FitCopy(
+        const sf::Vector2<T1> & ORIG,
+        const sf::Vector2<T2> & LIMIT,
+        const Scale_t SCALE_ORIG = 1.0f)
     {
-        float scaleThatFits { 1.0f };
+        double scaleAdj { 1.0 };
 
-        auto scaleBasedOnWidth
-            = [&]() { return (static_cast<float>(LIMIT.x) / static_cast<float>(ORIG.x)); };
-
-        auto scaleBasedOnHeight
-            = [&]() { return (static_cast<float>(LIMIT.y) / static_cast<float>(ORIG.y)); };
-
-        const bool ORIG_X_INVALID = misc::IsRealZeroOrLess(ORIG.x);
-        const bool ORIG_Y_INVALID = misc::IsRealZeroOrLess(ORIG.y);
-        const bool LIMIT_X_INVALID = misc::IsRealZeroOrLess(LIMIT.x);
-        const bool LIMIT_Y_INVALID = misc::IsRealZeroOrLess(LIMIT.y);
-
-        if ((ORIG_X_INVALID && ORIG_Y_INVALID) || (LIMIT_X_INVALID && LIMIT_Y_INVALID)
-            || (LIMIT_X_INVALID && ORIG_Y_INVALID) || (LIMIT_Y_INVALID && ORIG_X_INVALID))
+        auto scaleBasedOnWidth = [&]() constexpr
         {
-            scaleThatFits = 1.0f;
+            return static_cast<double>(LIMIT.x) / static_cast<double>(ORIG.x);
+        };
+
+        auto scaleBasedOnHeight = [&]() constexpr
+        {
+            return static_cast<double>(LIMIT.y) / static_cast<double>(ORIG.y);
+        };
+
+        const auto IS_HORIZ_LIMIT_ZERO_OR_LESS { misc::IsRealZeroOrLess(LIMIT.x) };
+        const auto IS_VERT_LIMIT_ZERO_OR_LESS { misc::IsRealZeroOrLess(LIMIT.y) };
+
+        if (IS_HORIZ_LIMIT_ZERO_OR_LESS && IS_VERT_LIMIT_ZERO_OR_LESS)
+        {
+            scaleAdj = 1.0;
         }
-        else if (ORIG_Y_INVALID || LIMIT_Y_INVALID)
+        else if (IS_HORIZ_LIMIT_ZERO_OR_LESS)
         {
-            scaleThatFits = scaleBasedOnWidth();
+            if (misc::IsRealZeroOrLess(ORIG.y) == false)
+            {
+                scaleAdj = scaleBasedOnHeight();
+            }
         }
-        else if (ORIG_X_INVALID || LIMIT_X_INVALID)
+        else if (IS_VERT_LIMIT_ZERO_OR_LESS)
         {
-            scaleThatFits = scaleBasedOnHeight();
+            if (misc::IsRealZeroOrLess(ORIG.x) == false)
+            {
+                scaleAdj = scaleBasedOnWidth();
+            }
+        }
+        else if (misc::IsRealZeroOrLess(ORIG.x))
+        {
+            if (misc::IsRealZeroOrLess(ORIG.y) == false)
+            {
+                scaleAdj = scaleBasedOnHeight();
+            }
+        }
+        else if (misc::IsRealZeroOrLess(ORIG.y))
+        {
+            if (misc::IsRealZeroOrLess(ORIG.x) == false)
+            {
+                scaleAdj = scaleBasedOnWidth();
+            }
         }
         else
         {
-            // at this point we know all ORIG and LIMIT are > 0
-            scaleThatFits = scaleBasedOnWidth();
+            // at this point we know none of the ORIG or LIMIT values are zero or less
 
-            if ((scaleThatFits * static_cast<float>(ORIG.y)) > static_cast<float>(LIMIT.y))
+            scaleAdj = scaleBasedOnWidth();
+
+            if ((scaleAdj * static_cast<double>(ORIG.y)) > static_cast<double>(LIMIT.y))
             {
-                scaleThatFits = scaleBasedOnHeight();
+                scaleAdj = scaleBasedOnHeight();
             }
         }
 
-        return scaleThatFits;
+        return sf::Vector2<T1> { sf::Vector2<double> { ORIG }
+                                 * (static_cast<double>(scaleAdj)
+                                    * static_cast<double>(SCALE_ORIG)) };
     }
 
-    // returns a scale that would make ORIG fit within LIMIT, if any ORIG OR LIMIT are <= zero
-    // then that dimension is ignored
-    template <typename T1, typename T2>
-    float ScaleThatFits(
-        const sf::Vector2<T1> & ORIG, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT) noexcept
-    {
-        return ScaleThatFits(ORIG, sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT));
-    }
-
-    // returns a scale that would make ORIG fit within LIMIT, if any ORIG OR LIMIT are <= zero
-    // then that dimension is ignored
-    template <typename T1, typename T2>
-    float ScaleThatFits(
-        const T1 WIDTH_ORIG,
-        const T1 HEIGHT_ORIG,
-        const T2 WIDTH_LIMIT,
-        const T2 HEIGHT_LIMIT) noexcept
-    {
-        return ScaleThatFits(
-            sf::Vector2<T1>(WIDTH_ORIG, HEIGHT_ORIG), sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT));
-    }
-
-    // returns a scale that would make ORIG fit within the size of LIMIT, if any ORIG OR LIMIT
-    // are
-    // <= zero then that dimension is ignored
-    template <typename T1, typename T2>
-    float ScaleThatFits(const sf::Vector2<T1> & ORIG, const sf::Rect<T2> & LIMIT) noexcept
-    {
-        return ScaleThatFits(ORIG, Size(LIMIT));
-    }
-
-    // returns a scale that would make the size of ORIG fit within LIMIT, if any ORIG OR
-    // LIMIT are <= zero then that dimension is ignored
-    template <typename T1, typename T2>
-    float ScaleThatFits(const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT) noexcept
-    {
-        return ScaleThatFits(Size(ORIG), LIMIT);
-    }
-
-    // returns a scale that would make the size of ORIG fit within LIMIT, if any ORIG OR LIMIT
-    // are
-    // <= zero then that dimension is ignored
-    template <typename T1, typename T2>
-    float ScaleThatFits(
-        const sf::Rect<T1> & ORIG, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT) noexcept
-    {
-        return ScaleThatFits(Size(ORIG), sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT));
-    }
-
-    // returns a scale that would make the size of ORIG fit within the size of LIMIT, if any
-    // ORIG OR LIMIT are <= zero then that dimension is ignored
-    template <typename T1, typename T2>
-    float ScaleThatFits(const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT) noexcept
-    {
-        return ScaleThatFits(ORIG, Size(LIMIT));
-    }
-
-    // Fit()
-    // Rescale the size of ORIG so that its largest dimmension matches that same dimmension of
-    // LIMIT
-
-    // returns ORIG scaled to fit LIMIT, if any ORIG or LIMIT is <= 0 then that dimension is not
-    // fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2>
-    const sf::Vector2<T1>
-        FitCopy(const sf::Vector2<T1> & ORIG, const sf::Vector2<T2> & LIMIT) noexcept
-    {
-        return sf::Vector2<T1>(sf::Vector2f(ORIG) * ScaleThatFits(ORIG, LIMIT));
-    }
-
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE, if any ORIG or LIMIT is <= 0
-    // then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    const sf::Vector2<T1> FitCopy(
-        const sf::Vector2<T1> & ORIG, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE) noexcept
-    {
-        return sf::Vector2<T1>(
-            FitCopy(sf::Vector2f(ORIG), sf::Vector2f(LIMIT)) * static_cast<float>(SCALE));
-    }
-
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE, if any ORIG or LIMIT is <= 0
-    // then that dimension is not fit but SCALE is ALWAYS applied
+    // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
+    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
+    // zero or less then fitting is skipped
     template <typename T1, typename T2, typename Scale_t = float>
-    const sf::Vector2<T1> FitCopy(
+    constexpr const sf::Vector2<T1> FitCopy(
         const T1 WIDTH_ORIG,
         const T1 HEIGHT_ORIG,
         const T2 WIDTH_LIMIT,
         const T2 HEIGHT_LIMIT,
-        const Scale_t SCALE = Scale_t(1)) noexcept
+        const Scale_t SCALE = 1.0f)
     {
         return FitCopy(
             sf::Vector2<T1>(WIDTH_ORIG, HEIGHT_ORIG),
@@ -165,383 +116,338 @@ namespace sfutil
             SCALE);
     }
 
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE, if any ORIG or LIMIT is <= 0
-    // then that dimension is not fit but SCALE is ALWAYS applied
+    // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
+    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
+    // zero or less then fitting is skipped
     template <typename T1, typename T2, typename Scale_t = float>
-    const sf::Vector2<T1> FitCopy(
+    constexpr const sf::Vector2<T1> FitCopy(
         const sf::Vector2<T1> & ORIG,
         const T2 WIDTH_LIMIT,
         const T2 HEIGHT_LIMIT,
-        const Scale_t SCALE = Scale_t(1)) noexcept
+        const Scale_t SCALE = 1.0f)
     {
         return FitCopy(ORIG, sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT), SCALE);
     }
 
-    // returns ORIG scaled to fit the size of LIMIT, if any ORIG or LIMIT is <= 0 then that
-    // dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2>
-    const sf::Vector2<T1> FitCopy(const sf::Vector2<T1> & ORIG, const sf::Rect<T2> & LIMIT) noexcept
-    {
-        return FitCopy(ORIG, Size(LIMIT));
-    }
-
-    // returns ORIG scaled to fit the size of LIMIT and then rescaled to SCALE, if any ORIG or
-    // LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    const sf::Vector2<T1> FitCopy(
-        const sf::Vector2<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
+    // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
+    // rescaled to SCALE, if either LIMIT is <= zero then that dimension is ignored, if both LIMITs
+    // are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Vector2<T1> FitCopy(
+        const sf::Vector2<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
         return FitCopy(ORIG, Size(LIMIT), SCALE);
     }
 
-    // returns ORIG scaled to fit the size of LIMIT, if any ORIG or LIMIT is <= 0 then that
-    // dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2>
-    const sf::Rect<T1> FitCopy(const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT) noexcept
-    {
-        return sf::Rect<T1>(Position(ORIG), FitCopy(Size(ORIG), LIMIT));
-    }
-
-    // returns ORIG scaled to fit the size of LIMIT and then rescaled to SCALE, if any ORIG or
-    // LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    const sf::Rect<T1>
-        FitCopy(const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE)
-    {
-        return sf::Rect<T1>(Position(ORIG), FitCopy(Size(ORIG), LIMIT, SCALE));
-    }
-
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE, if any ORIG or LIMIT is <= 0
-    // then that dimension is not fit but SCALE is ALWAYS applied
+    // rescales orig to the maximum size that fits within LIMIT and then applies SCALE,
+    // if either LIMIT or orig is <= zero then that dimension is ignored, if both LIMITs are <=
+    // zero or less then fitting is skipped
     template <typename T1, typename T2, typename Scale_t = float>
-    const sf::Rect<T1> FitCopy(
+    constexpr void
+        Fit(sf::Vector2<T1> & orig, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        orig = FitCopy(orig, LIMIT, SCALE);
+    }
+
+    // rescales orig to the maximum size that fits within the size of LIMIT and then
+    // applies SCALE, if either LIMIT or orig is <= zero then that dimension is ignored, if both
+    // LIMITs are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr void
+        Fit(sf::Vector2<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        Fit(orig, Size(LIMIT), SCALE);
+    }
+
+    // returns a scale that would make ORIG the maximum size that fits within LIMIT, if either LIMIT
+    // or orig is <= zero then that dimension is ignored, if both LIMITs are <= zero
+    // then 1.0f is returned
+    template <typename T1, typename T2>
+    constexpr float ScaleThatFits(const sf::Vector2<T1> & ORIG, const sf::Vector2<T2> & LIMIT)
+    {
+        if (misc::IsRealZeroOrLess(ORIG.x) == false)
+        {
+            return (FitCopy(sf::Vector2f(ORIG), LIMIT).x / static_cast<float>(ORIG.x));
+        }
+        else if (misc::IsRealZeroOrLess(ORIG.y) == false)
+        {
+            return (FitCopy(sf::Vector2f(ORIG), LIMIT).y / static_cast<float>(ORIG.y));
+        }
+        else
+        {
+            return 1.0f;
+        }
+    }
+
+    // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
+    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
+    // zero or less then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Rect<T1> FitCopy(
+        const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        return { Position(ORIG),
+                 sf::Vector2<T1>(
+                     Size(sf::FloatRect(ORIG))
+                     * (ScaleThatFits(Size(ORIG), LIMIT) * static_cast<float>(SCALE))) };
+    }
+
+    // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
+    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
+    // zero or less then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Rect<T1> FitCopy(
         const sf::Rect<T1> & ORIG,
         const T2 WIDTH_LIMIT,
         const T2 HEIGHT_LIMIT,
-        const Scale_t SCALE = Scale_t(1)) noexcept
+        const Scale_t SCALE = 1.0f)
     {
         return FitCopy(ORIG, sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT), SCALE);
     }
 
-    // returns ORIG scaled to fit the size of LIMIT, if any ORIG or LIMIT is <= 0 then that
-    // dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2>
-    const sf::Rect<T1> FitCopy(const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT) noexcept
-    {
-        return FitCopy(ORIG, Size(LIMIT));
-    }
-
-    // returns ORIG scaled to fit the size of LIMIT and then rescaled to SCALE, if any ORIG or
-    // LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    const sf::Rect<T1>
-        FitCopy(const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
+    // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
+    // rescaled to SCALE, if either LIMIT or ORIG is <= zero then that dimension is ignored, if
+    // both LIMITs are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Rect<T1>
+        FitCopy(const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
         return FitCopy(ORIG, Size(LIMIT), SCALE);
     }
 
-    // returns ORIG scaled to fit LIMIT, if any ORIG or LIMIT is <= 0 then that dimension is not
-    // fit but SCALE is ALWAYS applied
+    // returns a scale that would make ORIG the maximum size that fits within LIMIT, if both LIMITs
+    // are <= zero then fitting is skipped
     template <typename T1, typename T2>
-    void Fit(sf::Vector2<T1> & orig, const sf::Vector2<T2> & LIMIT) noexcept
+    constexpr float
+        ScaleThatFits(const sf::Vector2<T1> & ORIG, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT)
     {
-        orig = FitCopy(orig, LIMIT);
+        return ScaleThatFits(ORIG, sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT));
     }
 
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE, if any ORIG or LIMIT is <= 0
-    // then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    void Fit(sf::Vector2<T1> & orig, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE) noexcept
-    {
-        orig = FitCopy(orig, LIMIT, SCALE);
-    }
-
-    // returns ORIG scaled to fit the size of LIMIT, if any ORIG or LIMIT is <= 0 then that
-    // dimension is not fit but SCALE is ALWAYS applied
+    // returns a scale that would make ORIG the maximum size that fits within the size of LIMIT, if
+    // both LIMITs are <= zero then fitting is skipped
     template <typename T1, typename T2>
-    void Fit(sf::Vector2<T1> & orig, const sf::Rect<T2> & LIMIT) noexcept
+    constexpr float ScaleThatFits(const sf::Vector2<T1> & ORIG, const sf::Rect<T2> & LIMIT)
     {
-        Fit(orig, Size(LIMIT));
+        return ScaleThatFits(ORIG, Size(LIMIT));
     }
 
-    // returns ORIG scaled to fit the size of LIMIT and then rescaled to SCALE, if any ORIG or
-    // LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    void Fit(sf::Vector2<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
-    {
-        Fit(orig, Size(LIMIT), SCALE);
-    }
-
-    // returns ORIG scaled to fit the size of LIMIT, if any ORIG or LIMIT is <= 0 then that
-    // dimension is not fit but SCALE is ALWAYS applied
+    // returns a scale that would make ORIG the maximum size that fits within LIMIT, if both LIMITs
+    // are <= zero then fitting is skipped
     template <typename T1, typename T2>
-    void Fit(sf::Rect<T1> & orig, const sf::Vector2<T2> & LIMIT) noexcept
+    constexpr float ScaleThatFits(const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT)
     {
-        orig = FitCopy(orig, LIMIT);
+        return ScaleThatFits(Size(ORIG), LIMIT);
     }
 
-    // returns ORIG scaled to fit the size of LIMIT and then rescaled to SCALE, if any ORIG or
-    // LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    void Fit(sf::Rect<T1> & orig, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE) noexcept
-    {
-        orig = FitCopy(orig, LIMIT, SCALE);
-    }
-
-    // returns ORIG scaled to fit the size of LIMIT, if any ORIG or LIMIT is <= 0 then that
-    // dimension is not fit but SCALE is ALWAYS applied
+    // returns a scale that would make ORIG the maximum size that fits within LIMIT, if both LIMITs
+    // are <= zero then fitting is skipped
     template <typename T1, typename T2>
-    void Fit(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT) noexcept
+    constexpr float
+        ScaleThatFits(const sf::Rect<T1> & ORIG, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT)
     {
-        Fit(orig, Size(LIMIT));
+        return ScaleThatFits(Size(ORIG), sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT));
     }
 
-    // returns ORIG scaled to fit the size of LIMIT and then rescaled to SCALE, if any ORIG or
-    // LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    void Fit(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
-    {
-        Fit(orig, Size(LIMIT), SCALE);
-    }
-
-    // rescales s to fit LIMIT, if either size of s or LIMIT is <= 0 it is ignored
-    template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
-    void Fit(T & thing, const sf::Vector2f & LIMIT) noexcept
-    {
-        thing.setScale(thing.getScale() * ScaleThatFits(Size(thing.getGlobalBounds()), LIMIT));
-    }
-
-    // rescales s to fit LIMIT, if either size of s or LIMIT is <= 0 it is ignored
-    template <typename T1, typename T2, typename = std::enable_if_t<has_getglobalbounds_v<T1>>>
-    void Fit(T1 & thing, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT)
-    {
-        Fit(thing, sf::Vector2f(sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT)));
-    }
-
-    // FitAndRecenter()
-    // Rescale the size of ORIG so that its largest dimmension matches that same dimmension of
-    // LIMIT and then re-center to the original center of ORIG.
-
-    // returns ORIG scaled to fit LIMIT and then re-centered to the original center of ORIG, if
-    // any ORIG or LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
+    // returns a scale that would make ORIG the maximum size that fits within the size of LIMIT, if
+    // both LIMITs are <= zero then fitting is skipped
     template <typename T1, typename T2>
-    const sf::Rect<T1>
-        FitAndReCenterCopy(const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT) noexcept
+    constexpr float ScaleThatFits(const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT)
     {
-        return CenterToCopy(FitCopy(ORIG, LIMIT), ORIG);
+        return ScaleThatFits(ORIG, Size(LIMIT));
     }
 
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE and then re-centered to the
-    // original center of ORIG, if any ORIG or LIMIT is <= 0 then that dimension is not fit but
-    // SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    const sf::Rect<T1> FitAndReCenterCopy(
-        const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE) noexcept
-    {
-        return CenterToCopy(FitCopy(ORIG, LIMIT, SCALE), ORIG);
-    }
-
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE and then re-centered to the
-    // original center of ORIG, if any ORIG or LIMIT is <= 0 then that dimension is not fit but
-    // SCALE is ALWAYS applied
+    // rescales orig to the maximum size that fits within LIMIT and then applies SCALE,
+    // if either LIMIT or orig is <= zero then that dimension is ignored, if both LIMITs are <=
+    // zero or less then fitting is skipped
     template <typename T1, typename T2, typename Scale_t = float>
-    const sf::Rect<T1> FitAndReCenterCopy(
+    constexpr void
+        Fit(sf::Rect<T1> & orig, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        orig = FitCopy(orig, LIMIT, SCALE);
+    }
+
+    // rescales orig to the maximum size that fits within the size of LIMIT and then
+    // applies SCALE, if either LIMIT or orig is <= zero then that dimension is ignored, if both
+    // LIMITs are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr void Fit(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        Fit(orig, Size(LIMIT), SCALE);
+    }
+
+    // rescales s (local) to the maximum size that fits within LIMIT, if either LIMIT or Size(s) is
+    // <= zero then that dimension is ignored, if both LIMITs are <= zero then fitting is skipped
+    void Fit(sf::Sprite & s, const sf::Vector2f & LIMIT);
+
+    // rescales s (local) to the maximum size that fits within LIMITs, if either LIMIT or Size(s) is
+    // zero then that dimension is ignore, if both LIMITs are <= zero then fitting is skipped
+    void Fit(sf::Sprite & s, const float WIDTH_LIMIT, const float HEIGHT_LIMIT);
+
+    // returns a scale that would make ORIG the maximum size that fits within LIMIT, if both LIMITs
+    // are <= zero then fitting is skipped
+    template <typename T1, typename T2>
+    constexpr float ScaleThatFits(
+        const T1 WIDTH_ORIG, const T1 HEIGHT_ORIG, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT)
+    {
+        return ScaleThatFits(
+            sf::Vector2<T1>(WIDTH_ORIG, HEIGHT_ORIG), sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT));
+    }
+
+    // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE
+    // and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that dimension is
+    // ignored, if both LIMITs are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Rect<T1> FitAndReCenterCopy(
+        const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        /*
+         * This version of the code cannot be used since this function is constexpr.
+         * Keeping this here for reference.
+         *
+        const sf::Vector2f CENTER_ORIG_V{ CenterOf(ORIG) };
+        const sf::Vector2f NEW_SIZE_V{ FitCopy(Size(ORIG), LIMIT, SCALE) };
+        const sf::Vector2f NEW_POS_V{ CENTER_ORIG_V - (NEW_SIZE_V * 0.5f) };
+        return { NEW_POS_V, NEW_SIZE_V };
+        */
+
+        return sf::Rect<T1>(sf::FloatRect(
+            (sf::Vector2f(CenterOf(ORIG))
+             - (FitCopy(Size(sf::FloatRect(ORIG)), LIMIT, SCALE) * 0.5f)),
+            FitCopy(Size(sf::FloatRect(ORIG)), LIMIT, SCALE)));
+    }
+
+    // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE
+    // and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that dimension is
+    // ignored, if both LIMITs are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Rect<T1> FitAndReCenterCopy(
         const sf::Rect<T1> & ORIG,
         const T2 WIDTH_LIMIT,
         const T2 HEIGHT_LIMIT,
-        const Scale_t SCALE = Scale_t(1)) noexcept
+        const Scale_t SCALE = 1.0f)
     {
-        return FitAndReCenterCopy(ORIG, sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT), SCALE);
+        FitAndReCenterCopy(ORIG, sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT), SCALE);
     }
 
-    // returns ORIG scaled to fit LIMIT and then re-centered to the original center of ORIG, if
-    // any ORIG or LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2>
-    const sf::Rect<T1>
-        FitAndReCenterCopy(const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT) noexcept
-    {
-        return FitAndReCenterCopy(ORIG, Size(LIMIT));
-    }
-
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE and then re-centered to the
-    // original center of ORIG, if any ORIG or LIMIT is <= 0 then that dimension is not fit but
-    // SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    const sf::Rect<T1> FitAndReCenterCopy(
-        const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
-    {
-        return FitAndReCenterCopy(ORIG, Size(LIMIT), SCALE);
-    }
-
-    // returns ORIG scaled to fit LIMIT and then re-centered to the original center of ORIG, if
-    // any ORIG or LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2>
-    void FitAndReCenter(sf::Rect<T1> & orig, const sf::Vector2<T2> & LIMIT) noexcept
-    {
-        orig = FitAndReCenterCopy(orig, LIMIT);
-    }
-
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE and then re-centered to the
-    // original center of ORIG, if any ORIG or LIMIT is <= 0 then that dimension is not fit but
-    // SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    void FitAndReCenter(
-        sf::Rect<T1> & orig, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE) noexcept
+    // rescales orig to the maximum size that fits within LIMIT and is then rescaled to SCALE
+    // and then recentered to ORIG, if either LIMIT or orig is <= zero then that dimension is
+    // ignored, if both LIMITs are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr void FitAndReCenter(
+        sf::Rect<T1> & orig, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
         orig = FitAndReCenterCopy(orig, LIMIT, SCALE);
     }
 
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE and then re-centered to the
-    // original center of ORIG, if any ORIG or LIMIT is <= 0 then that dimension is not fit but
-    // SCALE is ALWAYS applied
+    // rescales orig to the maximum size that fits within LIMIT and is then rescaled to SCALE
+    // and then recentered to orig, if either LIMIT or orig is <= zero then that dimension is
+    // ignored, if both LIMITs are <= zero then fitting is skipped
     template <typename T1, typename T2, typename Scale_t = float>
-    void FitAndReCenter(
+    constexpr void FitAndReCenter(
         sf::Rect<T1> & orig,
         const T2 WIDTH_LIMIT,
         const T2 HEIGHT_LIMIT,
-        const Scale_t SCALE = Scale_t(1)) noexcept
+        const Scale_t SCALE = 1.0f)
     {
         FitAndReCenter(orig, sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT), SCALE);
     }
 
-    // returns ORIG scaled to fit LIMIT and then re-centered to the original center of ORIG, if
-    // any ORIG or LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2>
-    void FitAndReCenter(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT) noexcept
-    {
-        FitAndReCenter(orig, Size(LIMIT));
-    }
-
-    // returns ORIG scaled to fit LIMIT and then rescaled to SCALE and then re-centered to the
-    // original center of ORIG, if any ORIG or LIMIT is <= 0 then that dimension is not fit but
-    // SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    void FitAndReCenter(
-        sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
-    {
-        FitAndReCenter(orig, Size(LIMIT), SCALE);
-    }
-
-    // rescales s to the maximum size that fits within LIMIT and then recenters to s's
-    // original center, if either LIMIT or s is <= zero then that dimension is ignored, if both
-    // LIMITs are <= zero then fitting is skipped
-    template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
-    void FitAndReCenter(T & thing, const sf::Vector2f & LIMIT_V) noexcept
-    {
-        const auto ORIG_CENTER_V { CenterOf(thing.getGlobalBounds()) };
-        Fit(thing, LIMIT_V);
-
-        thing.setPosition(
-            (ORIG_CENTER_V - Half(Size(thing.getGlobalBounds()))) + thing.getOrigin());
-    }
-
-    // rescales s to the maximum size that fits within LIMIT and then recenters to s's
-    // original center, if either LIMIT or s is <= zero then that dimension is ignored, if both
-    // LIMITs are <= zero then fitting is skipped
-    template <typename T1, typename T2, typename = std::enable_if_t<has_getglobalbounds_v<T1>>>
-    void FitAndReCenter(T1 & thing, const T2 WIDTH_LIMIT, const T2 HEIGHT_LIMIT) noexcept
-    {
-        FitAndReCenter(thing, sf::Vector2f(sf::Vector2<T2>(WIDTH_LIMIT, HEIGHT_LIMIT)));
-    }
-
-    // rescales s to the maximum size that fits within the size of LIMIT and then
-    // recenters to s's original center, if either LIMIT or s is <= zero then that dimension is
-    // ignored, if both LIMITs are <= zero then fitting is skipped
-    template <typename T1, typename T2, typename = std::enable_if_t<has_getglobalbounds_v<T1>>>
-    void FitAndReCenter(T1 & thing, const sf::Rect<T2> & LIMIT)
-    {
-        FitAndReCenter(thing, sf::Vector2f(Size(LIMIT)));
-    }
-
-    // rescales s to the maximum size that fits within the size of LIMIT and
-    // then recenters to s's original center, if either dimension of LIMIT is <= zero then that
+    // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
+    // rescaled to SCALE and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that
     // dimension is ignored, if both LIMITs are <= zero then fitting is skipped
-    template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
-    void FitAndReCenter(T & thing, const T & LIMIT) noexcept
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Rect<T1> FitAndReCenterCopy(
+        const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
-        FitAndReCenter(thing, Size(LIMIT.getGlobalBounds()));
+        /*
+         * This version of the code cannot be used since this function is constexpr.
+         * Keeping this here for reference.
+         *
+        const sf::Vector2f CENTER_ORIG_V{ CenterOf(ORIG) };
+        const sf::Vector2f NEW_SIZE_V{ FitCopy(Size(ORIG), Size(LIMIT), SCALE) };
+        const sf::Vector2f NEW_POS_V{ CENTER_ORIG_V - (NEW_SIZE_V * 0.5f) };
+        return { NEW_POS_V, NEW_SIZE_V };
+        */
+
+        return sf::Rect<T1>(sf::FloatRect(
+            (sf::Vector2f(CenterOf(ORIG))
+             - (FitCopy(Size(sf::FloatRect(ORIG)), Size(LIMIT), SCALE) * 0.5f)),
+            FitCopy(Size(sf::FloatRect(ORIG)), Size(LIMIT), SCALE)));
     }
 
-    // FitAndReCenterTo()
-
-    // scales orig to fit LIMIT and then re-centers to LIMIT, if any orig or LIMIT is <= 0 then that
-    // dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2>
-    void FitAndCenterTo(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT) noexcept
+    // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
+    // rescaled to SCALE and then centered to LIMIT, if either LIMIT or ORIG is <= zero then that
+    // dimension is ignored, if both LIMITs are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr const sf::Rect<T1> FitAndCenterCopy(
+        const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
-        Fit(orig, LIMIT);
-        CenterTo(orig, LIMIT);
+        /*
+         * This version of the code cannot be used since this function is constexpr.
+         * Keeping this here for reference.
+         *
+        const sf::Vector2f CENTER_LIMIT_V{ CenterOf(LIMIT) };
+        const sf::Vector2f NEW_SIZE_V{ FitCopy(Size(ORIG), Size(LIMIT), SCALE) };
+        const sf::Vector2f NEW_POS_V{ CENTER_LIMIT_V - (NEW_SIZE_V * 0.5f) };
+        return { NEW_POS_V, NEW_SIZE_V };
+        */
+
+        return sf::Rect<T1>(sf::FloatRect(
+            (sf::Vector2f(CenterOf(LIMIT))
+             - (FitCopy(Size(sf::FloatRect(ORIG)), Size(LIMIT), SCALE) * 0.5f)),
+            FitCopy(Size(sf::FloatRect(ORIG)), Size(LIMIT), SCALE)));
     }
 
-    // returns a copy of ORIG scaled to fit LIMIT and then centered to LIMIT, if any ORIG or LIMIT
-    // is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2>
-    const sf::Rect<T1>
-        FitAndCenterToCopy(const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT) noexcept
+    // rescales orig to the maximum size that fits within the size of LIMIT and is then rescaled to
+    // SCALE and then recentered to ORIG, if either LIMIT or orig is <= zero then that dimension is
+    // ignored, if both LIMITs are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr void
+        FitAndReCenter(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
-        sf::Rect<T1> copy(ORIG);
-        FitAndCenterTo(copy, LIMIT);
-        return copy;
+        orig = FitAndReCenterCopy(orig, LIMIT, SCALE);
     }
 
-    // scales orig to fit LIMIT, then re-scales by SCALE, and then centers to LIMIT, if any ORIG or
-    // LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    void FitAndCenterTo(
-        sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
+    // rescales orig to the maximum size that fits within the size of LIMIT and is then rescaled to
+    // SCALE and then centered to LIMIT, if either LIMIT or orig is <= zero then that dimension is
+    // ignored, if both LIMITs are <= zero then fitting is skipped
+    template <typename T1, typename T2, typename Scale_t = float>
+    constexpr void
+        FitAndCenterTo(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
-        Fit(orig, LIMIT, SCALE);
-        CenterTo(orig, LIMIT);
+        orig = FitAndCenterCopy(orig, LIMIT, SCALE);
     }
 
-    // returns a copy of ORIG scaled to fit LIMIT, re-scaled to SCALE, and then centered to LIMIT,
-    // if any ORIG or LIMIT is <= 0 then that dimension is not fit but SCALE is ALWAYS applied
-    template <typename T1, typename T2, typename Scale_t>
-    const sf::Rect<T1> FitAndCenterToCopy(
-        const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE) noexcept
-    {
-        sf::Rect<T1> copy(ORIG);
-        FitAndCenterTo(copy, LIMIT, SCALE);
-        return copy;
-    }
+    // rescales s (local) to the maximum size that fits within LIMIT and then recenters to s's
+    // original center, if either LIMIT or s is <= zero then that dimension is ignored, if both
+    // LIMITs are <= zero then fitting is skipped
+    void FitAndReCenter(sf::Sprite & s, const sf::Vector2f & LIMIT);
 
-    // fits and then centers to LIMIT, if either LIMIT or s is <= 0 then that dimension is ignored,
-    // if both LIMITs are <= zero then fitting is skipped
-    template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
-    void FitAndCenterTo(T & thing, const sf::FloatRect & LIMIT_RECT) noexcept
-    {
-        Fit(thing, Size(LIMIT_RECT));
+    // rescales s (local) to the maximum size that fits within LIMIT and then recentered to s's
+    // original center, if either LIMIT or s is <= zero then that dimension is ignored, if both
+    // LIMITs are <= zero then fitting is skipped
+    void FitAndReCenter(sf::Sprite & s, const float WIDTH_LIMIT, const float HEIGHT_LIMIT);
 
-        thing.setPosition(
-            (CenterOf(LIMIT_RECT) - Half(Size(thing.getGlobalBounds()))) + thing.getOrigin());
-    }
+    // rescales s (local) to the maximum size that fits within the size of LIMIT and then recenters
+    // to s's original center, if either LIMIT or s is <= zero then that dimension is ignored, if
+    // both LIMITs are <= zero then fitting is skipped
+    void FitAndReCenter(sf::Sprite & s, const sf::FloatRect & LIMIT);
 
-    // fits to LIMIT, re-scales to SCALE, and then centers to LIMIT, if either LIMIT or s is <= 0
-    // then that dimension is ignored, if both LIMITs are <= zero then fitting is skipped
-    template <typename T, typename Scale_t, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
-    void FitAndCenterTo(T & thing, const sf::FloatRect & LIMIT_RECT, const Scale_t SCALE) noexcept
-    {
-        Fit(thing, Size(LIMIT_RECT, SCALE));
+    // rescales s (local) to the maximum size that fits within the size (global) of LIMIT and then
+    // recenters to s's original center, if either dimension of LIMIT is <= zero then that
+    // dimension is ignored, if both LIMITs are <= zero then fitting is skipped
+    void FitAndReCenter(sf::Sprite & s, const sf::Sprite & LIMIT);
 
-        thing.setPosition(
-            (CenterOf(LIMIT_RECT) - Half(Size(thing.getGlobalBounds()))) + thing.getOrigin());
-    }
+    // rescales s (local) to the maximum size that fits within the size of LIMIT and then centers s
+    // in LIMIT, if either LIMIT or s is <= zero then that dimension is ignored, if both LIMITs are
+    // <= zero then fitting is skipped
+    void FitAndCenterTo(sf::Sprite & s, const sf::FloatRect & LIMIT);
 
-    // fits and then centers to LIMIT, if either LIMIT or s is <= 0 then that dimension is ignored,
-    // if both LIMITs are <= zero then fitting is skipped
-    template <typename T, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
-    void FitAndCenterTo(T & thing, const T & LIMIT) noexcept
-    {
-        FitAndCenterTo(thing, LIMIT.getGlobalBounds());
-    }
-
-    // fits to LIMIT, re-scales to SCALE, and then centers to LIMIT, if either LIMIT or s is <= 0
-    // then that dimension is ignored, if both LIMITs are <= zero then fitting is skipped
-    template <typename T, typename Scale_t, typename = std::enable_if_t<has_getglobalbounds_v<T>>>
-    void FitAndCenterTo(T & thing, const T & LIMIT, const Scale_t SCALE) noexcept
-    {
-        FitAndCenterTo(thing, LIMIT.getGlobalBounds(), SCALE);
-    }
+    // rescales s (local) to the maximum size that fits within the size of LIMIT (global) and then
+    // centers s in LIMIT, if either LIMIT or s is <= zero then that dimension is ignored, if both
+    // LIMITs are <= zero then fitting is skipped
+    void FitAndCenterTo(sf::Sprite & s, const sf::Sprite & LIMIT);
 
 } // namespace sfutil
 } // namespace heroespath

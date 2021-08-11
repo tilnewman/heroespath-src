@@ -23,12 +23,13 @@
 #include "misc/real.hpp"
 #include "popup/popup-response.hpp"
 #include "sfutil/center.hpp"
-#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
+#include <sstream>
 #include <vector>
 
 namespace heroespath
@@ -38,12 +39,12 @@ namespace stage
 
     SettingsStage::SettingsStage()
         : StageBase(
-              "Settings",
-              { gui::GuiFont::Default,
-                gui::GuiFont::System,
-                gui::GuiFont::SystemCondensed,
-                gui::GuiFont::Number,
-                gui::GuiFont::Handwriting })
+            "Settings",
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting })
         , SLIDER_LENGTH_VERT_(160.0f)
         , hasStageAlreadyBeenSetup_(false)
         , prevAALevel_(gui::Display::Instance()->AntialiasLevel())
@@ -100,7 +101,7 @@ namespace stage
         /*
         M_HP_LOG(
             GetStageName() << " HandlePopupCallback(response=\""
-                           << popup::PopupNAMEOF_ENUM(PACKET_PTR->type) << "\")");
+                           << popup::PopupButtons::ToString(PACKET_PTR->type) << "\")");
 
         if (PACKET_PTR->type == popup::PopupButtons::No)
         {
@@ -255,8 +256,8 @@ namespace stage
 
     const sf::FloatRect SettingsStage::Setup_WoodBackgroundBoxAndReturnInnerRect()
     {
-        const auto BG_BOX_WIDTH { misc::Max(StageRegion().width * 0.45f, 1000.0f) };
-        const auto BG_BOX_HEIGHT { misc::Max(StageRegion().height * 0.5f, 500.0f) };
+        const auto BG_BOX_WIDTH { std::max(StageRegion().width * 0.45f, 1000.0f) };
+        const auto BG_BOX_HEIGHT { std::max(StageRegion().height * 0.5f, 500.0f) };
 
         const auto BG_BOX_LEFT { (StageRegion().width * 0.5f) - (BG_BOX_WIDTH * 0.5f) };
 
@@ -595,28 +596,21 @@ namespace stage
 
         const auto MUSIC_INFO_VEC { gui::SoundManager::Instance()->MusicInfoSet() };
 
-        std::string str;
-        str.reserve(128);
+        std::ostringstream ss;
         for (const auto & MUSIC_INFO : MUSIC_INFO_VEC)
         {
-            str += '\"';
-            str += MUSIC_INFO.SongName();
-            str += "\"\nby ";
-            str += MUSIC_INFO.ArtistName();
-            str += "\nLicense: ";
-            str += MUSIC_INFO.LicenseTitle();
-            str += "\nDuration: ";
-            str += MUSIC_INFO.Duration().ToString();
-            str += "\n\n";
+            ss << "\"" << MUSIC_INFO.SongName() << "\"\nby " << MUSIC_INFO.ArtistName()
+               << "\nLicense: " << MUSIC_INFO.LicenseTitle()
+               << "\nDuration: " << MUSIC_INFO.Duration().ToString() << "\n\n";
         }
 
-        if (str.empty())
+        if (ss.str().empty())
         {
-            str += ' ';
+            ss << " ";
         }
 
         const gui::TextInfo TEXT_INFO(
-            str,
+            ss.str(),
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Normal(),
             sfutil::color::Light,
@@ -647,11 +641,11 @@ namespace stage
 
     void SettingsStage::Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
-        const std::string STR(
-            "Revision: " + misc::ConfigFile::Instance()->Value("system-revision"));
+        std::ostringstream ss;
+        ss << "Revision: " << misc::ConfigFile::Instance()->Value("system-revision");
 
         const gui::TextInfo TEXT_INFO(
-            STR,
+            ss.str(),
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::Light,

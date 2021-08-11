@@ -24,7 +24,7 @@ namespace creature
         const Charm_t & CHA,
         const Luck_t & LCK,
         const Speed_t & SPD,
-        const Intel_t & INT)
+        const Intell_t & INT)
         : str_(STR)
         , acc_(ACC)
         , cha_(CHA)
@@ -61,7 +61,7 @@ namespace creature
         }
 
         M_HP_LOG_ERR(
-            "StatSet::Get(trait_enum=" << NAMEOF_ENUM(ENUM) << ") but that value is invalid.");
+            "StatSet::Get(trait_enum=" << Traits::ToString(ENUM) << ") but that value is invalid.");
 
         return 0;
     }
@@ -70,32 +70,32 @@ namespace creature
     {
         if (ENUM == Traits::Strength)
         {
-            str_ = Strength_t::Make(NEW_VALUE);
+            str_ = Strength_t(NEW_VALUE);
             return;
         }
         if (ENUM == Traits::Accuracy)
         {
-            acc_ = Accuracy_t::Make(NEW_VALUE);
+            acc_ = Accuracy_t(NEW_VALUE);
             return;
         }
         if (ENUM == Traits::Charm)
         {
-            cha_ = Charm_t::Make(NEW_VALUE);
+            cha_ = Charm_t(NEW_VALUE);
             return;
         }
         if (ENUM == Traits::Luck)
         {
-            lck_ = Luck_t::Make(NEW_VALUE);
+            lck_ = Luck_t(NEW_VALUE);
             return;
         }
         if (ENUM == Traits::Speed)
         {
-            spd_ = Speed_t::Make(NEW_VALUE);
+            spd_ = Speed_t(NEW_VALUE);
             return;
         }
         if (ENUM == Traits::Intelligence)
         {
-            int_ = Intel_t::Make(NEW_VALUE);
+            int_ = Intell_t(NEW_VALUE);
             return;
         }
 
@@ -106,34 +106,46 @@ namespace creature
 
     const std::string StatSet::ToString(const bool WILL_WRAP) const
     {
-        std::string str;
-        str.reserve(16);
+        std::ostringstream ss;
+
+        if (str_.IsNonZero())
+        {
+            ss << "Str " << ((str_ > 0_str) ? "+" : "") << str_;
+        }
+
+        if (acc_.IsNonZero())
+        {
+            ss << "Acc " << ((acc_ > 0_acc) ? "+" : "") << acc_;
+        }
+
+        if (cha_.IsNonZero())
+        {
+            ss << "Cha " << ((cha_ > 0_cha) ? "+" : "") << cha_;
+        }
+
+        if (lck_.IsNonZero())
+        {
+            ss << "Lck " << ((lck_ > 0_lck) ? "+" : "") << lck_;
+        }
+
+        if (spd_.IsNonZero())
+        {
+            ss << "Spd " << ((spd_ > 0_spd) ? "+" : "") << spd_;
+        }
+
+        if (int_.IsNonZero())
+        {
+            ss << "Int " << ((int_ > 0_int) ? "+" : "") << int_;
+        }
 
         if (WILL_WRAP)
         {
-            str += '(';
+            return "(" + ss.str() + ")";
         }
-
-        auto appendStatIfNeeded = [&](const auto & STAT, const std::string & NAME) {
-            if (!STAT.IsZero())
-            {
-                str += NAME + ((STAT.Get() > 0) ? " +" : " ") + STAT.ToString();
-            }
-        };
-
-        appendStatIfNeeded(str_, "Str");
-        appendStatIfNeeded(acc_, "Acc");
-        appendStatIfNeeded(cha_, "Cha");
-        appendStatIfNeeded(lck_, "Lck");
-        appendStatIfNeeded(spd_, "Spd");
-        appendStatIfNeeded(int_, "Int");
-
-        if (WILL_WRAP)
+        else
         {
-            str += ')';
+            return ss.str();
         }
-
-        return str;
     }
 
 } // namespace creature

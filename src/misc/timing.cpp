@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -211,11 +209,10 @@ namespace misc
             return;
         }
 
-        const auto & STATS_VEC_FRONT { STATS_VEC.front() };
+        outlier_ratio = STATS_VEC.front().outlier_ratio;
 
-        outlier_ratio = STATS_VEC_FRONT.outlier_ratio;
-        outlier_min = STATS_VEC_FRONT.outlier_min;
-        outlier_max = STATS_VEC_FRONT.outlier_max;
+        outlier_min = STATS_VEC.front().outlier_min;
+        outlier_max = STATS_VEC.front().outlier_max;
 
         TimeStats sums;
 
@@ -686,7 +683,7 @@ namespace misc
         // create the end-of-contest summary string
         std::ostringstream ss;
         ss << std::setfill(' ');
-        ss << name_ << " Time Contest Results in " << NAMEOF_ENUM(resolution_) << ":";
+        ss << name_ << " Time Contest Results in " << TimeRes::ToString(resolution_) << ":";
 
         for (std::size_t index(0); index < statsNamePairs.size(); ++index)
         {
@@ -707,7 +704,7 @@ namespace misc
         }
 
         // can't use normal log macros because they can cause endless recursion in the timing code
-        Log::Instance()->Append(LogPriority::Default, ss.str(), __FILE__, __func__, __LINE__);
+        LogMacroHelper::Append(LogPriority::Default, ss.str(), __FILE__, __func__, __LINE__);
 
         ResetCurrentContest();
     }
@@ -798,8 +795,8 @@ namespace misc
 
         std::ostringstream ss;
         ss << std::setfill(' ');
-        ss << name_ << " Time Contests Final Results in " << NAMEOF_ENUM(resolution_) << " after "
-           << contestResultsHistoryMapUPtr_->Size() << " contests:";
+        ss << name_ << " Time Contests Final Results in " << TimeRes::ToString(resolution_)
+           << " after " << contestResultsHistoryMapUPtr_->Size() << " contests:";
 
         const auto MAX_NAME_LENGTH_INT { static_cast<int>(maxNameLength) };
 
@@ -822,7 +819,7 @@ namespace misc
         }
 
         // can't use normal log macros because they can cause endless recursion in the timing code
-        Log::Instance()->Append(LogPriority::Warn, ss.str(), __FILE__, __func__, __LINE__);
+        LogMacroHelper::Append(LogPriority::Warn, ss.str(), __FILE__, __func__, __LINE__);
 
         ResetAllContests();
     }

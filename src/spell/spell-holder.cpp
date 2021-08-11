@@ -158,6 +158,62 @@ namespace spell
 
     void Holder::Empty() { spellsUVec_.clear(); }
 
+    bool Holder::Test(stage::IStagePtr_t iStagePtr)
+    {
+        static auto hasInitialPrompt { false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            iStagePtr->TestingStrAppend("spell::Holder::Test() Starting Tests...");
+        }
+
+        static EnumUnderlying_t spellIndex { 0 };
+        if (spellIndex < Spells::Count)
+        {
+            const auto NEXT_ENUM { static_cast<Spells::Enum>(spellIndex) };
+            const auto SPELL_PTR { Get(NEXT_ENUM) };
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SPELL_PTR->Name().empty() == false),
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in an empty Name().");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SPELL_PTR->Desc().empty() == false),
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in an empty Desc().");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SPELL_PTR->DescExtra().empty() == false),
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in an empty DescExtra().");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SPELL_PTR->ManaCost().IsNonZero()),
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in a zero Mana cost.");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SPELL_PTR->Rank().IsNonZero()),
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in a zero Rank.");
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (SPELL_PTR->Name() == Spells::Name(NEXT_ENUM)),
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") Spell is out of order.");
+
+            ++spellIndex;
+
+            iStagePtr->TestingStrIncrement("Spell Test \"" + SPELL_PTR->Name() + "\"");
+
+            return false;
+        }
+
+        iStagePtr->TestingStrAppend("spell::Holder::Test()  ALL TESTS PASSED.");
+        return true;
+    }
+
     const SpellPtr_t Holder::Get(const Spells::Enum SPELL_ENUM)
     {
         const auto SPELL_INDEX { static_cast<std::size_t>(SPELL_ENUM) };

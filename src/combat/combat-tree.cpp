@@ -16,11 +16,38 @@
 #include "misc/log-macros.hpp"
 
 #include <algorithm>
+#include <set>
 
 namespace heroespath
 {
 namespace combat
 {
+
+    const std::string EdgeType::ToString(const Enum ENUM)
+    {
+        switch (ENUM)
+        {
+            case EdgeType::Blocking:
+            {
+                return "Blocking";
+            }
+            case EdgeType::ShoulderToShoulder:
+            {
+                return "Shoulder-To-Shoulder";
+            }
+            case EdgeType::All:
+            {
+                return "All";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "edge_type_enum=" << EnumUnderlying_t(ENUM) << " was an invalid value.");
+
+                return "";
+            }
+        };
+    }
 
     CombatTree::CombatTree()
         : edges_()
@@ -30,15 +57,15 @@ namespace combat
     ID_t CombatTree::NextAvailableId() const
     {
         const auto NUM_VERTEXES { vertexes_.size() };
-        for (ID_t id(0); id < NUM_VERTEXES; ++id)
+        for (std::size_t i(0); i < NUM_VERTEXES; ++i)
         {
-            if (false == DoesVertexExist(id))
+            if (false == DoesVertexExist(ID_t(i)))
             {
-                return id;
+                return ID_t(i);
             }
         }
 
-        return NUM_VERTEXES;
+        return ID_t(NUM_VERTEXES);
     }
 
     CombatNodePtr_t CombatTree::GetNodePtr(const ID_t & ID) const
@@ -47,13 +74,13 @@ namespace combat
         {
             if (VERTEX.id == ID)
             {
-                return CombatNodePtr_t(VERTEX.node_sptr.get());
+                return VERTEX.node_sptr;
             }
         }
 
-        throw std::invalid_argument(
-            "CombatTree::GetNodePtr(id=" + std::to_string(ID)
-            + ") -but that vertex does not exist.");
+        std::ostringstream ss;
+        ss << "CombatTree::GetNodePtr(id=" << ID << ") -but that vertex does not exist.";
+        throw std::invalid_argument(ss.str());
     }
 
     CombatNodePtr_t CombatTree::GetNodePtr(const creature::CreaturePtr_t CREATURE_PTR) const
@@ -62,13 +89,14 @@ namespace combat
         {
             if (VERTEX.node_sptr->Creature() == CREATURE_PTR)
             {
-                return CombatNodePtr_t(VERTEX.node_sptr.get());
+                return VERTEX.node_sptr;
             }
         }
 
-        throw std::invalid_argument(
-            "CombatTree::GetNodePtr(creature=" + CREATURE_PTR->ToString()
-            + ") -but a vertex for that creature does not exist.");
+        std::ostringstream ss;
+        ss << "CombatTree::GetNodePtr(creature=" << CREATURE_PTR->ToString()
+           << ") -but a vertex for that creature does not exist.";
+        throw std::invalid_argument(ss.str());
     }
 
     ID_t CombatTree::GetNodeId(const CombatNodePtr_t COMBAT_NODE_PTR) const
@@ -81,9 +109,11 @@ namespace combat
             }
         }
 
-        throw std::invalid_argument(
-            "CombatTree::GetNodeId(combat_node=" + COMBAT_NODE_PTR->ToString()
-            + ") -but that combat_node was not found.");
+        std::ostringstream ss;
+        ss << "CombatTree::GetNodeId(combat_node=" << COMBAT_NODE_PTR->ToString()
+           << ") -but that combat_node was not found.";
+
+        throw std::invalid_argument(ss.str());
     }
 
     ID_t CombatTree::GetNodeId(const creature::CreaturePtr_t CREATURE_PTR) const
@@ -96,16 +126,18 @@ namespace combat
             }
         }
 
-        throw std::invalid_argument(
-            "CombatTree::GetNodeId(creature={" + CREATURE_PTR->ToString()
-            + "}) -but that creature was not found.");
+        std::ostringstream ss;
+        ss << "CombatTree::GetNodeId(creature={" << CREATURE_PTR->ToString()
+           << "}) -but that creature was not found.";
+
+        throw std::invalid_argument(ss.str());
     }
 
     const CombatNodePtrOpt_t CombatTree::GetNodePtrOpt(const float POS_X, const float POS_Y) const
     {
         for (const auto & VERTEX : vertexes_)
         {
-            if (VERTEX.node_sptr->Contains(POS_X, POS_Y))
+            if (VERTEX.node_sptr->GetEntityRegion().contains(POS_X, POS_Y))
             {
                 return CombatNodePtrOpt_t(CombatNodePtr_t(VERTEX.node_sptr.get()));
             }
@@ -130,32 +162,31 @@ namespace combat
 
     const std::string CombatTree::VertexesString(const bool WILL_WRAP) const
     {
-        std::string result;
-        result.reserve(128);
+        std::ostringstream ss;
 
         if (WILL_WRAP)
         {
-            result += '[';
+            ss << "[";
         }
 
         for (const auto & VERTEX : vertexes_)
         {
-            result += std::to_string(VERTEX.id) + ":" + VERTEX.node_sptr->ToString() + ", ";
+            ss << VERTEX.id << ":" << VERTEX.node_sptr->ToString() << ", ";
         }
 
         if (WILL_WRAP)
         {
-            result += ']';
+            ss << "]";
         }
 
-        return result;
+        return ss.str();
     }
 
     CombatNodePtr_t CombatTree::AddVertex(const creature::CreaturePtr_t CREATURE_PTR)
     {
         const auto COMBAT_NODE_SPTR { std::make_shared<combat::CombatNode>(CREATURE_PTR) };
         vertexes_.emplace_back(Vertex(NextAvailableId(), COMBAT_NODE_SPTR));
-        return CombatNodePtr_t(COMBAT_NODE_SPTR.get());
+        return COMBAT_NODE_SPTR;
     }
 
     void CombatTree::RemoveVertex(const ID_t & ID, const bool WILL_REMOVE_DANGLING_EDGES)
@@ -196,9 +227,7 @@ namespace combat
 
         // remove all edges connected to the removed vert,
         // while keeping track of a list (set) of blocking IDs with orphaned verts
-        std::vector<int> orphanedBlockingIds;
-        orphanedBlockingIds.reserve(edgesToBeRemoved.size() * 4);
-
+        std::set<int> orphanedBlockingIdSet;
         for (const auto & EDGE_TO_BE_REMOVED : edgesToBeRemoved)
         {
             const auto ORPHANED_VERT_ID_VEC { RemoveEdge(
@@ -208,14 +237,13 @@ namespace combat
             {
                 if (ORPHANED_VERT_ID != ID)
                 {
-                    orphanedBlockingIds.emplace_back(
-                        GetNodePtr(ORPHANED_VERT_ID)->GetBlockingPos());
+                    orphanedBlockingIdSet.insert(GetNodePtr(ORPHANED_VERT_ID)->GetBlockingPos());
                 }
             }
         }
 
         // reconnect orphaned verts
-        for (const auto NEXT_ORPHANED_BLOCKING_POS : orphanedBlockingIds)
+        for (const auto NEXT_ORPHANED_BLOCKING_POS : orphanedBlockingIdSet)
         {
             ConnectAllAtPosition(NEXT_ORPHANED_BLOCKING_POS, EdgeType::ShoulderToShoulder);
         }
@@ -229,7 +257,7 @@ namespace combat
         }
         else
         {
-            std::size_t count { 0 };
+            ID_t::type count { 0 };
             for (const auto & EDGE : edges_)
             {
                 if (EDGE.type == TYPE)
@@ -267,26 +295,24 @@ namespace combat
 
     const std::string CombatTree::EdgesString(const bool WILL_WRAP) const
     {
-        std::string result;
-        result.reserve(255);
+        std::ostringstream ss;
 
         if (WILL_WRAP)
         {
-            result += '(';
+            ss << "(";
         }
 
         for (const auto & EDGE : edges_)
         {
-            result += std::to_string(EDGE.a) + "-" + std::to_string(EDGE.b) + ":"
-                + NAMEOF_ENUM_STR(EDGE.type) + ", ";
+            ss << EDGE.a << "-" << EDGE.b << ":" << EdgeType::ToString(EDGE.type) << ", ";
         }
 
         if (WILL_WRAP)
         {
-            result += ')';
+            ss << ")";
         }
 
-        return result;
+        return ss.str();
     }
 
     void CombatTree::AddEdge(const ID_t & ID1, const ID_t & ID2, const EdgeType::Enum TYPE)
@@ -295,7 +321,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2
-               << ", type=" << NAMEOF_ENUM(TYPE) << ") -but the two IDs are the same.";
+               << ", type=" << EdgeType::ToString(TYPE) << ") -but the two IDs are the same.";
 
             throw std::invalid_argument(ss.str());
         }
@@ -304,7 +330,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2
-               << ", type=" << NAMEOF_ENUM(TYPE) << ") -but that edge already exists.";
+               << ", type=" << EdgeType::ToString(TYPE) << ") -but that edge already exists.";
 
             throw std::invalid_argument(ss.str());
         }
@@ -313,7 +339,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2
-               << ", type=" << NAMEOF_ENUM(TYPE) << ") -but that edge ID1==" << ID1
+               << ", type=" << EdgeType::ToString(TYPE) << ") -but that edge ID1==" << ID1
                << " does not exist.";
 
             throw std::invalid_argument(ss.str());
@@ -323,7 +349,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "CombatTree::AddEdge(id1=" << ID1 << ", id2=" << ID2
-               << ", type=" << NAMEOF_ENUM(TYPE) << ") -but that edge ID2==" << ID2
+               << ", type=" << EdgeType::ToString(TYPE) << ") -but that edge ID2==" << ID2
                << " does not exist.";
 
             throw std::invalid_argument(ss.str());
@@ -448,7 +474,7 @@ namespace combat
 
         std::ostringstream ss;
         ss << "CombatTree::SetEdgeType(id1=" << ID1 << ", id2=" << ID2
-           << ", type=" << NAMEOF_ENUM(TYPE) << ") -but that edge does not exist.";
+           << ", type=" << EdgeType::ToString(TYPE) << ") -but that edge does not exist.";
 
         throw std::invalid_argument(ss.str());
     }
@@ -456,7 +482,7 @@ namespace combat
     bool CombatTree::FindAdjacentByEdgeType(
         const ID_t & ID, IDVec_t & idVec_OutParam, const EdgeType::Enum TYPE) const
     {
-        const auto ORIG_SIZE = idVec_OutParam.size();
+        const ID_t ORIG_SIZE { idVec_OutParam.size() };
 
         for (const auto & EDGE : edges_)
         {
@@ -490,7 +516,7 @@ namespace combat
             }
         }
 
-        const auto FINAL_SIZE = idVec_OutParam.size();
+        const ID_t FINAL_SIZE { idVec_OutParam.size() };
         return (ORIG_SIZE != FINAL_SIZE);
     }
 
@@ -526,7 +552,9 @@ namespace combat
 
     const std::string CombatTree::ToString() const
     {
-        return "Vertexes: " + VertexesString() + "  Edges: " + EdgesString();
+        std::ostringstream ss;
+        ss << "Vertexes: " << VertexesString() << "  Edges: " << EdgesString();
+        return ss.str();
     }
 
     void CombatTree::ConnectAllAtPosition(const int POS, const EdgeType::Enum CONNECTION_TYPE)
@@ -577,9 +605,9 @@ namespace combat
         const auto NUM_VERTS_AT_POS { vertIDsAtPosVec.size() };
         if (NUM_VERTS_AT_POS > 0)
         {
-            for (std::size_t i(0); i < NUM_VERTS_AT_POS - 1; ++i)
+            for (ID_t::type i(0); i < NUM_VERTS_AT_POS - 1; ++i)
             {
-                for (std::size_t j(i + 1); j < NUM_VERTS_AT_POS - 1; ++j)
+                for (ID_t::type j(i + 1); j < NUM_VERTS_AT_POS - 1; ++j)
                 {
                     edges_.emplace_back(
                         Edge(vertIDsAtPosVec[i], vertIDsAtPosVec[j], CONNECTION_TYPE));
@@ -630,7 +658,7 @@ namespace combat
 
     int CombatTree::GetBlockingDistanceMax() const
     {
-        return misc::Abs(GetBlockingPosMin()) - misc::Abs(GetBlockingPosMax());
+        return std::abs(GetBlockingPosMin()) - std::abs(GetBlockingPosMax());
     }
 
     const IDVec_t CombatTree::GetNodeIDsAtBlockingPos(const int BLOCKING_POS) const
@@ -772,7 +800,7 @@ namespace combat
     }
 
     int CombatTree::GetClosestBlockingDistanceByType(
-        const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_FIND_PLAYERS) const
+        creature::CreaturePtr_t CREATURE_PTR, const bool WILL_FIND_PLAYERS) const
     {
         CombatNodePtrOpt_t closestNodePtrOpt { boost::none };
         auto closestBlockingDistanceABS { GetBlockingDistanceMax() + 1 };
@@ -782,13 +810,13 @@ namespace combat
             if ((VERTEX.node_sptr->Creature() != CREATURE_PTR)
                 && (VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
-                const auto ABS_DISTANCE { misc::Abs(
+                const auto ABS_DISTANCE { std::abs(
                     GetBlockingDistanceBetween(CREATURE_PTR, VERTEX.node_sptr->Creature())) };
 
                 if (ABS_DISTANCE < closestBlockingDistanceABS)
                 {
                     closestBlockingDistanceABS = ABS_DISTANCE;
-                    closestNodePtrOpt = CombatNodePtr_t(VERTEX.node_sptr.get());
+                    closestNodePtrOpt = VERTEX.node_sptr;
                 }
             }
         }
@@ -811,7 +839,7 @@ namespace combat
         // find closest distance
         for (const auto & VERTEX : vertexes_)
         {
-            const auto NEXT_BLOCKING_DISTANCE_ABS { misc::Abs(
+            const auto NEXT_BLOCKING_DISTANCE_ABS { std::abs(
                 VERTEX.node_sptr->GetBlockingPos() - ORIGIN_BLOCKING_POS) };
 
             if ((VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -827,7 +855,7 @@ namespace combat
         // find all nodes with that closest distance
         for (const auto & VERTEX : vertexes_)
         {
-            const auto NEXT_BLOCKING_DISTANCE_ABS { misc::Abs(
+            const auto NEXT_BLOCKING_DISTANCE_ABS { std::abs(
                 VERTEX.node_sptr->GetBlockingPos() - ORIGIN_BLOCKING_POS) };
 
             if ((VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -876,7 +904,7 @@ namespace combat
 
         std::ostringstream ss;
         ss << "combat::CombatTree::ChangeBlockingPositionAndUpdateTree(id="
-           << ID_OF_VERTEX_TO_CHANGE << ", new_blocking=" << NEW_BLOCKING_POS
+           << ID_OF_VERTEX_TO_CHANGE << ", new_blocking_id=" << NEW_BLOCKING_POS
            << ") was unable to find a vertex with that id.";
 
         throw std::runtime_error(ss.str());

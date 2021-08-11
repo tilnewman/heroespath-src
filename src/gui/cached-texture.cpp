@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -53,7 +51,7 @@ namespace gui
     {
         if ((this != &CT) && ((CT.index_ != index_) || (CT.texturePtr_ != texturePtr_)))
         {
-            Destroy();
+            Release();
 
             index_ = CT.index_;
             path_ = CT.path_;
@@ -71,7 +69,7 @@ namespace gui
     {
         if ((this != &ct) && ((texturePtr_ != ct.texturePtr_) || (index_ != ct.index_)))
         {
-            Destroy();
+            Release();
 
             path_ = std::move(ct.path_);
             index_ = std::move(ct.index_);
@@ -142,21 +140,21 @@ namespace gui
         texturePtr_ = TEXTURE_PTR;
     }
 
-    CachedTexture::~CachedTexture() { Destroy(); }
+    CachedTexture::~CachedTexture() { Release(); }
 
     std::size_t CachedTexture::RefCount() const
     {
         return TextureCache::Instance()->GetRefCountByIndex(index_);
     }
 
-    void CachedTexture::Destroy()
+    void CachedTexture::Release()
     {
         if (path_.empty() == false)
         {
             texturePtr_ = misc::NotNull(&alwaysEmptyTexture_);
             TextureCache::Instance()->RemoveByPath(path_, options_);
 
-            // clear path_ so that repeated calls to Destroy() are safe
+            // clear path_ so that repeated calls to Release() are safe
             path_.clear();
         }
     }
@@ -186,7 +184,7 @@ namespace gui
     {
         if ((this != &CT) && (CT.indexes_ != indexes_))
         {
-            Destroy();
+            Release();
 
             if (CT.path_.empty() == false)
             {
@@ -207,7 +205,7 @@ namespace gui
         {
             if (ct.indexes_ != indexes_)
             {
-                Destroy();
+                Release();
 
                 path_ = std::move(ct.path_);
                 indexes_ = std::move(ct.indexes_);
@@ -235,7 +233,7 @@ namespace gui
         , options_(OPTIONS)
     {}
 
-    CachedTextures::~CachedTextures() { Destroy(); }
+    CachedTextures::~CachedTextures() { Release(); }
 
     std::size_t CachedTextures::RefCount() const
     {
@@ -262,13 +260,13 @@ namespace gui
 
     const sf::Texture & CachedTextures::Back() const { return operator[](indexes_.size() - 1); }
 
-    void CachedTextures::Destroy()
+    void CachedTextures::Release()
     {
         if (path_.empty() == false)
         {
             TextureCache::Instance()->RemoveByPath(path_, options_);
 
-            // empty indexes_ so that repeated calls to Destroy() are safe
+            // empty indexes_ so that repeated calls to Release() are safe
             path_.clear();
         }
     }

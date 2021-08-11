@@ -112,7 +112,6 @@ namespace combat
 
             OutnumberRetreatChanceMap_t adjOutnumberRetreatChanceMap(
                 ADJUSTER.OutnumberRetreatChanceMapCopy());
-
             for (auto & nextOutnumberRetreatCountChancePair : chanceCopy.retreatChanceMap_)
             {
                 nextOutnumberRetreatCountChancePair.second
@@ -193,33 +192,29 @@ namespace combat
 
         const std::string Chances::ToString() const
         {
-            std::string result;
-            result.reserve(1024 + (outnumberRetreatChanceMap_.Size() * 16));
-
-            result += "StrategyChances:   Select=";
-            result += ChanceMapToString<SelectType, SelectType::Enum>(selectChanceMap_, true);
-            result += "  |  Refine=";
-            result += ChanceMapToString<RefineType, RefineType::Enum>(refineChanceMap_, true);
-            result += "  |  Advance=";
-            result += ChanceMapToString<AdvanceType, AdvanceType::Enum>(advanceChanceMap_, true);
-            result += "  |  Retreat=";
-            result += ChanceMapToString<RetreatType, RetreatType::Enum>(retreatChanceMap_, true);
-            result += "  |  Roar=";
-            result
-                += ChanceMapToString<FrequencyType, FrequencyType::Enum>(roarFreqChanceMap_, false);
-            result += "  |  Cast=";
-            result
-                += ChanceMapToString<FrequencyType, FrequencyType::Enum>(castFreqChanceMap_, false);
-            result += "  |  Fly=";
-            result
-                += ChanceMapToString<FrequencyType, FrequencyType::Enum>(flyFreqChanceMap_, false);
-            result += "  |  FlyPounce=";
-            result += ChanceMapToString<FrequencyType, FrequencyType::Enum>(
-                flyPounceFreqChanceMap_, false);
-            result += "  |  StandPounce=";
-            result += ChanceMapToString<FrequencyType, FrequencyType::Enum>(
-                standPounceFreqChanceMap_, false);
-            result += "  |  RetreatCounts=(";
+            std::ostringstream ss;
+            ss << "StrategyChances:"
+               << "  Select="
+               << ChanceMapToString<SelectType, SelectType::Enum>(selectChanceMap_, true)
+               << "  |  Refine="
+               << ChanceMapToString<RefineType, RefineType::Enum>(refineChanceMap_, true)
+               << "  |  Advance="
+               << ChanceMapToString<AdvanceType, AdvanceType::Enum>(advanceChanceMap_, true)
+               << "  |  Retreat="
+               << ChanceMapToString<RetreatType, RetreatType::Enum>(retreatChanceMap_, true)
+               << "  |  Roar="
+               << ChanceMapToString<FrequencyType, FrequencyType::Enum>(roarFreqChanceMap_, false)
+               << "  |  Cast="
+               << ChanceMapToString<FrequencyType, FrequencyType::Enum>(castFreqChanceMap_, false)
+               << "  |  Fly="
+               << ChanceMapToString<FrequencyType, FrequencyType::Enum>(flyFreqChanceMap_, false)
+               << "  |  FlyPounce="
+               << ChanceMapToString<FrequencyType, FrequencyType::Enum>(
+                      flyPounceFreqChanceMap_, false)
+               << "  |  StandPounce="
+               << ChanceMapToString<FrequencyType, FrequencyType::Enum>(
+                      standPounceFreqChanceMap_, false)
+               << "  |  RetreatCounts=(";
 
             auto count { outnumberRetreatChanceMap_.Size() };
 
@@ -230,32 +225,32 @@ namespace combat
 
             if (0 == count)
             {
-                result += '0';
+                ss << "0";
             }
             else
             {
+                const std::string SEP { ", " };
                 for (std::size_t i(0); i < count; ++i)
                 {
-                    result += std::to_string(i);
-                    result += ':';
+                    ss << i << ":";
 
                     const auto COUNTCHANCE_ITER { outnumberRetreatChanceMap_.Find(i) };
 
                     if (COUNTCHANCE_ITER == outnumberRetreatChanceMap_.end())
                     {
-                        result += "none";
+                        ss << "none";
                     }
                     else
                     {
-                        result += std::to_string(COUNTCHANCE_ITER->second);
+                        ss << COUNTCHANCE_ITER->second;
                     }
 
-                    result += ", ";
+                    ss << SEP;
                 }
             }
 
-            result += ')';
-            return result;
+            ss << ")";
+            return ss.str();
         }
 
         FrequencyType::Enum
@@ -275,7 +270,6 @@ namespace combat
             auto totalOfAllFreqTypes { 0.0f };
             auto cretainOrHigherChanceTotal { 0.0f };
             std::vector<std::pair<FrequencyType::Enum, float>> cretainOrHigherFreqTypeVec;
-            cretainOrHigherFreqTypeVec.reserve(FREQ_CHANCE_MAP.Size());
             for (const auto & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
             {
                 totalOfAllFreqTypes += NEXT_FREQCHANCE_PAIR.second;
@@ -309,7 +303,7 @@ namespace combat
                     }
                 }
 
-                return cretainOrHigherFreqTypeVec.back().first;
+                return cretainOrHigherFreqTypeVec[cretainOrHigherFreqTypeVec.size() - 1].first;
             }
             else
             {

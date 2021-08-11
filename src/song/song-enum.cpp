@@ -13,6 +13,7 @@
 
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 
 namespace heroespath
@@ -20,19 +21,109 @@ namespace heroespath
 namespace song
 {
 
+    const std::string Songs::ToString(const Enum ENUM)
+    {
+        switch (ENUM)
+        {
+            case RallyDrum:
+            {
+                return "RallyDrum";
+            }
+            case SpiritResonance:
+            {
+                return "SpiritResonance";
+            }
+            case RousingRhythm:
+            {
+                return "RousingRhythm";
+            }
+            case TripBeat:
+            {
+                return "TripBeat";
+            }
+            case PanicStrings:
+            {
+                return "PanicStrings";
+            }
+            case Lullaby:
+            {
+                return "Lullaby";
+            }
+            case Count:
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
+                return "";
+            }
+        }
+    }
+
+    const std::string Songs::Name(const Enum ENUM)
+    {
+        switch (ENUM)
+        {
+            case RallyDrum:
+            {
+                return "Rally Drum";
+            }
+            case SpiritResonance:
+            {
+                return "Spirit Resonance";
+            }
+            case RousingRhythm:
+            {
+                return "Rousing Rhythm";
+            }
+            case TripBeat:
+            {
+                return "Trip Beat";
+            }
+            case PanicStrings:
+            {
+                return "Panic Strings";
+            }
+            case Lullaby:
+            {
+                return "Lullaby";
+            }
+            case Count:
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
+                return "";
+            }
+        }
+    }
+
     const std::string Songs::ShortDesc(const Songs::Enum ENUM)
     {
-        return misc::ConfigFile::Instance()->Value("song-" + NAMEOF_ENUM_STR(ENUM) + "-short-desc");
+        std::ostringstream keySS;
+        keySS << "song-" << ToString(ENUM) << "-short-desc";
+        return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
     const std::string Songs::ExtraDesc(const Songs::Enum ENUM)
     {
-        return misc::ConfigFile::Instance()->Value("song-" + NAMEOF_ENUM_STR(ENUM) + "-extra-desc");
+        std::ostringstream keySS;
+        keySS << "song-" << ToString(ENUM) << "-extra-desc";
+        return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
     const std::string Songs::ImageFilename(const Songs::Enum ENUM)
     {
-        return misc::ToLowerCopy(NAMEOF_ENUM_STR(ENUM) + ".png");
+        return misc::ToLowerCopy(ToString(ENUM) + ".png");
     }
 
     const std::string Songs::ImageDirectory()

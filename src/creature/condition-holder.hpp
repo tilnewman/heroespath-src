@@ -10,7 +10,6 @@
 // condition-holder.hpp
 //
 #include "creature/condition-enum.hpp"
-#include "creature/trait-type.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 
@@ -19,6 +18,13 @@
 
 namespace heroespath
 {
+
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace creature
 {
     class Condition;
@@ -34,11 +40,11 @@ namespace creature
         {
             static void Fill();
             static void Empty();
+            static bool Test(stage::IStagePtr_t iStagePtr);
             static const ConditionPtr_t Get(const Conditions::Enum);
 
         private:
             static ConditionUVec_t conditionsUVec_;
-            static Trait_t SMALLEST_TRAIT_POSSIBLE_;
         };
 
     } // namespace condition

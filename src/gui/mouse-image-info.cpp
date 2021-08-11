@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -11,7 +9,7 @@
 //
 #include "mouse-image-info.hpp"
 
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -133,40 +131,25 @@ namespace gui
     const std::string MouseImageInfo::ToString(
         const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        std::string str;
-        str.reserve(1024);
+        std::ostringstream ss;
+
+        ss << "Up=" << up.ToString(false, Wrap::Yes) << SEPARATOR
+           << "Down=" << down.ToString(false, Wrap::Yes) << SEPARATOR
+           << "Over=" << over.ToString(false, Wrap::Yes) << SEPARATOR
+           << "Disabled=" << disabled.ToString(false, Wrap::Yes) << SEPARATOR
+           << "will_draw_up_if_missing=" << std::boolalpha << will_draw_up_if_missing;
+
+        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
 
         if (WILL_PREFIX)
         {
-            str += std::string("MouseImageInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=");
+            return std::string("MouseImageInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
+                + PARTS_STR;
         }
-
-        if (WILL_WRAP == Wrap::Yes)
+        else
         {
-            str += '(';
+            return PARTS_STR;
         }
-
-        str += "Up=";
-        str += up.ToString(false, Wrap::Yes);
-        str += SEPARATOR;
-        str += "Down=";
-        str += down.ToString(false, Wrap::Yes);
-        str += SEPARATOR;
-        str += "Over=";
-        str += over.ToString(false, Wrap::Yes);
-        str += SEPARATOR;
-        str += "Disabled=";
-        str += disabled.ToString(false, Wrap::Yes);
-        str += SEPARATOR;
-        str += "will_draw_up_if_missing=";
-        str += misc::ToString(will_draw_up_if_missing);
-
-        if (WILL_WRAP == Wrap::Yes)
-        {
-            str += ')';
-        }
-
-        return str;
     }
 
     void MouseImageInfo::SetRegion(const sf::FloatRect & NEW_GLOBAL_BOUNDS)

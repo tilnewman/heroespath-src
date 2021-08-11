@@ -11,12 +11,14 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace song
 {
 
-    struct SongType : public EnumBaseCounting<>
+    struct SongType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -24,6 +26,8 @@ namespace song
             Drum,
             Count
         };
+
+        static const std::string ToString(const Enum);
     };
 
 } // namespace song

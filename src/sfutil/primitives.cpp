@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -11,8 +9,8 @@
 //
 #include "primitives.hpp"
 
-#include "sfutil/common.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>

@@ -15,14 +15,47 @@
 #include "gui/text-entity.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
-#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
 namespace gui
 {
+
+    const std::string
+        ImageTextEntity::MouseStateSync::ToString(const MouseStateSync::Enum FOLLOW_TYPE)
+    {
+        switch (FOLLOW_TYPE)
+        {
+            case None:
+            {
+                return "None";
+            }
+            case Image:
+            {
+                return "Image";
+            }
+            case Text:
+            {
+                return "Text";
+            }
+            case Count:
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(FOLLOW_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
+                return "";
+            }
+        }
+    }
 
     ImageTextEntity::ImageTextEntity(
         const std::string & NAME,
@@ -50,14 +83,14 @@ namespace gui
         const MouseStateSync::Enum MOUSE_STATE_SYNC,
         const bool WILL_SYNC_MOUSESTATES)
         : ImageTextEntity(
-              NAME + "_Constructor2_",
-              std::make_unique<gui::ImageEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor2_'s_", MOUSE_IMAGE_INFO),
-              std::make_unique<gui::TextEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor2_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
-              CALLBACK_HANDLER_PTR_OPT,
-              MOUSE_STATE_SYNC,
-              WILL_SYNC_MOUSESTATES)
+            NAME + "_Constructor2_",
+            std::make_unique<gui::ImageEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor2_'s_", MOUSE_IMAGE_INFO),
+            std::make_unique<gui::TextEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor2_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
+            CALLBACK_HANDLER_PTR_OPT,
+            MOUSE_STATE_SYNC,
+            WILL_SYNC_MOUSESTATES)
     {}
 
     ImageTextEntity::ImageTextEntity(
@@ -68,17 +101,17 @@ namespace gui
         const MouseStateSync::Enum MOUSE_STATE_SYNC,
         const bool WILL_SYNC_MOUSESTATES)
         : ImageTextEntity(
-              NAME + "_Constructor3_",
-              std::make_unique<gui::ImageEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor3_'s_", MOUSE_IMAGE_INFO),
-              std::make_unique<gui::TextEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor3_'s_",
-                  0.0f,
-                  0.0f,
-                  MouseTextInfo(TEXT_INFO)),
-              CALLBACK_HANDLER_PTR_OPT,
-              MOUSE_STATE_SYNC,
-              WILL_SYNC_MOUSESTATES)
+            NAME + "_Constructor3_",
+            std::make_unique<gui::ImageEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor3_'s_", MOUSE_IMAGE_INFO),
+            std::make_unique<gui::TextEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor3_'s_",
+                0.0f,
+                0.0f,
+                MouseTextInfo(TEXT_INFO)),
+            CALLBACK_HANDLER_PTR_OPT,
+            MOUSE_STATE_SYNC,
+            WILL_SYNC_MOUSESTATES)
     {}
 
     ImageTextEntity::ImageTextEntity(
@@ -89,15 +122,15 @@ namespace gui
         const MouseStateSync::Enum MOUSE_STATE_SYNC,
         const bool WILL_SYNC_MOUSESTATES)
         : ImageTextEntity(
-              NAME + "_Constructor4_",
-              std::make_unique<gui::ImageEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor4_'s_",
-                  gui::MouseImageInfo(true, ENTITY_IMAGE_INFO)),
-              std::make_unique<gui::TextEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor4_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
-              CALLBACK_HANDLER_PTR_OPT,
-              MOUSE_STATE_SYNC,
-              WILL_SYNC_MOUSESTATES)
+            NAME + "_Constructor4_",
+            std::make_unique<gui::ImageEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor4_'s_",
+                gui::MouseImageInfo(true, ENTITY_IMAGE_INFO)),
+            std::make_unique<gui::TextEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor4_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
+            CALLBACK_HANDLER_PTR_OPT,
+            MOUSE_STATE_SYNC,
+            WILL_SYNC_MOUSESTATES)
     {}
 
     ImageTextEntity::~ImageTextEntity() = default;
@@ -200,17 +233,17 @@ namespace gui
 
         if (imageEntityUPtr_ && imageEntityUPtr_->MouseUp(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(imageEntityUPtr_.get()));
+            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_);
             didSomethingHappend = true;
         }
 
         if (textEntityUPtr_ && textEntityUPtr_->MouseUp(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(textEntityUPtr_.get()));
+            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_);
             didSomethingHappend = true;
         }
 
-        if (isMouseDown_ && Contains(MOUSE_POS_V))
+        if (isMouseDown_ && GetEntityRegion().contains(MOUSE_POS_V))
         {
             bool didDoubleClickAlready(false);
 
@@ -248,20 +281,20 @@ namespace gui
 
     bool ImageTextEntity::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (Contains(MOUSE_POS_V))
+        if (GetEntityRegion().contains(MOUSE_POS_V))
         {
             isMouseDown_ = true;
         }
 
         if (imageEntityUPtr_ && imageEntityUPtr_->MouseDown(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(imageEntityUPtr_.get()));
+            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_);
             isMouseDown_ = true;
         }
 
         if (textEntityUPtr_ && textEntityUPtr_->MouseDown(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(textEntityUPtr_.get()));
+            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_);
             isMouseDown_ = true;
         }
 
@@ -274,13 +307,13 @@ namespace gui
 
         if (imageEntityUPtr_ && imageEntityUPtr_->UpdateMousePos(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(imageEntityUPtr_.get()));
+            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_);
             didSomethingHappend = true;
         }
 
         if (textEntityUPtr_ && textEntityUPtr_->UpdateMousePos(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(IEntityPtr_t(textEntityUPtr_.get()));
+            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_);
             didSomethingHappend = true;
         }
 
@@ -352,10 +385,10 @@ namespace gui
         if (callbackHandlerPtrOpt_)
         {
             const auto IS_MOUSE_OVER_IMAGE { (
-                imageEntityUPtr_ && imageEntityUPtr_->Contains(MOUSE_POS_V)) };
+                imageEntityUPtr_ && imageEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
 
             const auto IS_MOUSE_OVER_TEXT { (
-                textEntityUPtr_ && textEntityUPtr_->Contains(MOUSE_POS_V)) };
+                textEntityUPtr_ && textEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
 
             const EventPacket EVENT_PACKET(
                 misc::MakeNotNull(this),
@@ -364,13 +397,12 @@ namespace gui
                 IS_MOUSE_OVER_IMAGE,
                 IS_MOUSE_OVER_TEXT);
 
-            // std::ostringstream ss;
-            // ss << "ImageTextEntity(" << GetEntityName()
-            //   << "\", on-mouse-single-click, is_mouse_over_image=" << std::boolalpha
-            //   << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
+            std::ostringstream ss;
+            ss << "ImageTextEntity(" << GetEntityName()
+               << "\", on-mouse-single-click, is_mouse_over_image=" << std::boolalpha
+               << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
 
-            Callback_t::HandleAndLog(
-                *callbackHandlerPtrOpt_.value(), EVENT_PACKET, "ImageTextEntity::OnClick()");
+            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), EVENT_PACKET, ss.str());
         }
     }
 
@@ -379,10 +411,10 @@ namespace gui
         if (callbackHandlerPtrOpt_)
         {
             const auto IS_MOUSE_OVER_IMAGE { (
-                imageEntityUPtr_ && imageEntityUPtr_->Contains(MOUSE_POS_V)) };
+                imageEntityUPtr_ && imageEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
 
             const auto IS_MOUSE_OVER_TEXT { (
-                textEntityUPtr_ && textEntityUPtr_->Contains(MOUSE_POS_V)) };
+                textEntityUPtr_ && textEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
 
             const EventPacket EVENT_PACKET(
                 misc::MakeNotNull(this),
@@ -391,13 +423,12 @@ namespace gui
                 IS_MOUSE_OVER_IMAGE,
                 IS_MOUSE_OVER_TEXT);
 
-            // std::ostringstream ss;
-            // ss << "ImageTextEntity(" << GetEntityName()
-            //   << "\", on-mouse-double-click, is_mouse_over_image=" << std::boolalpha
-            //   << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
+            std::ostringstream ss;
+            ss << "ImageTextEntity(" << GetEntityName()
+               << "\", on-mouse-double-click, is_mouse_over_image=" << std::boolalpha
+               << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
 
-            Callback_t::HandleAndLog(
-                *callbackHandlerPtrOpt_.value(), EVENT_PACKET, "ImageTextEntity::OnDoubleClick()");
+            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), EVENT_PACKET, ss.str());
         }
     }
 

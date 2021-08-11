@@ -37,7 +37,7 @@ namespace gui
 
         music::Enum Which() const { return which_; }
         bool IsLooped() const { return isLooped_; }
-        const std::string WhichName() const { return NAMEOF_ENUM_STR(which_); }
+        const std::string WhichName() const { return music::ToString(which_); }
         const std::string ArtistName() const { return artistName_; }
         const std::string SongName() const { return songName_; }
         const std::string LicenseTitle() const { return licenseTitle_; }

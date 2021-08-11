@@ -27,6 +27,13 @@
 
 namespace heroespath
 {
+
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace creature
 {
     class Creature;
@@ -49,11 +56,13 @@ namespace popup
         ~PopupManager();
 
         static misc::NotNull<PopupManager *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         static void SetTexturesDirectoryPaths(
             const std::string & WINDOWS_PATH, const std::string & ACCENTS_PATH);
+
+        bool Test(stage::IStagePtr_t iStagePtr);
 
         static sf::Color Color_Font() { return fontColor_; }
 

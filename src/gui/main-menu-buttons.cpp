@@ -35,11 +35,11 @@ namespace gui
         const bool WILL_INCLUDE_DISABLED,
         const float HEIGHT_SCREEN_RATIO)
         : ImageTextEntity(
-              "MainMenuButton_" + NAMEOF_ENUM_STR(TRANSITION_TO),
-              MakeMouseImageInfo(MENU_IMAGE, WILL_INCLUDE_DISABLED, HEIGHT_SCREEN_RATIO, POS_V),
-              MouseTextInfo(),
-              CALLBACK_HANDLER_PTR_OPT,
-              ImageTextEntity::MouseStateSync::Image)
+            "MainMenuButton_" + stage::Stage::ToString(TRANSITION_TO),
+            MakeMouseImageInfo(MENU_IMAGE, WILL_INCLUDE_DISABLED, HEIGHT_SCREEN_RATIO, POS_V),
+            MouseTextInfo(),
+            CALLBACK_HANDLER_PTR_OPT,
+            ImageTextEntity::MouseStateSync::Image)
         , transitionTo_(TRANSITION_TO)
         , willTransitionStage_(WILL_TRANSITION_STAGE)
     {}

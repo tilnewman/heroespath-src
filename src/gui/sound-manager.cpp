@@ -54,13 +54,13 @@ namespace gui
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: SoundManager");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<SoundManager *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void SoundManager::Create()
+    void SoundManager::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -68,11 +68,17 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: SoundManager");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: SoundManager");
         }
     }
 
-    void SoundManager::Destroy() { instanceUPtr_.reset(); }
+    void SoundManager::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "gui::SoundManager::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     void SoundManager::Initialize()
     {
@@ -133,8 +139,8 @@ namespace gui
         sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Gem)]
             = SfxSet(SfxEnumVec_t { sound_effect::Gems });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Shard)]
-            = SfxSet(SfxEnumVec_t { sound_effect::Shards });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MeteorShard)]
+            = SfxSet(SfxEnumVec_t { sound_effect::MeteorShards });
 
         sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ItemGive)]
             = SfxSet(SfxEnumVec_t { sound_effect::ItemGive });
@@ -295,8 +301,7 @@ namespace gui
         const float VOLUME_TO_USE((VOLUME < 0.0f) ? musicVolume_ : VOLUME);
 
         // Create the MusicSet object here, before we know if it is needed, because its
-        // constructor is where the CurrentlyPlaying() song must be selected from among
-        // WHICH_VEC.
+        // constructor is where the CurrentlyPlaying() song must be selected from among WHICH_VEC.
         MusicSet musicSet(
             WHICH_VEC, WILL_RANDOMIZE, WILL_START_AT_RANDOM, FADE_MULT, VOLUME_TO_USE, WILL_LOOP);
 
@@ -441,7 +446,7 @@ namespace gui
             if ((songSet.IsValid()) && (songSet.op.Info().Which() == MUSIC_ENUM))
             {
                 const float CURRENT_VOLUME(songSet.op.Volume());
-                const float INTENDED_VOLUME(MusicVolume());
+                const float INTENDED_VOLUME(gui::SoundManager::Instance()->MusicVolume());
 
                 if (misc::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
                 {
@@ -616,9 +621,9 @@ namespace gui
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
-            "SoundManager::OpenMusic(\"" << PATH_STR_COMPLETE
-                                         << "\") failed because that file either does not "
-                                            "exist or is not a regular file.");
+            "SoundManager::OpenMusic(\""
+                << PATH_STR_COMPLETE
+                << "\") failed because that file either does not exist or is not a regular file.");
 
         auto musicUPtr { std::make_unique<sf::Music>() };
 
@@ -634,7 +639,7 @@ namespace gui
     void SoundManager::CacheMusicInfo_CombatIntro()
     {
         const auto DIR_PATH_STR { misc::filesystem::CombinePaths(
-            musicDirectoryPath_, std::string(music::Directory(music::CombatIntro))) };
+            musicDirectoryPath_, music::Directory(music::CombatIntro)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR)),
@@ -643,7 +648,7 @@ namespace gui
                 << DIR_PATH_STR);
 
         const auto MUSIC_FILE_PATHS { misc::filesystem::FindFiles(
-            false, DIR_PATH_STR, "", std::string(music::FileExt)) };
+            false, DIR_PATH_STR, "", music::FileExt()) };
 
         combatIntroMusicInfoVec_.clear();
 
@@ -652,7 +657,7 @@ namespace gui
             const auto FILE_NAME_STR { misc::filesystem::Filename(MUSIC_FILE_PATH_STR) };
 
             const std::vector<std::string> FILE_NAME_PARTS_VEC { misc::SplitByChars(
-                FILE_NAME_STR, misc::SplitHow("_")) };
+                FILE_NAME_STR, misc::SplitHow('_')) };
             ;
             if (FILE_NAME_PARTS_VEC.size() != 4)
             {
@@ -663,7 +668,7 @@ namespace gui
             const auto NEXT_TRACK_NAME { FILE_NAME_PARTS_VEC.at(2) };
 
             const auto NEXT_LICENSE_NAME { boost::algorithm::erase_all_copy(
-                FILE_NAME_PARTS_VEC.at(3), music::FileExt) };
+                FILE_NAME_PARTS_VEC.at(3), music::FileExt()) };
 
             combatIntroMusicInfoVec_.emplace_back(MusicInfo(
                 music::CombatIntro,
@@ -691,8 +696,7 @@ namespace gui
         if (musicInfo.Which() == music::CombatIntro)
         {
             musicInfo = misc::RandomSelect(combatIntroMusicInfoVec_);
-            musicUPtr = OpenMusic(
-                musicInfo.Filename(), std::string(music::Directory(music::CombatIntro)));
+            musicUPtr = OpenMusic(musicInfo.Filename(), music::Directory(music::CombatIntro));
         }
         else
         {
@@ -707,6 +711,159 @@ namespace gui
         musicOperator.Play();
 
         return musicOperator;
+    }
+
+    bool SoundManager::Test(stage::IStagePtr_t iStagePtr)
+    {
+        static auto hasInitialPrompt { false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            iStagePtr->TestingStrAppend("gui::SoundManager::Test() Starting Tests...");
+        }
+
+        static auto counter { 0 };
+        static auto playOrStop { false };
+        static const auto MUSIC_COUNT_MAX { 200 };
+
+        // test sound effects individually
+        {
+            static auto hasSFXPromptedStart { false };
+            if (false == hasSFXPromptedStart)
+            {
+                iStagePtr->TestingStrIncrement("SoundManager SFX Tests starting...");
+                hasSFXPromptedStart = true;
+            }
+
+            static EnumUnderlying_t sfxIndex { 0 };
+            if (sfxIndex < sound_effect::Count)
+            {
+                const auto ENUM { static_cast<sound_effect::Enum>(sfxIndex) };
+                const auto ENUM_STR { sound_effect::ToString(ENUM) };
+
+                iStagePtr->TestingStrIncrement("SoundManager SFX Test \"" + ENUM_STR + "\"");
+
+                SoundEffectPlay(ENUM);
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                ++sfxIndex;
+                return false;
+            }
+
+            static auto hasSFXPromptedEnd { false };
+            if (false == hasSFXPromptedEnd)
+            {
+                iStagePtr->TestingStrIncrement("SoundManager SFX Tests finished.  All Passed.");
+                hasSFXPromptedEnd = true;
+                ClearSoundEffectsCache();
+            }
+        }
+
+        // test sound effects through SfxSet interface
+        {
+            static auto hasStaticSFXPromptedStart { false };
+            if (false == hasStaticSFXPromptedStart)
+            {
+                iStagePtr->TestingStrIncrement("SoundManager SfxSet SFX Tests starting...");
+
+                hasStaticSFXPromptedStart = true;
+            }
+
+            static EnumUnderlying_t sfxSetIndex { 0 };
+            if (sfxSetIndex < sfxSetVec_.size())
+            {
+                static std::size_t sfxSetInnerIndex { 0 };
+
+                M_HP_ASSERT_OR_LOG_AND_THROW(
+                    (sfxSetVec_.at(sfxSetIndex).IsValid()),
+                    "gui::SoundManager::Test() While testing SoudEffectsSets #"
+                        << sfxSetIndex << ", enum="
+                        << sound_effect::ToString(static_cast<sound_effect::Enum>(sfxSetIndex))
+                        << " found IsValid()==false.");
+
+                if (false == TestSfxSet(sfxSetVec_.at(sfxSetIndex), sfxSetInnerIndex))
+                {
+                    ++sfxSetInnerIndex;
+                    return false;
+                }
+                else
+                {
+                    std::ostringstream ss;
+                    ss << sfxSetIndex;
+                    iStagePtr->TestingStrIncrement(
+                        "SoundManager SfxSet SFX Tested Set #" + ss.str());
+
+                    sfxSetInnerIndex = 0;
+                    ++sfxSetIndex;
+                }
+
+                return false;
+            }
+
+            static auto hasStaticSFXPromptedEnd { false };
+            if (false == hasStaticSFXPromptedEnd)
+            {
+                iStagePtr->TestingStrIncrement(
+                    "SoundManager SfxSet SFX Tests finished.  All Passed.");
+
+                hasStaticSFXPromptedEnd = true;
+                ClearSoundEffectsCache();
+            }
+        }
+
+        // test regular music
+        static EnumUnderlying_t musicIndex { 0 };
+        {
+            if (musicIndex < music::Count)
+            {
+                std::ostringstream ss;
+                ss << musicIndex;
+
+                auto NEXT_ENUM(static_cast<music::Enum>(musicIndex));
+
+                if (false == playOrStop)
+                {
+                    MusicStart(NEXT_ENUM);
+                    playOrStop = true;
+                    counter = 0;
+                    return false;
+                }
+
+                if (counter < MUSIC_COUNT_MAX)
+                {
+                    iStagePtr->TestingStrIncrement(
+                        "SoundManager Music Test #" + ss.str() + " Delay...");
+
+                    ++counter;
+                    return false;
+                }
+
+                if (playOrStop)
+                {
+                    MusicStop(NEXT_ENUM);
+                    playOrStop = false;
+                    ++musicIndex;
+                    iStagePtr->TestingStrIncrement("SoundManager Music Test #" + ss.str());
+                    return false;
+                }
+            }
+        }
+
+        iStagePtr->TestingStrAppend("gui::SoundManager::Test() ALL TESTS PASSED");
+        return true;
+    }
+
+    bool SoundManager::TestSfxSet(SfxSet & soundEffectsSet, const std::size_t INDEX)
+    {
+        if (INDEX < soundEffectsSet.Size())
+        {
+            soundEffectsSet.PlayAt(INDEX);
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     void SoundManager::SongsUpdate(const float ELAPSED_TIME_SECONDS)
@@ -786,14 +943,12 @@ namespace gui
     SoundBufferUPtr_t SoundManager::LoadSfxBuffer(const sound_effect::Enum ENUM) const
     {
         const auto SOUND_FILE_PATH_STR { misc::filesystem::CombinePaths(
-            soundsDirectoryPath_,
-            std::string(sound_effect::Directory(ENUM)),
-            std::string(sound_effect::Filename(ENUM))) };
+            soundsDirectoryPath_, sound_effect::Directory(ENUM), sound_effect::Filename(ENUM)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(SOUND_FILE_PATH_STR)),
-            "gui::SoundManager::LoadSound(" << NAMEOF_ENUM(ENUM) << "), attempting path=\""
-                                            << SOUND_FILE_PATH_STR
+            "gui::SoundManager::LoadSound(" << sound_effect::ToString(ENUM)
+                                            << "), attempting path=\"" << SOUND_FILE_PATH_STR
                                             << "\", failed because that file does not exist.");
 
         auto bufferUPtr { std::make_unique<sf::SoundBuffer>() };
@@ -801,7 +956,7 @@ namespace gui
         M_HP_ASSERT_OR_LOG_AND_THROW(
             bufferUPtr->loadFromFile(SOUND_FILE_PATH_STR),
             "gui::SoundManager::LoadSound("
-                << NAMEOF_ENUM(ENUM) << "), attempting path=\"" << SOUND_FILE_PATH_STR
+                << sound_effect::ToString(ENUM) << "), attempting path=\"" << SOUND_FILE_PATH_STR
                 << "\", sf::SoundBuffer::loadFromFile() returned false.  See console output"
                 << " for more information.");
 

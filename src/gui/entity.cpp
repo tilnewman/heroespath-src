@@ -87,7 +87,7 @@ namespace gui
     {
         if (MouseState::Down == entityMouseState_)
         {
-            if (sfutil::Contains(entityRegion_, MOUSE_POS_V))
+            if (entityRegion_.contains(MOUSE_POS_V))
             {
                 SetMouseState(MouseState::Over);
 
@@ -128,8 +128,7 @@ namespace gui
 
     bool Entity::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (sfutil::Contains(entityRegion_, MOUSE_POS_V)
-            && (MouseState::Disabled != entityMouseState_))
+        if (entityRegion_.contains(MOUSE_POS_V) && (MouseState::Disabled != entityMouseState_))
         {
             if (entityMouseState_ != MouseState::Down)
             {
@@ -147,7 +146,7 @@ namespace gui
     {
         if (MouseState::Disabled != entityMouseState_)
         {
-            if (sfutil::Contains(entityRegion_, MOUSE_POS_V))
+            if (entityRegion_.contains(MOUSE_POS_V))
             {
                 if (MouseState::Up == entityMouseState_)
                 {

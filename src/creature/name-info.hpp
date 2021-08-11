@@ -12,7 +12,7 @@
 #include "gui/font-enum.hpp"
 #include "gui/text-info.hpp"
 #include "misc/vector-map.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <string>
 #include <utility>

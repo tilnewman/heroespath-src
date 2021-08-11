@@ -12,12 +12,9 @@
 //  There are too many variables to code a complete set of functions, so instead,
 //  functions will be added here as needed during development.
 //
-#include "item/armor-enum.hpp"
-#include "item/category-enum.hpp"
-#include "item/misc-enum.hpp"
-#include "item/weapon-enum.hpp"
+#include "item/item-type-enum.hpp"
 #include "misc/not-null.hpp"
-#include "misc/strings.hpp"
+#include "misc/vectors.hpp"
 
 #include <memory>
 #include <string>
@@ -35,8 +32,10 @@ namespace item
 
     struct Algorithms
     {
-        static const std::string
-            Names(const ItemPVec_t &, const misc::JoinHow & JOIN_HOW = misc::JoinHow());
+        static const std::string Names(
+            const ItemPVec_t &,
+            const std::size_t MAX_COUNT = 0,
+            const misc::Vector::JoinOpt OPTIONS = misc::Vector::JoinOpt::None);
 
         enum class MatchOpt
         {
@@ -46,22 +45,22 @@ namespace item
 
         static const ItemPVec_t FindByCategory(
             const ItemPVec_t & itemSVec,
-            const Category::Enum CATEGORY_TYPE,
+            const category::Enum CATEGORY_TYPE,
             const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t FindByWeaponType(
             const ItemPVec_t & itemSVec,
-            const Weapon::Enum WEAPON_TYPE,
+            const weapon_type::Enum WEAPON_TYPE,
             const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t FindByArmorType(
             const ItemPVec_t & itemSVec,
-            const Armor::Enum ARMOR_TYPE,
+            const armor_type::Enum ARMOR_TYPE,
             const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t FindByMiscType(
             const ItemPVec_t & itemSVec,
-            const Misc::Enum MISC_TYPE,
+            const misc_type::Enum MISC_TYPE,
             const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t

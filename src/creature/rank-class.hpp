@@ -10,9 +10,9 @@
 // rank-class.hpp
 //
 #include "creature/trait.hpp"
-#include "game/strong-types.hpp"
 #include "misc/enum-common.hpp"
 #include "misc/range.hpp"
+#include "misc/types.hpp"
 
 #include <string>
 #include <utility>
@@ -24,7 +24,7 @@ namespace creature
 
     using RankRange_t = misc::Range<Rank_t>;
 
-    struct rank_class : public EnumBaseCounting<>
+    struct rank_class : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -41,6 +41,8 @@ namespace creature
 
         // returns a second/max of zero to represent limitless
         static const RankRange_t RankRangeByClass(const rank_class::Enum);
+
+        static const std::string ToString(const rank_class::Enum);
     };
 
 } // namespace creature

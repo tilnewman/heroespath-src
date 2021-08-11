@@ -16,7 +16,7 @@
 #include "gui/text-renderer.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
@@ -225,7 +225,7 @@ namespace gui
                 const auto FINAL_WIDTH_UINT { (
                     (WIDTH_LIMIT_UINT == 0)
                         ? RENDERED_TEXT_SIZE_V_UINT.x
-                        : misc::Min(WIDTH_LIMIT_UINT, RENDERED_TEXT_SIZE_V_UINT.x)) };
+                        : std::min(WIDTH_LIMIT_UINT, RENDERED_TEXT_SIZE_V_UINT.x)) };
 
                 const auto FINAL_HEIGHT_UINT { RENDERED_TEXT_SIZE_V_UINT.y };
 

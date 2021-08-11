@@ -9,9 +9,11 @@
 //
 // real-utils.hpp
 //
-#include <cmath> //for nextafter()/nexttoward()
+#include <algorithm>
+#include <cmath> //for std::fabs
 #include <limits> //for epsilon
 
+#include "misc/compile-assert.hpp"
 #include "misc/type-helpers.hpp"
 
 namespace heroespath
@@ -20,184 +22,71 @@ namespace misc
 {
 
     template <typename T>
-    constexpr std::enable_if_t<are_arithmetic_signed_nobool_v<T>, T> Abs(const T X) noexcept
+    constexpr T ConstexprAbs(const T X) noexcept
     {
-        return ((X < T(0)) ? -X : X);
+        if constexpr (std::is_signed_v<T>)
+        {
+            return ((X < T(0)) ? -X : X);
+        }
+        else
+        {
+            return X;
+        }
     }
 
     template <typename T>
-    constexpr std::enable_if_t<are_arithmetic_unsigned_nobool_v<T>, T> Abs(const T X) noexcept
+    constexpr bool IsRealClose(const T A, const T B) noexcept
     {
-        return X;
+        if constexpr (are_integral_nobool_v<T>)
+        {
+            return (A == B);
+        }
+        else if constexpr (are_floating_point_v<T>)
+        {
+            const auto MAX_OR_ONE { std::max({ T(1), ConstexprAbs(A), ConstexprAbs(B) }) };
+            return (ConstexprAbs(A - B) < (std::numeric_limits<T>::epsilon() * MAX_OR_ONE));
+        }
+        else
+        {
+            M_HP_COMPILE_ERROR_INVALID_TYPES(T);
+        }
     }
 
     template <typename T>
-    constexpr std::enable_if_t<are_arithmetic_nobool_v<T>, T> Max(const T A, const T B) noexcept
+    constexpr bool IsRealOne(const T X) noexcept
     {
-        return ((B < A) ? A : B);
-    }
-
-    template <typename T, typename... Ts>
-    constexpr std::enable_if_t<are_arithmetic_nobool_v<T>, T>
-        Max(const T FIRST, const Ts... OTHERS) noexcept
-    {
-        return Max(FIRST, Max(OTHERS...));
+        return IsRealClose(X, T(1));
     }
 
     template <typename T>
-    constexpr std::enable_if_t<are_arithmetic_nobool_v<T>, T> Min(const T A, const T B) noexcept
+    constexpr bool IsRealZero(const T X) noexcept
     {
-        return ((A < B) ? A : B);
-    }
-
-    template <typename T, typename... Ts>
-    constexpr std::enable_if_t<are_arithmetic_nobool_v<T>, T>
-        Min(const T FIRST, const Ts... OTHERS) noexcept
-    {
-        return Min(FIRST, Min(OTHERS...));
+        return IsRealClose(X, T(0));
     }
 
     template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, T> ZERO_MINUS_EPSILON
-        = (T(0) - std::numeric_limits<T>::epsilon());
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, T> ZERO_PLUS_EPSILON
-        = (T(0) + std::numeric_limits<T>::epsilon());
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, T> ONE_MINUS_EPSILON
-        = (T(1) - std::numeric_limits<T>::epsilon());
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, T> ONE_PLUS_EPSILON
-        = (T(1) + std::numeric_limits<T>::epsilon());
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, bool>
-        IsRealClose(const T A, const T B) noexcept
+    constexpr bool IsRealZeroOrLess(const T X) noexcept
     {
-        return (Abs(A - B) < (std::numeric_limits<T>::epsilon() * Max(Abs(A), Abs(B), T(1))));
+        return ((X < T(0)) || IsRealZero(X));
     }
 
     template <typename T>
-    constexpr std::enable_if_t<are_integral_nobool_v<T>, bool>
-        IsRealClose(const T A, const T B) noexcept
+    constexpr bool IsRealZeroOrMore(const T X) noexcept
     {
-        return (A == B);
+        return ((X > T(0)) || IsRealZero(X));
     }
 
     template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, bool>
-        IsRealLessOrClose(const T A, const T B) noexcept
+    T NextAfterIfReal(const T X)
     {
-        return ((A < B) || IsRealClose(A, B));
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_integral_nobool_v<T>, bool>
-        IsRealLessOrClose(const T A, const T B) noexcept
-    {
-        return (A <= B);
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, bool>
-        IsRealGreaterOrClose(const T A, const T B) noexcept
-    {
-        return ((B < A) || IsRealClose(A, B));
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_integral_nobool_v<T>, bool>
-        IsRealGreaterOrClose(const T A, const T B) noexcept
-    {
-        return (A >= B);
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, bool> IsRealZero(const T X) noexcept
-    {
-        return !((X < ZERO_MINUS_EPSILON<T>) || (X > ZERO_PLUS_EPSILON<T>));
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_integral_nobool_v<T>, bool> IsRealZero(const T X) noexcept
-    {
-        return (X == T(0));
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, bool> IsRealZeroOrLess(const T X) noexcept
-    {
-        return !(X > ZERO_PLUS_EPSILON<T>);
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_integral_nobool_v<T>, bool> IsRealZeroOrLess(const T X) noexcept
-    {
-        return (X <= T(0));
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, bool> IsRealZeroOrMore(const T X) noexcept
-    {
-        return !(X < ZERO_MINUS_EPSILON<T>);
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_integral_signed_nobool_v<T>, bool>
-        IsRealZeroOrMore(const T X) noexcept
-    {
-        return (X >= T(0));
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_integral_unsigned_nobool_v<T>, bool>
-        IsRealZeroOrMore(const T) noexcept
-    {
-        return true;
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, bool> IsRealOne(const T X) noexcept
-    {
-        return !((X < ONE_MINUS_EPSILON<T>) || (X > ONE_PLUS_EPSILON<T>));
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_integral_nobool_v<T>, bool> IsRealOne(const T X) noexcept
-    {
-        return (X == T(1));
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, T> NextIfReal(const T X)
-    {
-        return (
-            (X < std::numeric_limits<T>::max()) ? std::nextafter(X, std::numeric_limits<T>::max())
-                                                : X);
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_integral_nobool_v<T>, T> NextIfReal(const T X)
-    {
-        return X;
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_floating_point_v<T>, T> BeforeIfReal(const T X)
-    {
-        return (
-            (X > std::numeric_limits<T>::lowest())
-                ? std::nexttoward(X, std::numeric_limits<long double>::lowest())
-                : X);
-    }
-
-    template <typename T>
-    constexpr std::enable_if_t<are_integral_nobool_v<T>, T> BeforeIfReal(const T X)
-    {
-        return X;
+        if constexpr (are_floating_point_v<T>)
+        {
+            return std::nextafter(X, std::numeric_limits<T>::max());
+        }
+        else
+        {
+            return X;
+        }
     }
 
 } // namespace misc

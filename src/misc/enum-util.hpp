@@ -16,21 +16,37 @@
 //         enum-util.hpp in a header file, it would defeat the design and slow down the build.
 //
 #include "misc/enum-common.hpp"
-#include "misc/strings.hpp"
-#include "misc/type-helpers.hpp"
+#include "misc/log.hpp"
+#include "misc/vector-map.hpp"
+
+#include "misc/nameof.hpp"
 
 #include <algorithm>
+#include <exception>
+#include <sstream>
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace heroespath
 {
-namespace helpers
+
+namespace enum_helpers
 {
 
-    using StrNumPair_t = std::pair<std::string, EnumUnderlying_t>;
-    using StrNumPairVec_t = std::vector<StrNumPair_t>;
+    const std::string MakeLowerCaseCopy(const std::string & STR);
+
+    const std::vector<std::string> BitwiseEnumFromStringSplit(const std::string & STR_ORIG);
+
+    EnumUnderlying_t ReturnValueOfStringOr(
+        const misc::VectorMap<std::string, EnumUnderlying_t> & STRING_TO_VALUE_MAP,
+        const std::string & STRING_TO_FIND,
+        const EnumUnderlying_t TO_RETURN_IF_NOT_FOUND);
+
+    EnumUnderlying_t WordsToBitFlags(
+        const std::vector<std::string> & WORDS_TO_FIND,
+        const misc::VectorMap<std::string, EnumUnderlying_t> & WORDS_TO_BIT_FLAG_MAP);
+
+    //
 
     template <typename EnumWrapper_t>
     class CountingEnum
@@ -40,46 +56,41 @@ namespace helpers
 
         static constexpr EnumUnderlying_t LargestValidValue() { return (EnumWrapper_t::Count - 1); }
 
-        // case-insensitive
-        static typename EnumWrapper_t::Enum FromString(const std::string_view STR_VIEW)
+        static typename EnumWrapper_t::Enum FromString(const std::string & STR_ORIG)
         {
-            if (nameToValueMap_.empty())
+            const auto STR_TRIMMED_LOWER { MakeLowerCaseCopy(STR_ORIG) };
+
+            if (nameToValueMap_.Empty())
             {
                 ClearAndPopulateNameToValueMap();
             }
 
-            for (const auto & PAIR : nameToValueMap_)
-            {
-                if (misc::AreEqualCaseInsensitive(PAIR.first, STR_VIEW))
-                {
-                    return static_cast<typename EnumWrapper_t::Enum>(PAIR.second);
-                }
-            }
-
-            return EnumWrapper_t::Count;
+            return static_cast<typename EnumWrapper_t::Enum>(
+                ReturnValueOfStringOr(nameToValueMap_, STR_TRIMMED_LOWER, EnumWrapper_t::Count));
         }
 
     private:
         static void ClearAndPopulateNameToValueMap()
         {
-            nameToValueMap_.clear();
-            nameToValueMap_.reserve(static_cast<std::size_t>(EnumWrapper_t::Count));
+            nameToValueMap_.Clear();
+            nameToValueMap_.Reserve(256);
 
             for (EnumUnderlying_t index(0); index < EnumWrapper_t::Count; ++index)
             {
-                const auto ENUM = static_cast<typename EnumWrapper_t::Enum>(index);
-                nameToValueMap_.emplace_back(std::make_pair(NAMEOF_ENUM_STR(ENUM), index));
+                const std::string ENUM_TRIMMED_LOWER_STRING { MakeLowerCaseCopy(
+                    EnumWrapper_t::ToString(static_cast<typename EnumWrapper_t::Enum>(index))) };
+
+                nameToValueMap_.Append(std::make_pair(ENUM_TRIMMED_LOWER_STRING, index));
             }
 
-            // only sorting to speed linear lookup later
             std::sort(std::begin(nameToValueMap_), std::end(nameToValueMap_));
         }
 
-        static StrNumPairVec_t nameToValueMap_;
+        static misc::VectorMap<std::string, EnumUnderlying_t> nameToValueMap_;
     };
 
     template <typename EnumWrapper_t>
-    StrNumPairVec_t CountingEnum<EnumWrapper_t>::nameToValueMap_;
+    misc::VectorMap<std::string, EnumUnderlying_t> CountingEnum<EnumWrapper_t>::nameToValueMap_;
 
     //
 
@@ -102,137 +113,62 @@ namespace helpers
         static const std::string
             ToString(const EnumUnderlying_t ENUM_VALUE, const EnumStringHow & HOW = EnumStringHow())
         {
-            std::string str;
-            str.reserve(16);
-
-            if (HOW.will_wrap == Wrap::Yes)
-            {
-                str += '(';
-            }
-
             if (ENUM_VALUE == EnumWrapper_t::None)
             {
-                if (HOW.will_none_return_empty == NoneEmpty::No)
+                if (HOW.will_none_return_empty == NoneEmpty::Yes)
                 {
-                    str += "None";
+                    return "";
                 }
+                else
+                {
+                    if (HOW.will_wrap == Wrap::Yes)
+                    {
+                        return "(None)";
+                    }
+                    else
+                    {
+                        return "None";
+                    }
+                }
+            }
+
+            const std::string POPULATED_STR { EnumWrapper_t::ToStringPopulate(
+                ENUM_VALUE, HOW.separator) };
+
+            if ((HOW.will_wrap == Wrap::Yes) && !POPULATED_STR.empty())
+            {
+                return "(" + POPULATED_STR + ")";
             }
             else
             {
-                ToStringPopulate(str, ENUM_VALUE, HOW.separator);
+                return POPULATED_STR;
             }
-
-            if (str.compare("(") == 0)
-            {
-                str.clear();
-            }
-            else if (HOW.will_wrap == Wrap::Yes)
-            {
-                str += ')';
-            }
-
-            return str;
         }
 
-        // case-insensitive
-        static typename EnumWrapper_t::Enum FromString(const std::string_view STR_VIEW)
+        static typename EnumWrapper_t::Enum FromString(const std::string & STR)
         {
-            if (nameToBitFlagMap_.empty())
+            // these are the words in the original STR that MIGHT correspond to bit flags of
+            // this enum, the strings returned by this function have all been trimmed and made
+            // lower case
+            const auto FROM_STR_SPLIT_VEC { BitwiseEnumFromStringSplit(STR) };
+
+            if (FROM_STR_SPLIT_VEC.empty())
+            {
+                return EnumWrapper_t::None;
+            }
+
+            if (nameToBitFlagMap_.Empty())
             {
                 ClearAndPopulateNameToBitFlagMap();
             }
 
-            EnumUnderlying_t result { 0 };
-
-            // Can't simply split on !IsAlphaOrDigit() because some of the enum names have
-            // underscores/dashes/etc.  Typical bitfield enum separators are '/' and ','.
-            auto isSeparator = [](const char CH) constexpr noexcept
-            {
-                return (!misc::IsAlphaOrDigit(CH) && (CH != '_') && (CH != '-'));
-            };
-
-            auto setBitByName = [&](const auto FIRST, const auto LAST) {
-                for (const auto & PAIR : nameToBitFlagMap_)
-                {
-                    if (misc::AreEqualCaseInsensitive(FIRST, LAST, PAIR.first))
-                    {
-                        result |= PAIR.second;
-                        break;
-                    }
-                }
-
-                return false;
-            };
-
-            misc::FindStringsBetweenSeparatorsAndCall(
-                std::begin(STR_VIEW), std::end(STR_VIEW), isSeparator, setBitByName);
-
-            return static_cast<typename EnumWrapper_t::Enum>(result);
+            // loop over all words that might correspond to bit flags (FROM_STR_SPLIT_VEC) and
+            // set all that match a flag (nameToBitFlagMap_)
+            return static_cast<typename EnumWrapper_t::Enum>(
+                WordsToBitFlags(FROM_STR_SPLIT_VEC, nameToBitFlagMap_));
         }
 
     private:
-        static void ToStringPopulateAppendIf(
-            const std::size_t STR_SIZE_ORIG,
-            std::string & str,
-            const EnumUnderlying_t ENUM_VALUE,
-            const std::string_view SEP,
-            const std::string_view BIT_NAME,
-            EnumUnderlying_t & singleBitToCheck)
-        {
-            if (ENUM_VALUE & singleBitToCheck)
-            {
-                if (str.size() != STR_SIZE_ORIG)
-                {
-                    str += SEP;
-                }
-
-                str += BIT_NAME;
-            }
-
-            singleBitToCheck <<= 1;
-        }
-
-        static void ToStringPopulate(
-            std::string & str,
-            const EnumUnderlying_t ENUM_VALUE,
-            const std::string_view SEPARATOR_ORIG)
-        {
-            const auto ORIG_SIZE = str.size();
-
-            std::string separator(SEPARATOR_ORIG);
-
-            if constexpr (misc::are_same_v<
-                              typename EnumWrapper_t::SeparatorPolicy_t,
-                              SeparatorAlwaysSlash>)
-            {
-                separator = "/";
-            }
-
-            EnumUnderlying_t singleBitToCheck { 1 };
-
-            if constexpr (EnumWrapper_t::Last > NAMEOF_ENUM_RANGE_MAX)
-            {
-                for (const auto & NAME : EnumWrapper_t::TO_STRINGS)
-                {
-                    ToStringPopulateAppendIf(
-                        ORIG_SIZE, str, ENUM_VALUE, separator, NAME, singleBitToCheck);
-                }
-            }
-            else
-            {
-                while (singleBitToCheck <= EnumWrapper_t::Last)
-                {
-                    ToStringPopulateAppendIf(
-                        ORIG_SIZE,
-                        str,
-                        ENUM_VALUE,
-                        separator,
-                        NAMEOF_ENUM(static_cast<typename EnumWrapper_t::Enum>(singleBitToCheck)),
-                        singleBitToCheck);
-                }
-            }
-        }
-
         static constexpr EnumUnderlying_t CalcLargestValidValue()
         {
             EnumUnderlying_t finalValue { 1 };
@@ -249,55 +185,69 @@ namespace helpers
 
         static void ClearAndPopulateNameToBitFlagMap()
         {
-            nameToBitFlagMap_.clear();
-            nameToBitFlagMap_.reserve(sizeof(EnumUnderlying_t) * 8);
+            nameToBitFlagMap_.Clear();
+            nameToBitFlagMap_.Reserve(4096);
 
             EnumUnderlying_t flag { 1 };
 
-            const auto TO_STRING_HOW = EnumStringHow(Wrap::No, "", NoneEmpty::No);
-
             while (flag <= EnumWrapper_t::Last)
             {
-                nameToBitFlagMap_.emplace_back(std::make_pair(
-                    ToString(static_cast<typename EnumWrapper_t::Enum>(flag), TO_STRING_HOW),
-                    flag));
+                const std::string SINGLE_BIT_TO_STRING_ORIG { ToString(
+                    static_cast<typename EnumWrapper_t::Enum>(flag),
+                    EnumStringHow(Wrap::No, "", NoneEmpty::No)) };
+
+                const std::string SINGLE_BIT_TO_STRING_TRIMMED_LOWER { MakeLowerCaseCopy(
+                    SINGLE_BIT_TO_STRING_ORIG) };
+
+                nameToBitFlagMap_.Append(std::make_pair(SINGLE_BIT_TO_STRING_TRIMMED_LOWER, flag));
 
                 flag <<= 1;
             }
 
-            // only sorting to speed linear lookup later
             std::sort(std::begin(nameToBitFlagMap_), std::end(nameToBitFlagMap_));
         }
 
         static EnumUnderlying_t largestValidValue_;
-        static StrNumPairVec_t nameToBitFlagMap_;
+
+        // all the words (trimmed and lower-case) that correspond to one bit position in this
+        // enum
+        static misc::VectorMap<std::string, EnumUnderlying_t> nameToBitFlagMap_;
     };
 
     template <typename EnumWrapper_t>
     EnumUnderlying_t BitFieldEnum<EnumWrapper_t>::largestValidValue_ { 0 };
 
     template <typename EnumWrapper_t>
-    StrNumPairVec_t BitFieldEnum<EnumWrapper_t>::nameToBitFlagMap_;
+    misc::VectorMap<std::string, EnumUnderlying_t> BitFieldEnum<EnumWrapper_t>::nameToBitFlagMap_;
 
-} // namespace helpers
+} // namespace enum_helpers
 
 // helper template for common enumeration operations
 template <typename EnumWrapper_t>
 struct EnumUtil
 {
-    static constexpr bool IsValid(const EnumUnderlying_t ENUM_VALUE) noexcept
+    static const std::string TypeName() { return NAMEOF_TYPE_T_STR(EnumWrapper_t) + "::Enum"; }
+
+    // this may look redundant but callers can pass in the enum type (EnumWrapper::Enum)
+    // and get the underlying type (EnumUnderlying_t) back
+    static constexpr EnumUnderlying_t ToUnderlyingType(const EnumUnderlying_t ENUM_VALUE)
+    {
+        return ENUM_VALUE;
+    }
+
+    static constexpr bool IsValid(const EnumUnderlying_t ENUM_VALUE)
     {
         if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
         {
-            return (ENUM_VALUE <= helpers::CountingEnum<EnumWrapper_t>::LargestValidValue());
+            return (ENUM_VALUE <= enum_helpers::CountingEnum<EnumWrapper_t>::LargestValidValue());
         }
         else
         {
-            return (ENUM_VALUE <= helpers::BitFieldEnum<EnumWrapper_t>::LargestValidValue());
+            return (ENUM_VALUE <= enum_helpers::BitFieldEnum<EnumWrapper_t>::LargestValidValue());
         }
     }
 
-    static constexpr bool IsValidAndNonZero(const EnumUnderlying_t ENUM_VALUE) noexcept
+    static constexpr bool IsValidAndNonZero(const EnumUnderlying_t ENUM_VALUE)
     {
         return ((ENUM_VALUE != 0) && IsValid(ENUM_VALUE));
     }
@@ -306,81 +256,64 @@ struct EnumUtil
     {
         if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
         {
-            return helpers::CountingEnum<EnumWrapper_t>::LargestValidValue();
+            return enum_helpers::CountingEnum<EnumWrapper_t>::LargestValidValue();
         }
         else
         {
-            return helpers::BitFieldEnum<EnumWrapper_t>::LargestValidValue();
+            return enum_helpers::BitFieldEnum<EnumWrapper_t>::LargestValidValue();
         }
     }
 
-    template <typename T = EnumWrapper_t>
-    static constexpr std::
-        enable_if_t<misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, std::string_view>
-        ToString(const typename T::Enum ENUM)
-    {
-        return NAMEOF_ENUM(ENUM);
-    }
-
-    template <typename T = EnumWrapper_t>
-    static std::
-        enable_if_t<misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, const std::string>
-        ToStringStd(const typename T::Enum ENUM)
-    {
-        return NAMEOF_ENUM_STR(ENUM);
-    }
-
-    template <typename T = EnumWrapper_t>
-    static std::enable_if_t<
-        misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>,
-        const std::string_view>
-        Name(const typename T::Enum ENUM)
-    {
-        return EnumWrapper_t::Name(ENUM);
-    }
-
-    template <typename T = EnumWrapper_t>
-    static std::
-        enable_if_t<misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, const std::string>
-        NameStd(const typename T::Enum ENUM)
-    {
-        return std::string(EnumWrapper_t::Name(ENUM));
-    }
-
-    // this is how all bitwise enums implement their ToString() function and is used everywhere
-    template <typename T = EnumWrapper_t>
-    static std::
-        enable_if_t<!misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, const std::string>
-        ToString(const typename T::Enum ENUM, const EnumStringHow & HOW = EnumStringHow())
-    {
-        return helpers::BitFieldEnum<T>::ToString(ENUM, HOW);
-    }
-
-    // if EnumWrapper_t does not provide its own Name() then use ToString() by default
-    template <typename T = EnumWrapper_t>
-    static std::
-        enable_if_t<!misc::are_same_v<typename T::EnumBase_t, EnumCounting_t>, const std::string>
-        Name(const typename T::Enum ENUM, const EnumStringHow & HOW = EnumStringHow())
-    {
-        return T::Name(ENUM, HOW);
-    }
-
-    // case insensitive, returns Count on error
-    static typename EnumWrapper_t::Enum FromString(const std::string_view STR_VIEW)
+    static const std::string
+        ToString(const EnumUnderlying_t ENUM_VALUE, const EnumStringHow & HOW = EnumStringHow())
     {
         if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
         {
-            return helpers::CountingEnum<EnumWrapper_t>::FromString(STR_VIEW);
+            return EnumWrapper_t::ToString(static_cast<typename EnumWrapper_t::Enum>(ENUM_VALUE));
         }
         else
         {
-            return helpers::BitFieldEnum<EnumWrapper_t>::FromString(STR_VIEW);
+            return enum_helpers::BitFieldEnum<EnumWrapper_t>::ToString(
+                static_cast<typename EnumWrapper_t::Enum>(ENUM_VALUE), HOW);
         }
     }
 
-    static constexpr std::size_t CountBits(const EnumUnderlying_t ENUM_VALUE)
+    // if EnumWrapper_t does not provide its own Name() then use ToString() by default
+    static const std::string Name(const EnumUnderlying_t ENUM_VALUE)
     {
-        return misc::CountBits(static_cast<std::uint32_t>(ENUM_VALUE));
+        return ToString(ENUM_VALUE);
+    }
+
+    // case insensitive, returns Count on error
+    static typename EnumWrapper_t::Enum FromString(const std::string & STR)
+    {
+        if constexpr (misc::are_same_v<typename EnumWrapper_t::EnumBase_t, EnumCounting_t>)
+        {
+            return enum_helpers::CountingEnum<EnumWrapper_t>::FromString(STR);
+        }
+        else
+        {
+            return enum_helpers::BitFieldEnum<EnumWrapper_t>::FromString(STR);
+        }
+    }
+
+    // Responsible for common operations of enums that are used as bit flags
+    static constexpr std::size_t CountBitsSet(const EnumUnderlying_t ENUM_VALUE)
+    {
+        std::size_t count { 0 };
+        EnumUnderlying_t flag { 1 };
+
+        while (flag <= EnumWrapper_t::Last)
+        {
+            if (ENUM_VALUE & flag)
+            {
+                ++count;
+            }
+
+            flag <<= 1;
+        }
+
+        return count;
     }
 };
 

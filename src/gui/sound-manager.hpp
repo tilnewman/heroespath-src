@@ -75,12 +75,15 @@ namespace gui
         ~SoundManager();
 
         static misc::NotNull<SoundManager *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
         static void Initialize();
 
         static void SetSoundsDirectory(
             const std::string & SOUND_DIR_PATH, const std::string & MUSIC_DIR_PATH);
+
+        bool Test(stage::IStagePtr_t iStagePtr);
+        bool TestSfxSet(SfxSet &, const std::size_t INDEX);
 
         void LoadSoundSets();
 
@@ -127,11 +130,6 @@ namespace gui
         void MusicVolumeFadeToCurrent(const music::Enum);
 
         const SfxSet & GetSoundEffectSet(const sound_effect_set::Enum) const;
-
-        void PlayRandomFromSet(const sound_effect_set::Enum SFX_SET) const
-        {
-            GetSoundEffectSet(SFX_SET).PlayRandom();
-        }
 
         void SoundEffectPlay(
             const sound_effect::Enum,

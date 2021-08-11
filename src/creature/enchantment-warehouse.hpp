@@ -39,8 +39,8 @@ namespace creature
         ~EnchantmentWarehouse();
 
         static misc::NotNull<EnchantmentWarehouse *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         static misc::NotNullWarehouse<Enchantment> & Access() { return Instance()->Warehouse(); }
         misc::NotNullWarehouse<Enchantment> & Warehouse() { return warehouse_; }

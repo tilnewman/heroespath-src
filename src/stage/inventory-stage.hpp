@@ -9,7 +9,7 @@
 //
 // inventory-stage.hpp
 //
-#include "combat/fight-results.hpp"
+#include "combat/creature-interaction.hpp"
 #include "combat/turn-action-info.hpp"
 #include "creature/achievement-enum.hpp"
 #include "game/phase-enum.hpp"
@@ -69,25 +69,30 @@ namespace creature
     using TitlePtr_t = misc::NotNull<Title *>;
 
 } // namespace creature
-
 namespace item
 {
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
 } // namespace item
+namespace combat
+{
+    class CombatSoundEffects;
+    using CombatSoundEffectsUPtr_t = std::unique_ptr<CombatSoundEffects>;
+} // namespace combat
 
 namespace stage
 {
 
-    using FloatRectOpt_t = gui::FloatRectOpt_t;
-
     // displays all the information about a player character including the inventory
     class InventoryStage
         : public stage::StageBase
+
         , public misc::PopupCallback_t::IHandler_t
         , public gui::ListBox<InventoryStage, item::ItemPtr_t>::Callback_t::IHandler_t
+
         , public gui::ListBox<InventoryStage, creature::ConditionPtr_t>::Callback_t::IHandler_t
+
         , public gui::ListBox<InventoryStage, spell::SpellPtr_t>::Callback_t::IHandler_t
         , public gui::ListBox<InventoryStage, creature::TitlePtr_t>::Callback_t::IHandler_t
         , public gui::ImageTextEntity::Callback_t::IHandler_t
@@ -124,7 +129,7 @@ namespace stage
             Item = 0,
             Coins,
             Gems,
-            Shards,
+            MeteorShards,
             Count
         };
 
@@ -238,11 +243,11 @@ namespace stage
         bool HandleGiveRequestItems();
         bool HandleGiveRequestCoins();
         bool HandleGiveRequestGems();
-        bool HandleGiveRequestShards();
+        bool HandleGiveRequestMeteorShards();
         bool HandleGiveActualItems(const creature::CreaturePtr_t);
         bool HandleGiveActualCoins(const creature::CreaturePtr_t);
         bool HandleGiveActualGems(const creature::CreaturePtr_t);
-        bool HandleGiveActualShards(const creature::CreaturePtr_t);
+        bool HandleGiveActualMeteorShards(const creature::CreaturePtr_t);
         bool HandleShare();
         bool HandleGather();
         bool HandleDropRequest();
@@ -272,15 +277,15 @@ namespace stage
         void HandleGemsGive(
             const std::size_t COUNT, const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR);
 
-        void HandleShardsGive(
+        void HandleMeteorShardsGive(
             const std::size_t COUNT, const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR);
 
         void HandleCoinsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
         void HandleGemsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
-        void HandleShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
+        void HandleMeteorShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
         void HandleCoinsShare();
         void HandleGemsShare();
-        void HandleShardsShare();
+        void HandleMeteorShardsShare();
         void EndOfGiveShareGatherTasks();
         void UpdateImageDetailsPosition(); // returns the sprite width
 
@@ -557,6 +562,7 @@ namespace stage
         combat::FightResult fightResult_;
         std::size_t creatureEffectIndex_;
         std::size_t hitInfoIndex_;
+        combat::CombatSoundEffectsUPtr_t combatSoundEffectsUPtr_;
         gui::animation::SparkleAnimationUPtr_t sparkleAnimUPtr_;
         gui::animation::SongAnimationUPtr_t songAnimUPtr_;
 
@@ -564,6 +570,8 @@ namespace stage
         creature::CreaturePtr_t turnCreaturePtr_;
         game::Phase::Enum previousPhase_;
         bool hasTakenActionSpellOrSong_;
+
+        combat::CreatureInteraction creatureInteraction_;
 
         // a mapping between creatures and their images
         misc::VectorMap<creature::CreaturePtr_t, gui::CachedTexture> creatureToImageMap_;

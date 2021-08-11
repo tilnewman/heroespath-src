@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -18,6 +16,7 @@
 #include "misc/vector-map.hpp"
 
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <algorithm>
 #include <sstream>
@@ -293,52 +292,6 @@ namespace misc
         return filePathStrings;
     }
 
-    const std::vector<std::string> filesystem::FindDirectories(
-        const bool IS_RECURSIVE, const std::string & DIR_PATH, const std::string & DIR_NAME_PREFIX)
-    {
-        if (DIR_PATH.empty() || !ExistsAndIsDirectory(DIR_PATH))
-        {
-            return {};
-        }
-
-        const bfs::path BOOST_PATH { DIR_PATH };
-
-        std::vector<std::string> dirPathStrings;
-        dirPathStrings.reserve(VECTOR_RESERVE_SIZE);
-
-        for (const auto & DIR_ENTRY : bfs::directory_iterator(BOOST_PATH))
-        {
-            const auto ENTRY_BOOST_PATH { DIR_ENTRY.path() };
-
-            if (IS_RECURSIVE && bfs::is_directory(ENTRY_BOOST_PATH))
-            {
-                for (const std::string & SUB_DIR_FILE_PATH :
-                     FindDirectories(true, ENTRY_BOOST_PATH.string(), DIR_NAME_PREFIX))
-                {
-                    dirPathStrings.emplace_back(SUB_DIR_FILE_PATH);
-                }
-            }
-
-            if (!bfs::is_directory(ENTRY_BOOST_PATH))
-            {
-                continue;
-            }
-
-            const auto DIR_NAME { ENTRY_BOOST_PATH.leaf().string() };
-
-            namespace ba = boost::algorithm;
-
-            if (!DIR_NAME_PREFIX.empty() && !ba::starts_with(DIR_NAME, DIR_NAME_PREFIX))
-            {
-                continue;
-            }
-
-            dirPathStrings.emplace_back(ENTRY_BOOST_PATH.string());
-        }
-
-        return dirPathStrings;
-    }
-
     const std::string filesystem::FindFirstAvailableNumberedFilenamePath(
         const std::string & DIR_PATH,
         const std::string & FILE_NAME,
@@ -417,7 +370,7 @@ namespace misc
                 continue;
             }
 
-            const auto LAST_NUMBER_IN_FILE_NAME { misc::FindNumberLast(Filename(PATH)) };
+            const auto LAST_NUMBER_IN_FILE_NAME { misc::FindLastNumber(Filename(PATH)) };
 
             if (LAST_NUMBER_IN_FILE_NAME < 0)
             {
@@ -547,8 +500,6 @@ namespace misc
         }
 
         std::string finalPathStr;
-        finalPathStr.reserve(pathPartStrings.size() * 32);
-
         for (const auto & PATH_PART_STRING : pathPartStrings)
         {
             finalPathStr += PATH_PART_STRING;
@@ -574,14 +525,15 @@ namespace misc
             }
             else
             {
-                std::ostringstream ss;
-                ss << "(Failed because something already exists at that path and it's not a "
-                      "directory)(is_regular="
-                   << misc::ToString(bfs::is_regular(BOOST_PATH))
-                   << ", is_regular_file=" << misc::ToString(bfs::is_regular_file(BOOST_PATH))
-                   << ", status_file_type=" << bfs::status(BOOST_PATH).type();
+                const auto ERROR_MESSAGE {
+                    "(Failed because something already exists at that path and it's not a "
+                    "directory)(is_regular="
+                    + misc::ToString(bfs::is_regular(BOOST_PATH))
+                    + ", is_regular_file=" + misc::ToString(bfs::is_regular_file(BOOST_PATH))
+                    + ", status_file_type=" + misc::ToString(bfs::status(BOOST_PATH).type())
+                };
 
-                M_HP_LOG_ERR(MakeErrorString(DIR_PATH_ORIG, ss.str()));
+                M_HP_LOG_ERR(MakeErrorString(DIR_PATH_ORIG, ERROR_MESSAGE));
                 return false;
             }
         }
@@ -600,7 +552,7 @@ namespace misc
             {
                 M_HP_LOG_ERR(MakeErrorString(
                     DIR_PATH_ORIG,
-                    "create_directory() returned " + std::string(misc::ToString(WAS_CREATED)),
+                    "create_directory() returned " + misc::ToString(WAS_CREATED),
                     errorCode));
             }
         }
@@ -640,13 +592,9 @@ namespace misc
             const auto IS_DIRECTORY { bfs::is_directory(BOOST_PATH) };
             const auto IS_OTHER { bfs::is_other(BOOST_PATH) };
 
-            std::ostringstream ss;
-            ss << "(is_regular=" << misc::ToString(IS_REGULAR)
-               << ", is_regular_file=" << misc::ToString(IS_REGULAR_FILE)
-               << ", is_directory=" << misc::ToString(IS_DIRECTORY)
-               << ", is_other=" << misc::ToString(IS_OTHER) << ")";
-
-            return ss.str();
+            return "(is_regular=" + misc::ToString(IS_REGULAR) + ", is_regular_file="
+                + misc::ToString(IS_REGULAR_FILE) + ", is_directory=" + misc::ToString(IS_DIRECTORY)
+                + ", is_other=" + misc::ToString(IS_OTHER) + ")";
         };
 
         try
@@ -697,7 +645,6 @@ namespace misc
         }();
 
         std::string finalStr;
-        finalStr.reserve(256);
 
         if (MESSAGE.empty() == false)
         {

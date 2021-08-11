@@ -33,8 +33,8 @@ namespace creature
     Title::Title(
         const Titles::Enum TITLE,
         const AchievementType::Enum ACHIEVEMENT_TYPE,
-        const std::size_t & ACHIEVEMENT_INDEX,
-        const std::size_t & ACHIEVEMENT_COUNT,
+        const Index_t & ACHIEVEMENT_INDEX,
+        const Count_t & ACHIEVEMENT_COUNT,
         const RoleVec_t & ROLES_VEC,
         const StatSet & STATS_BONUS,
         const Rank_t & RANK_BONUS,
@@ -52,14 +52,14 @@ namespace creature
         , healthBonus_(HEALTH_BONUS)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (TITLE < Titles::Count),
+            (TITLE != Titles::Count),
             "creature::Title::Title(title_enum=role::Count"
                 << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
                 << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
                 << ") was given an invalid TITLE enum.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (NAMEOF_ENUM(TITLE).empty() == false),
+            (Titles::ToString(TITLE).empty() == false),
             "creature::Title::Title(title_enum="
                 << TITLE << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
                 << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
@@ -68,188 +68,175 @@ namespace creature
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ROLES_VEC.empty() == false),
             "creature::Title::Title(title="
-                << NAMEOF_ENUM(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
+                << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
                 << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
                 << ", exp_bonus=" << EXPERIENCE_BONUS << ") was given an empty role vector.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (ACHIEVEMENT_TYPE < AchievementType::Count),
-            "creature::Title::Title(title=" << NAMEOF_ENUM(TITLE)
+            (ACHIEVEMENT_TYPE != AchievementType::Count),
+            "creature::Title::Title(title=" << Titles::ToString(TITLE)
                                             << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count="
                                             << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
                                             << ", exp_bonus=" << EXPERIENCE_BONUS
                                             << ") was given an AchievementType of 'Count'.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (!((ACHIEVEMENT_TYPE != AchievementType::None) && (ACHIEVEMENT_COUNT == 0))),
+            (((ACHIEVEMENT_TYPE != AchievementType::None) && ACHIEVEMENT_COUNT.IsZero()) == false),
             "creature::Title::Title(title="
-                << NAMEOF_ENUM(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
+                << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
                 << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
                 << ") was given a valid AchievementType but the achievement count was zero.");
 
-        fileName_.reserve(128);
+        std::ostringstream ss;
 
-        if (ACHIEVEMENT_TYPE >= AchievementType::None)
+        if ((ACHIEVEMENT_TYPE == AchievementType::Count)
+            || (ACHIEVEMENT_TYPE == AchievementType::None))
         {
-            fileName_ += NAMEOF_ENUM(TITLE);
+            ss << Titles::ToString(TITLE);
         }
         else
         {
-            fileName_ += NAMEOF_ENUM(ACHIEVEMENT_TYPE);
+            ss << AchievementType::ToString(ACHIEVEMENT_TYPE);
 
-            if (ACHIEVEMENT_INDEX > 0)
+            if (ACHIEVEMENT_INDEX > 0_index)
             {
-                fileName_ += std::to_string(ACHIEVEMENT_INDEX);
+                ss << ACHIEVEMENT_INDEX;
             }
         }
 
-        fileName_ += ".png";
+        ss << ".png";
+        fileName_ = ss.str();
     }
 
     const std::string Title::ToString() const
     {
-        const auto SEP_STR(", ");
+        const std::string SEP_STR(", ");
 
-        std::string str;
-        str.reserve(255);
-
-        str += Titles::Name(title_);
+        std::ostringstream ss;
+        ss << Titles::Name(title_);
 
         if (ROLEVEC_ALL_PLAYER_ROLES_ == rolesVec_)
         {
-            str += ", for all roles";
-            str += SEP_STR;
+            ss << ", for all roles";
         }
         else
         {
-            str += ", for role";
-            str += std::string((rolesVec_.size() == 1) ? "" : "s");
-            str += ": ";
+            ss << ", for role" << ((rolesVec_.size() == 1) ? "" : "s") << ": ";
 
+            std::ostringstream rolesSS;
             for (const auto & NEXT_ROLE : rolesVec_)
             {
-                str += role::Name(NEXT_ROLE);
-                str += SEP_STR;
+                rolesSS << role::Name(NEXT_ROLE) << SEP_STR;
             }
+
+            ss << boost::algorithm::erase_last_copy(rolesSS.str(), SEP_STR);
         }
+
+        ss << SEP_STR;
 
         if (AchievementType::None != achievementType_)
         {
-            str += "granted after ";
-            str += std::to_string(achievementCount_);
-            str += ' ';
-            str += AchievementType::Name(achievementType_);
-            str += SEP_STR;
+            ss << "granted after " << achievementCount_ << " "
+               << AchievementType::Name(achievementType_) << SEP_STR;
         }
 
         if (0_rank != rankBonus_)
         {
-            str += "rank_bonus=";
-            str += rankBonus_.ToString();
-            str += SEP_STR;
+            ss << "rank_bonus=" << rankBonus_ << SEP_STR;
         }
 
         if (0_exp != expBonus_)
         {
-            str += "exp_bonus=";
-            str += expBonus_.ToString();
-            str += SEP_STR;
+            ss << "exp_bonus=" << expBonus_ << SEP_STR;
         }
 
         if (0_health != healthBonus_)
         {
-            str += "health_bonus=";
-            str += healthBonus_.ToString();
-            str += SEP_STR;
+            ss << "health_bonus=" << healthBonus_ << SEP_STR;
         }
 
         const std::string STATS_STR(statBonus_.ToString(true));
-        if (!STATS_STR.empty())
+        if (STATS_STR.empty() == false)
         {
-            str += "stat_bonuses=";
-            str += STATS_STR;
+            ss << "stat_bonuses=" << STATS_STR;
         }
 
-        str += '.';
-        return str;
+        if (boost::algorithm::ends_with(ss.str(), SEP_STR))
+        {
+            return boost::algorithm::erase_last_copy(ss.str(), SEP_STR) + ".";
+        }
+        else
+        {
+            ss << ".";
+            return ss.str();
+        }
     }
 
     const std::string Title::LongDesc() const
     {
-        const std::string SEP_STR(", ");
+        std::ostringstream ss;
+        ss << Desc();
 
-        std::string str(Desc());
-        str.reserve(str.size() + 255);
-
-        str += "  This title can be earned by ";
+        ss << "  This title can be earned by ";
 
         if (ROLEVEC_ALL_PLAYER_ROLES_ == rolesVec_)
         {
-            str += "ALL roles";
-            str += SEP_STR;
+            ss << "ALL roles";
         }
         else
         {
-            str += "the following role";
-            str += std::string((rolesVec_.size() == 1) ? "" : "s");
-            str += ": ";
+            ss << "the following role" << ((rolesVec_.size() == 1) ? "" : "s") << ": ";
 
+            std::ostringstream rolesSS;
             for (const auto & NEXT_ROLE : rolesVec_)
             {
-                str += role::Name(NEXT_ROLE);
-                str += SEP_STR;
+                rolesSS << role::Name(NEXT_ROLE) << ", ";
             }
+
+            ss << rolesSS.str(); // keep the last ", " intentionally
         }
 
         if (AchievementType::None != achievementType_)
         {
-            str += "and is granted after ";
-            str += std::to_string(achievementCount_);
-            str += ' ';
-            str += AchievementType::Name(achievementType_);
+            ss << ", and is granted after " << achievementCount_ << " "
+               << AchievementType::Name(achievementType_);
         }
 
-        str += ".  ";
+        ss << ".  ";
 
         if (0_rank == rankBonus_)
         {
-            str += "This does not increase your rank";
+            ss << "This does not increase your rank";
         }
         else
         {
-            str += "This increases your rank by ";
-            str += rankBonus_.ToString();
+            ss << "This increases your rank by " << rankBonus_;
         }
 
-        str += ", your health by ";
-        str += healthBonus_.ToString();
-        str += SEP_STR;
+        ss << ", your health by " << healthBonus_ << ", ";
 
         if (0_exp == expBonus_)
         {
-            str += "and does not increase your experience";
+            ss << "and does not increase your experience";
         }
         else
         {
-            str += "and increases your experience by ";
-            str += expBonus_.ToString();
+            ss << "and increases your experience by " << expBonus_;
         }
 
-        str += ".  ";
+        ss << ".  ";
 
         const std::string STATS_STR(statBonus_.ToString(true));
         if (STATS_STR.empty())
         {
-            str += "Stats are not modified by this title.";
+            ss << "Stats are not modified by this title.";
         }
         else
         {
-            str += "Stats undergo the following changes:  ";
-            str += STATS_STR;
-            str += '.';
+            ss << "Stats undergo the following changes:  " << STATS_STR << ".";
         }
 
-        return str;
+        return ss.str();
     }
 
     bool operator<(const Title & L, const Title & R)

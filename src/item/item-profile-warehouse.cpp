@@ -14,9 +14,6 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/traits-set.hpp"
-#include "item/item-profile-factory.hpp"
-#include "item/item-template-factory.hpp"
-#include "item/materials-factory.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
@@ -24,8 +21,8 @@
 #include <SFML/System/Clock.hpp>
 
 #include <algorithm>
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -37,12 +34,15 @@ namespace item
     std::unique_ptr<ItemProfileWarehouse> ItemProfileWarehouse::instanceUPtr_;
 
     ItemProfileWarehouse::ItemProfileWarehouse()
-        : normal_()
-        , religious_()
-        , quest_()
-        , fallback_()
+        : materialFactory_()
+        , thinProfileFactory_()
+        , profiles_()
+        , religiousProfiles_()
+        , questItemProfilesMap_()
+        , hasInitialized_(false)
     {
         M_HP_LOG_DBG("Subsystem Construction: ItemProfileWarehouse");
+        questItemProfilesMap_.Reserve(1024);
     }
 
     ItemProfileWarehouse::~ItemProfileWarehouse()
@@ -56,13 +56,13 @@ namespace item
         {
             M_HP_LOG_ERR(
                 "Subsystem Instance() called but instanceUPtr_ was null: ItemProfileWarehouse");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<ItemProfileWarehouse *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void ItemProfileWarehouse::Create()
+    void ItemProfileWarehouse::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -70,18 +70,25 @@ namespace item
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: ItemProfileWarehouse");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: ItemProfileWarehouse");
         }
     }
 
-    void ItemProfileWarehouse::Destroy() { instanceUPtr_.reset(); }
+    void ItemProfileWarehouse::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_),
+            "creature::ItemProfileWarehouse::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     void ItemProfileWarehouse::Initialize()
     {
         M_HP_LOG_DBG("ItemProfileWarehouse::Initialize() start");
         sf::Clock totalClock;
 
-        normal_.clear();
+        profiles_.clear();
 
         // As of 2017-8-17 there were 849299 raw item profiles created before cleanup.
         // As of 2018-3-17 there were 465091 profiles with no duplicates to cleanup.
@@ -89,409 +96,723 @@ namespace item
         // As of 2018-5-2 236585 (reduced the number of element enchantments)
         // As oF 2018-5-8 59370
         // 2018-5-17 44057 (fixed a bug in materials factory that was allowing invalid materials)
-        // 2019-5-19 43775 ?
-        normal_.reserve(45000);
+        profiles_.reserve(45000);
 
         // As of 2018-3-19 there were 251 religious profiles.
         // As of 2018-4-28 107
         // As of 2018-5-2 392
         // As of 2018-5-8 313
-        // 2019-5-19 317
-        religious_.reserve(320);
-
-        quest_.reserve(1024);
-
-        // this was the size measured on 2018-3-19
-        fallback_.reserve(1024);
+        // 2018-5-17 317
+        religiousProfiles_.reserve(320);
 
         sf::Clock jobClock;
 
-        auto logJobDuration
-            = [&](const std::string & NAME, const std::string & EXTRA_MESSAGE = "") {
-                  M_HP_LOG_DBG(
-                      "ItemProfileWarehouse::Initialize() Profiles \""
-                      << NAME << "\" took " << jobClock.getElapsedTime().asMilliseconds() << "ms.  "
-                      << EXTRA_MESSAGE);
-                  jobClock.restart();
-              };
+        auto logJobDuration = [&](const std::string & NAME) {
+            M_HP_LOG_DBG(
+                "ItemProfileWarehouse::Initialize() Job \""
+                << NAME << "\" took " << jobClock.getElapsedTime().asMilliseconds() << "ms.");
+            jobClock.restart();
+        };
 
-        MakeStandardEquipment();
-        logJobDuration("MakeStandardEquipment");
+        Setup_StandardEquipment();
+        logJobDuration("Setup_StandardEquipment");
 
-        MakeMiscNonSummoning();
-        logJobDuration("MakeMiscNonSummoning");
+        Setup_MiscItems();
+        logJobDuration("Setup_MiscItems");
 
-        MakeMiscSummoning();
-        logJobDuration("MakeMiscSummoning");
+        Setup_NamedEquipment();
+        logJobDuration("Setup_NamedEquipment");
 
-        MakeNamed();
-        logJobDuration("MakeNamed");
+        Setup_SetEquipment();
+        logJobDuration("Setup_SetEquipment");
 
-        MakeSet();
-        logJobDuration("MakeSet");
+        Setup_SummoningItems();
+        logJobDuration("Setup_SummoningItems");
 
-        {
-            const auto COUNT_BEFORE = normal_.size();
-
-            normal_.erase(
-                std::remove_if(
-                    std::begin(normal_),
-                    std::end(normal_),
-                    [](const ItemProfile & PROFILE) { return PROFILE.IsBodyPart(); }),
-                std::end(normal_));
-
-            const auto COUNT_AFTER = normal_.size();
-
-            std::string extraMessage;
-            extraMessage += "Removed ";
-            extraMessage += std::to_string(COUNT_BEFORE - COUNT_AFTER);
-            extraMessage += " Normal Equipemnt BodyPart profiles.";
-
-            logJobDuration("MakeRemoveEquipmentBodyPartProfiles_FromNormal", extraMessage);
-        }
-
-        {
-            const auto COUNT_BEFORE = religious_.size();
-
-            religious_.erase(
-                std::remove_if(
-                    std::begin(religious_),
-                    std::end(religious_),
-                    [](const ItemProfile & PROFILE) { return PROFILE.IsBodyPart(); }),
-                std::end(religious_));
-
-            const auto COUNT_AFTER = religious_.size();
-
-            std::string extraMessage;
-            extraMessage += "Removed ";
-            extraMessage += std::to_string(COUNT_BEFORE - COUNT_AFTER);
-            extraMessage += " Religious Equipemnt BodyPart profiles.";
-
-            logJobDuration("MakeRemoveEquipmentBodyPartProfiles_FromReligious", extraMessage);
-        }
-
-        {
-            const auto COUNT_BEFORE = religious_.size();
-
-            religious_.erase(
-                std::unique(std::begin(religious_), std::end(religious_)), std::end(religious_));
-
-            const auto COUNT_AFTER = religious_.size();
-
-            std::string extraMessage;
-            extraMessage += "Removed ";
-            extraMessage += std::to_string(COUNT_BEFORE - COUNT_AFTER);
-            extraMessage += " DUPLICATE Religious profiles.";
-
-            logJobDuration("MakeRemoveDuplicates_FromReligious", extraMessage);
-        }
-
-        normal_.shrink_to_fit();
-        religious_.shrink_to_fit();
-        quest_.shrink_to_fit();
+        profiles_.shrink_to_fit();
+        religiousProfiles_.shrink_to_fit();
         logJobDuration("shrink_to_fit");
 
-        // correct operation of the Treasure Stage requires sorting by PROFILE.Score()
+        // correct operation of the Treasure Stage requires sorting by PROFILE.TreasureScore()
         // see operator< in ItemProfile.hpp
 
-        std::sort(std::begin(normal_), std::end(normal_));
-        logJobDuration("sort normal");
+        std::sort(std::begin(profiles_), std::end(profiles_));
+        logJobDuration("sort normal profiles");
 
-        std::sort(std::begin(religious_), std::end(religious_));
-        logJobDuration("sort religious");
+        std::sort(std::begin(religiousProfiles_), std::end(religiousProfiles_));
+        logJobDuration("sort religious profiles");
 
-        std::sort(std::begin(quest_), std::end(quest_));
-        logJobDuration("sort quest");
+        hasInitialized_ = true;
 
+        M_HP_LOG_DBG(
+            "ItemProfileWarehouse::Initialize() end, duration="
+            << totalClock.getElapsedTime().asMilliseconds() << "ms, normal_profile_count="
+            << profiles_.size() << ", religious_profile_count=" << religiousProfiles_.size());
+    }
+
+    void ItemProfileWarehouse::EnsureInitialized()
+    {
+        if (!hasInitialized_)
         {
-            // this whole block assumes normal_ is already sorted by score
+            Initialize();
+        }
+    }
 
-            const auto DOUBLE_MIN_SCORE { normal_[0].Score() * 2_score };
+    void ItemProfileWarehouse::Setup_StandardEquipment()
+    {
+        for (const auto & WEAPON_THIN_PROFILE : thinProfileFactory_.MakeAllWeapons())
+        {
+            MakeLoopOverMaterialsAndElementsForEquipment(WEAPON_THIN_PROFILE);
+        }
 
-            for (const auto & PROFILE : normal_)
+        for (const auto & ARMOR_THIN_PROFILE : thinProfileFactory_.MakeAllArmor())
+        {
+            MakeLoopOverMaterialsAndElementsForEquipment(ARMOR_THIN_PROFILE);
+        }
+    }
+
+    void ItemProfileWarehouse::Setup_MiscItems()
+    {
+        for (EnumUnderlying_t i(1); i < misc_type::Count; ++i)
+        {
+            const auto MISC_TYPE { static_cast<misc_type::Enum>(i) };
+
+            if (misc_type::IsSummoning(MISC_TYPE) == false)
             {
-                if (PROFILE.Score() <= DOUBLE_MIN_SCORE)
+                for (const auto ELEMENT_TYPE : misc_type::ElementTypes(MISC_TYPE, true))
                 {
-                    fallback_.emplace_back(PROFILE);
+                    MakeLoopOverMaterialsForMisc(MISC_TYPE, ELEMENT_TYPE);
                 }
-                else
+            }
+        }
+    }
+
+    void ItemProfileWarehouse::Setup_NamedEquipment()
+    {
+        for (EnumUnderlying_t i(1); i < named_type::Count; ++i)
+        {
+            const auto NAMED_TYPE { static_cast<named_type::Enum>(i) };
+
+            for (const auto & NAMED_THINPROFILE : thinProfileFactory_.MakeAllNamedTypes(NAMED_TYPE))
+            {
+                MakeLoopOverMaterialsAndElementsForEquipment(
+                    NAMED_THINPROFILE, NAMED_TYPE, set_type::Not);
+            }
+        }
+    }
+
+    void ItemProfileWarehouse::Setup_SetEquipment()
+    {
+        for (EnumUnderlying_t i(1); i < set_type::Count; ++i)
+        {
+            const auto SET_TYPE { static_cast<set_type::Enum>(i) };
+
+            for (const auto & SET_THINPROFILE : thinProfileFactory_.MakeAllSetTypes(SET_TYPE))
+            {
+                MakeLoopOverMaterialsAndElementsForEquipment(
+                    SET_THINPROFILE, named_type::Not, SET_TYPE);
+            }
+        }
+    }
+
+    void ItemProfileWarehouse::Setup_SummoningItems()
+    {
+        for (EnumUnderlying_t raceIndex(0); raceIndex < creature::race::Count; ++raceIndex)
+        {
+            const auto RACE_TYPE { static_cast<creature::race::Enum>(raceIndex) };
+
+            const auto ROLES_VEC { creature::race::Roles(RACE_TYPE) };
+
+            for (const auto ROLE_TYPE : ROLES_VEC)
+            {
+                const auto ORIGINS_VEC { creature::race::OriginTypes(RACE_TYPE, ROLE_TYPE) };
+                for (const auto ORIGIN_TYPE : ORIGINS_VEC)
+                {
+                    const auto SUMMON_INFO { creature::SummonInfo(
+                        ORIGIN_TYPE, RACE_TYPE, ROLE_TYPE) };
+
+                    if (ORIGIN_TYPE == creature::origin_type::Statue)
+                    {
+                        for (const auto ELEMENT_TYPE :
+                             misc_type::ElementTypes(misc_type::SummoningStatue, true))
+                        {
+                            MakeLoopOverMaterialsForMisc(
+                                misc_type::SummoningStatue, ELEMENT_TYPE, SUMMON_INFO);
+                        }
+                    }
+                    else
+                    {
+                        const auto MISC_TYPE { [&]() {
+                            if (RACE_TYPE == creature::race::Spider)
+                            {
+                                return misc_type::SpiderEggs;
+                            }
+                            else if (ORIGIN_TYPE == creature::origin_type::Egg)
+                            {
+                                return misc_type::Egg;
+                            }
+                            else if (ORIGIN_TYPE == creature::origin_type::Embryo)
+                            {
+                                return misc_type::Embryo;
+                            }
+                            else
+                            {
+                                return misc_type::Seeds;
+                            }
+                        }() };
+
+                        for (const auto ELEMENT_TYPE : misc_type::ElementTypes(MISC_TYPE, true))
+                        {
+                            MakeLoopOverMaterialsForMisc(MISC_TYPE, ELEMENT_TYPE, SUMMON_INFO);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    const ElementEnumVec_t ItemProfileWarehouse::ElementTypesIncludingNone(
+        const ItemProfileThin & THIN_PROFILE,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE)
+    {
+        // note that unique_type is not handled here, see Setup_UniqueItems()
+
+        ElementEnumVec_t elementTypes;
+
+        if ((SET_TYPE != set_type::Not) && (SET_TYPE != set_type::Count))
+        {
+            elementTypes = { element_type::None };
+        }
+        else if ((NAMED_TYPE != named_type::Not) && (NAMED_TYPE != named_type::Count))
+        {
+            elementTypes = named_type::ElementTypes(NAMED_TYPE, true);
+        }
+        else if (
+            (THIN_PROFILE.MiscType() != misc_type::Not)
+            && (THIN_PROFILE.MiscType() != misc_type::Count))
+        {
+            elementTypes = misc_type::ElementTypes(THIN_PROFILE.MiscType(), true);
+        }
+        else if (THIN_PROFILE.IsArmor())
+        {
+            elementTypes = THIN_PROFILE.ArmorInfo().ElementTypes();
+        }
+        else if (THIN_PROFILE.IsWeapon())
+        {
+            elementTypes = THIN_PROFILE.WeaponInfo().ElementTypes();
+        }
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (elementTypes.empty() == false),
+            "item::ItemProfileWarehouse::ElementTypesIncludingNone(thin_profile={"
+                << THIN_PROFILE.ToString() << "}, named_type="
+                << ((NAMED_TYPE == named_type::Count) ? "Count" : named_type::ToString(NAMED_TYPE))
+                << ", set_type="
+                << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+                << ") resulted in an elementType vector that was empty.");
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (std::find(std::begin(elementTypes), std::end(elementTypes), element_type::None)
+             != std::end(elementTypes)),
+            "item::ItemProfileWarehouse::ElementTypesIncludingNone(thin_profile={"
+                << THIN_PROFILE.ToString() << "}, named_type="
+                << ((NAMED_TYPE == named_type::Count) ? "Count" : named_type::ToString(NAMED_TYPE))
+                << ", set_type="
+                << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+                << ") resulted in an elementType vector that did not contain "
+                   "element_type::None.");
+
+        return elementTypes;
+    }
+
+    void ItemProfileWarehouse::MakeLoopOverMaterialsAndElementsForEquipment(
+        const ItemProfileThin & THIN_PROFILE,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE)
+    {
+        for (const auto & MATERIAL_PAIR :
+             materialFactory_.MakeForEquipment(THIN_PROFILE, NAMED_TYPE, SET_TYPE))
+        {
+            for (const auto ELEMENT_TYPE :
+                 ElementTypesIncludingNone(THIN_PROFILE, NAMED_TYPE, SET_TYPE))
+            {
+                MakeForEquipment(
+                    THIN_PROFILE,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    MATERIAL_PAIR.first,
+                    MATERIAL_PAIR.second);
+            }
+        }
+    }
+
+    void ItemProfileWarehouse::MakeForEquipment(
+        const ItemProfileThin & THIN_PROFILE,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const material::Enum MATERIAL_PRI,
+        const material::Enum MATERIAL_SEC)
+    {
+        if (MATERIAL_PRI == MATERIAL_SEC)
+        {
+            return;
+        }
+
+        ItemProfile profile;
+        ItemProfile profilePixie;
+
+        if (THIN_PROFILE.IsMisc())
+        {
+            if (misc_type::HasOnlyPixieVersion(THIN_PROFILE.MiscType()) == false)
+            {
+                profile.SetMisc(
+                    THIN_PROFILE, false, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE, ELEMENT_TYPE);
+
+                AppendToCorrectProfileCollection(profile);
+            }
+
+            if (misc_type::HasPixieVersion(THIN_PROFILE.MiscType()))
+            {
+                profilePixie.SetMisc(
+                    THIN_PROFILE, true, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE, ELEMENT_TYPE);
+
+                AppendToCorrectProfileCollection(profilePixie);
+            }
+
+            return;
+        }
+
+        if (THIN_PROFILE.IsArmor())
+        {
+            // can't use THIN_PROFILE.ArmorInfo().Is_() functions here because some thin profiles
+            // are missing their base_types, so use THIN_PROFILE.ArmorInfo().Type() instead which is
+            // always valid
+            switch (THIN_PROFILE.ArmorInfo().Type())
+            {
+                case armor_type::Shield:
+                {
+                    profile.SetShield(
+                        THIN_PROFILE,
+                        THIN_PROFILE.ArmorInfo().ShieldType(),
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE);
+
+                    break;
+                }
+                case armor_type::Helm:
+                {
+                    profile.SetHelm(
+                        THIN_PROFILE,
+                        THIN_PROFILE.ArmorInfo().HelmType(),
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE);
+
+                    break;
+                }
+                case armor_type::Gauntlets:
+                {
+                    profile.SetGauntlets(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        false);
+
+                    profilePixie.SetGauntlets(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        true);
+
+                    break;
+                }
+                case armor_type::Pants:
+                {
+                    profile.SetPants(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        false);
+
+                    profilePixie.SetPants(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        true);
+
+                    break;
+                }
+                case armor_type::Boots:
+                {
+                    profile.SetBoots(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        false);
+
+                    profilePixie.SetBoots(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        true);
+
+                    break;
+                }
+                case armor_type::Shirt:
+                {
+                    profile.SetShirt(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        false);
+
+                    profilePixie.SetShirt(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        true);
+
+                    break;
+                }
+                case armor_type::Bracers:
+                {
+                    profile.SetBracer(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        false);
+
+                    profilePixie.SetBracer(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        true);
+
+                    break;
+                }
+                case armor_type::Aventail:
+                {
+                    profile.SetAventail(
+                        THIN_PROFILE,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE);
+
+                    break;
+                }
+                case armor_type::Covering:
+                {
+                    profile.SetCover(
+                        THIN_PROFILE,
+                        THIN_PROFILE.ArmorInfo().CoverType(),
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        false);
+
+                    profilePixie.SetCover(
+                        THIN_PROFILE,
+                        THIN_PROFILE.ArmorInfo().CoverType(),
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        true);
+
+                    break;
+                }
+                case armor_type::Skin:
+                case armor_type::Not:
+                case armor_type::Count:
+                default:
                 {
                     break;
                 }
             }
 
-            M_HP_LOG_WRN(
-                "fallback_ item profiles count=" << fallback_.size() << " with scores from "
-                                                 << fallback_.front().Score() << " to "
-                                                 << fallback_.back().Score());
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (profile.IsArmor()),
+                "ItemProfileWarehouse::MakeForEquipment(thin_profile="
+                    << THIN_PROFILE.ToString() << ", named_type="
+                    << ((NAMED_TYPE == named_type::Count) ? "Count"
+                                                          : named_type::ToString(NAMED_TYPE))
+                    << ", set_type="
+                    << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
+                    << ", mat_pri=" << material::ToString(MATERIAL_PRI)
+                    << ", mat_sec=" << material::ToString(MATERIAL_SEC)
+                    << ") was unable to find the type of the given armor.");
 
-            M_HP_ASSERT_OR_LOG_AND_THROW((!fallback_.empty()), "fallback_ was empty");
+            AppendToCorrectProfileCollection(profile);
 
-            fallback_.shrink_to_fit();
-            std::sort(std::begin(fallback_), std::end(fallback_));
-        }
-        logJobDuration("MakeFallback");
-
-        M_HP_LOG_DBG(
-            "ItemProfileWarehouse::Initialize() end, duration="
-            << totalClock.getElapsedTime().asMilliseconds() << "ms, normal_profile_count="
-            << normal_.size() << ", religious_profile_count=" << religious_.size());
-
-        // TODO remove after testing
-        {
-            auto temp = normal_;
-
-            const auto COUNT_BEFORE = temp.size();
-
-            temp.erase(
-                std::unique(
-                    std::begin(temp),
-                    std::end(temp),
-                    [](const ItemProfile & A, const ItemProfile & B) {
-                        return (A.Score() == B.Score());
-                    }),
-                std::end(temp));
-
-            const auto COUNT_AFTER = temp.size();
-
-            M_HP_LOG_WRN(
-                "ItemProfileWarehouse::Initialize() treasure score info:  out of a total of "
-                << normal_.size() << " items:  min=" << normal_.front().Score()
-                << ", max=" << normal_.back().Score() << ", unique=" << temp.size()
-                << ", duplicate=" << (COUNT_BEFORE - COUNT_AFTER));
-        }
-    }
-
-    void ItemProfileWarehouse::MakeStandardEquipment()
-    {
-        for (const auto & TEMPLATE : ItemTemplateFactory::Instance()->MakeAllWeapons())
-        {
-            MakeLoopOverElements(TEMPLATE);
-        }
-
-        for (const auto & TEMPLATE : ItemTemplateFactory::Instance()->MakeAllArmor())
-        {
-            MakeLoopOverElements(TEMPLATE);
-        }
-    }
-
-    void ItemProfileWarehouse::MakeMiscNonSummoning()
-    {
-        for (const auto & TEMPLATE : ItemTemplateFactory::Instance()->MakeAllMisc())
-        {
-            const auto MISC = TEMPLATE.MiscTypeBase();
-
-            if (!Misc::IsSummoning(MISC))
+            // only knights can equip plate armor, and knights can't be pixies...
+            if (profilePixie.IsArmor()
+                && (profilePixie.ArmorInfo().BaseType() != armor::base_type::Plate))
             {
-                MakeLoopOverElements(TEMPLATE, MISC);
+                AppendToCorrectProfileCollection(profilePixie);
             }
+
+            return;
         }
-    }
 
-    void ItemProfileWarehouse::MakeMiscSummoning()
-    {
-        std::vector<creature::SummonInfo> summonInfos;
-
-        for (EnumUnderlying_t raceIndex(0); raceIndex < creature::race::Count; ++raceIndex)
+        if (THIN_PROFILE.IsWeapon())
         {
-            const auto RACE { static_cast<creature::race::Enum>(raceIndex) };
-
-            for (const auto ROLE : creature::race::Roles(RACE))
+            if (THIN_PROFILE.WeaponInfo().IsSword())
             {
-                for (const auto ORIGIN : creature::race::OriginTypes(RACE, ROLE))
-                {
-                    summonInfos.emplace_back(ORIGIN, RACE, ROLE);
-                }
+                profile.SetSword(
+                    THIN_PROFILE,
+                    THIN_PROFILE.WeaponInfo().SwordType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
             }
-        }
-
-        summonInfos.erase(
-            std::unique(std::begin(summonInfos), std::end(summonInfos)), std::end(summonInfos));
-
-        for (const auto & SUMMON_INFO : summonInfos)
-        {
-            const auto MISC = MiscTypeOfSummoningItem(SUMMON_INFO);
-
-            MakeLoopOverElements(
-                ItemTemplateFactory::Instance()->MakeMisc(MISC),
-                MISC,
-                Named::Count,
-                Set::Count,
-                SUMMON_INFO);
-        }
-    }
-
-    void ItemProfileWarehouse::MakeNamed()
-    {
-        for (const auto & NAMED_PAIR : ItemTemplateFactory::Instance()->MakeAllNamed())
-        {
-            for (const auto & TEMPLATE : NAMED_PAIR.second)
+            else if (THIN_PROFILE.WeaponInfo().IsAxe())
             {
-                MakeLoopOverElements(TEMPLATE, TEMPLATE.MiscTypeBase(), NAMED_PAIR.first);
+                profile.SetAxe(
+                    THIN_PROFILE,
+                    THIN_PROFILE.WeaponInfo().AxeType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
             }
-        }
-    }
-
-    void ItemProfileWarehouse::MakeSet()
-    {
-        for (const auto & SET_PAIR : ItemTemplateFactory::Instance()->MakeAllSet())
-        {
-            for (const auto & TEMPLATE : SET_PAIR.second)
+            else if (THIN_PROFILE.WeaponInfo().IsClub())
             {
-                MakeLoopOverElements(
-                    TEMPLATE, TEMPLATE.MiscTypeBase(), Named::Count, SET_PAIR.first);
+                profile.SetClub(
+                    THIN_PROFILE,
+                    THIN_PROFILE.WeaponInfo().ClubType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
             }
+            else if (THIN_PROFILE.WeaponInfo().IsWhip())
+            {
+                profile.SetWhip(
+                    THIN_PROFILE,
+                    THIN_PROFILE.WeaponInfo().WhipType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
+            }
+            else if (THIN_PROFILE.WeaponInfo().IsProjectile())
+            {
+                profile.SetProjectile(
+                    THIN_PROFILE,
+                    THIN_PROFILE.WeaponInfo().ProjectileType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
+            }
+            else if (THIN_PROFILE.WeaponInfo().IsBladedStaff())
+            {
+                profile.SetBladedStaff(
+                    THIN_PROFILE,
+                    THIN_PROFILE.WeaponInfo().BladedStaffType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
+            }
+            else if (THIN_PROFILE.WeaponInfo().IsKnife())
+            {
+                profile.SetKnife(
+                    THIN_PROFILE,
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    false);
+
+                profilePixie.SetKnife(
+                    THIN_PROFILE,
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    true);
+            }
+            else if (THIN_PROFILE.WeaponInfo().IsDagger())
+            {
+                profile.SetDagger(
+                    THIN_PROFILE,
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    false);
+
+                profilePixie.SetDagger(
+                    THIN_PROFILE,
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    true);
+            }
+            else if (THIN_PROFILE.WeaponInfo().IsStaff())
+            {
+                profile.SetStaff(
+                    THIN_PROFILE,
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    misc_type::Not,
+                    false);
+
+                profilePixie.SetStaff(
+                    THIN_PROFILE,
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    misc_type::Not,
+                    true);
+            }
+            else if (THIN_PROFILE.WeaponInfo().IsQuarterstaff())
+            {
+                profile.SetQuarterStaff(
+                    THIN_PROFILE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
+            }
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (profile.IsWeapon()),
+                "ItemProfileWarehouse::MakeForEquipment(thin_profile="
+                    << THIN_PROFILE.ToString() << ", named_type="
+                    << ((NAMED_TYPE == named_type::Count) ? "Count"
+                                                          : named_type::ToString(NAMED_TYPE))
+                    << ", set_type="
+                    << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
+                    << ", mat_pri=" << material::ToString(MATERIAL_PRI)
+                    << ", mat_sec=" << material::ToString(MATERIAL_SEC)
+                    << ") was unable to find the type of the given weapon.");
+
+            AppendToCorrectProfileCollection(profile);
+
+            if (profilePixie.IsWeapon())
+            {
+                AppendToCorrectProfileCollection(profilePixie);
+            }
+
+            return;
         }
+
+        std::ostringstream ss;
+        ss << "ItemProfileWarehouse::MakeForEquipment(thin_profile=" << THIN_PROFILE.ToString()
+           << ", named_type="
+           << ((NAMED_TYPE == named_type::Count) ? "Count" : named_type::ToString(NAMED_TYPE))
+           << ", set_type="
+           << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+           << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
+           << ", mat_pri=" << material::ToString(MATERIAL_PRI)
+           << ", mat_sec=" << material::ToString(MATERIAL_SEC)
+           << ") was unable to find the type of the given item profile.";
+
+        throw std::runtime_error(ss.str());
     }
 
-    ElementList::Enum ItemProfileWarehouse::ElementsAllowed(
-        const ItemTemplate & TEMPLATE, const Named::Enum NAMED, const Set::Enum SET) const
-    {
-        if (SET < Set::Count)
-        {
-            return ElementList::None;
-        }
-        else if (NAMED < Named::Count)
-        {
-            return Named::ElementsAllowed(NAMED);
-        }
-        else
-        {
-            return TEMPLATE.ElementsAllowedBase();
-        }
-    }
-
-    Misc::Enum ItemProfileWarehouse::MiscTypeOfSummoningItem(
-        const creature::SummonInfo & SUMMON_INFO) const
-    {
-        if (SUMMON_INFO.Race() == creature::race::Spider)
-        {
-            return Misc::SpiderEggs;
-        }
-
-        const auto ORIGIN = SUMMON_INFO.Type();
-
-        if (ORIGIN == creature::origin_type::Statue)
-        {
-            return Misc::SummoningStatue;
-        }
-        else if (ORIGIN == creature::origin_type::Egg)
-        {
-            return Misc::Egg;
-        }
-        else if (ORIGIN == creature::origin_type::Embryo)
-        {
-            return Misc::Embryo;
-        }
-        else
-        {
-            return Misc::Seeds;
-        }
-    }
-
-    void ItemProfileWarehouse::MakeLoopOverElements(
-        const ItemTemplate & TEMPLATE,
-        const Misc::Enum MISC,
-        const Named::Enum NAMED,
-        const Set::Enum SET,
+    void ItemProfileWarehouse::MakeLoopOverMaterialsForMisc(
+        const misc_type::Enum MISC_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
         const creature::SummonInfo & SUMMON_INFO)
     {
-        const auto ALLOWED_ELEMENTS = ElementsAllowed(TEMPLATE, NAMED, SET);
+        const auto IS_MAGICAL { (ELEMENT_TYPE != element_type::None) || SUMMON_INFO.CanSummon()
+                                || misc_type::IsUnique(MISC_TYPE)
+                                || misc_type::IsQuestItem(MISC_TYPE) };
 
-        EnumUnderlying_t flag { 0 };
-
-        while (flag <= ElementList::Last)
+        for (const auto & MATERIAL_PAIR : materialFactory_.MakeForMiscType(MISC_TYPE, IS_MAGICAL))
         {
-            if ((0 == flag) || (ALLOWED_ELEMENTS & flag))
+            if (misc_type::HasOnlyPixieVersion(MISC_TYPE) == false)
             {
-                MakeLoopOverMaterials(
-                    TEMPLATE,
-                    MISC,
-                    NAMED,
-                    SET,
-                    SUMMON_INFO,
-                    ElementList::FromListBitFlag(static_cast<ElementList::Enum>(flag)));
+                ItemProfile profile;
+
+                profile.SetMisc(
+                    MISC_TYPE,
+                    false,
+                    MATERIAL_PAIR.first,
+                    MATERIAL_PAIR.second,
+                    set_type::Not,
+                    ELEMENT_TYPE,
+                    SUMMON_INFO);
+
+                AppendToCorrectProfileCollection(profile);
             }
 
-            if (0 == flag)
+            if (misc_type::HasPixieVersion(MISC_TYPE))
             {
-                flag = 1;
+                ItemProfile profilePixie;
+
+                profilePixie.SetMisc(
+                    MISC_TYPE,
+                    true,
+                    MATERIAL_PAIR.first,
+                    MATERIAL_PAIR.second,
+                    set_type::Not,
+                    ELEMENT_TYPE,
+                    SUMMON_INFO);
+
+                AppendToCorrectProfileCollection(profilePixie);
             }
-            else
-            {
-                flag <<= 1;
-            }
-        }
-    }
-
-    void ItemProfileWarehouse::MakeLoopOverMaterials(
-        const ItemTemplate & TEMPLATE,
-        const Misc::Enum MISC,
-        const Named::Enum NAMED,
-        const Set::Enum SET,
-        const creature::SummonInfo & SUMMON_INFO,
-        const Element::Enum ELEMENT)
-    {
-        const auto IS_MAGICAL
-            = ((NAMED < Named::Count) || (SET < Set::Count) || (ELEMENT != Element::None)
-               || Misc::IsAlwaysMagical(MISC) || SUMMON_INFO.IsValid());
-
-        for (const auto & MATERIAL_PAIR :
-             MaterialFactory::Instance()->MakePairs(TEMPLATE, MISC, NAMED, SET, IS_MAGICAL))
-        {
-            AppendBothPixieVersionsToCollection(
-                TEMPLATE, MISC, NAMED, SET, SUMMON_INFO, ELEMENT, MATERIAL_PAIR);
-        }
-    }
-
-    void ItemProfileWarehouse::AppendBothPixieVersionsToCollection(
-        const ItemTemplate & TEMPLATE,
-        const Misc::Enum MISC,
-        const Named::Enum NAMED,
-        const Set::Enum SET,
-        const creature::SummonInfo & SUMMON_INFO,
-        const Element::Enum ELEMENT,
-        const MaterialPair_t & MATERIAL_PAIR)
-    {
-        AppendToCollection(ItemProfileFactory::Make(
-            TEMPLATE,
-            false,
-            MATERIAL_PAIR.first,
-            MATERIAL_PAIR.second,
-            NAMED,
-            SET,
-            ELEMENT,
-            MISC,
-            SUMMON_INFO));
-
-        if (TEMPLATE.HasPixieVersion())
-        {
-            AppendToCollection(ItemProfileFactory::Make(
-                TEMPLATE,
-                true,
-                MATERIAL_PAIR.first,
-                MATERIAL_PAIR.second,
-                NAMED,
-                SET,
-                ELEMENT,
-                MISC,
-                SUMMON_INFO));
-        }
-    }
-
-    void ItemProfileWarehouse::AppendToCollection(const ItemProfile & PROFILE)
-    {
-        if (PROFILE.IsQuest())
-        {
-            quest_.emplace_back(PROFILE);
-        }
-        else if (PROFILE.IsReligious())
-        {
-            religious_.emplace_back(PROFILE);
-        }
-        else
-        {
-            normal_.emplace_back(PROFILE);
         }
     }
 

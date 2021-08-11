@@ -22,6 +22,7 @@ namespace heroespath
 {
 namespace gui
 {
+
     // Responsible for loading animation image files (basically simple sprite sheets) and displaying
     // them in timely order to create animations.
     class Animation : public Entity
@@ -93,6 +94,7 @@ namespace gui
 
     using AnimationUPtr_t = std::unique_ptr<Animation>;
     using AnimationUVec_t = std::vector<AnimationUPtr_t>;
+
 } // namespace gui
 } // namespace heroespath
 

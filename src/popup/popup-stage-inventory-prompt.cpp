@@ -51,7 +51,7 @@ namespace popup
         }
         else if (KEY_EVENT.code == sf::Keyboard::M)
         {
-            ClosePopup(PopupButtons::Select, PopupInfo::ContentNum_Shards());
+            ClosePopup(PopupButtons::Select, PopupInfo::ContentNum_MeteorShards());
             return true;
         }
 

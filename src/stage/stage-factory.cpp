@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -44,11 +42,12 @@
 #include "stage/main-menu-stage.hpp"
 #include "stage/party-stage.hpp"
 #include "stage/settings-stage.hpp"
+#include "stage/testing-stage.hpp"
 #include "stage/treasure-display-stage.hpp"
 #include "stage/treasure-stage.hpp"
 
+#include <exception>
 #include <sstream>
-#include <stdexcept>
 
 namespace heroespath
 {
@@ -67,7 +66,7 @@ namespace stage
         {
             M_HP_LOG_ERR(
                 "Exception=\"" << EXCEPTION.what() << "\" thrown during "
-                               << NAMEOF_ENUM(SETUP_PACKET.stage)
+                               << Stage::ToString(SETUP_PACKET.stage)
                                << " stage creation, which is fatal.  Re-Throwing "
                                   "to kill the game.");
 
@@ -136,13 +135,10 @@ namespace stage
                     std::make_unique<combat::CombatAnimation>()
                 };
 
-                auto viewStageUPtr { std::make_unique<combat::CombatDisplay>(
-                    combat::CombatAnimationPtr_t(combatAnimUPtr.get())) };
+                auto viewStageUPtr { std::make_unique<combat::CombatDisplay>(combatAnimUPtr) };
 
                 auto modelStageUPtr { std::make_unique<stage::CombatStage>(
-                    std::move(combatAnimUPtr),
-                    combat::CombatDisplayPtr_t(viewStageUPtr.get()),
-                    SETUP_PACKET.will_advance_turn) };
+                    std::move(combatAnimUPtr), viewStageUPtr, SETUP_PACKET.will_advance_turn) };
 
                 modelStageUPtr->PreSetup();
                 viewStageUPtr->StageRegion(modelStageUPtr->CombatRegion());
@@ -153,13 +149,18 @@ namespace stage
 
                 break;
             }
+            case stage::Stage::Test:
+            {
+                stageVec.emplace_back(std::make_unique<stage::TestingStage>());
+                break;
+            }
             case stage::Stage::Treasure:
             {
                 auto viewStageUPtr { std::make_unique<stage::TreasureDisplayStage>() };
                 auto modelStageUPtr { std::make_unique<stage::TreasureStage>() };
 
-                viewStageUPtr->SetModelStage(TreasureStagePtr_t(modelStageUPtr.get()));
-                modelStageUPtr->SetViewStage(TreasureDisplayStagePtr_t(viewStageUPtr.get()));
+                viewStageUPtr->SetModelStage(modelStageUPtr);
+                modelStageUPtr->SetViewStage(viewStageUPtr);
 
                 // view must be first to be Setup() and processes by Loop::Execute()
                 stageVec.emplace_back(std::move(viewStageUPtr));
@@ -349,7 +350,7 @@ namespace stage
             {
                 std::ostringstream ss;
                 ss << "stage::StageFactory::MakePopup(popup_info={" << POPUP_INFO.ToStringShort()
-                   << "}) but the stage=" << NAMEOF_ENUM(POPUP_INFO.Stage())
+                   << "}) but the stage=" << popup::PopupStage::ToString(POPUP_INFO.Stage())
                    << ") is invalid (out of bounds).";
 
                 throw std::range_error(ss.str());

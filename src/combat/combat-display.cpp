@@ -31,10 +31,11 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <algorithm>
 #include <numeric>
+#include <sstream>
 
 namespace heroespath
 {
@@ -254,7 +255,16 @@ namespace combat
 
         for (const auto & COMBAT_NODE_PTR : combatTree_.GetCombatNodes())
         {
-            if (sfutil::Contains(battlefieldRect_, COMBAT_NODE_PTR->GetEntityRegion()))
+            const sf::FloatRect NEXT_VERT_RECT(COMBAT_NODE_PTR->GetEntityRegion());
+
+            if ((battlefieldRect_.contains(NEXT_VERT_RECT.left, NEXT_VERT_RECT.top))
+                && (battlefieldRect_.contains(
+                    NEXT_VERT_RECT.left + NEXT_VERT_RECT.width, NEXT_VERT_RECT.top))
+                && (battlefieldRect_.contains(
+                    NEXT_VERT_RECT.left, NEXT_VERT_RECT.top + NEXT_VERT_RECT.height))
+                && (battlefieldRect_.contains(
+                    NEXT_VERT_RECT.left + NEXT_VERT_RECT.width,
+                    NEXT_VERT_RECT.top + NEXT_VERT_RECT.height)))
             {
                 isAnyNodeDrawn = true;
                 COMBAT_NODE_PTR->WillDraw(true);
@@ -294,7 +304,7 @@ namespace combat
 
             if (!COMBAT_NODE_CLICKED_ON_PTR_OPT)
             {
-                if (sfutil::Contains(battlefieldRect_, MOUSE_POS_V))
+                if (battlefieldRect_.contains(MOUSE_POS_V))
                 {
                     isMouseHeldDownInBF_ = true;
                 }
@@ -499,17 +509,17 @@ namespace combat
                 livingCreaturesPVec.end(),
                 [this, CREATURE_PTR](const auto & A_PTR, const auto & B_PTR) {
                     return (combatTree_.GetBlockingDistanceBetween(A_PTR, CREATURE_PTR))
-                        < misc::Abs(combatTree_.GetBlockingDistanceBetween(B_PTR, CREATURE_PTR));
+                        < std::abs(combatTree_.GetBlockingDistanceBetween(B_PTR, CREATURE_PTR));
                 });
 
-            const auto MIN_BLOCKING_DISTANCE { misc::Abs(combatTree_.GetBlockingDistanceBetween(
+            const auto MIN_BLOCKING_DISTANCE { std::abs(combatTree_.GetBlockingDistanceBetween(
                 *livingCreaturesPVec.begin(), CREATURE_PTR)) };
 
             creature::CreaturePVec_t closestCreaturesPVec;
 
             for (const auto & NEXT_CREATURE_PTR : livingCreaturesPVec)
             {
-                if (misc::Abs(
+                if (std::abs(
                         combatTree_.GetBlockingDistanceBetween(NEXT_CREATURE_PTR, CREATURE_PTR))
                     == MIN_BLOCKING_DISTANCE)
                 {
@@ -639,7 +649,7 @@ namespace combat
         auto closestBlockingDistanceABS { combatTree_.GetBlockingDistanceMax() + 1 };
         for (const auto & NEXT_CREATURE_PTR : CREATURES_TO_FIND_AMONG_PVEC)
         {
-            const auto NEXT_BLOCKING_DISTANCE_ABS { misc::Abs(
+            const auto NEXT_BLOCKING_DISTANCE_ABS { std::abs(
                 FindBlockingPos(NEXT_CREATURE_PTR) - BLOCKING_POS_ORIGIN) };
 
             if ((NEXT_CREATURE_PTR->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -653,7 +663,7 @@ namespace combat
 
         for (const auto & NEXT_CREATURE_PTR : CREATURES_TO_FIND_AMONG_PVEC)
         {
-            const auto NEXT_BLOCKING_DISTANCE_ABS { misc::Abs(
+            const auto NEXT_BLOCKING_DISTANCE_ABS { std::abs(
                 FindBlockingPos(NEXT_CREATURE_PTR) - BLOCKING_POS_ORIGIN) };
 
             if ((NEXT_CREATURE_PTR->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -754,10 +764,12 @@ namespace combat
         // that already has too many creatures
         if (OBSTACLE_CREATURE_COUNT_AT_NEW_POS > SHOULDER_TO_SHOULDER_MAX_)
         {
-            return std::string("Cannot ") + ADVANCE_OR_RETREAT_STR + "because there are too many ("
-                + std::to_string(OBSTACLE_CREATURE_COUNT_AT_NEW_POS)
-                + ") opposing creatures in the way." + "  The limit is "
-                + std::to_string(SHOULDER_TO_SHOULDER_MAX_) + ".";
+            std::ostringstream ss;
+            ss << "Cannot " << ADVANCE_OR_RETREAT_STR << "because there are too many ("
+               << OBSTACLE_CREATURE_COUNT_AT_NEW_POS << ") opposing creatures in the way."
+               << "  The limit is " << SHOULDER_TO_SHOULDER_MAX_ << ".";
+
+            return ss.str();
         }
 
         // Check if attempting to move into a shoulder-to-shoulder line that
@@ -889,7 +901,7 @@ namespace combat
             {
                 if (OUTER_COMBAT_NODE_PTR != INNER_COMBAT_NODE_PTR)
                 {
-                    auto HORIZ_DIFF { misc::Abs(
+                    auto HORIZ_DIFF { std::abs(
                         OUTER_COMBAT_NODE_PTR->GetEntityPos().x
                         - INNER_COMBAT_NODE_PTR->GetEntityPos().x) };
 
@@ -898,7 +910,7 @@ namespace combat
                         horizPosDiffMax = HORIZ_DIFF;
                     }
 
-                    auto VERT_DIFF { misc::Abs(
+                    auto VERT_DIFF { std::abs(
                         OUTER_COMBAT_NODE_PTR->GetEntityPos().y
                         - INNER_COMBAT_NODE_PTR->GetEntityPos().y) };
 
@@ -1061,7 +1073,7 @@ namespace combat
 
         for (const auto & NEXT_OPPONENT_CREATURE_PTR : OPPONENT_CREATURES_PVEC)
         {
-            if (misc::Abs(combatTree_.GetBlockingDistanceBetween(
+            if (std::abs(combatTree_.GetBlockingDistanceBetween(
                     CREATURE_ROARING_PTR, NEXT_OPPONENT_CREATURE_PTR))
                 <= 2)
             {
@@ -1223,15 +1235,14 @@ namespace combat
             highestBlockingPos += BLOCKING_POS_MARGIN_;
             blockingPosMax_ = highestBlockingPos;
 
-            shoulderToShoulderMax
-                += static_cast<std::size_t>(2) * static_cast<std::size_t>(BLOCKING_POS_MARGIN_);
+            shoulderToShoulderMax += static_cast<std::size_t>(2 * BLOCKING_POS_MARGIN_);
         }
 
         const float CELL_WIDTH_MIN(sfutil::MapByRes(
             (256.0f * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_),
             (256.0f * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_)));
 
-        const float CELL_WIDTH_ORIG(misc::Max(maxNameWidth, CELL_WIDTH_MIN));
+        const float CELL_WIDTH_ORIG(std::max(maxNameWidth, CELL_WIDTH_MIN));
 
         // adjust vars for zoomLevel_
         const float CELL_WIDTH_ZOOM_ADJ(CELL_WIDTH_ORIG); // already adjust for by nameCharSize_
@@ -1253,8 +1264,8 @@ namespace combat
             CELL_WIDTH_ZOOM_ADJ + POSITIONING_BETWEEN_SPACER_HORIZ_ZOOM_ADJ);
 
         battlefieldWidth_
-            = misc::Abs(static_cast<float>(lowestBlockingPos) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER)
-            + misc::Abs(static_cast<float>(highestBlockingPos) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER)
+            = std::abs(static_cast<float>(lowestBlockingPos) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER)
+            + std::abs(static_cast<float>(highestBlockingPos) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER)
             + (POSITIONING_MARGIN_HORIZ_ZOOM_ADJ * 2.0f);
 
         battlefieldHeight_

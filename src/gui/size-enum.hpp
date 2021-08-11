@@ -18,7 +18,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Size : public EnumBaseCounting<>
+    struct Size : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -27,6 +27,8 @@ namespace gui
             Large,
             Count
         };
+
+        static const std::string ToString(const Size::Enum);
     };
 
 } // namespace gui

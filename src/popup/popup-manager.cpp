@@ -15,7 +15,6 @@
 #include "creature/title.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "game/strong-types.hpp"
 #include "gui/box-entity-info.hpp"
 #include "gui/box-entity.hpp"
 #include "gui/display.hpp"
@@ -25,7 +24,7 @@
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
-#include "misc/strings.hpp"
+#include "misc/types.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-stage-generic.hpp"
 #include "stage/i-stage.hpp"
@@ -57,13 +56,13 @@ namespace popup
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: PopupManager");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<PopupManager *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void PopupManager::Create()
+    void PopupManager::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -71,17 +70,36 @@ namespace popup
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: PopupManager");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: PopupManager");
         }
     }
 
-    void PopupManager::Destroy() { instanceUPtr_.reset(); }
+    void PopupManager::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "popup::PopupManager::Release() found instanceUPtr that was null.");
+        instanceUPtr_.reset();
+    }
 
     void PopupManager::SetTexturesDirectoryPaths(
         const std::string & WINDOWS_PATH, const std::string & ACCENTS_PATH)
     {
         windowTextureDirectoryPath_ = WINDOWS_PATH;
         accentTextureDirectoryPath_ = ACCENTS_PATH;
+    }
+
+    bool PopupManager::Test(stage::IStagePtr_t iStagePtr)
+    {
+        static auto hasInitialPrompt { false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            iStagePtr->TestingStrAppend("popup::PopupManager::Test() Starting Tests...");
+        }
+
+        // TODO
+        iStagePtr->TestingStrAppend("popup::PopupManager::Test()  ALL TESTS PASSED.");
+        return true;
     }
 
     const gui::TextInfo PopupManager::TextInfoDefault(

@@ -10,9 +10,9 @@
 // border.cpp
 //
 #include "border.hpp"
-#include "sfutil/common.hpp"
+#include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -69,7 +69,7 @@ namespace gui
     {
         Reset();
 
-        if (sfutil::IsZeroOrLessAny(sfutil::Size(REGION)))
+        if (sfutil::IsSizeZeroOrLessEither(REGION))
         {
             return;
         }
@@ -110,7 +110,7 @@ namespace gui
     {
         Reset();
 
-        if (sfutil::IsZeroOrLessAny(sfutil::Size(REGION)))
+        if (sfutil::IsSizeZeroOrLessEither(REGION))
         {
             return;
         }

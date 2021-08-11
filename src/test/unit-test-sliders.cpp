@@ -6,34 +6,36 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-//
-// unit-test-sliders.cpp
-//
-#define BOOST_TEST_MODULE "sliders"
 
+#define BOOST_TEST_MODULE "HeroesPathTestModule_gui_sliders_test"
+
+#include "misc/platform.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4266)
+#endif
+
+#include "misc/nameof.hpp"
 #include <boost/test/unit_test.hpp>
 
-#include "gui/sliders.hpp"
-#include "misc/nameof.hpp"
-#include "misc/real.hpp"
-#include "test/util/game-engine-global-fixture.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(pop)
+#endif
 
+#include "gui/sliders.hpp"
+#include "misc/real.hpp"
+
+#include <exception>
 #include <iostream>
 #include <numeric>
-#include <stdexcept>
+
+#include "unit-test-test-stuff.hpp"
 
 using namespace heroespath;
-using namespace heroespath::test;
 using namespace heroespath::misc;
 using namespace heroespath::gui;
 
-void GameEngineGlobalFixture::setupBeforeAllTests()
-{
-    m_unitTestFilename = __FILE__;
-    m_subsystemsToSetup = game::SubsystemCollection::TestWithOnlyLogAndConfig;
-}
-
-BOOST_TEST_GLOBAL_FIXTURE(GameEngineGlobalFixture);
+namespace ts = test_stuff;
 
 template <typename Value_t, typename Slider_t>
 void testSlider(
@@ -44,8 +46,8 @@ void testSlider(
     const float ADJUSTMENT,
     const std::size_t ITERATION_COUNT_MIN)
 {
-    std::cout << "testSlider<Value_t=" << NAMEOF_TYPE(Value_t)
-              << ", Slider_t=" << NAMEOF_TYPE(Slider_t) << ">(from=" << FROM << ", to=" << TO
+    std::cout << "testSlider<Value_t=" << NAMEOF_TYPE_T_STR(Value_t)
+              << ", Slider_t=" << NAMEOF_TYPE_T_STR(Slider_t) << ">(from=" << FROM << ", to=" << TO
               << ", start_at=" << START_AT << ", adjustment=" << ADJUSTMENT
               << ", iteration_count_min=" << ITERATION_COUNT_MIN << ")" << std::endl;
 
@@ -113,7 +115,7 @@ void testSlider(
     }
 }
 
-BOOST_AUTO_TEST_CASE(zero_to_one)
+BOOST_AUTO_TEST_CASE(SliderZeroToOne_Tests)
 {
     // should not compile
     // SliderZeroToOne<int> slider;
@@ -349,7 +351,7 @@ BOOST_AUTO_TEST_CASE(zero_to_one)
     }
 }
 
-BOOST_AUTO_TEST_CASE(from_to)
+BOOST_AUTO_TEST_CASE(SliderFromTo_Tests)
 {
     // should not compile
     // SliderFromTo<int> slider;

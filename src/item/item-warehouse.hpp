@@ -40,8 +40,8 @@ namespace item
         ~ItemWarehouse();
 
         static misc::NotNull<ItemWarehouse *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         static misc::NotNullWarehouse<Item> & Access() { return Instance()->Warehouse(); }
         misc::NotNullWarehouse<Item> & Warehouse() { return warehouse_; }

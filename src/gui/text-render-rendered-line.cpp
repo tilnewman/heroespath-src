@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -13,8 +11,8 @@
 
 #include "gui/text-render-parsing.hpp"
 #include "misc/enum-util.hpp"
-#include "sfutil/common.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -79,12 +77,11 @@ namespace gui
             texts.emplace_back(TEXT);
 
             // move to top right of this line
-            // then...
-            // shift down to a vert pos that is appropriate for the height of this text
-            const auto MOVE_V { (sf::Vector2f(posLeft, posTop) - sfutil::Position(texts.back()))
-                                + sf::Vector2f(0.0f, calcDownShiftForCharHeight(TEXT)) };
-
+            const auto MOVE_V { sf::Vector2f(posLeft, posTop) - sfutil::Position(texts.back()) };
             texts.back().move(MOVE_V);
+
+            // shift down to a vert pos that is appropriate for the height of this text
+            texts.back().move(0.0f, calcDownShiftForCharHeight(TEXT));
 
             // stretch the bounding region of this line to accommodate for the shift above
             const auto TOP_BEFORE { region.top };
@@ -106,10 +103,10 @@ namespace gui
             const auto TARGET_LINE_SPACING { (LARGEST_LINE_SPACING - TOP_GAP) };
             const auto DOWN_SHIFT_FULL { (TARGET_LINE_SPACING - region.height) };
 
-            const auto FONT_SIZE_F { misc::Max(
+            const auto FONT_SIZE_F { std::max(
                 20.0f, static_cast<float>(texts.front().getCharacterSize())) };
 
-            const auto FONT_SIZE_MULT { 1.0f - (FONT_SIZE_F / misc::Max(40.0f, FONT_SIZE_F)) };
+            const auto FONT_SIZE_MULT { 1.0f - (FONT_SIZE_F / std::max(40.0f, FONT_SIZE_F)) };
 
             const auto DOWN_SHIFT_FINAL { (DOWN_SHIFT_FULL * 2.0f) * FONT_SIZE_MULT };
 
@@ -124,36 +121,26 @@ namespace gui
 
         const std::string RenderedLine::ToString() const
         {
-            std::string str;
-            str.reserve(64 + (texts.size() * 128));
-
-            str += "{[";
+            std::ostringstream ss;
+            ss << "{[";
 
             if (texts.empty())
             {
-                str += "EMPTY";
+                ss << "EMPTY";
             }
             else
             {
                 for (const auto & TEXT : texts)
                 {
-                    str += ((TEXT.IsValid()) ? "" : "I");
-                    str += NAMEOF_ENUM(TEXT.getFont());
-                    str += '(';
-                    str += misc::ToString(TEXT.getGlobalBounds());
-                    str += ")\"";
-                    str += TEXT.getString();
-                    str += "\"dsfch=" + std::to_string(calcDownShiftForCharHeight(TEXT));
-                    str += "   ";
+                    ss << ((TEXT.IsValid()) ? "" : "I")
+                       << EnumUtil<GuiFont>::ToUnderlyingType(TEXT.getFont()) << "("
+                       << TEXT.getGlobalBounds() << ")\"" << TEXT.getString()
+                       << "\"dsfch=" << calcDownShiftForCharHeight(TEXT) << "   ";
                 }
             }
 
-            str += "]gap=";
-            str += std::to_string(topGap());
-            str += misc::ToString(region);
-            str += '}';
-
-            return str;
+            ss << "]gap=" << topGap() << region << "}";
+            return ss.str();
         }
 
         // distance between the line top (region.top) and the tallest char top

@@ -13,7 +13,6 @@
 
 #include "combat/combat-sound-effects.hpp"
 #include "combat/combat-text.hpp"
-#include "combat/creature-interaction.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
@@ -271,11 +270,13 @@ namespace stage
         , fightResult_()
         , creatureEffectIndex_(0)
         , hitInfoIndex_(0)
+        , combatSoundEffectsUPtr_(std::make_unique<combat::CombatSoundEffects>())
         , sparkleAnimUPtr_()
         , songAnimUPtr_()
         , turnCreaturePtr_(TURN_CREATURE_PTR)
         , previousPhase_(PREVIOUS_PHASE)
         , hasTakenActionSpellOrSong_(false)
+        , creatureInteraction_()
         , creatureToImageMap_()
         , creatureImageWidthScaled_(0.0f)
     {
@@ -523,9 +524,9 @@ namespace stage
                     PACKET_DESCRIPTION,
                     "closed give popup by selecting gems and the next popup spawned");
             }
-            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Shards())
+            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
             {
-                HandleGiveRequestShards();
+                HandleGiveRequestMeteorShards();
 
                 return MakeCallbackHandlerMessage(
                     PACKET_DESCRIPTION,
@@ -581,9 +582,9 @@ namespace stage
                         PACKET_DESCRIPTION,
                         "closed who-to-give-gems-to popup and attempted to give");
                 }
-                case ContentType::Shards:
+                case ContentType::MeteorShards:
                 {
-                    HandleGiveActualShards(CREATURE_TO_GIVE_TO_PTR);
+                    HandleGiveActualMeteorShards(CREATURE_TO_GIVE_TO_PTR);
 
                     return MakeCallbackHandlerMessage(
                         PACKET_DESCRIPTION,
@@ -608,9 +609,9 @@ namespace stage
 
             switch (contentType_)
             {
-                case ContentType::Shards:
+                case ContentType::MeteorShards:
                 {
-                    HandleShardsGive(PACKET.selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
+                    HandleMeteorShardsGive(PACKET.selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
 
                     return MakeCallbackHandlerMessage(
                         PACKET_DESCRIPTION,
@@ -689,11 +690,11 @@ namespace stage
                 return MakeCallbackHandlerMessage(
                     PACKET_DESCRIPTION, "closed content-selection-gems popup NOT HANDLED");
             }
-            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Shards())
+            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
             {
                 if (ActionType::Gather == actionType_)
                 {
-                    HandleShardsGather(true);
+                    HandleMeteorShardsGather(true);
 
                     return MakeCallbackHandlerMessage(
                         PACKET_DESCRIPTION,
@@ -701,7 +702,7 @@ namespace stage
                 }
                 else if (ActionType::Share == actionType_)
                 {
-                    HandleShardsShare();
+                    HandleMeteorShardsShare();
 
                     return MakeCallbackHandlerMessage(
                         PACKET_DESCRIPTION,
@@ -1123,56 +1124,33 @@ namespace stage
 
     void InventoryStage::Setup_CreatureDetails(const bool WILL_UPDATE_POSITION)
     {
-        std::string str;
-        str.reserve(256);
-
-        str += "Character # ";
-
-        str += std::to_string(
-            game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1);
-
-        str += '\n';
-        str += creaturePtr_->Name();
-        str += '\n';
-        str += creaturePtr_->SexName();
-        str += '\n';
-
-        str += creaturePtr_->RaceName();
+        std::ostringstream ss;
+        ss << "Character # "
+           << game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1 << "\n"
+           << creaturePtr_->Name() << "\n"
+           << creaturePtr_->SexName() << "\n"
+           << creaturePtr_->RaceName();
 
         if (creaturePtr_->IsBeast())
         {
             if (creaturePtr_->Race() != creature::race::Wolfen)
             {
-                str += ", ";
-                str += creaturePtr_->RoleName();
+                ss << ", " << creaturePtr_->RoleName();
             }
 
-            str += ' ';
-            str += creaturePtr_->RankClassName();
-            str += '\n';
+            ss << " " << creaturePtr_->RankClassName() << "\n";
         }
         else
         {
-            str += ' ';
-            str += creaturePtr_->RankClassName() + " " + creaturePtr_->RoleName() + "\n";
+            ss << " " << creaturePtr_->RankClassName() << " " << creaturePtr_->RoleName() << "\n";
         }
 
-        str += "Rank:  ";
-        str += creaturePtr_->Rank().ToString();
-        str += '\n';
-        str += "Experience: ";
-        str += creaturePtr_->Exp().ToString();
-        str += '\n';
-        str += "Health:  ";
-        str += creaturePtr_->HealthCurrent().ToString();
-        str += '/';
-        str += creaturePtr_->HealthNormal().ToString();
-        str += ' ';
-        str += std::to_string(int(creaturePtr_->HealthRatio()));
-        str += "%\n";
-        str += "Condition:  ";
-        str += creaturePtr_->ConditionNames(4);
-        str += "\n\n";
+        ss << "Rank:  " << creaturePtr_->Rank() << "\n"
+           << "Experience: " << creaturePtr_->Exp() << "\n"
+           << "Health:  " << creaturePtr_->HealthCurrent() << "/" << creaturePtr_->HealthNormal()
+           << " " << creaturePtr_->HealthRatio() << "%\n"
+           << "Condition:  " << creaturePtr_->ConditionNames(4) << "\n"
+           << "\n";
 
         sf::FloatRect detailsTextRect(
             CREATURE_IMAGE_POS_LEFT_ + creatureSprite_.getGlobalBounds().width
@@ -1191,7 +1169,7 @@ namespace stage
         if (!detailsTextRegionUPtr_)
         {
             const gui::TextInfo DETAILS_TEXT_INFO(
-                str,
+                ss.str(),
                 gui::GuiFont::Default,
                 gui::FontManager::Instance()->Size_Smallish(),
                 sfutil::color::GrayDarker,
@@ -1204,7 +1182,7 @@ namespace stage
         }
         else
         {
-            detailsTextRegionUPtr_->SetText(str);
+            detailsTextRegionUPtr_->SetText(ss.str());
         }
 
         detailsTextRegionUPtr_->SetEntityPos(
@@ -1228,14 +1206,14 @@ namespace stage
         const auto INT_MOD_STR { creaturePtr_->TraitModifiedString(
             creature::Traits::Intelligence, true) };
 
-        const std::string STATS_STR(
-            "Strength:       " + creaturePtr_->Strength().ToString() + " " + STR_MOD_STR + "\n"
-            + "Accuracy:      " + creaturePtr_->Accuracy().ToString() + " " + ACC_MOD_STR + "\n"
-            + "Charm:          " + creaturePtr_->Charm().ToString() + " " + CHA_MOD_STR + "\n"
-            + "Luck:             " + creaturePtr_->Luck().ToString() + " " + LCK_MOD_STR + "\n"
-            + "Speed:            " + creaturePtr_->Speed().ToString() + " " + SPD_MOD_STR + "\n"
-            + "Intelligence:   " + creaturePtr_->Intelligence().ToString() + " " + INT_MOD_STR
-            + "\n\n \n ");
+        std::ostringstream ss;
+        ss << "Strength:       " << creaturePtr_->Strength() << " " << STR_MOD_STR << "\n"
+           << "Accuracy:      " << creaturePtr_->Accuracy() << " " << ACC_MOD_STR << "\n"
+           << "Charm:          " << creaturePtr_->Charm() << " " << CHA_MOD_STR << "\n"
+           << "Luck:             " << creaturePtr_->Luck() << " " << LCK_MOD_STR << "\n"
+           << "Speed:            " << creaturePtr_->Speed() << " " << SPD_MOD_STR << "\n"
+           << "Intelligence:   " << creaturePtr_->Intelligence() << " " << INT_MOD_STR << "\n"
+           << "\n \n ";
 
         if (!statsTextRegionUPtr_)
         {
@@ -1243,7 +1221,7 @@ namespace stage
                 STATS_POS_LEFT_, sfutil::Bottom(stageTitle_.Region()) + 20.0f, 0.0f, 0.0f);
 
             const gui::TextInfo STATS_TEXT_INFO(
-                STATS_STR,
+                ss.str(),
                 gui::GuiFont::SystemCondensed,
                 gui::FontManager::Instance()->Size_Normal(),
                 sfutil::color::GrayDarker,
@@ -1256,7 +1234,7 @@ namespace stage
         }
         else
         {
-            statsTextRegionUPtr_->SetText(STATS_STR);
+            statsTextRegionUPtr_->SetText(ss.str());
         }
     }
 
@@ -1264,18 +1242,19 @@ namespace stage
     {
         const auto & INVENTORY { creaturePtr_->Inventory() };
 
-        const std::string CENTER_STR(
-            std::string("Coins:  ") + INVENTORY.Coins().ToString() + "\nGems:  "
-            + INVENTORY.Gems().ToString() + "\nMeteor Shards:  " + INVENTORY.Shards().ToString()
-            + "\nMana:  " + creaturePtr_->Mana().ToString() + "/"
-            + creaturePtr_->ManaNormal().ToString() + "\nWeight: " + INVENTORY.Weight().ToString()
-            + "/" + creaturePtr_->WeightCanCarry().ToString() + "\n\n \n ");
+        std::ostringstream ss;
+        ss << "Coins:  " << INVENTORY.Coins() << "\n"
+           << "Gems:  " << INVENTORY.Gems() << "\n"
+           << "Meteor Shards:  " << INVENTORY.MeteorShards() << "\n"
+           << "Mana:  " << creaturePtr_->Mana() << "/" << creaturePtr_->ManaNormal() << "\n"
+           << "Weight: " << INVENTORY.Weight() << "/" << creaturePtr_->WeightCanCarry() << "\n"
+           << "\n \n ";
 
         const bool WAS_ALREADY_INSTANTIATED { centerTextRegionUPtr_ };
 
         if (WAS_ALREADY_INSTANTIATED)
         {
-            centerTextRegionUPtr_->SetText(CENTER_STR);
+            centerTextRegionUPtr_->SetText(ss.str());
         }
         else
         {
@@ -1287,7 +1266,7 @@ namespace stage
                 0.0f);
 
             const gui::TextInfo CENTER_TEXT_INFO(
-                CENTER_STR,
+                ss.str(),
                 gui::GuiFont::SystemCondensed,
                 gui::FontManager::Instance()->Size_Normal(),
                 sfutil::color::GrayDarker,
@@ -2699,9 +2678,9 @@ namespace stage
         {
             const auto ITEM_PTR { itemLeftListBoxUPtr_->Selection()->Element() };
 
-            if (ITEM_PTR->IsBodyPart())
+            if (ITEM_PTR->IsBodypart())
             {
-                PopupDoneWindow("BodyPart items cannot be unequipped.", true);
+                PopupDoneWindow("Bodypart items cannot be unequipped.", true);
             }
             else
             {
@@ -2815,9 +2794,9 @@ namespace stage
         return false;
     }
 
-    bool InventoryStage::HandleGiveRequestShards()
+    bool InventoryStage::HandleGiveRequestMeteorShards()
     {
-        if (creaturePtr_->Inventory().Shards().IsZero())
+        if (creaturePtr_->Inventory().MeteorShards().IsZero())
         {
             std::ostringstream ss;
             ss << creaturePtr_->Name() << " has no Meteor Shards to give!";
@@ -2825,9 +2804,9 @@ namespace stage
         }
         else
         {
-            contentType_ = ContentType::Shards;
+            contentType_ = ContentType::MeteorShards;
 
-            if (creaturePtr_->Inventory().Shards() == 1_shard)
+            if (creaturePtr_->Inventory().MeteorShards() == 1_mshard)
             {
                 PopupCharacterSelectWindow("Give the Meteor Shard to who?");
             }
@@ -2902,8 +2881,7 @@ namespace stage
             std::ostringstream ss;
             ss << "\nGive " << CREATURE_TO_GIVE_TO_PTR->Name() << " how many coins?";
 
-            PopupNumberSelectWindow(
-                ss.str(), creaturePtr_->Inventory().Coins().GetAs<std::size_t>());
+            PopupNumberSelectWindow(ss.str(), creaturePtr_->Inventory().Coins().As<std::size_t>());
         }
 
         return false;
@@ -2920,19 +2898,18 @@ namespace stage
             std::ostringstream ss;
             ss << "\nGive " << CREATURE_TO_GIVE_TO_PTR->Name() << " how many gems?";
 
-            PopupNumberSelectWindow(
-                ss.str(), creaturePtr_->Inventory().Gems().GetAs<std::size_t>());
+            PopupNumberSelectWindow(ss.str(), creaturePtr_->Inventory().Gems().As<std::size_t>());
         }
 
         return false;
     }
 
-    bool InventoryStage::HandleGiveActualShards(
+    bool InventoryStage::HandleGiveActualMeteorShards(
         const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR)
     {
-        if (creaturePtr_->Inventory().Shards() == 1_shard)
+        if (creaturePtr_->Inventory().MeteorShards() == 1_mshard)
         {
-            HandleShardsGive(1, CREATURE_TO_GIVE_TO_PTR);
+            HandleMeteorShardsGive(1, CREATURE_TO_GIVE_TO_PTR);
         }
         else
         {
@@ -2940,7 +2917,7 @@ namespace stage
             ss << "\nGive " << CREATURE_TO_GIVE_TO_PTR->Name() << " how many Meteor Shards?";
 
             PopupNumberSelectWindow(
-                ss.str(), creaturePtr_->Inventory().Shards().GetAs<std::size_t>());
+                ss.str(), creaturePtr_->Inventory().MeteorShards().As<std::size_t>());
         }
 
         return false;
@@ -3046,9 +3023,7 @@ namespace stage
 
     bool InventoryStage::HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM)
     {
-        auto & party { game::Game::Instance()->State().Party() };
-
-        const auto CURR_INDEX { party.GetOrderNum(creaturePtr_) };
+        const auto CURR_INDEX { game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) };
 
         if (CURR_INDEX == CHARACTER_NUM)
         {
@@ -3057,7 +3032,8 @@ namespace stage
         else
         {
             return HandlePlayerChangeTo(
-                party.GetAtOrderPos(CHARACTER_NUM), (CURR_INDEX < CHARACTER_NUM));
+                game::Game::Instance()->State().Party().GetAtOrderPos(CHARACTER_NUM),
+                (CURR_INDEX < CHARACTER_NUM));
         }
     }
 
@@ -3146,11 +3122,10 @@ namespace stage
     void InventoryStage::PopupCharacterSelectWindow(
         const std::string & PROMPT_TEXT, const bool CAN_SELECT_SELF, const bool CAN_SELECT_BEASTS)
     {
-        auto & party { game::Game::Instance()->State().Party() };
+        const std::size_t CURRENT_CREATURE_ORDER_NUM(
+            game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
 
-        const std::size_t CURRENT_CREATURE_ORDER_NUM(party.GetOrderNum(creaturePtr_));
-
-        const auto NUM_CHARACTERS { party.Characters().size() };
+        const auto NUM_CHARACTERS { game::Game::Instance()->State().Party().Characters().size() };
 
         std::vector<std::string> invalidTextVec;
         invalidTextVec.resize(NUM_CHARACTERS);
@@ -3161,7 +3136,9 @@ namespace stage
             {
                 invalidTextVec[i] = "Cannot select self";
             }
-            else if (party.GetAtOrderPos(i)->IsBeast() && (CAN_SELECT_BEASTS == false))
+            else if (
+                game::Game::Instance()->State().Party().GetAtOrderPos(i)->IsBeast()
+                && (CAN_SELECT_BEASTS == false))
             {
                 invalidTextVec[i] = "Cannot select Beasts";
             }
@@ -3257,7 +3234,7 @@ namespace stage
     {
         gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Coin).PlayRandom();
 
-        creaturePtr_->CoinsAdj(-Coin_t::Make(COUNT));
+        creaturePtr_->CoinsAdj(Coin_t(static_cast<int>(COUNT) * -1));
         creatureToGiveToPtr->CoinsAdj(Coin_t::Make(COUNT));
 
         std::ostringstream ss;
@@ -3272,8 +3249,8 @@ namespace stage
     {
         gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Gem).PlayRandom();
 
-        creaturePtr_->GemsAdj(-Gem_t::Make(COUNT));
-        creatureToGiveToPtr->GemsAdj(Gem_t::Make(COUNT));
+        creaturePtr_->GemsAdj(Gem_t(static_cast<int>(COUNT) * -1));
+        creatureToGiveToPtr->GemsAdj(Gem_t(static_cast<int>(COUNT)));
 
         std::ostringstream ss;
         ss << COUNT << " gems taken from " << creaturePtr_->Name() << " and given to "
@@ -3282,13 +3259,15 @@ namespace stage
         PopupDoneWindow(ss.str(), false);
     }
 
-    void InventoryStage::HandleShardsGive(
+    void InventoryStage::HandleMeteorShardsGive(
         const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Shard).PlayRandom();
+        gui::SoundManager::Instance()
+            ->GetSoundEffectSet(gui::sound_effect_set::MeteorShard)
+            .PlayRandom();
 
-        creaturePtr_->ShardsAdj(-Shard_t::Make(COUNT));
-        creatureToGiveToPtr->ShardsAdj(Shard_t::Make(COUNT));
+        creaturePtr_->MeteorShardsAdj(MeteorShard_t(static_cast<int>(COUNT) * -1));
+        creatureToGiveToPtr->MeteorShardsAdj(MeteorShard_t(static_cast<int>(COUNT)));
 
         std::ostringstream ss;
         ss << COUNT << " Meteor Shards taken from " << creaturePtr_->Name() << " and given to "
@@ -3308,12 +3287,12 @@ namespace stage
                 if (NEXT_CREATURE_COINS_OWNED > 0_coin)
                 {
                     coinsOwnedByOtherPartyMembers += NEXT_CREATURE_COINS_OWNED;
-                    nextCreaturePtr->CoinsAdj(-NEXT_CREATURE_COINS_OWNED);
+                    nextCreaturePtr->CoinsAdj(NEXT_CREATURE_COINS_OWNED * Coin_t(-1));
                 }
             }
         }
 
-        if ((0_coin == coinsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
+        if ((0 == coinsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             PopupRejectionWindow("No other party members had any coins to gather.");
             return;
@@ -3348,12 +3327,12 @@ namespace stage
                 if (NEXT_CREATURE_GEMS_OWNED > 0_gem)
                 {
                     gemsOwnedByOtherPartyMembers += NEXT_CREATURE_GEMS_OWNED;
-                    nextCreaturePtr->GemsAdj(-NEXT_CREATURE_GEMS_OWNED);
+                    nextCreaturePtr->GemsAdj(NEXT_CREATURE_GEMS_OWNED * Gem_t(-1));
                 }
             }
         }
 
-        if ((0_gem == gemsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
+        if ((0 == gemsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             PopupRejectionWindow("No other party members had any gems to gather.");
             return;
@@ -3377,41 +3356,41 @@ namespace stage
         }
     }
 
-    void InventoryStage::HandleShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
+    void InventoryStage::HandleMeteorShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
     {
-        auto shardsOwnedByOtherPartyMembers { 0_shard };
+        auto shardsOwnedByOtherPartyMembers { 0_mshard };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                const auto NEXT_CREATURE_SHARDS { nextCreaturePtr->Inventory().Shards() };
-                if (NEXT_CREATURE_SHARDS > 0_shard)
+                const auto NEXT_CREATURE_SHARDS { nextCreaturePtr->Inventory().MeteorShards() };
+                if (NEXT_CREATURE_SHARDS > 0_mshard)
                 {
                     shardsOwnedByOtherPartyMembers += NEXT_CREATURE_SHARDS;
-                    nextCreaturePtr->ShardsAdj(-NEXT_CREATURE_SHARDS);
+                    nextCreaturePtr->MeteorShardsAdj(NEXT_CREATURE_SHARDS * MeteorShard_t(-1));
                 }
             }
         }
 
-        if ((0_shard == shardsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
+        if ((0 == shardsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             PopupRejectionWindow("No other party members had any Meteor Shards to gather.");
             return;
         }
 
-        creaturePtr_->ShardsAdj(shardsOwnedByOtherPartyMembers);
+        creaturePtr_->MeteorShardsAdj(shardsOwnedByOtherPartyMembers);
 
         if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             gui::SoundManager::Instance()
-                ->GetSoundEffectSet(gui::sound_effect_set::Shard)
+                ->GetSoundEffectSet(gui::sound_effect_set::MeteorShard)
                 .PlayRandom();
 
             std::ostringstream ss;
             ss << "\n\n"
                << creaturePtr_->Name() << " gathered " << shardsOwnedByOtherPartyMembers
                << " Meteor Shards from the rest of the party, and now has "
-               << creaturePtr_->Inventory().Shards() << ".";
+               << creaturePtr_->Inventory().MeteorShards() << ".";
 
             PopupDoneWindow(ss.str(), false);
         }
@@ -3419,17 +3398,15 @@ namespace stage
 
     void InventoryStage::HandleCoinsShare()
     {
-        auto & party { game::Game::Instance()->State().Party() };
-
         // ensure there are any coins to share
         {
-            auto totalCoins { 0_coin };
-            for (const auto & CREATURE_PTR : party.Characters())
+            Coin_t totalCoins { 0 };
+            for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalCoins += CREATURE_PTR->Inventory().Coins();
             }
 
-            if (0_coin == totalCoins)
+            if (0 == totalCoins)
             {
                 PopupRejectionWindow("The party has no coins to share.");
                 return;
@@ -3440,40 +3417,41 @@ namespace stage
 
         HandleCoinsGather(false);
 
-        const auto COINS_TOTAL { creaturePtr_->Inventory().Coins() };
+        const auto COINS_TOTAL { creaturePtr_->Inventory().Coins().As<int>() };
 
-        const auto HUMANOID_COUNT_IN_COINS { Coin_t::Make(party.GetNumHumanoid()) };
+        const auto HUMANOID_COUNT { static_cast<int>(
+            game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        const auto COINS_TO_SHARE { COINS_TOTAL / HUMANOID_COUNT_IN_COINS };
-        const auto COINS_LEFT_OVER { COINS_TOTAL % HUMANOID_COUNT_IN_COINS };
+        const auto COINS_TO_SHARE { COINS_TOTAL / HUMANOID_COUNT };
+        const auto COINS_LEFT_OVER { COINS_TOTAL % HUMANOID_COUNT };
 
-        for (auto nextCreaturePtr : party.Characters())
+        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreaturePtr->CoinsAdj(-nextCreaturePtr->Inventory().Coins());
-                nextCreaturePtr->CoinsAdj(COINS_TO_SHARE);
+                nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * Coin_t(-1));
+                nextCreaturePtr->CoinsAdj(Coin_t(COINS_TO_SHARE));
             }
         }
 
         auto toHandOut { COINS_LEFT_OVER };
-        for (auto nextCreaturePtr : party.Characters())
+        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
-            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0_coin))
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {
                 nextCreaturePtr->CoinsAdj(1_coin);
             }
         }
 
         std::ostringstream ss;
-        if (COINS_TO_SHARE > 0_coin)
+        if (COINS_TO_SHARE > 0)
         {
-            ss << "\n\nAll " << HUMANOID_COUNT_IN_COINS << " humanoid party members share "
+            ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share "
                << COINS_TO_SHARE;
 
-            if (COINS_LEFT_OVER > 0_coin)
+            if (COINS_LEFT_OVER > 0)
             {
-                ss << " or " << COINS_TO_SHARE + 1_coin;
+                ss << " or " << COINS_TO_SHARE + 1;
             }
         }
         else
@@ -3487,17 +3465,15 @@ namespace stage
 
     void InventoryStage::HandleGemsShare()
     {
-        auto & party { game::Game::Instance()->State().Party() };
-
         // ensure there are any gems to share
         {
-            auto totalGems { 0_gem };
-            for (const auto & CREATURE_PTR : party.Characters())
+            Gem_t totalGems { 0 };
+            for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalGems += CREATURE_PTR->Inventory().Gems();
             }
 
-            if (0_gem == totalGems)
+            if (0 == totalGems)
             {
                 PopupRejectionWindow("The party has no gems to share.");
                 return;
@@ -3508,40 +3484,40 @@ namespace stage
 
         HandleGemsGather(false);
 
-        const auto GEMS_TOTAL { creaturePtr_->Inventory().Gems() };
+        const auto GEMS_TOTAL { creaturePtr_->Inventory().Gems().As<int>() };
 
-        const auto HUMANOID_COUNT_IN_GEMS { Gem_t::Make(party.GetNumHumanoid()) };
+        const auto HUMANOID_COUNT { static_cast<int>(
+            game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        const auto GEMS_TO_SHARE { GEMS_TOTAL / HUMANOID_COUNT_IN_GEMS };
-        const auto GEMS_LEFT_OVER { GEMS_TOTAL % HUMANOID_COUNT_IN_GEMS };
+        const auto GEMS_TO_SHARE { GEMS_TOTAL / HUMANOID_COUNT };
+        const auto GEMS_LEFT_OVER { GEMS_TOTAL % HUMANOID_COUNT };
 
-        for (auto nextCreaturePtr : party.Characters())
+        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreaturePtr->GemsAdj(-nextCreaturePtr->Inventory().Gems());
-                nextCreaturePtr->GemsAdj(GEMS_TO_SHARE);
+                nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * Gem_t(-1));
+                nextCreaturePtr->GemsAdj(Gem_t(GEMS_TO_SHARE));
             }
         }
 
         auto toHandOut { GEMS_LEFT_OVER };
-        for (auto nextCreaturePtr : party.Characters())
+        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
-            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0_gem))
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {
                 nextCreaturePtr->GemsAdj(1_gem);
             }
         }
 
         std::ostringstream ss;
-        if (GEMS_TO_SHARE > 0_gem)
+        if (GEMS_TO_SHARE > 0)
         {
-            ss << "\n\nAll " << HUMANOID_COUNT_IN_GEMS << " humanoid party members share "
-               << GEMS_TO_SHARE;
+            ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << GEMS_TO_SHARE;
 
-            if (GEMS_LEFT_OVER > 0_gem)
+            if (GEMS_LEFT_OVER > 0)
             {
-                ss << " or " << GEMS_TO_SHARE + 1_gem;
+                ss << " or " << GEMS_TO_SHARE + 1;
             }
         }
         else
@@ -3553,63 +3529,66 @@ namespace stage
         PopupDoneWindow(ss.str(), false);
     }
 
-    void InventoryStage::HandleShardsShare()
+    void InventoryStage::HandleMeteorShardsShare()
     {
-        auto & party { game::Game::Instance()->State().Party() };
-
         // ensure there are any shards to share
         {
-            auto totalShards { 0_shard };
-            for (const auto & CREATURE_PTR : party.Characters())
+            MeteorShard_t totalShards { 0 };
+            for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
-                totalShards += CREATURE_PTR->Inventory().Shards();
+                totalShards += CREATURE_PTR->Inventory().MeteorShards();
             }
 
-            if (0_shard == totalShards)
+            if (0 == totalShards)
             {
                 PopupRejectionWindow("The party has no Meteor Shards to share.");
                 return;
             }
         }
 
-        gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Shard).PlayRandom();
+        gui::SoundManager::Instance()
+            ->GetSoundEffectSet(gui::sound_effect_set::MeteorShard)
+            .PlayRandom();
 
-        HandleShardsGather(false);
+        HandleMeteorShardsGather(false);
 
-        const auto METEORSHARDS_TOTAL { creaturePtr_->Inventory().Shards() };
+        const int METEORSHARDS_TOTAL { creaturePtr_->Inventory().MeteorShards().As<int>() };
 
-        const auto HUMANOID_COUNT_IN_SHARDS { Shard_t::Make(party.GetNumHumanoid()) };
+        const int HUMANOID_COUNT { static_cast<int>(
+            game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        const auto METEORSHARDS_TO_SHARE { METEORSHARDS_TOTAL / HUMANOID_COUNT_IN_SHARDS };
-        const auto METEORSHARDS_LEFT_OVER { METEORSHARDS_TOTAL % HUMANOID_COUNT_IN_SHARDS };
+        const auto METEORSHARDS_TO_SHARE { METEORSHARDS_TOTAL / HUMANOID_COUNT };
+        const auto METEORSHARDS_LEFT_OVER { METEORSHARDS_TOTAL % HUMANOID_COUNT };
 
-        for (auto nextCreaturePtr : party.Characters())
+        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreaturePtr->ShardsAdj(-nextCreaturePtr->Inventory().Shards());
-                nextCreaturePtr->ShardsAdj(METEORSHARDS_TO_SHARE);
+                nextCreaturePtr->MeteorShardsAdj(
+                    nextCreaturePtr->Inventory().MeteorShards() * MeteorShard_t(-1));
+
+                nextCreaturePtr->MeteorShardsAdj(MeteorShard_t(METEORSHARDS_TO_SHARE));
             }
         }
 
         auto toHandOut { METEORSHARDS_LEFT_OVER };
-        for (auto nextCreaturePtr : party.Characters())
+        for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
-            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0_shard))
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {
-                nextCreaturePtr->ShardsAdj(1_shard);
+                nextCreaturePtr->MeteorShardsAdj(1_mshard);
             }
         }
 
         std::ostringstream ss;
-        if (METEORSHARDS_TO_SHARE > 0_shard)
+        if (METEORSHARDS_TO_SHARE > 0)
         {
-            ss << "\n\nAll " << HUMANOID_COUNT_IN_SHARDS << " humanoid party members share "
+            ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share "
                << METEORSHARDS_TO_SHARE;
 
-            if (METEORSHARDS_LEFT_OVER > 0_shard)
+            if (METEORSHARDS_LEFT_OVER > 0)
             {
-                ss << " or " << METEORSHARDS_TO_SHARE + 1_shard;
+                ss << " or " << METEORSHARDS_TO_SHARE + 1;
             }
         }
         else
@@ -3720,27 +3699,35 @@ namespace stage
             (SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f),
             DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_);
 
-        std::string str(
-            ITEM_PTR->Name() + "\n" + ITEM_PTR->Desc() + "\n\n"
-            + item::Category::Name(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) + "\n");
+        std::ostringstream ss;
+        ss << ITEM_PTR->Name() << "\n"
+           << ITEM_PTR->Desc() << "\n\n"
+           << item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) << "\n";
 
-        str += "\nweighs " + ITEM_PTR->Weight().ToString() + "\nworth about "
-            + ITEM_PTR->Price().ToString() + " coins\n";
+        if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
+        {
+            ss << "(can only be used by " << creature::role::ToString(ITEM_PTR->ExclusiveRole())
+               << "s)\n";
+        }
+
+        ss << "\n";
+
+        ss << "weighs " << ITEM_PTR->Weight() << "\n"
+           << "worth about " << ITEM_PTR->Price() << " coins\n";
 
         if (ITEM_PTR->IsWeapon())
         {
-            str += std::string("Damage:  ") + ITEM_PTR->DamageMin().ToString() + "-"
-                + ITEM_PTR->DamageMax().ToString();
+            ss << "Damage:  " << ITEM_PTR->DamageMin() << "-" << ITEM_PTR->DamageMax();
         }
         else if (ITEM_PTR->IsArmor())
         {
-            str += "Armor Bonus:  " + ITEM_PTR->ArmorRating().ToString();
+            ss << "Armor Bonus:  " << ITEM_PTR->ArmorRating();
         }
 
-        str += "\n\n";
+        ss << "\n\n";
 
         const gui::TextInfo TEXT_INFO(
-            str,
+            ss.str(),
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
@@ -3782,29 +3769,30 @@ namespace stage
             (SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f),
             DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_ + sfutil::SpacerOld(50.0f));
 
-        const std::string STR(
-            "\n" + MakeTitleString(CREATURE_PTR, creature::AchievementType::EnemiesFaced)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::MeleeHits)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BattlesSurvived)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::ProjectileHits)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BeastMindLinks)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedStanding)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedFlying)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::LocksPicked)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BackstabHits)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::SongsPlayed)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::SpiritsLifted)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::BeastRoars)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::MoonHowls)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::PackActions)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::FlyingAttackHits)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::TurnsInFlight)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::SpellsCast)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthGiven)
-            + MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthTraded));
+        std::ostringstream ss;
+        ss << "\n"
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::EnemiesFaced)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::MeleeHits)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::BattlesSurvived)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::ProjectileHits)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::BeastMindLinks)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedStanding)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::DodgedFlying)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::LocksPicked)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::BackstabsHits)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::SongsPlayed)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::SpiritsLifted)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::BeastRoars)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::MoonHowls)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::PackActions)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::FlyingAttackHits)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::TurnsInFlight)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::SpellsCast)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthGiven)
+           << MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthTraded);
 
         const gui::TextInfo TEXT_INFO(
-            STR,
+            ss.str(),
             gui::GuiFont::Default,
             gui::FontManager::Instance()->Size_Smallish(),
             sf::Color::White,
@@ -3830,9 +3818,12 @@ namespace stage
 
         if (ACHIEVEMENT.IsRoleInList(CREATURE_PTR->Role()))
         {
-            return "\n" + ACHIEVEMENT.Name() + MakeTitleSeparatorString(WHICH_ACHV)
-                + std::to_string(ACHIEVEMENT.Count())
-                + MakeTitleCountNeededString(CREATURE_PTR, WHICH_ACHV);
+            std::ostringstream ss;
+            ss << "\n"
+               << ACHIEVEMENT.Name() << MakeTitleSeparatorString(WHICH_ACHV) << ACHIEVEMENT.Count()
+               << MakeTitleCountNeededString(CREATURE_PTR, WHICH_ACHV);
+
+            return ss.str();
         }
         else
         {
@@ -3853,8 +3844,11 @@ namespace stage
             const auto ACHV_COUNT_CURRENT { ACHIEVEMENTS.Get(WHICH_ACHV).Count() };
             const auto NEEDED_COUNT { ACHV_COUNT_REQUIRED - ACHV_COUNT_CURRENT };
 
-            return ", need  " + std::to_string(NEEDED_COUNT) + " more to achieve \""
-                + TITLE_PTR_OPT.value()->Name() + "\"";
+            std::ostringstream ss;
+            ss << ", need  " << NEEDED_COUNT << " more to achieve \""
+               << TITLE_PTR_OPT.value()->Name() << "\"";
+
+            return ss.str();
         }
         else
         {
@@ -3899,7 +3893,7 @@ namespace stage
             {
                 return ":                  ";
             }
-            case creature::AchievementType::BackstabHits:
+            case creature::AchievementType::BackstabsHits:
             {
                 return ":                ";
             }
@@ -3997,7 +3991,7 @@ namespace stage
             std::ostringstream ssErr;
             ssErr << "stage::InventoryStage::HandleCast Step2 SelectTargetOrPerformOnAll"
                   << "(spell=" << SPELL_NAME << ") had a target_type of "
-                  << NAMEOF_ENUM(SPELL_TARGET)
+                  << combat::TargetType::ToString(SPELL_TARGET)
                   << " which is not yet supported while in Inventory stage.";
 
             SystemErrorPopup(
@@ -4010,12 +4004,11 @@ namespace stage
     void InventoryStage::HandleCast_Step2_PerformSpell(
         const spell::SpellPtr_t SPELL_PTR, const creature::CreaturePVec_t & TARGET_CREATURES_PVEC)
     {
-        combat::CombatSoundEffects::PlaySpell(SPELL_PTR);
+        combatSoundEffectsUPtr_->PlaySpell(SPELL_PTR);
 
         turnActionInfo_ = combat::TurnActionInfo(SPELL_PTR, TARGET_CREATURES_PVEC);
 
-        fightResult_
-            = combat::CreatureInteraction::Cast(SPELL_PTR, creaturePtr_, TARGET_CREATURES_PVEC);
+        fightResult_ = creatureInteraction_.Cast(SPELL_PTR, creaturePtr_, TARGET_CREATURES_PVEC);
 
         Setup_CreatureDetails(false);
         Setup_CreatureStats();
@@ -4191,7 +4184,7 @@ namespace stage
             std::ostringstream ssErr;
             ssErr << "stage::InventoryStage::HandleSong"
                   << "(song=" << SONG_PTR->Name() << ") had a target_type of "
-                  << NAMEOF_ENUM(SONG_PTR->Target())
+                  << combat::TargetType::ToString(SONG_PTR->Target())
                   << " which is not yet supported while in Inventory stage.";
 
             SystemErrorPopup(
@@ -4203,7 +4196,7 @@ namespace stage
         else
         {
             songBeingPlayedPtrOpt_ = SONG_PTR;
-            combat::CombatSoundEffects::PlaySong(SONG_PTR);
+            combatSoundEffectsUPtr_->PlaySong(SONG_PTR);
 
             const auto TARGETS_PVEC { (
                 (SONG_PTR->Target() == combat::TargetType::AllCompanions)
@@ -4211,8 +4204,7 @@ namespace stage
                     : creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
 
             turnActionInfo_ = combat::TurnActionInfo(SONG_PTR, TARGETS_PVEC);
-            fightResult_
-                = combat::CreatureInteraction::PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);
+            fightResult_ = creatureInteraction_.PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);
 
             Setup_CreatureDetails(false);
             Setup_CreatureStats();
@@ -4341,7 +4333,7 @@ namespace stage
         const gui::ImageTextEntityUPtr_t & BUTTON_UPTR, const sf::Vector2f & MOUSE_POS_V)
     {
         if ((BUTTON_UPTR->GetMouseState() == gui::MouseState::Disabled)
-            && BUTTON_UPTR->Contains(MOUSE_POS_V))
+            && BUTTON_UPTR->GetEntityRegion().contains(MOUSE_POS_V))
         {
             PopupRejectionWindow(BUTTON_UPTR->GetMouseHoverText());
             return true;

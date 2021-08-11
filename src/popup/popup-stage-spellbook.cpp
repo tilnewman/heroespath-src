@@ -15,7 +15,6 @@
 #include "gui/cached-texture.hpp"
 #include "gui/font-manager.hpp"
 #include "gui/sound-manager.hpp"
-#include "misc/enum-util.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
 #include "spell/spell.hpp"
@@ -468,7 +467,7 @@ namespace popup
         ss << "Mana Cost: " << SPELL_PTR->ManaCost() << "\n"
            << "Rank: " << SPELL_PTR->Rank() << "\n"
            << "Targets " << combat::TargetType::Name(SPELL_PTR->Target()) << "\n"
-           << "Cast during " << EnumUtil<game::Phase>::ToString(SPELL_PTR->ValidPhases()) << "\n";
+           << "Cast during " << game::Phase::ToString(SPELL_PTR->ValidPhases()) << "\n";
 
         if (!spellDetailsTextUPtr_)
         {
@@ -535,8 +534,7 @@ namespace popup
             }
             else
             {
-                ss << "Only during " << EnumUtil<game::Phase>::ToString(SPELL_PTR->ValidPhases())
-                   << ".";
+                ss << "Only during " << game::Phase::ToString(SPELL_PTR->ValidPhases()) << ".";
             }
         }
 
@@ -552,9 +550,9 @@ namespace popup
 
         const auto SPELL_UNABLE_TEXTRECT_LEFT { pageRectRight_.left };
 
-        const auto SPELL_UNABLE_TEXTRECT_TOP {
-            sfutil::Bottom(spellDetailsTextUPtr_->GetEntityRegion()) + VERT_SPACER
-        };
+        const auto SPELL_UNABLE_TEXTRECT_TOP { spellDetailsTextUPtr_->GetEntityRegion().top
+                                               + spellDetailsTextUPtr_->GetEntityRegion().height
+                                               + VERT_SPACER };
 
         const auto SPELL_UNABLE_TEXTRECT_WIDTH { pageRectRight_.width };
         const auto SPELL_UNABLE_TEXTRECT_HEIGHT { 0.0f };

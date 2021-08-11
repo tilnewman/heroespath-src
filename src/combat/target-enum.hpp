@@ -18,7 +18,7 @@ namespace heroespath
 namespace combat
 {
 
-    struct TargetType : public EnumBaseCounting<EnumNameOfZeroIsNone>
+    struct TargetType : public EnumBaseCounting<EnumFirstValue::None>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -32,22 +32,8 @@ namespace combat
             Count
         };
 
-        static constexpr std::string_view Name(const Enum TARGET_TYPE) noexcept
-        {
-            switch (TARGET_TYPE)
-            {
-                case None: return "(None)";
-                case SingleOpponent: return "Single Opponent";
-                case AllOpponents: return "All Opponents";
-                case SingleCompanion: return "Single Companion";
-                case AllCompanions: return "All Companions";
-                case Item: return "Item";
-                case QuestSpecific: return "(Quest Specific)";
-                case Count: return "Count";
-                default: return "combat::TargetType::Name(ENUM=out_of_range)";
-            }
-        }
-
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
         static const std::string ActionPhrase(const Enum);
     };
 

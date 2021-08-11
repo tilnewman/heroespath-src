@@ -50,6 +50,7 @@ namespace gui
     {
     public:
         Display(const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
+        ~Display();
 
         Display(const Display &) = delete;
         Display(Display &&) = delete;
@@ -61,7 +62,7 @@ namespace gui
         static void Acquire(
             const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
 
-        static void Destroy();
+        static void Release();
 
         float GetWinWidth() const;
         float GetWinHeight() const;
@@ -78,12 +79,10 @@ namespace gui
                 0, 0, static_cast<int>(GetWinWidthu()), static_cast<int>(GetWinHeightu()));
         }
 
-        // zero disables the limit
         void SetFrameRateLimit(const unsigned LIMIT);
 
         unsigned GetFrameRateLimit() const { return frameRateLimit_; }
 
-        // false disables the limit
         void SetVerticalSync(const bool WILL_SYNC);
 
         bool GetVerticalSync() const { return willVerticalSync_; }
@@ -104,10 +103,13 @@ namespace gui
 
         bool IsOpen() const;
 
-        void ClearToBlack() { ClearTo(sf::Color::Black); }
-        void ClearTo(const sf::Color & COLOR);
+        void ClearToBlack();
 
         void DisplayFrameBuffer();
+
+        // TODO move this to the config file
+        static float GetWinWidthMin() { return 1280.0f; }
+        static float GetWinHeightMin() { return 900.0f; }
 
         // These are not enforced.  They exist only to aid in setting screen positions
         // that are relative to min/max sizes.
@@ -117,8 +119,8 @@ namespace gui
         // correctly!
         //
         // When I finish eliminating all calls to MapByRes() then this crap can be removed.
-        static const sf::Vector2f GetWinSizeMin() { return { 1280.0f, 900.0f }; }
-        static const sf::Vector2f GetWinSizeMax() { return { 7680.0f, 4800.0f }; }
+        static float GetWinWidthMax() { return 7680.0f; }
+        static float GetWinHeightMax() { return 4800.0f; }
 
         static bool IsResolutionListed(const Resolution & RES);
         static bool IsVideoModeListed(const sf::VideoMode & VM);
@@ -153,14 +155,12 @@ namespace gui
         // min required res.  zTn 2016-10-10
         static bool IsVideoModeSupported(const sf::VideoMode & V)
         {
-            const sf::Vector2u WIN_SIZE_MIN_U(GetWinSizeMin());
-            return ((V.width >= WIN_SIZE_MIN_U.x) && (V.height >= WIN_SIZE_MIN_U.y));
+            return ((V.width >= GetWinWidthMin()) && (V.height >= GetWinHeightMin()));
         }
 
         static bool IsResolutionSupported(const Resolution & R)
         {
-            const sf::Vector2u WIN_SIZE_MIN_U(GetWinSizeMin());
-            return ((R.width >= WIN_SIZE_MIN_U.x) && (R.height >= WIN_SIZE_MIN_U.y));
+            return ((R.width >= GetWinWidthMin()) && (R.height >= GetWinHeightMin()));
         }
 
         static bool IsCurrentDesktopResolutionSupported()
@@ -171,20 +171,7 @@ namespace gui
         // returns the number of supported fullscreen video modes that were supported.
         static std::size_t ComposeSupportedFullScreenVideoModesVec(ResolutionVec_t & vec);
 
-        static const sf::VideoMode EstablishVideoMode(const bool WILL_USE_MIN_RESOLUTION = false)
-        {
-            if (WILL_USE_MIN_RESOLUTION)
-            {
-                return EstablishVideoModeMinResolution();
-            }
-            else
-            {
-                return EstablishVideoModeMaxResolution();
-            }
-        }
-
-        static const sf::VideoMode EstablishVideoModeMaxResolution();
-        static const sf::VideoMode EstablishVideoModeMinResolution();
+        static const sf::VideoMode EstablishVideoMode();
 
         static Resolution ConvertVideoModeToResolution(const sf::VideoMode & VM);
 

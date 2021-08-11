@@ -13,9 +13,9 @@
 
 #include "gui/gui-images.hpp"
 #include "misc/log-macros.hpp"
-#include "sfutil/common.hpp"
 #include "sfutil/display.hpp"
-#include "sfutil/scale.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -209,7 +209,7 @@ namespace gui
         const Orientation::Enum ORIENTATION_PARAM, const Side::Enum SIDE) const
     {
         const auto ORIENTATION { (
-            (ORIENTATION_PARAM >= Orientation::Count) ? Orientation::Horiz : ORIENTATION_PARAM) };
+            (ORIENTATION_PARAM == Orientation::Count) ? Orientation::Horiz : ORIENTATION_PARAM) };
 
         sf::FloatRect topOrLeftRect;
         sf::FloatRect botOrRightRect;
@@ -257,7 +257,7 @@ namespace gui
         const bool WILL_CAP_ENDS)
     {
         const auto ORIENTATION { (
-            (ORIENTATION_PARAM >= Orientation::Count) ? Orientation::Horiz : ORIENTATION_PARAM) };
+            (ORIENTATION_PARAM == Orientation::Count) ? Orientation::Horiz : ORIENTATION_PARAM) };
 
         const auto LENGTH = [&]() {
             if (LENGTH_ORIG < 0.0f)
@@ -485,10 +485,10 @@ namespace gui
             if (WILL_GROW_BORDER_TO_CONTAIN_REGION)
             {
                 const auto MIN_WIDTH { (
-                    misc::Abs(OUTER_MOVE_TOP_LEFT_V.x) + misc::Abs(OUTER_MOVE_TOP_RIGHT_V.x)) };
+                    std::abs(OUTER_MOVE_TOP_LEFT_V.x) + std::abs(OUTER_MOVE_TOP_RIGHT_V.x)) };
 
                 const auto MIN_HEIGHT { (
-                    misc::Abs(OUTER_MOVE_TOP_LEFT_V.y) + misc::Abs(OUTER_MOVE_BOT_LEFT_V.y)) };
+                    std::abs(OUTER_MOVE_TOP_LEFT_V.y) + std::abs(OUTER_MOVE_BOT_LEFT_V.y)) };
 
                 const auto FULL_WIDTH { (
                     TEXTURE_RECT_CORNER_TOP_LEFT.width + TEXTURE_RECT_CORNER_TOP_RIGHT.width) };
@@ -498,7 +498,7 @@ namespace gui
 
                 if (REGION.width < FULL_WIDTH)
                 {
-                    sizeV.x = std::floor(misc::Max(REGION.width * 0.5f, MIN_WIDTH * 0.5f));
+                    sizeV.x = std::floor(std::max(REGION.width * 0.5f, MIN_WIDTH * 0.5f));
                 }
                 else
                 {
@@ -507,7 +507,7 @@ namespace gui
 
                 if (REGION.height < FULL_HEIGHT)
                 {
-                    sizeV.y = std::floor(misc::Max(REGION.height * 0.5f, MIN_HEIGHT * 0.5f));
+                    sizeV.y = std::floor(std::max(REGION.height * 0.5f, MIN_HEIGHT * 0.5f));
                 }
                 else
                 {
@@ -551,32 +551,31 @@ namespace gui
              OUTER_MOVE_TOP_RIGHT_V = OUTER_MOVE_TOP_RIGHT_V,
              OUTER_MOVE_BOT_RIGHT_V = OUTER_MOVE_BOT_RIGHT_V,
              OUTER_MOVE_BOT_LEFT_V = OUTER_MOVE_BOT_LEFT_V]() {
-                auto top { misc::Max(
+                auto top { std::max(
                     0.0f,
                     ((REGION.width - CORNER_SIZE_TOP_LEFT_V.x)
                      - (CORNER_SIZE_TOP_RIGHT_V.x + 1.0f))) };
 
-                auto bot { misc::Max(
+                auto bot { std::max(
                     0.0f,
                     ((REGION.width - CORNER_SIZE_BOT_LEFT_V.x)
                      - (CORNER_SIZE_BOT_RIGHT_V.x + 1.0f))) };
 
-                auto left { misc::Max(
+                auto left { std::max(
                     0.0f,
                     ((REGION.height - CORNER_SIZE_TOP_LEFT_V.y)
                      - (CORNER_SIZE_BOT_LEFT_V.y + 1.0f))) };
 
-                auto right { misc::Max(
+                auto right { std::max(
                     0.0f,
                     ((REGION.height - CORNER_SIZE_TOP_RIGHT_V.y)
                      - (CORNER_SIZE_BOT_RIGHT_V.y + 1.0f))) };
 
-                top += (misc::Abs(OUTER_MOVE_TOP_LEFT_V.x) + misc::Abs(OUTER_MOVE_TOP_RIGHT_V.x));
-                bot += (misc::Abs(OUTER_MOVE_BOT_LEFT_V.x) + misc::Abs(OUTER_MOVE_BOT_RIGHT_V.x));
-                left += (misc::Abs(OUTER_MOVE_TOP_LEFT_V.y) + misc::Abs(OUTER_MOVE_BOT_LEFT_V.y));
+                top += (std::abs(OUTER_MOVE_TOP_LEFT_V.x) + std::abs(OUTER_MOVE_TOP_RIGHT_V.x));
+                bot += (std::abs(OUTER_MOVE_BOT_LEFT_V.x) + std::abs(OUTER_MOVE_BOT_RIGHT_V.x));
+                left += (std::abs(OUTER_MOVE_TOP_LEFT_V.y) + std::abs(OUTER_MOVE_BOT_LEFT_V.y));
 
-                right
-                    += (misc::Abs(OUTER_MOVE_TOP_RIGHT_V.y) + misc::Abs(OUTER_MOVE_BOT_RIGHT_V.y));
+                right += (std::abs(OUTER_MOVE_TOP_RIGHT_V.y) + std::abs(OUTER_MOVE_BOT_RIGHT_V.y));
 
                 return std::make_tuple(top, right, bot, left);
             }();
@@ -648,7 +647,7 @@ namespace gui
 
                 if (HEIGHT_OVERLAP < 0.0f)
                 {
-                    const auto VERT_SHRINK { (misc::Abs(HEIGHT_OVERLAP) * 0.5f) };
+                    const auto VERT_SHRINK { (std::abs(HEIGHT_OVERLAP) * 0.5f) };
                     heightTop -= VERT_SHRINK;
                     heightBot -= VERT_SHRINK;
                 }
@@ -662,7 +661,7 @@ namespace gui
 
                 if (WIDTH_OVERLAP < 0.0f)
                 {
-                    const auto HORIZ_SHRINK { (misc::Abs(WIDTH_OVERLAP) * 0.5f) };
+                    const auto HORIZ_SHRINK { (std::abs(WIDTH_OVERLAP) * 0.5f) };
                     widthLeft -= HORIZ_SHRINK;
                     widthRight -= HORIZ_SHRINK;
                 }
@@ -813,7 +812,7 @@ namespace gui
         }
         else
         {
-            length_ = misc::Max(outerRegion_.width, outerRegion_.height);
+            length_ = std::max(outerRegion_.width, outerRegion_.height);
         }
     }
 

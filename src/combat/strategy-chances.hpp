@@ -12,12 +12,12 @@
 #include "combat/strategy-enums.hpp"
 #include "combat/strategy-info.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/vector-map.hpp"
 
 #include <numeric>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -151,36 +151,22 @@ namespace combat
                 const misc::VectorMap<EnumType, float> & CHANCE_MAP,
                 const bool WILL_WRAP = false) const
             {
-                std::string result;
-                result.reserve(64);
+                const std::string SEP(", ");
+
+                std::ostringstream ss;
 
                 if (WILL_WRAP)
                 {
-                    result += '(';
+                    ss << "(";
                 }
 
                 for (const auto & NEXT_TYPECHANCE_PAIR : CHANCE_MAP)
                 {
-                    if (!result.empty())
-                    {
-                        result += ", ";
-                    }
-
-                    result += EnumUtil<StructType>::ToString(NEXT_TYPECHANCE_PAIR.first);
-                    result += ':';
-                    result += std::to_string(NEXT_TYPECHANCE_PAIR.second);
+                    ss << StructType::ToString(NEXT_TYPECHANCE_PAIR.first) << ":"
+                       << NEXT_TYPECHANCE_PAIR.second << SEP;
                 }
 
-                if (result.compare("(") == 0)
-                {
-                    result.clear();
-                }
-                else if (WILL_WRAP)
-                {
-                    result += ')';
-                }
-
-                return result;
+                return boost::algorithm::erase_last_copy(ss.str(), SEP) + ((WILL_WRAP) ? ")" : "");
             }
 
         private:

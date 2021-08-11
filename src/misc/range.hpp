@@ -9,7 +9,7 @@
 //
 // trap.hpp
 //
-#include "misc/real.hpp"
+#include <algorithm>
 
 namespace heroespath
 {
@@ -21,46 +21,34 @@ namespace misc
     class Range
     {
     public:
-        Range() = delete;
-
-        constexpr Range(const T & A, const T & B) noexcept
+        explicit Range(const T A = 0, const T B = 0)
             : a_(A)
             , b_(B)
         {}
 
-        constexpr Range(const Range &) noexcept = default;
-        constexpr Range(Range &&) noexcept = default;
-        constexpr Range & operator=(const Range &) noexcept = default;
-        constexpr Range & operator=(Range &&) noexcept = default;
+        constexpr T A() const { return a_; }
+        constexpr T B() const { return b_; }
 
-        constexpr T A() const noexcept { return a_; }
-        constexpr T B() const noexcept { return b_; }
+        constexpr T From() const { return a_; }
+        constexpr T To() const { return b_; }
 
-        constexpr T From() const noexcept { return a_; }
-        constexpr T To() const noexcept { return b_; }
+        constexpr T Min() const { return std::min(a_, b_); }
+        constexpr T Max() const { return std::max(a_, b_); }
 
-        constexpr T Min() const noexcept { return misc::Min(a_, b_); }
-        constexpr T Max() const { return misc::Max(a_, b_); }
+        constexpr T Diff() const { return Max() - Min(); }
 
-        constexpr T Diff() const noexcept { return Max() - Min(); }
+        constexpr T Mid() const { return Min() + (Diff() / T(2)); }
 
-        template <typename Return_t = T>
-        constexpr Return_t Mid() const noexcept
-        {
-            return (static_cast<Return_t>(Min()) + (static_cast<Return_t>(Diff()) / Return_t(2)));
-        }
+        constexpr T Avg() const { return (a_ + b_) / T(2); }
 
-        template <typename Return_t = T>
-        constexpr Return_t Avg() const noexcept
-        {
-            return ((static_cast<Return_t>(a_) + static_cast<Return_t>(b_)) / Return_t(2));
-        }
+        constexpr float AvgFloat() const { return static_cast<float>(a_ + b_) * 0.5f; }
+
+        constexpr double AvgDouble() const { return static_cast<double>(a_ + b_) * 0.5; }
 
     private:
         T a_;
         T b_;
     };
-
 } // namespace misc
 } // namespace heroespath
 

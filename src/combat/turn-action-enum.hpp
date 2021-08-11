@@ -18,7 +18,7 @@ namespace heroespath
 namespace combat
 {
 
-    struct TurnAction : public EnumBaseCounting<EnumNameOfZeroIsNothing>
+    struct TurnAction : public EnumBaseCounting<EnumFirstValue::Nothing>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -40,29 +40,8 @@ namespace combat
             Count
         };
 
-        static constexpr std::string_view Name(const TurnAction::Enum ENUM)
-        {
-            switch (ENUM)
-            {
-                case Nothing: return "Does Nothing";
-                case Attack: return "Attacks";
-                case Block: return "Blocks";
-                case Advance: return "Advances";
-                case Retreat: return "Retreats";
-                case Fly: return "Flies";
-                case Land: return "Lands";
-                case Cast: return "Casts a Spell";
-                case PlaySong: return "Plays a Magical Song";
-                case SkyPounce: return "Pounces from the Sky";
-                case LandPounce: return "Pounces";
-                case Roar: return "Roars";
-                case ChangeWeapon: return "Changes Weapons";
-                case Run: return "Runs Away";
-                case TreasureUnlock: return "Springs the trap";
-                case Count: return "Count";
-                default: return "combat::TurnAction_out_of_range";
-            }
-        }
+        static const std::string ToString(const TurnAction::Enum);
+        static const std::string Name(const TurnAction::Enum);
         static bool IsMove(const Enum ENUM) { return ((ENUM == Advance) || (ENUM == Retreat)); }
     };
 

@@ -11,12 +11,14 @@
 //
 #include "misc/enum-common.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace gui
 {
 
-    struct MouseState : public EnumBaseCounting<>
+    struct MouseState : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -26,6 +28,8 @@ namespace gui
             Disabled,
             Count
         };
+
+        static const std::string ToString(const MouseState::Enum);
     };
 
 } // namespace gui

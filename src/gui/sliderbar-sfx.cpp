@@ -34,15 +34,15 @@ namespace gui
         const float RELATIVE_LABEL_POS_LEFT,
         const float RELATIVE_LABEL_POS_TOP)
         : SliderBarLabeled(
-              std::string(NAME).append("_SliderBarMusic"),
-              POS_LEFT,
-              POS_TOP,
-              LENGTH,
-              STYLE,
-              THREE_TEXT_INFOS,
-              INITIAL_VALUE,
-              RELATIVE_LABEL_POS_LEFT,
-              RELATIVE_LABEL_POS_TOP)
+            std::string(NAME).append("_SliderBarMusic"),
+            POS_LEFT,
+            POS_TOP,
+            LENGTH,
+            STYLE,
+            THREE_TEXT_INFOS,
+            INITIAL_VALUE,
+            RELATIVE_LABEL_POS_LEFT,
+            RELATIVE_LABEL_POS_TOP)
         , timeSinceLastPlaySec_(0.0f)
     {
         WillPlaySfx(false);
@@ -65,19 +65,20 @@ namespace gui
         const auto CURRENT_POS_PERCENT_INT { static_cast<int>(CURRENT_POS_PERCENT) };
         TextInfo textInfo { TextInfoFromCurrentPositionPercent(CURRENT_POS_PERCENT_INT) };
 
-        textInfo.text.reserve(8);
+        std::ostringstream ss;
 
         if (CURRENT_POS_PERCENT_INT == 0)
         {
-            textInfo.text += "MUTE";
+            ss << "MUTE";
             textInfo.font_letters = gui::GuiFont::SystemCondensed;
         }
         else
         {
-            textInfo.text += std::to_string(CURRENT_POS_PERCENT_INT);
+            ss << CURRENT_POS_PERCENT_INT;
             textInfo.font_letters = gui::GuiFont::Number;
         }
 
+        textInfo.text = ss.str();
         return textInfo;
     }
 

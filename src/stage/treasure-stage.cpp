@@ -12,7 +12,6 @@
 #include "treasure-stage.hpp"
 
 #include "combat/combat-text.hpp"
-#include "combat/creature-interaction.hpp"
 #include "combat/encounter.hpp"
 #include "combat/trap-holder.hpp"
 #include "creature/algorithms.hpp"
@@ -25,6 +24,7 @@
 #include "gui/font-manager.hpp"
 #include "gui/list-element.hpp"
 #include "gui/text-region.hpp"
+#include "item/item-profile-warehouse.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -102,6 +102,7 @@ namespace stage
         , updateItemDisplayNeeded_(false)
         , willProcessLockpickTitle_(false)
         , lockPicking_()
+        , creatureInteraction_()
     {}
 
     TreasureStage::~TreasureStage()
@@ -548,12 +549,13 @@ namespace stage
         {
             gui::SoundManager::Instance()->PlaySfx_AckMajor();
 
-            const std::string MSG_STR(
-                "\nAll " + std::to_string(itemsToRemovePVec.size()) + " items were taken.");
+            std::ostringstream ss;
+            ss << "\n"
+               << "All " << itemsToRemovePVec.size() << " items were taken.";
 
             const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_ALL_ITEMS_TAKEN_,
-                MSG_STR,
+                ss.str(),
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 
@@ -575,13 +577,13 @@ namespace stage
         {
             gui::SoundManager::Instance()->PlaySfx_Reject();
 
-            const std::string MSG_STR(
-                "\n" + std::to_string(NUM_ITEMS_REMAINING)
-                + " items could not be taken by any of your characters.");
+            std::ostringstream ss;
+            ss << "\n"
+               << NUM_ITEMS_REMAINING << " items could not be taken by any of your characters.";
 
             const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
-                MSG_STR,
+                ss.str(),
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 
@@ -673,7 +675,8 @@ namespace stage
                 M_HP_LOG_ERR(
                     "stage::TreasureStage::PromptUserBasedOnTreasureAvailability(treasure_"
                     "available_enum="
-                    << NAMEOF_ENUM(TREASURE_AVAILABLE) << ") but that enum valid was invalid.");
+                    << item::TreasureAvailable::ToString(TREASURE_AVAILABLE)
+                    << ") but that enum valid was invalid.");
 
                 return;
             }
@@ -728,13 +731,12 @@ namespace stage
             "stage::TreasureStage::LockPickFailure() called when "
             "combat::Encounter::Instance()->LockPickCreaturePtrOpt() returned uninitialized.");
 
-        fightResult_ = combat::CreatureInteraction::TreasureTrap(
-            trap_, LOCK_PICKING_CREATURE_PTR_OPT.value());
+        fightResult_
+            = creatureInteraction_.TreasureTrap(trap_, LOCK_PICKING_CREATURE_PTR_OPT.value());
 
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateTrapPopupInfo(
             POPUP_NAME_LOCK_PICK_FAILURE_,
-            trap_.Description(
-                std::string(item::TreasureImage::ToContainerName(treasureImageType_))),
+            trap_.Description(item::TreasureImage::ToContainerName(treasureImageType_)),
             trap_.SoundEffect()) };
 
         SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
@@ -818,7 +820,7 @@ namespace stage
 
         lockPicking_.PopupSuccess(
             misc::MakeNotNull(this),
-            std::string(item::TreasureImage::ToContainerName(treasureImageType_)),
+            item::TreasureImage::ToContainerName(treasureImageType_),
             misc::MakeNotNull(this));
     }
 
@@ -865,8 +867,8 @@ namespace stage
     {
         const int TOTAL { (
             (WHAT_IS_SHARED == ShareType::Coins)
-                ? (itemCacheHeld_.coins + itemCacheLockbox_.coins).GetAs<int>()
-                : (itemCacheHeld_.gems + itemCacheLockbox_.gems).GetAs<int>()) };
+                ? (itemCacheHeld_.coins.As<int>() + itemCacheLockbox_.coins.As<int>())
+                : (itemCacheHeld_.gems.As<int>() + itemCacheLockbox_.gems.As<int>())) };
 
         if (TOTAL <= 0)
         {
@@ -885,13 +887,13 @@ namespace stage
             {
                 if (WHAT_IS_SHARED == ShareType::Coins)
                 {
-                    nextCreaturePtr->CoinsAdj(-nextCreaturePtr->Inventory().Coins());
-                    nextCreaturePtr->CoinsAdj(Coin_t::Make(SHARED_AMOUNT));
+                    nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * Coin_t(-1));
+                    nextCreaturePtr->CoinsAdj(Coin_t(SHARED_AMOUNT));
                 }
                 else
                 {
-                    nextCreaturePtr->GemsAdj(-nextCreaturePtr->Inventory().Gems());
-                    nextCreaturePtr->GemsAdj(Gem_t::Make(SHARED_AMOUNT));
+                    nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * Gem_t(-1));
+                    nextCreaturePtr->GemsAdj(Gem_t(SHARED_AMOUNT));
                 }
             }
         }

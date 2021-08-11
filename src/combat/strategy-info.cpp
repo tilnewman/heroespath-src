@@ -11,8 +11,7 @@
 //
 #include "strategy-info.hpp"
 
-#include "misc/enum-util.hpp"
-
+#include <sstream>
 #include <string>
 #include <tuple>
 
@@ -48,29 +47,21 @@ namespace combat
 
         const std::string Info::ToString() const
         {
-            std::string str("StrategyInfo:");
-            str.reserve(256);
-            str += " Select=";
-            str += EnumUtil<SelectType>::ToString(selectType_, EnumStringHow(Wrap::Yes));
-            str += ", Refine=";
-            str += EnumUtil<RefineType>::ToString(refineType_, EnumStringHow(Wrap::Yes));
-            str += ", Advance=";
-            str += NAMEOF_ENUM(advanceType_);
-            str += ", Retreat=";
-            str += NAMEOF_ENUM(retreatType_);
-            str += ", RetreatCount=";
-            str += std::to_string(outnumberRetreatCount_);
-            str += ", Roar=";
-            str += NAMEOF_ENUM(roarFreqType_);
-            str += ", Cast=";
-            str += NAMEOF_ENUM(castFreqType_);
-            str += ", Fly=";
-            str += NAMEOF_ENUM(flyFreqType_);
-            str += ", FlyPounce=";
-            str += NAMEOF_ENUM(flyPounceFreqType_);
-            str += ", StandPounce=";
-            str += NAMEOF_ENUM(standPounceFreqType_);
-            return str;
+            std::ostringstream ss;
+
+            ss << "StrategyInfo:"
+               << " Select=" << SelectType::ToString(selectType_, EnumStringHow(Wrap::Yes))
+               << ", Refine=" << RefineType::ToString(refineType_, EnumStringHow(Wrap::Yes))
+               << ", Advance=" << AdvanceType::ToString(advanceType_)
+               << ", Retreat=" << RetreatType::ToString(retreatType_)
+               << ", RetreatCount=" << outnumberRetreatCount_
+               << ", Roar=" << FrequencyType::ToString(roarFreqType_)
+               << ", Cast=" << FrequencyType::ToString(castFreqType_)
+               << ", Fly=" << FrequencyType::ToString(flyFreqType_)
+               << ", FlyPounce=" << FrequencyType::ToString(flyPounceFreqType_)
+               << ", StandPounce=" << FrequencyType::ToString(standPounceFreqType_);
+
+            return ss.str();
         }
 
         bool operator<(const Info & L, const Info & R)
@@ -124,7 +115,6 @@ namespace combat
                        R.flyPounceFreqType_,
                        R.standPounceFreqType_);
         }
-
     } // namespace strategy
 } // namespace combat
 } // namespace heroespath

@@ -29,7 +29,6 @@
 #include "item/item.hpp"
 #include "misc/config-file.hpp"
 #include "misc/vectors.hpp"
-#include "sfutil/scale.hpp"
 #include "stage/treasure-stage.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -158,10 +157,7 @@ namespace stage
         else
         {
             return treasureStagePtrOpt_.value()->HandleListboxCallback(
-                ItemListBoxPtr_t(treasureListboxUPtr_.get()),
-                ItemListBoxPtr_t(inventoryListboxUPtr_.get()),
-                PACKET,
-                PACKET_DESCRIPTION);
+                treasureListboxUPtr_, inventoryListboxUPtr_, PACKET, PACKET_DESCRIPTION);
         }
     }
 
@@ -299,7 +295,7 @@ namespace stage
 
         const auto MAX_DIFF { 3.0f };
         const auto DIFF_VECTOR { mousePos_ - NEW_MOUSE_POS };
-        if ((misc::Abs(DIFF_VECTOR.x) > MAX_DIFF) || (misc::Abs(DIFF_VECTOR.y) > MAX_DIFF))
+        if ((std::abs(DIFF_VECTOR.x) > MAX_DIFF) || (std::abs(DIFF_VECTOR.y) > MAX_DIFF))
         {
             ItemViewerInterruption();
         }
@@ -544,13 +540,8 @@ namespace stage
 
         const auto MEASUREMENTS { CreateDisplayMeasurements() };
 
-        const auto NEW_SCALE_X
-            = (MEASUREMENTS.screenSizeV.x / sfutil::Size(bgSprite_.getLocalBounds()).x);
-
-        const auto NEW_SCALE_Y
-            = (MEASUREMENTS.screenSizeV.y / sfutil::Size(bgSprite_.getLocalBounds()).y);
-
-        bgSprite_.setScale(NEW_SCALE_X, NEW_SCALE_Y);
+        bgSprite_.setScale(
+            sfutil::VectorDiv(MEASUREMENTS.screenSizeV, sfutil::Size(bgSprite_.getLocalBounds())));
     }
 
     void TreasureDisplayStage::SetupInitial_Ouroboros()
@@ -583,7 +574,7 @@ namespace stage
     void TreasureDisplayStage::SetupAfterPleaseWait_TreasureImage(
         const item::TreasureImage::Enum WHICH_IMAGE)
     {
-        const std::string PATH_CONFIG_KEY { item::TreasureImage::ImageConfigKey(WHICH_IMAGE) };
+        const auto PATH_CONFIG_KEY { item::TreasureImage::ImageConfigKey(WHICH_IMAGE) };
         treasureCachedTextureOpt_ = gui::CachedTexture(PATH_CONFIG_KEY);
         treasureSprite_.setTexture(treasureCachedTextureOpt_->Get(), true);
 
@@ -938,8 +929,7 @@ namespace stage
                 ITEM_PTR, gui::TextInfo(textInfo, ITEM_PTR->Name())));
         }
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(
-            PREV_ENTITY_PTR, gui::IEntityPtr_t(listboxUPtr.get()));
+        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, listboxUPtr);
     }
 
     void TreasureDisplayStage::SetupTreasure_ListboxLabel()
@@ -951,8 +941,7 @@ namespace stage
             }
             else
             {
-                return "Items in the "
-                    + std::string(item::TreasureImage::ToContainerName(treasureImage_, true));
+                return "Items in the " + item::TreasureImage::ToContainerName(treasureImage_, true);
             }
         }() };
 
@@ -978,8 +967,7 @@ namespace stage
 
         treasureLabelUPtr_->SetEntityPos(LEFT, TOP);
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(
-            PREV_ENTITY_PTR, gui::IEntityPtr_t(treasureLabelUPtr_.get()));
+        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, treasureLabelUPtr_);
     }
 
     void TreasureDisplayStage::SetupTreasure_ListboxSortIcons()
@@ -1127,8 +1115,7 @@ namespace stage
         characterImageUPtr_ = std::make_unique<gui::ImageEntity>(
             "TreasureDisplayStage's_CharacterImage", gui::MouseImageInfo(true, ENTITY_IMAGE_INFO));
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(
-            PREV_ENTITY_PTR, gui::IEntityPtr_t(characterImageUPtr_.get()));
+        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, characterImageUPtr_);
     }
 
     void TreasureDisplayStage::SetupInventory_ListboxLabel()
@@ -1228,8 +1215,8 @@ namespace stage
             ss << CREATURE_PTR->Inventory().Weight() << "/" << CREATURE_PTR->WeightCanCarry()
                << "  ("
                << static_cast<int>(
-                      (CREATURE_PTR->Inventory().Weight().GetAs<float>()
-                       / CREATURE_PTR->WeightCanCarry().GetAs<float>())
+                      (CREATURE_PTR->Inventory().Weight().As<float>()
+                       / CREATURE_PTR->WeightCanCarry().As<float>())
                       * 100.0f)
                << "%)";
         }
@@ -1267,7 +1254,7 @@ namespace stage
             "TreasureDisplayStage's_RedXImage", gui::MouseImageInfo(true, makeEntityImageInfo()));
 
         EntityPtrAddCurrAndReplacePrevIfNeeded(
-            PREV_ENTITY_PTR, gui::IEntityPtr_t(redXImageUPtr_.get()), StageAddEntity::Wont);
+            PREV_ENTITY_PTR, redXImageUPtr_, StageAddEntity::Wont);
     }
 
     stage::treasure::Type TreasureDisplayStage::TreasureSource() const
@@ -1330,8 +1317,7 @@ namespace stage
 
         textRegionUPtr->SetEntityPos(HORIZ_POS, VERT_POS);
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(
-            PREV_ENTITY_PTR, gui::IEntityPtr_t(textRegionUPtr.get()));
+        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, textRegionUPtr);
     }
 
     float TreasureDisplayStage::CalculateInventoryTextPosLeft() const
@@ -1415,8 +1401,7 @@ namespace stage
             gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
             gui::ImageTextEntity::MouseStateSync::Image);
 
-        EntityPtrAddCurrAndReplacePrevIfNeeded(
-            PREV_ENTITY_PTR, gui::IEntityPtr_t(sortButtonUPtr.get()));
+        EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, sortButtonUPtr);
     }
 
 } // namespace stage

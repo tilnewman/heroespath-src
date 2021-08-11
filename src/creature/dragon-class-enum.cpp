@@ -18,46 +18,99 @@ namespace heroespath
 namespace creature
 {
 
+    const std::string dragon_class::ToString(const dragon_class::Enum DRAGON_CLASS_TYPE)
+    {
+        switch (DRAGON_CLASS_TYPE)
+        {
+            case Hatchling:
+            {
+                return "Hatchling";
+            }
+            case Whelp:
+            {
+                return "Whelp";
+            }
+            case Fledgling:
+            {
+                return "Fledgling";
+            }
+            case Juvenile:
+            {
+                return "Juvenile";
+            }
+            case Adult:
+            {
+                return "Adult";
+            }
+            case Wyrm:
+            {
+                return "Wyrm";
+            }
+            case Skycaster:
+            {
+                return "Skycaster";
+            }
+            case Elder:
+            {
+                return "Elder";
+            }
+            case Count:
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(DRAGON_CLASS_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
+                return "";
+            }
+        }
+    }
+
     const std::string dragon_class::Desc(const dragon_class::Enum DRAGON_CLASS_TYPE)
     {
-        return misc::ConfigFile::Instance()->Value(
-            "creature-race-desc-dragon-" + NAMEOF_ENUM_STR(DRAGON_CLASS_TYPE));
+        std::ostringstream ss;
+        ss << "creature-race-desc-dragon-" << ToString(DRAGON_CLASS_TYPE);
+        return misc::ConfigFile::Instance()->Value(ss.str());
     }
 
     dragon_class::Enum dragon_class::ClassFromRank(const Rank_t & RANK)
     {
-        if (RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-dragon-class-rank-min-Elder"))
+        if (RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-dragon-class-rank-min-Elder")))
         {
             return dragon_class::Elder;
         }
         else if (
-            RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-dragon-class-rank-min-Skycaster"))
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-dragon-class-rank-min-Skycaster")))
         {
             return dragon_class::Skycaster;
         }
         else if (
-            RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-dragon-class-rank-min-Wyrm"))
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-dragon-class-rank-min-Wyrm")))
         {
             return dragon_class::Wyrm;
         }
         else if (
-            RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-dragon-class-rank-min-Adult"))
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-dragon-class-rank-min-Adult")))
         {
             return dragon_class::Adult;
         }
         else if (
-            RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-dragon-class-rank-min-Juvenile"))
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-dragon-class-rank-min-Juvenile")))
         {
             return dragon_class::Juvenile;
         }
         else if (
-            RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                        "creature-dragon-class-rank-min-Fledgling"))
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-dragon-class-rank-min-Fledgling")))
         {
             return dragon_class::Fledgling;
         }

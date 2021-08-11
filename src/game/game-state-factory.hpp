@@ -15,6 +15,7 @@
 #include "misc/not-null.hpp"
 
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -53,8 +54,8 @@ namespace game
         ~GameStateFactory();
 
         static misc::NotNull<GameStateFactory *> Instance();
-        static void Create();
-        static void Destroy();
+        static void Acquire();
+        static void Release();
 
         GameStateUPtr_t MakeForNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR) const;
         GameStateUPtr_t MakeForNewGameForTesting() const;

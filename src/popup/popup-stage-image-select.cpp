@@ -332,8 +332,11 @@ namespace popup
 
     void PopupStageImageSelect::SetupSelectImage_SetupNumberText(const std::size_t IMAGE_INDEX)
     {
+        std::ostringstream ss;
+        ss << IMAGE_INDEX + 1 << "/" << IMAGE_COUNT_;
+
         const gui::TextInfo TEXT_INFO(
-            (std::to_string(IMAGE_INDEX + 1) + "/" + std::to_string(IMAGE_COUNT_)),
+            ss.str(),
             gui::GuiFont::SystemCondensed,
             gui::FontManager::Instance()->Size_Smallish(),
             PopupManager::Color_Font(),

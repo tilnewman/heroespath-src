@@ -8,17 +8,17 @@
 #define HEROESPATH_ITEM_INVENTORY_HPP_INCLUDED
 //
 // inventory.hpp
+//  A class that encapsulates a collection of Items.
 //
 #include "creature/trait.hpp"
-#include "game/strong-types.hpp"
-#include "item/armor-enum.hpp"
-#include "item/category-enum.hpp"
-#include "item/misc-enum.hpp"
-#include "item/weapon-enum.hpp"
+#include "item/armor-types.hpp"
+#include "item/item-type-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -38,7 +38,7 @@ namespace item
     public:
         explicit Inventory(
             const Coin_t & COINS = 0_coin,
-            const Shard_t & METEOR_SHARDS = 0_shard,
+            const MeteorShard_t & METEOR_SHARDS = 0_mshard,
             const Gem_t & GEMS = 0_gem,
             const ItemPVec_t & ITEMS_PVEC = ItemPVec_t(),
             const ItemPVec_t & EQUIPPED_ITEMS_PVEC = ItemPVec_t());
@@ -46,12 +46,12 @@ namespace item
         ~Inventory();
 
         Coin_t Coins() const { return coins_; }
-        Shard_t Shards() const { return meteorShards_; }
+        MeteorShard_t MeteorShards() const { return meteorShards_; }
         Gem_t Gems() const { return gems_; }
 
         // these functions return false if attempt to reduce below zero
         bool CoinsAdj(const Coin_t &);
-        bool ShardsAdj(const Shard_t &);
+        bool MeteorShardsAdj(const MeteorShard_t &);
         bool GemsAdj(const Gem_t &);
 
         const ItemPVec_t Items() const { return itemsPVec_; }
@@ -77,29 +77,29 @@ namespace item
 
         std::size_t Count() const;
 
-        std::size_t CountItemOfArmorType(const Armor::Enum) const;
-        std::size_t CountItemOfArmorTypeHeld(const Armor::Enum) const;
-        std::size_t CountItemOfArmorTypeEquipped(const Armor::Enum) const;
+        std::size_t CountItemOfArmorType(const armor_type::Enum) const;
+        std::size_t CountItemOfArmorTypeHeld(const armor_type::Enum) const;
+        std::size_t CountItemOfArmorTypeEquipped(const armor_type::Enum) const;
 
-        std::size_t CountItemOfWeaponType(const Weapon::Enum) const;
-        std::size_t CountItemOfWeaponTypeHeld(const Weapon::Enum) const;
-        std::size_t CountItemOfWeaponTypeEquipped(const Weapon::Enum) const;
+        std::size_t CountItemOfWeaponType(const armor_type::Enum) const;
+        std::size_t CountItemOfWeaponTypeHeld(const armor_type::Enum) const;
+        std::size_t CountItemOfWeaponTypeEquipped(const armor_type::Enum) const;
 
-        std::size_t CountItemOfCategory(const Category::Enum) const;
-        std::size_t CountItemOfCategoryHeld(const Category::Enum) const;
-        std::size_t CountItemOfCategoryEquipped(const Category::Enum) const;
+        std::size_t CountItemOfCategory(const category::Enum) const;
+        std::size_t CountItemOfCategoryHeld(const category::Enum) const;
+        std::size_t CountItemOfCategoryEquipped(const category::Enum) const;
 
-        std::size_t CountItemOfMiscType(const Misc::Enum) const;
-        std::size_t CountItemOfMiscTypeHeld(const Misc::Enum) const;
-        std::size_t CountItemOfMiscTypeEquipped(const Misc::Enum) const;
+        std::size_t CountItemOfMiscType(const misc_type::Enum) const;
+        std::size_t CountItemOfMiscTypeHeld(const misc_type::Enum) const;
+        std::size_t CountItemOfMiscTypeEquipped(const misc_type::Enum) const;
 
-        bool HasCoverTypeEquipped(const Covers::Enum) const;
+        bool HasCoverTypeEquipped(const armor::cover_type::Enum) const;
 
         bool HasMusicalInstrumentEquipped() const;
 
         bool HasCastingItemEquipped() const;
 
-        Armor_t ArmorRating(const Rank_t CREATURE_RANK = 0_rank) const;
+        Armor_t ArmorRating() const;
 
         const std::string ToString() const;
 
@@ -111,7 +111,7 @@ namespace item
 
     private:
         Coin_t coins_;
-        Shard_t meteorShards_;
+        MeteorShard_t meteorShards_;
         Gem_t gems_;
 
         // the observer pointers in these two vectors need to be tracked and eventually free'd by

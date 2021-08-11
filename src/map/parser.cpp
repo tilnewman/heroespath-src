@@ -21,11 +21,9 @@
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <algorithm>
-#include <sstream>
 
 namespace heroespath
 {
@@ -91,8 +89,6 @@ namespace map
 
     void Parser::Parse_Implementation(ParsePacket & packet) const
     {
-        packet.file_path.reserve(255);
-
         packet.collision_vec.clear();
         packet.collision_vec.reserve(1024); // found by experiment to be a good upper bound
 
@@ -100,23 +96,19 @@ namespace map
         packet.transition_vec.reserve(16); // found by experiment to be a good upper bound
 
         packet.walk_region_vecmap.Clear();
-        packet.walk_region_vecmap.Reserve(255);
-
-        packet.animation_vec.reserve(16);
 
         packet.layout.Reset();
 
-        boost::property_tree::ptree xmlPropTreeRoot;
-        Parse_XML(packet.file_path, xmlPropTreeRoot);
+        const auto XML_PTREE_ROOT { Parse_XML(packet.file_path) };
 
-        Parse_MapSizes(xmlPropTreeRoot.get_child(XML_NODE_NAME_MAP_), packet.layout);
+        Parse_MapSizes(XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_), packet.layout);
 
-        Parse_MapBackgroundColor(xmlPropTreeRoot.get_child(XML_NODE_NAME_MAP_), packet.layout);
+        Parse_MapBackgroundColor(XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_), packet.layout);
 
         using BPTreeValue_t = boost::property_tree::ptree::value_type;
 
         // loop over all layers in the map file and parse them separately
-        for (const BPTreeValue_t & CHILD_PAIR : xmlPropTreeRoot.get_child(XML_NODE_NAME_MAP_))
+        for (const BPTreeValue_t & CHILD_PAIR : XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_))
         {
             namespace ba = boost::algorithm;
             const auto NODENAME_LOWER { misc::ToLowerCopy(CHILD_PAIR.first) };
@@ -178,12 +170,13 @@ namespace map
         }
     }
 
-    void Parser::Parse_XML(
-        const std::string & MAP_FILE_PATH_STR, boost::property_tree::ptree & xmlPropTree) const
+    const boost::property_tree::ptree Parser::Parse_XML(const std::string & MAP_FILE_PATH_STR) const
     {
+        boost::property_tree::ptree xmlPropertyTree;
+
         try
         {
-            boost::property_tree::read_xml(MAP_FILE_PATH_STR, xmlPropTree);
+            boost::property_tree::read_xml(MAP_FILE_PATH_STR, xmlPropertyTree);
         }
         catch (const std::exception & EXCEPTION)
         {
@@ -203,6 +196,8 @@ namespace map
             M_HP_LOG_ERR(ss.str());
             throw std::runtime_error(ss.str());
         }
+
+        return xmlPropertyTree;
     }
 
     void
@@ -210,10 +205,10 @@ namespace map
     {
         try
         {
-            layout.tile_size_v.x = FetchXMLAttributeInt(MAP_PTREE, "tilewidth");
-            layout.tile_size_v.y = FetchXMLAttributeInt(MAP_PTREE, "tileheight");
-            layout.tile_count_v.x = FetchXMLAttributeInt(MAP_PTREE, "width");
-            layout.tile_count_v.y = FetchXMLAttributeInt(MAP_PTREE, "height");
+            layout.tile_size_v.x = FetchXMLAttribute<int>(MAP_PTREE, "tilewidth");
+            layout.tile_size_v.y = FetchXMLAttribute<int>(MAP_PTREE, "tileheight");
+            layout.tile_count_v.x = FetchXMLAttribute<int>(MAP_PTREE, "width");
+            layout.tile_count_v.y = FetchXMLAttribute<int>(MAP_PTREE, "height");
         }
         catch (const std::exception & EXCEPTION)
         {
@@ -231,11 +226,10 @@ namespace map
         layout.background_color = sf::Color::Transparent;
 
         std::string hexColorString;
-        hexColorString.reserve(16);
 
         try
         {
-            hexColorString = FetchXMLAttributeString(MAP_PTREE, "backgroundcolor");
+            hexColorString = FetchXMLAttribute<std::string>(MAP_PTREE, "backgroundcolor");
         }
         catch (...)
         {
@@ -253,8 +247,7 @@ namespace map
         // add 255 to the end for the alpha value
         hexColorString += "ff";
 
-        static std::stringstream ss;
-        ss.clear();
+        std::stringstream ss;
         ss << std::hex << hexColorString;
 
         unsigned colorNumber { 0 };
@@ -269,19 +262,20 @@ namespace map
         const auto IMAGE_PROPTREE { TILESET_PTREE.get_child("image") };
 
         const std::string FILE_RELATIVE_PATH { misc::filesystem::Filename(
-            FetchXMLAttributeString(IMAGE_PROPTREE, "source")) };
+            FetchXMLAttribute<std::string>(IMAGE_PROPTREE, "source")) };
 
         const std::string FILE_COMPLETE_PATH { misc::filesystem::CombinePaths(
             tileTextureDirectoryPath_, FILE_RELATIVE_PATH) };
 
-        const std::string TILES_PANEL_NAME { FetchXMLAttributeName(TILESET_PTREE) };
+        const std::string TILES_PANEL_NAME { FetchXMLAttribute<std::string>(
+            TILESET_PTREE, "name") };
 
         layout.tiles_panel_vec.emplace_back(TilesPanel(
             TILES_PANEL_NAME,
             FILE_COMPLETE_PATH,
-            FetchXMLAttributeInt(TILESET_PTREE, "firstgid"),
-            FetchXMLAttributeInt(TILESET_PTREE, "tilecount"),
-            FetchXMLAttributeInt(TILESET_PTREE, "columns"),
+            FetchXMLAttribute<int>(TILESET_PTREE, "firstgid"),
+            FetchXMLAttribute<int>(TILESET_PTREE, "tilecount"),
+            FetchXMLAttribute<int>(TILESET_PTREE, "columns"),
             layout.texture_vec.size()));
 
         namespace ba = boost::algorithm;
@@ -316,45 +310,75 @@ namespace map
         Layout & layout,
         const LayerType::Enum TYPE) const
     {
+        std::stringstream ssAllData;
+        ssAllData << PTREE.get_child("data").data();
+
         layout.layer_vec.emplace_back(Layer());
         Layer & layer { layout.layer_vec[layout.layer_vec.size() - 1] };
 
         layer.type = TYPE;
 
-        Parse_Layer_Generic_Tiles(layer.mapid_vec, PTREE.get_child("data").data());
+        Parse_Layer_Generic_Tiles(layer.mapid_vec, ssAllData);
     }
 
     void Parser::Parse_Layer_Generic_Tiles(
-        std::vector<int> & mapIDs, const std::string & TILE_LAYER_DATA_STR) const
+        std::vector<int> & mapIDs, std::stringstream & tileLayerDataSS) const
     {
         // found by experiment to be a reliable upper bound for typical maps
         mapIDs.reserve(20000);
 
-        auto converterValueAndStore = [&mapIDs](const auto FIRST, const auto LAST) {
-            int value(0);
+        std::string nextLine("");
+        while (tileLayerDataSS)
+        {
+            std::getline(tileLayerDataSS, nextLine, '\n');
 
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (misc::ToNumber(std::string(FIRST, LAST), value)),
-                "Parse_Layer_Generic_Tiles() valueStringConverterAndSaver(\"" << std::string(
-                    FIRST, LAST) << "\"), was unable to turn that value into an int.");
+            if (nextLine.empty())
+            {
+                continue;
+            }
 
-            mapIDs.emplace_back(value);
-            return false;
-        };
+            std::stringstream ssLine;
+            ssLine << nextLine;
+            std::string nextValStr("");
 
-        auto isComma = [](const char CH) constexpr noexcept { return (CH == ','); };
+            // loop through each line reading numbers between the commas
+            while (ssLine)
+            {
+                std::getline(ssLine, nextValStr, ',');
 
-        auto valueParser = [&isComma, &converterValueAndStore](const auto FIRST, const auto LAST) {
-            return misc::FindStringsBetweenSeparatorsAndCall(
-                FIRST, LAST, isComma, converterValueAndStore);
-        };
+                if (nextValStr.empty())
+                {
+                    continue;
+                }
 
-        auto lineParser = [&](const auto FIRST, const auto LAST) {
-            misc::FindStringsBetweenSeparatorsAndCall(
-                FIRST, LAST, misc::IsEitherNewline, valueParser);
-        };
+                try
+                {
+                    // std::stoi tested faster than boost::lexical_cast 2018-3-19
+                    mapIDs.emplace_back(std::stoi(nextValStr));
+                }
+                catch (const std::exception & EXCEPTION)
+                {
+                    M_HP_LOG(
+                        "map::Parser::Parse_Layer_Generic_Tiles("
+                        << nextLine << ") "
+                        << "boost::lexical_cast<int>("
+                        << "\"" << nextValStr << "\") threw '" << EXCEPTION.what()
+                        << "' exception.");
 
-        lineParser(std::begin(TILE_LAYER_DATA_STR), std::end(TILE_LAYER_DATA_STR));
+                    throw;
+                }
+                catch (...)
+                {
+                    std::ostringstream ss;
+                    ss << "map::Parser::Parse_Layer_Generic_Tiles(" << nextLine << ") "
+                       << "boost::lexical_cast<int>("
+                       << "\"" << nextValStr << "\") threw unknown exception.";
+
+                    M_HP_LOG(ss.str());
+                    throw std::runtime_error(ss.str());
+                }
+            }
+        }
     }
 
     void Parser::Parse_Layer_WalkBounds(
@@ -369,14 +393,17 @@ namespace map
                 const auto OBJECT_PTREE { CHILD_PAIR.second };
 
                 // the index is stored in an attribute field named "type"
-                const auto WALK_RECT_INDEX { static_cast<std::size_t>(
-                    FetchXMLAttributeInt(OBJECT_PTREE, XML_ATTRIB_NAME_TYPE_)) };
+                const auto WALK_RECT_INDEX { FetchXMLAttribute<std::size_t>(
+                    OBJECT_PTREE, XML_ATTRIB_NAME_TYPE_) };
 
                 sf::FloatRect rect;
 
                 try
                 {
-                    rect = FetchXMLAttributeFloatRect(OBJECT_PTREE);
+                    rect.left = FetchXMLAttribute<float>(OBJECT_PTREE, "x");
+                    rect.top = FetchXMLAttribute<float>(OBJECT_PTREE, "y");
+                    rect.width = FetchXMLAttribute<float>(OBJECT_PTREE, "width");
+                    rect.height = FetchXMLAttribute<float>(OBJECT_PTREE, "height");
                 }
                 catch (const std::exception & EXCEPTION)
                 {
@@ -406,12 +433,13 @@ namespace map
                 const auto OBJECT_PTREE { CHILD_PAIR.second };
 
                 // the anim enum name is stored in an attribute field named "name"
-                const auto ANIM_NAME { FetchXMLAttributeName(OBJECT_PTREE) };
+                const auto ANIM_NAME { FetchXMLAttribute<std::string>(
+                    OBJECT_PTREE, XML_ATTRIB_NAME_NAME_) };
 
                 const auto ANIM_ENUM { EnumUtil<gui::Animations>::FromString(ANIM_NAME) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (ANIM_ENUM < gui::Animations::Count),
+                    (ANIM_ENUM != gui::Animations::Count),
                     "map::Parser::Parse_Layer_Animations() got an invalid animation name \""
                         << ANIM_NAME << "\"");
 
@@ -419,7 +447,10 @@ namespace map
 
                 try
                 {
-                    rect = FetchXMLAttributeFloatRect(OBJECT_PTREE);
+                    rect.left = FetchXMLAttribute<float>(OBJECT_PTREE, "x");
+                    rect.top = FetchXMLAttribute<float>(OBJECT_PTREE, "y");
+                    rect.width = FetchXMLAttribute<float>(OBJECT_PTREE, "width");
+                    rect.height = FetchXMLAttribute<float>(OBJECT_PTREE, "height");
                 }
                 catch (const std::exception & EXCEPTION)
                 {
@@ -459,7 +490,10 @@ namespace map
 
         try
         {
-            rect = FetchXMLAttributeFloatRect(PTREE);
+            rect.left = FetchXMLAttribute<float>(PTREE, "x");
+            rect.top = FetchXMLAttribute<float>(PTREE, "y");
+            rect.width = FetchXMLAttribute<float>(PTREE, "width");
+            rect.height = FetchXMLAttribute<float>(PTREE, "height");
         }
         catch (const std::exception & EXCEPTION)
         {
@@ -506,7 +540,7 @@ namespace map
 
             const auto NAME_STR { FetchXMLAttributeName(CHILD_PAIR.second) };
 
-            const auto VALUE_STR { FetchXMLAttributeString(
+            const auto VALUE_STR { FetchXMLAttribute<std::string>(
                 CHILD_PAIR.second, XML_ATTRIB_NAME_VALUE_) };
 
             if (NAME_STR == XML_ATTRIB_NAME_TYPE_)
@@ -563,7 +597,7 @@ namespace map
             "map::Parser::Parse_Transition_Properties() was unable to parse an entry type.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (level < Level::Count),
+            (level != Level::Count),
             "map::Parser::Parse_Transition_Properties() was unable to parse a Level::Enum.");
     }
 
@@ -588,11 +622,13 @@ namespace map
 
         sf::FloatRect rect;
         std::string footstepName;
-        footstepName.reserve(16);
 
         try
         {
-            rect = FetchXMLAttributeFloatRect(PTREE);
+            rect.left = FetchXMLAttribute<float>(PTREE, "x");
+            rect.top = FetchXMLAttribute<float>(PTREE, "y");
+            rect.width = FetchXMLAttribute<float>(PTREE, "width");
+            rect.height = FetchXMLAttribute<float>(PTREE, "height");
             footstepName = FetchXMLAttributeName(PTREE);
         }
         catch (const std::exception & EXCEPTION)
@@ -617,13 +653,15 @@ namespace map
             throw std::runtime_error(ss.str());
         }
 
-        std::string typeStr;
+        std::string typeStr { "" };
         try
         {
-            typeStr = FetchXMLAttributeString(PTREE, XML_ATTRIB_NAME_TYPE_);
+            typeStr = FetchXMLAttribute<std::string>(PTREE, XML_ATTRIB_NAME_TYPE_);
         }
         catch (...)
-        {}
+        {
+            typeStr = "";
+        }
 
         if ("0" == typeStr)
         {
@@ -635,32 +673,16 @@ namespace map
         }
     }
 
-    const sf::FloatRect
-        Parser::FetchXMLAttributeFloatRect(const boost::property_tree::ptree & PTREE) const
+    const std::string Parser::FetchXMLAttributeName(const boost::property_tree::ptree & PTREE) const
     {
-        return sf::FloatRect(
-            FetchXMLAttributeFloat(PTREE, "x"),
-            FetchXMLAttributeFloat(PTREE, "y"),
-            FetchXMLAttributeFloat(PTREE, "width"),
-            FetchXMLAttributeFloat(PTREE, "height"));
-    }
-
-    const std::string Parser::FetchXMLAttributeString(
-        const boost::property_tree::ptree & PTREE, const std::string & ATTRIB_NAME_POSTFIX) const
-    {
-        return PTREE.get<std::string>(XML_ATTRIB_FETCH_PREFIX_ + ATTRIB_NAME_POSTFIX);
-    }
-
-    int Parser::FetchXMLAttributeInt(
-        const boost::property_tree::ptree & PTREE, const std::string & ATTRIB_NAME_POSTFIX) const
-    {
-        return PTREE.get<int>(XML_ATTRIB_FETCH_PREFIX_ + ATTRIB_NAME_POSTFIX);
-    }
-
-    float Parser::FetchXMLAttributeFloat(
-        const boost::property_tree::ptree & PTREE, const std::string & ATTRIB_NAME_POSTFIX) const
-    {
-        return PTREE.get<float>(XML_ATTRIB_FETCH_PREFIX_ + ATTRIB_NAME_POSTFIX);
+        try
+        {
+            return FetchXMLAttribute<std::string>(PTREE, "name");
+        }
+        catch (...)
+        {
+            return "";
+        }
     }
 
     void Parser::Parse_Rects(
@@ -681,7 +703,13 @@ namespace map
 
             try
             {
-                rectsVec.emplace_back(FetchXMLAttributeFloatRect(CHILD_PTREE));
+                const auto LEFT { FetchXMLAttribute<float>(CHILD_PTREE, "x") };
+                const auto TOP { FetchXMLAttribute<float>(CHILD_PTREE, "y") };
+                const auto WIDTH { FetchXMLAttribute<float>(CHILD_PTREE, "width") };
+                const auto HEIGHT { FetchXMLAttribute<float>(CHILD_PTREE, "height") };
+
+                const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
+                rectsVec.emplace_back(RECT);
             }
             catch (const std::exception & EXCEPTION)
             {

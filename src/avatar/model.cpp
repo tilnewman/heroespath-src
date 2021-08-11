@@ -16,10 +16,8 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
-#include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 #include "sfutil/direction.hpp"
-#include "sfutil/vector-and-rect.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -210,7 +208,7 @@ namespace avatar
     {
         for (const auto & RECT : walkRects_)
         {
-            if (sfutil::Contains(RECT, POS_V))
+            if (RECT.contains(POS_V))
             {
                 return true;
             }
@@ -287,7 +285,7 @@ namespace avatar
 
                 const auto NEW_DIRECTION { WalkDirection(gui::Direction::Count) };
 
-                if (NEW_DIRECTION < gui::Direction::Count)
+                if (NEW_DIRECTION != gui::Direction::Count)
                 {
                     action_ = Pose::Walking;
                     SetWalkAnim(NEW_DIRECTION, true);
@@ -301,7 +299,7 @@ namespace avatar
 
             if (NEW_DIRECTION != prevWalkDirection_)
             {
-                if (NEW_DIRECTION >= gui::Direction::Count)
+                if (NEW_DIRECTION == gui::Direction::Count)
                 {
                     StopWalking();
                 }
@@ -325,7 +323,7 @@ namespace avatar
         std::vector<std::size_t> possibleWalkRectIndexes_;
         for (std::size_t i(0); i < walkRects_.size(); ++i)
         {
-            if (sfutil::Contains(walkRects_.at(i), mapPosV_))
+            if (walkRects_.at(i).contains(mapPosV_))
             {
                 possibleWalkRectIndexes_.emplace_back(i);
             }
@@ -387,7 +385,7 @@ namespace avatar
             misc::Random(RECT.left, RECT.left + RECT.width),
             misc::Random(RECT.top, RECT.top + RECT.height));
 
-        if (!sfutil::Contains(RECT, NEW_WALK_TARGET_POS_V))
+        if (RECT.contains(NEW_WALK_TARGET_POS_V) == false)
         {
             M_HP_LOG_ERR(
                 "NEW_WALK_TARGET_POS_V was not contained by the RECT it came from."
@@ -405,7 +403,7 @@ namespace avatar
     {
         const auto CURRENT_POS_V { mapPosV_ };
 
-        if (DIRECTION_TO_MAINTAIN >= gui::Direction::Count)
+        if (DIRECTION_TO_MAINTAIN == gui::Direction::Count)
         {
             std::vector<gui::Direction::Enum> dirVec;
 

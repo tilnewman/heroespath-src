@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ----------------------------------------------------------------------------
 // "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
@@ -87,91 +85,69 @@ namespace gui
     const std::string ImageOptions::ToString(
         const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        std::string str;
-        str.reserve(64);
-
-        if (WILL_PREFIX)
-        {
-            str += std::string("ImageOptions").append((WILL_WRAP == Wrap::Yes) ? "" : "=");
-        }
-
-        if (WILL_WRAP == Wrap::Yes)
-        {
-            str += '(';
-        }
-
-        auto separatorIf = [&]() -> std::string { return ((str.empty()) ? "" : SEPARATOR); };
+        std::ostringstream ss;
 
         if (option_enum & ImageOpt::Smooth)
         {
-            str += separatorIf();
-            str += "Smooth";
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Smooth";
         }
 
         if (option_enum & ImageOpt::Repeated)
         {
-            str += separatorIf();
-            str += "Repeated";
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Repeated";
         }
 
         if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) == 0))
         {
-            str += separatorIf();
-            str += "Invert";
-            str += ((option_enum & ImageOpt::InvertIncludesAlpha) ? "NoAlpha" : "");
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Invert"
+               << ((option_enum & ImageOpt::InvertIncludesAlpha) ? "NoAlpha" : "");
         }
 
         if (HasMask())
         {
             const auto C { mask_color_opt.value() };
 
-            str += separatorIf();
-            str += "Mask";
-            str += std::to_string(int(C.r));
-            str += '-';
-            str += std::to_string(int(C.g));
-            str += '-';
-            str += std::to_string(int(C.b));
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Mask" << int(C.r) << "-" << int(C.g)
+               << "-" << int(C.b);
 
             if (C.a < 255)
             {
-                str += '-';
-                str += std::to_string(int(C.a));
+                ss << "-" << int(C.a);
             }
 
             if (IsMaskAlphaDefault() == false)
             {
-                str += SEPARATOR;
-                str += "MaskAlpha";
-                str += std::to_string(unsigned(mask_alpha));
+                ss << SEPARATOR << "MaskAlpha" << unsigned(mask_alpha);
             }
         }
 
         if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) > 0))
         {
-            str += separatorIf();
-            str += "Invert";
-            str += ((option_enum & ImageOpt::InvertIncludesAlpha) ? "ExcludingAlpha" : "");
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Invert"
+               << ((option_enum & ImageOpt::InvertIncludesAlpha) ? "ExcludingAlpha" : "");
         }
 
         if (option_enum & ImageOpt::FlipHoriz)
         {
-            str += separatorIf();
-            str += "FlipHoriz";
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "FlipHoriz";
         }
 
         if (option_enum & ImageOpt::FlipVert)
         {
-            str += separatorIf();
-            str += "FlipVert";
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "FlipVert";
         }
 
-        if (WILL_WRAP == Wrap::Yes)
+        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+
+        if (WILL_PREFIX)
         {
-            str += ')';
+            return std::string("ImageOptions").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
+                + PARTS_STR;
         }
-
-        return str;
+        else
+        {
+            return PARTS_STR;
+        }
     }
 
     bool operator<(const ImageOptions & L, const ImageOptions & R)

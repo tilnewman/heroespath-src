@@ -33,23 +33,17 @@ namespace interact
         const auto DISPLAYED_NAME { [&]() {
             if ((sf::Keyboard::KeyCount == KEY) || (sf::Keyboard::Unknown == KEY))
             {
-                return std::string(Name());
+                return Name();
             }
             else
             {
-                std::string str;
-                str.reserve(64);
-                str += Name();
-                str += '(';
-                str += sfutil::sfKeyToString(KEY);
-                str += ')';
-                return str;
+                return Name() + "(" + sfutil::ToString(KEY) + ")";
             }
         }() };
 
         auto uptr { std::make_unique<gui::TextButton>(
-            std::string(Name()),
-            sf::Vector2f {},
+            Name(),
+            sf::Vector2f(),
             gui::MouseTextInfo::Make_InteractionButtonSet(DISPLAYED_NAME),
             CALLBACK_HANDLER_PTR_OPT) };
 

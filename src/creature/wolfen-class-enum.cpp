@@ -12,52 +12,97 @@
 #include "wolfen-class-enum.hpp"
 
 #include "misc/config-file.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string WolfenClass::Desc(const WolfenClass::Enum WOLFEN_CLASS_TYPE)
+    const std::string wolfen_class::ToString(const wolfen_class::Enum WOLFEN_CLASS_TYPE)
     {
-        return misc::ConfigFile::Instance()->Value(
-            "creature-race-desc-wolfen-" + NAMEOF_ENUM_STR(WOLFEN_CLASS_TYPE));
+        switch (WOLFEN_CLASS_TYPE)
+        {
+            case Pup:
+            {
+                return "Pup";
+            }
+            case Juvenile:
+            {
+                return "Juvenile";
+            }
+            case Adult:
+            {
+                return "Adult";
+            }
+            case Noble:
+            {
+                return "Noble";
+            }
+            case Highborn:
+            {
+                return "Highborn";
+            }
+            case Elder:
+            {
+                return "Elder";
+            }
+            case Count:
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(WOLFEN_CLASS_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
+                return "";
+            }
+        }
     }
 
-    WolfenClass::Enum WolfenClass::ClassFromRank(const Rank_t & RANK)
+    const std::string wolfen_class::Desc(const wolfen_class::Enum WOLFEN_CLASS_TYPE)
     {
-        if (RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "creature-wolfen-class-rank-min-Elder"))
+        return misc::ConfigFile::Instance()->Value(
+            "creature-race-desc-wolfen-" + ToString(WOLFEN_CLASS_TYPE));
+    }
+
+    wolfen_class::Enum wolfen_class::ClassFromRank(const Rank_t & RANK)
+    {
+        if (RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-wolfen-class-rank-min-Elder")))
         {
-            return WolfenClass::Elder;
+            return wolfen_class::Elder;
         }
         else if (
-            RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "creature-wolfen-class-rank-min-Highborn"))
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-wolfen-class-rank-min-Highborn")))
         {
-            return WolfenClass::Highborn;
+            return wolfen_class::Highborn;
         }
         else if (
-            RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "creature-wolfen-class-rank-min-Noble"))
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-wolfen-class-rank-min-Noble")))
         {
-            return WolfenClass::Noble;
+            return wolfen_class::Noble;
         }
         else if (
-            RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "creature-wolfen-class-rank-min-Adult"))
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-wolfen-class-rank-min-Adult")))
         {
-            return WolfenClass::Adult;
+            return wolfen_class::Adult;
         }
         else if (
-            RANK >= misc::ConfigFile::Instance()->ValueOrDefault<Rank_t>(
-                "creature-wolfen-class-rank-min-Juvenile"))
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
+                "creature-wolfen-class-rank-min-Juvenile")))
         {
-            return WolfenClass::Juvenile;
+            return wolfen_class::Juvenile;
         }
         else
         {
-            return WolfenClass::Pup;
+            return wolfen_class::Pup;
         }
     }
 

@@ -16,7 +16,6 @@
 #include "gui/image-text-entity.hpp"
 #include "gui/text-region.hpp"
 #include "misc/vector-map.hpp"
-#include "sfutil/vector-and-rect.hpp"
 #include "stage/i-stage.hpp"
 
 #include <memory>
@@ -28,8 +27,6 @@ namespace heroespath
 {
 namespace stage
 {
-
-    using FloatRectVec_t = std::vector<sf::FloatRect>;
 
     // Responsible for displaying and managing player interactions with a
     // list of characters and associated information about them.

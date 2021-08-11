@@ -10,7 +10,9 @@
 // combat-stage.hpp
 //
 #include "combat/combat-restore-info.hpp"
+#include "combat/combat-sound-effects.hpp"
 #include "combat/combat-text.hpp"
+#include "combat/creature-interaction.hpp"
 #include "combat/fight-results.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-action-info.hpp"
@@ -480,6 +482,7 @@ namespace stage
         gui::SliderBarUPtr_t zoomSliderBarUPtr_;
         gui::BoxEntityUPtr_t turnBoxUPtr_;
         sf::FloatRect turnBoxRegion_;
+        combat::CombatSoundEffects combatSoundEffects_;
         ReportIndexesVec_t soundEffectsPlayedVec_;
         TurnPhase turnPhase_;
         PreTurnPhase preTurnPhase_;
@@ -568,6 +571,8 @@ namespace stage
 
         // members that support achievements and titles
         creature::TitleTransitionVec_t creatureTitlesVec_;
+
+        combat::CreatureInteraction creatureInteraction_;
     };
 
 } // namespace stage

@@ -20,7 +20,7 @@ namespace song
 {
 
     // Responsible for identifying all songs that Bards can play in the game
-    struct Songs : public EnumBaseCounting<>
+    struct Songs : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -33,21 +33,11 @@ namespace song
             Count
         };
 
-        static constexpr std::string_view Name(const Enum ENUM) noexcept
-        {
-            switch (ENUM)
-            {
-                case RallyDrum: return "Rally Drum";
-                case SpiritResonance: return "Spirit Resonance";
-                case RousingRhythm: return "Rousing Rhythm";
-                case TripBeat: return "Trip Beat";
-                case PanicStrings: return "Panic Strings";
-                case Lullaby: return "Lullaby";
-                case Count: return "Count";
-                default: return "song::Songs::Name(ENUM=out_of_range)";
-            }
-        }
+        // straight name without spaces
+        static const std::string ToString(const Enum);
 
+        // human readable with spaces
+        static const std::string Name(const Enum);
         static const std::string ShortDesc(const Enum);
         static const std::string ExtraDesc(const Enum);
         static const std::string ImageFilename(const Enum);

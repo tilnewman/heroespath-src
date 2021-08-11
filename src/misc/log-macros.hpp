@@ -10,58 +10,97 @@
 // log-macros.hpp
 //
 #include "misc/log-pri-enum.hpp"
-#include "misc/string-stream-holder.hpp"
+#include "misc/timing-scoped.hpp"
+
+#include <cstddef> //for std::size_t
+#include <memory>
+#include <sstream>
+#include <string>
+
+//
+
+#define M_HP_FILE_FUNC_LINE_STR                                                                    \
+    (std::string(__FILE__) + ":" + std::string(__func__) + "():" + std::to_string(__LINE__))
+
+#define M_HP_FILE_FUNC_LINE_STR_VAR                                                                \
+    const std::string FILE_FUNC_LINE_STR { M_HP_FILE_FUNC_LINE_STR };
+
+#define M_HP_STREAM_VAR(var) ", " #var "=" << var
+
+#define M_HP_STREAM_TYPE(the_type) ", " #the_type << "=" << NAMEOF_TYPE_T_STR(the_type)
+
+//
+
+namespace heroespath
+{
+namespace misc
+{
+    class TimeTrials;
+}
+
+struct LogMacroHelper
+{
+    static void Append(
+        const misc::LogPriority::Enum PRIORITY,
+        const std::string & MSG,
+        const std::string & FILE,
+        const std::string & FUNCTION,
+        const int LINE);
+
+    static void LogTimingStart();
+    static void LogTimingStop();
+    static misc::TimeTrials * GetLoggingTimeTrialsPtr();
+
+private:
+    static std::unique_ptr<misc::TimeTrials> loggingTimeTrialsUPtr_;
+};
+
+} // namespace heroespath
+
+//
 
 #if !defined(MACRO_DISABLE_ALL) && !defined(HEROESPATH_MACRO_DISABLE_LOG)
 
-#define M_HP_LOG_PRI_SS(priority, str_streams)                                                     \
+#define M_HP_LOG_PRI_ACTUAL(priority, str_stuff)                                                   \
     {                                                                                              \
-        std::ostringstream _m_hp_log_pri_ss;                                                       \
-        _m_hp_log_pri_ss << str_streams;                                                           \
+        {                                                                                          \
+            std::ostringstream _m_oss_hp_log_temp;                                                 \
+            _m_oss_hp_log_temp << str_stuff;                                                       \
                                                                                                    \
-        misc::StringStreamHolder::log(                                                             \
-            priority, __FILE__, __func__, __LINE__, _m_hp_log_pri_ss.str());                       \
+            heroespath::LogMacroHelper::Append(                                                    \
+                priority, _m_oss_hp_log_temp.str(), __FILE__, __func__, __LINE__);                 \
+        }                                                                                          \
     }
 
-#define M_HP_LOG_PRI_STR(priority, str)                                                            \
+#define M_HP_LOG_PRI(priority, str_stuff)                                                          \
     {                                                                                              \
-        misc::StringStreamHolder::log(priority, __FILE__, __func__, __LINE__, str);                \
+        if (LogMacroHelper::GetLoggingTimeTrialsPtr() != nullptr)                                  \
+        {                                                                                          \
+            M_HP_SCOPED_TIME_TRIAL(*LogMacroHelper::GetLoggingTimeTrialsPtr(), 0);                 \
+            M_HP_LOG_PRI_ACTUAL(priority, str_stuff);                                              \
+        }                                                                                          \
+        else                                                                                       \
+        {                                                                                          \
+            M_HP_LOG_PRI_ACTUAL(priority, str_stuff);                                              \
+        }                                                                                          \
     }
 
-#define M_HP_LOG_DBG(str_streams) M_HP_LOG_PRI_SS(heroespath::misc::LogPriority::Debug, str_streams)
-
-#define M_HP_LOG_DEF(str_streams)                                                                  \
-    M_HP_LOG_PRI_SS(heroespath::misc::LogPriority::Default, str_streams)
-
-#define M_HP_LOG_WRN(str_streams) M_HP_LOG_PRI_SS(heroespath::misc::LogPriority::Warn, str_streams)
-#define M_HP_LOG_ERR(str_streams) M_HP_LOG_PRI_SS(heroespath::misc::LogPriority::Error, str_streams)
-#define M_HP_LOG_FAT(str_streams) M_HP_LOG_PRI_SS(heroespath::misc::LogPriority::Fatal, str_streams)
-#define M_HP_LOG(str_streams) M_HP_LOG_DEF(str_streams)
-
-#define M_HP_LOG_DBG_STR(str) M_HP_LOG_PRI_STR(heroespath::misc::LogPriority::Debug, str)
-#define M_HP_LOG_DEF_STR(str) M_HP_LOG_PRI_STR(heroespath::misc::LogPriority::Default, str)
-#define M_HP_LOG_WRN_STR(str) M_HP_LOG_PRI_STR(heroespath::misc::LogPriority::Warn, str)
-#define M_HP_LOG_ERR_STR(str) M_HP_LOG_PRI_STR(heroespath::misc::LogPriority::Error, str)
-#define M_HP_LOG_FAT_STR(str) M_HP_LOG_PRI_STR(heroespath::misc::LogPriority::Fatal, str)
-#define M_HP_LOG_STR(str) M_HP_LOG_DEF_STR(str)
+#define M_HP_LOG_DBG(str_stuff) M_HP_LOG_PRI(heroespath::misc::LogPriority::Debug, str_stuff)
+#define M_HP_LOG_DEF(str_stuff) M_HP_LOG_PRI(heroespath::misc::LogPriority::Default, str_stuff)
+#define M_HP_LOG_WRN(str_stuff) M_HP_LOG_PRI(heroespath::misc::LogPriority::Warn, str_stuff)
+#define M_HP_LOG_ERR(str_stuff) M_HP_LOG_PRI(heroespath::misc::LogPriority::Error, str_stuff)
+#define M_HP_LOG_FAT(str_stuff) M_HP_LOG_PRI(heroespath::misc::LogPriority::Fatal, str_stuff)
+#define M_HP_LOG(str_stuff) M_HP_LOG_DEF(str_stuff)
 
 #else
 
-#define M_HP_LOG_PRI(str_streams) ;
-#define M_HP_LOG_DBG(str_streams) ;
-#define M_HP_LOG_DEF(str_streams) ;
-#define M_HP_LOG_WRN(str_streams) ;
-#define M_HP_LOG_ERR(str_streams) ;
-#define M_HP_LOG_FAT(str_streams) ;
-#define M_HP_LOG(str_streams) ;
-
-#define M_HP_LOG_PRI_STR(str) ;
-#define M_HP_LOG_DBG_STR(str) ;
-#define M_HP_LOG_DEF_STR(str) ;
-#define M_HP_LOG_WRN_STR(str) ;
-#define M_HP_LOG_ERR_STR(str) ;
-#define M_HP_LOG_FAT_STR(str) ;
-#define M_HP_LOG_STR(str) ;
+#define M_HP_LOG_PRI(str_stuff) ;
+#define M_HP_LOG_DBG(str_stuff) ;
+#define M_HP_LOG_DEF(str_stuff) ;
+#define M_HP_LOG_WRN(str_stuff) ;
+#define M_HP_LOG_ERR(str_stuff) ;
+#define M_HP_LOG_FAT(str_stuff) ;
+#define M_HP_LOG(str_stuff) ;
 
 #endif // end check if logging macros enabled
 

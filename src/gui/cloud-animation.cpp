@@ -47,7 +47,7 @@ namespace gui
             ,
 
             // start half way so everything moves fast at first and then slows down
-            slider_(misc::Max(1.0f, BASE_SPEED), 0.5f)
+            slider_(std::max(1.0f, BASE_SPEED), 0.5f)
         {
             // set initial sprite values (initial rotation is random)
             sprite_.setPosition(0.0f, 0.0f);

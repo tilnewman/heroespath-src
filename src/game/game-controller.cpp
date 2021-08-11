@@ -20,7 +20,6 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
-#include "misc/strings.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfutil/display.hpp"
@@ -36,7 +35,7 @@ namespace game
 
     std::unique_ptr<GameController> GameController::instanceUPtr_;
 
-    std::string GameController::startupStageName_ { NAMEOF_ENUM(stage::Stage::Intro) };
+    std::string GameController::startupStageName_ { stage::Stage::ToString(stage::Stage::Intro) };
 
     GameController::GameController()
         : status_()
@@ -57,13 +56,13 @@ namespace game
         if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: GameController");
-            Create();
+            Acquire();
         }
 
-        return misc::NotNull<GameController *>(instanceUPtr_.get());
+        return instanceUPtr_;
     }
 
-    void GameController::Create()
+    void GameController::Acquire()
     {
         if (!instanceUPtr_)
         {
@@ -71,11 +70,17 @@ namespace game
         }
         else
         {
-            M_HP_LOG_ERR("Subsystem Create() after Construction: GameController");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: GameController");
         }
     }
 
-    void GameController::Destroy() { instanceUPtr_.reset(); }
+    void GameController::Release()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (instanceUPtr_), "GameController::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
 
     void GameController::Initialize()
     {
@@ -89,8 +94,11 @@ namespace game
         {
             M_HP_LOG(
                 "command line specified which stage to start at \""
-                << startupStageName_ << "\" (" << NAMEOF_ENUM(STARTUP_STAGE_ENUM)
+                << startupStageName_ << "\" (" << stage::Stage::ToString(STARTUP_STAGE_ENUM)
                 << ").  Jumping to that stage now.");
+
+            // TEMP TODO REMOVE -once done testing
+            Game::Instance()->MakeNewForTestingAndSet();
 
             instanceUPtr_->TransitionTo(stage::SetupPacket(STARTUP_STAGE_ENUM));
         }
@@ -98,7 +106,7 @@ namespace game
         {
             M_HP_LOG(
                 "command line specified which stage to start at \""
-                << startupStageName_ << "\" (" << NAMEOF_ENUM(STARTUP_STAGE_ENUM)
+                << startupStageName_ << "\" (" << stage::Stage::ToString(STARTUP_STAGE_ENUM)
                 << "), but that stage is not a valid start stage so ignoring it.");
 
             instanceUPtr_->TransitionTo(stage::Stage::Intro);
@@ -153,8 +161,8 @@ namespace game
     void GameController::StageChangeActualNonPopupReplace(const stage::SetupPacket & SETUP_PACKET)
     {
         M_HP_LOG(
-            "changing from " << GetStageName() << " stage to " << NAMEOF_ENUM(SETUP_PACKET.stage)
-                             << " stage.");
+            "changing from " << GetStageName() << " stage to "
+                             << stage::Stage::ToString(SETUP_PACKET.stage) << " stage.");
 
         if (activeStages_.HasPopupStage())
         {
@@ -471,6 +479,36 @@ namespace game
         return RESULT;
     }
 
+    void GameController::TestingStrAppend(const std::string & MESSAGE)
+    {
+        auto handleTestStringAppend = [MESSAGE](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->TestingStrAppend(MESSAGE);
+            return boost::none;
+        };
+
+        activeStages_.ExecuteOnNonPopupStages(handleTestStringAppend);
+    }
+
+    void GameController::TestingStrIncrement(const std::string & MESSAGE)
+    {
+        auto handleTestStringIncrement = [MESSAGE](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->TestingStrIncrement(MESSAGE);
+            return boost::none;
+        };
+
+        activeStages_.ExecuteOnNonPopupStages(handleTestStringIncrement);
+    }
+
+    void GameController::TestingImageSet(const std::string & PATH_STR)
+    {
+        auto handleTestImageSet = [PATH_STR](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->TestingImageSet(PATH_STR);
+            return boost::none;
+        };
+
+        activeStages_.ExecuteOnNonPopupStages(handleTestImageSet);
+    }
+
     void GameController::StageChangePostPopupSpawn(const PopupReplaceCommand & POPUP_ADD_COMMAND)
     {
         M_HP_LOG("popup spawn requested: " << POPUP_ADD_COMMAND.popup_info.ToStringShort());
@@ -488,15 +526,15 @@ namespace game
             M_HP_LOG_ERR(
                 "A popup response was given to GameController but there was no loop or no "
                 "popup_stage."
-                + EnumUtil<popup::PopupButtons>::ToString(TYPE) + M_HP_VAR_STR(SELECTION));
+                + M_HP_VAR_STR(TYPE) + M_HP_VAR_STR(SELECTION));
 
             return;
         }
 
         M_HP_LOG(
-            "popup remove requested: will remove " << NAMEOF_ENUM(stageTracker_.GetCurrent())
-                                                   << " because button press=" << NAMEOF_ENUM(TYPE)
-                                                   << " and selection=" << SELECTION);
+            "popup remove requested: will remove "
+            << stage::Stage::ToString(stageTracker_.GetCurrent()) << " because button press="
+            << popup::PopupButtons::ToString(TYPE) << " and selection=" << SELECTION);
 
         const auto CURRENT_EXECUTION_COMMAND_WITHOUT_FADE { prePopupExecuteCommandWithoutFade_ };
 
@@ -519,7 +557,7 @@ namespace game
             {
                 M_HP_LOG_DBG(
                     "Transitioning to previous stage: "
-                    + NAMEOF_ENUM_STR(NON_POPUP_PREVIOUS_STAGE));
+                    + stage::Stage::ToString(NON_POPUP_PREVIOUS_STAGE));
 
                 StageReplaceCommand stageReplaceCommand { STAGE_SETUP_COMMAND };
                 stageReplaceCommand.stage = NON_POPUP_PREVIOUS_STAGE;
@@ -531,7 +569,7 @@ namespace game
                 M_HP_LOG_ERR(
                     "Ignoring attempt to TransitionTo previous stage when there was no valid "
                     "previous stage.  previous="
-                    + NAMEOF_ENUM_STR(NON_POPUP_PREVIOUS_STAGE));
+                    + stage::Stage::ToString(NON_POPUP_PREVIOUS_STAGE));
 
                 return;
             }
@@ -559,7 +597,9 @@ namespace game
             return;
         }
 
-        M_HP_LOG("stage create/replace requested: " << NAMEOF_ENUM(STAGE_SETUP_COMMAND.stage));
+        M_HP_LOG(
+            "stage create/replace requested: "
+            << stage::Stage::ToString(STAGE_SETUP_COMMAND.stage));
 
         RequestLoopExit();
 

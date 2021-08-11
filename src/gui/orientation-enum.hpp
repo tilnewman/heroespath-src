@@ -18,7 +18,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Orientation : public EnumBaseCounting<>
+    struct Orientation : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         enum Enum : EnumUnderlying_t
         {
@@ -28,9 +28,10 @@ namespace gui
             Count
         };
 
+        static const std::string ToString(const Orientation::Enum);
+
         // if given Both and IS_OPPOSITE_OF_BOTH_COUNT==false then returns Both
-        static constexpr Enum
-            Flip(const Enum ORIENTATION, const bool IS_OPPOSITE_OF_BOTH_COUNT = false) noexcept
+        static Enum Flip(const Enum ORIENTATION, const bool IS_OPPOSITE_OF_BOTH_COUNT = false)
         {
             if (ORIENTATION == Horiz)
             {
